@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!-- Mensagens de log com dados pessoais e tokens mascarados -->
+  <conversionRule conversionWord="maskedMsg"
+                  converterClass="mz.co.moseguros.shared.logging.MaskedMessageConverter"/>
+
+  <springProfile name="local">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} %-5level [%X{traceId:-}] %logger{36} - %maskedMsg%n</pattern>
+      </encoder>
+    </appender>
+  </springProfile>
+
+  <springProfile name="!local">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <includeMdcKeyName>traceId</includeMdcKeyName>
+        <jsonGeneratorDecorator class="net.logstash.logback.mask.MaskingJsonGeneratorDecorator">
+          <valueMasker class="mz.co.moseguros.shared.logging.SensitiveValueMasker"/>
+        </jsonGeneratorDecorator>
+      </encoder>
+    </appender>
+  </springProfile>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>

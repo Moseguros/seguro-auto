@@ -1,0 +1,4 @@
+# Produção: todas as credenciais vêm de variáveis de ambiente
+springdoc:
+  swagger-ui:
+    enabled: false
