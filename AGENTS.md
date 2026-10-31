@@ -9,7 +9,8 @@ Este ficheiro é incluído no contexto de todas as tarefas. Se uma ficha de tare
 - Grupo Maven: `mz.co.moseguros`; artefactos `backend`, `payment-file-worker`, `payment-contracts`.
 - App móvel: application id / bundle id `mz.co.moseguros.app`; deep links `moseguros://`.
 - Repositório: `Moseguros/seguro-auto` (monorepo).
-- Revisor obrigatório dos pull requests: o proprietário do repositório.
+- Revisor obrigatório dos pull requests: `@edmilson-alar`.
+- Marca: azul profundo `#142D4E` (primária), laranja `#F28C28` (acção), fundo `#E8EFF6`. O laranja só destaca acções de conversão (simular, comparar, adquirir, renovar). Detalhes em `docs/brand/README.md`.
 
 ## 2. Stack
 
