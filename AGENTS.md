@@ -46,6 +46,7 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 - Prefixo `/api/v1`; recursos no plural em inglês; JSON em camelCase.
 - Contrato primeiro: DTO + anotações OpenAPI antes da implementação; regenerar `api/openapi.yaml` e os clientes web e mobile no mesmo PR.
 - Erros RFC 7807 (`application/problem+json`) com `type`, `title`, `status`, `detail`, `code` (ex.: `POLICY_NOT_ACTIVE`) e `errors[]` por campo.
+- Os códigos de erro estão em `ErrorCodes` (topo) e `FieldErrorCodes` (`errors[].code`) e exportados para `api/error-codes.json`. Erros de value objects ao ler um pedido são erros de campo (`VALIDATION_ERROR`). Quem acrescenta um código acrescenta as traduções `errors.<CODE>` / `validation.<CODE>` na web e na app (pt e en) no mesmo PR.
 - Paginação `?page=0&size=20&sort=createdAt,desc` → `{ content, page, size, totalElements }`.
 - Datas ISO 8601 em UTC; apresentação em `Africa/Maputo`.
 - Dinheiro `{ "amount": 299900, "currency": "MZN" }` em centavos.
