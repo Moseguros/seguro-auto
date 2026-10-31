@@ -2,5 +2,5 @@
   <!-- Logótipo provisório MoSeguros: escudo azul profundo, M branco e estrada laranja -->
   <path d="M32 3 L56 11 V30 C56 45 46 56 32 61 C18 56 8 45 8 30 V11 Z" fill="#142D4E"/>
   <path d="M19 40 V22 L32 33 L45 22 V40" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M17 48 C25 43 39 43 47 48" fill="none" stroke="#F28C28" stroke-width="4" stroke-linecap="round"/>
+  <path d="M17 46 C25 52 39 52 47 46" fill="none" stroke="#F28C28" stroke-width="4" stroke-linecap="round"/>
 </svg>
