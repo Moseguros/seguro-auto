@@ -1,0 +1,4 @@
+# Desenvolvimento local: Postgres do docker-compose em localhost:5432
+logging:
+  level:
+    mz.co.moseguros: DEBUG

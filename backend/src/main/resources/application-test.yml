@@ -1,0 +1,4 @@
+# Testes: a base de dados vem do Testcontainers (@ServiceConnection)
+logging:
+  level:
+    mz.co.moseguros: DEBUG
