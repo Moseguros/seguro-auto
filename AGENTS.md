@@ -46,18 +46,21 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 - Prefixo `/api/v1`; recursos no plural em inglês; JSON em camelCase.
 - Contrato primeiro: DTO + anotações OpenAPI antes da implementação; regenerar `api/openapi.yaml` e os clientes web e mobile no mesmo PR.
 - Erros RFC 7807 (`application/problem+json`) com `type`, `title`, `status`, `detail`, `code` (ex.: `POLICY_NOT_ACTIVE`) e `errors[]` por campo.
+- Os códigos de erro estão em `ErrorCodes` (topo) e `FieldErrorCodes` (`errors[].code`) e exportados para `api/error-codes.json`. Erros de value objects ao ler um pedido são erros de campo (`VALIDATION_ERROR`). Quem acrescenta um código acrescenta as traduções `errors.<CODE>` / `validation.<CODE>` na web e na app (pt e en) no mesmo PR.
 - Paginação `?page=0&size=20&sort=createdAt,desc` → `{ content, page, size, totalElements }`.
 - Datas ISO 8601 em UTC; apresentação em `Africa/Maputo`.
 - Dinheiro `{ "amount": 299900, "currency": "MZN" }` em centavos.
 - Pagamento, emissão e indemnização exigem `Idempotency-Key` (UUID); mesma chave = mesma resposta durante 24 h.
 - Transições de estado são acções: `POST /policies/{id}/cancel`, nunca `PATCH status`.
 - IDs públicos UUID v7; números de negócio com prefixo (`AP-2026-000123`, `SN-…`, `RC-…`, `PR-…`, `PG-…`).
-- Textos para o utilizador vêm do i18n do frontend, não da API.
+- Todo o endpoint tem `@Operation(operationId = "verboRecurso")` explícito (`getVersion`, `listOrganizations`, `cancelPolicy`) e o controlador tem `@Tag` com o nome do módulo. Os clientes web e mobile são gerados a partir destes nomes; mudá-los é uma alteração de contrato.
+- Textos para o utilizador vêm do i18n do frontend, não da API. Excepção: mensagens que o backend envia por SMS, WhatsApp, e-mail ou push, que vêm de `backend/src/main/resources/messages/*.properties` (pt e en).
 
 ## 5. Base de dados
 
 - Um schema PostgreSQL por módulo; snake_case em inglês.
-- Colunas obrigatórias: `id uuid pk`, `created_at`, `created_by`, `updated_at`, `updated_by`, `version`.
+- Colunas obrigatórias: `id uuid pk`, `created_at`, `created_by`, `updated_at`, `updated_by`, `version`. Excepções: `audit.audit_event`, que só recebe inserções; tabelas de associação (só chaves estrangeiras, ex.: `identity.user_role`), que têm chave primária composta e apenas `created_at` e `created_by`.
+- A aplicação liga-se à BD com um utilizador que não é dono das tabelas; o Flyway usa o dono. Isolamento por âmbito (`TenantContext`: sistema, plataforma, organização, cliente) com RLS — ver ADR-002 e a adenda.
 - Dados de seguradora têm `insurer_id`; isolamento por `TenantContext` no serviço **e** Row Level Security.
 - Migrações Flyway `V{AAAAMMDDHHmm}__{modulo}_{descricao}.sql`; nunca editar uma migração aplicada.
 - Estados em `varchar` com `CHECK`; transições validadas no domínio.
@@ -66,7 +69,7 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 ## 6. Segurança e dados pessoais
 
 - Autorização por permissão (`policy:issue`, `claim:decide`…) com `@PreAuthorize` no serviço, nunca só no frontend.
-- Documentos de identificação e NUIT cifrados na coluna (AES-GCM, chave fora da BD).
+- Documentos de identificação e NUIT de pessoas singulares cifrados na coluna (AES-GCM, chave fora da BD, `CryptoService`). O NUIT de uma organização (pessoa colectiva) é público e fica em claro.
 - Segredos (chaves M-Pesa, SFTP, cartão) só no cofre de segredos; a BD guarda a referência; a API nunca os devolve.
 - Logs sem telefone completo, documentos, tokens, códigos OTP ou segredos.
 - Escritas sobre apólice, pagamento, sinistro ou reclamação geram evento em `audit.audit_event`.
