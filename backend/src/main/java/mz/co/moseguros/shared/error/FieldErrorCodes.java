@@ -30,11 +30,31 @@ public final class FieldErrorCodes {
     public static final String FALLBACK_ORDER_MISMATCH = "FALLBACK_ORDER_MISMATCH";
     public static final String OUT_OF_RANGE = "OUT_OF_RANGE";
 
+    // Organizações e convites (S1-04)
+    /** Campo que não pode ser enviado neste caso (ex.: {@code insurerProfile} fora de uma seguradora). */
+    public static final String NOT_ALLOWED = "NOT_ALLOWED";
+    /** Campo obrigatório neste caso (ex.: {@code insurerProfile} numa seguradora). */
+    public static final String REQUIRED = "REQUIRED";
+    /** Ordenação pedida não suportada pelo recurso. */
+    public static final String INVALID_SORT = "INVALID_SORT";
+
+    // Política de palavras-passe (S1-04): errors[] de PASSWORD_TOO_WEAK
+    public static final String TOO_SHORT = "TOO_SHORT";
+    public static final String TOO_LONG = "TOO_LONG";
+    public static final String CONTAINS_EMAIL = "CONTAINS_EMAIL";
+    public static final String TOO_COMMON = "TOO_COMMON";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";
     /** {@code @NotNull}: campo obrigatório em falta. */
     public static final String NOT_NULL = "NOT_NULL";
+    /** {@code @Size}: comprimento ou número de elementos fora dos limites. */
+    public static final String SIZE = "SIZE";
+    /** {@code @Pattern}: formato inválido. */
+    public static final String PATTERN = "PATTERN";
+    /** Parâmetro do pedido (caminho ou query) com um valor que não é do tipo esperado. */
+    public static final String TYPE_MISMATCH = "TYPE_MISMATCH";
 
     private FieldErrorCodes() {
     }

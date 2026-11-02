@@ -68,6 +68,10 @@ services:
       MOSEGUROS_NOTIFICATION_SMS_MOCK_URL: http://sms-mock:8090
       MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL: http://sms-mock:8090
       MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET: ${WEBHOOK_SECRET:-local-webhook-secret}
+      # Convites de staff (S1-04): links para a web do compose e convite do primeiro
+      # administrador da plataforma (o e-mail aparece no Mailpit, http://localhost:8025).
+      MOSEGUROS_WEB_BASE_URL: http://localhost:3000
+      MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL: admin@moseguros.local
       JAVA_OPTS: -XX:MaxRAMPercentage=75
     ports:
       - "8080:8080"

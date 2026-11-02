@@ -143,6 +143,17 @@ void main() {
         'OTP_INVALID',
         'OTP_ATTEMPTS_EXCEEDED',
         'ACCOUNT_DISABLED',
+        'ORGANIZATION_NOT_FOUND',
+        'ORGANIZATION_NOT_ACTIVE',
+        'NUIT_ALREADY_IN_USE',
+        'SHORT_CODE_ALREADY_IN_USE',
+        'OMBUDSMAN_INVALID',
+        'ROLE_NOT_ALLOWED_FOR_ORGANIZATION',
+        'EMAIL_ALREADY_IN_USE',
+        'INVITATION_INVALID',
+        'INVITATION_NOT_ACCEPTED',
+        'TOTP_INVALID',
+        'PASSWORD_TOO_WEAK',
       ];
       const fieldCodes = [
         'INVALID_CURRENCY',
@@ -159,6 +170,16 @@ void main() {
         'OUT_OF_RANGE',
         'NOT_BLANK',
         'NOT_NULL',
+        'NOT_ALLOWED',
+        'REQUIRED',
+        'INVALID_SORT',
+        'TOO_SHORT',
+        'TOO_LONG',
+        'CONTAINS_EMAIL',
+        'TOO_COMMON',
+        'SIZE',
+        'PATTERN',
+        'TYPE_MISMATCH',
       ];
       for (final locale in AppLocalizations.supportedLocales) {
         final l10n = await AppLocalizations.delegate.load(locale);

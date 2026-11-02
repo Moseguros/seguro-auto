@@ -240,6 +240,80 @@ class AppLocalizationsEn extends AppLocalizations {
       'This account is disabled. Please contact customer support.';
 
   @override
+  String get errorOrganizationNotFound => 'Organization not found.';
+
+  @override
+  String get errorOrganizationNotActive => 'The organization is suspended.';
+
+  @override
+  String get errorNuitAlreadyInUse =>
+      'There is already an organization with this NUIT.';
+
+  @override
+  String get errorShortCodeAlreadyInUse =>
+      'This short code is already used by another insurer.';
+
+  @override
+  String get errorOmbudsmanInvalid => 'Choose an existing customer ombudsman.';
+
+  @override
+  String get errorRoleNotAllowedForOrganization =>
+      'One of the selected roles cannot be assigned in this organization.';
+
+  @override
+  String get errorEmailAlreadyInUse =>
+      'This e-mail address already belongs to another user.';
+
+  @override
+  String get errorInvitationInvalid =>
+      'This invitation is no longer valid. Ask the person who invited you for a new one.';
+
+  @override
+  String get errorInvitationNotAccepted => 'Set your password first.';
+
+  @override
+  String get errorTotpInvalid =>
+      'Wrong code. Check your authenticator app and try again.';
+
+  @override
+  String get errorPasswordTooWeak =>
+      'The password does not meet the security rules.';
+
+  @override
+  String get validationNotAllowed => 'This field does not apply here.';
+
+  @override
+  String get validationRequired => 'This field is required.';
+
+  @override
+  String get validationInvalidSort => 'Unsupported sort order.';
+
+  @override
+  String get validationTooShort =>
+      'The password must have at least 12 characters.';
+
+  @override
+  String get validationTooLong =>
+      'The password can have at most 128 characters.';
+
+  @override
+  String get validationContainsEmail =>
+      'The password must not contain your e-mail address.';
+
+  @override
+  String get validationTooCommon =>
+      'This password is too common. Choose another one.';
+
+  @override
+  String get validationSize => 'Length outside the allowed limits.';
+
+  @override
+  String get validationPattern => 'Invalid format.';
+
+  @override
+  String get validationTypeMismatch => 'Invalid value.';
+
+  @override
   String get provinceMaputoCity => 'Maputo City';
 
   @override

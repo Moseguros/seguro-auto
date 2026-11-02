@@ -154,7 +154,18 @@
     "OTP_EXPIRED": "O código expirou. Peça um novo código.",
     "OTP_INVALID": "Código errado. Verifique e tente de novo.",
     "OTP_ATTEMPTS_EXCEEDED": "Demasiadas tentativas erradas. Peça um novo código.",
-    "ACCOUNT_DISABLED": "Esta conta está desactivada. Contacte o apoio ao cliente."
+    "ACCOUNT_DISABLED": "Esta conta está desactivada. Contacte o apoio ao cliente.",
+    "ORGANIZATION_NOT_FOUND": "Organização não encontrada.",
+    "ORGANIZATION_NOT_ACTIVE": "A organização está suspensa.",
+    "NUIT_ALREADY_IN_USE": "Já existe uma organização com este NUIT.",
+    "SHORT_CODE_ALREADY_IN_USE": "Este código curto já é usado por outra seguradora.",
+    "OMBUDSMAN_INVALID": "Escolha um provedor do cliente existente.",
+    "ROLE_NOT_ALLOWED_FOR_ORGANIZATION": "Um dos perfis escolhidos não pode ser atribuído nesta organização.",
+    "EMAIL_ALREADY_IN_USE": "Este e-mail já pertence a outro utilizador.",
+    "INVITATION_INVALID": "Este convite já não é válido. Peça um novo convite a quem o convidou.",
+    "INVITATION_NOT_ACCEPTED": "Defina primeiro a sua palavra-passe.",
+    "TOTP_INVALID": "Código errado. Verifique a aplicação de autenticação e tente de novo.",
+    "PASSWORD_TOO_WEAK": "A palavra-passe não cumpre as regras de segurança."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -170,7 +181,17 @@
     "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
     "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
     "NOT_BLANK": "Campo obrigatório.",
-    "NOT_NULL": "Campo obrigatório."
+    "NOT_NULL": "Campo obrigatório.",
+    "NOT_ALLOWED": "Este campo não se aplica neste caso.",
+    "REQUIRED": "Campo obrigatório.",
+    "INVALID_SORT": "Ordenação não suportada.",
+    "TOO_SHORT": "A palavra-passe tem de ter pelo menos 12 caracteres.",
+    "TOO_LONG": "A palavra-passe pode ter no máximo 128 caracteres.",
+    "CONTAINS_EMAIL": "A palavra-passe não pode conter o seu e-mail.",
+    "TOO_COMMON": "Esta palavra-passe é demasiado comum. Escolha outra.",
+    "SIZE": "Comprimento fora dos limites permitidos.",
+    "PATTERN": "Formato inválido.",
+    "TYPE_MISMATCH": "Valor inválido."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",

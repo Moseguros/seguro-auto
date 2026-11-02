@@ -77,6 +77,30 @@ public final class ErrorCodes {
     /** Conta desactivada (403). */
     public static final String ACCOUNT_DISABLED = "ACCOUNT_DISABLED";
 
+    // Organizações (S1-04)
+    /** Organização inexistente ou fora do âmbito de quem pede (404). */
+    public static final String ORGANIZATION_NOT_FOUND = "ORGANIZATION_NOT_FOUND";
+    /** Organização suspensa (409). */
+    public static final String ORGANIZATION_NOT_ACTIVE = "ORGANIZATION_NOT_ACTIVE";
+    public static final String NUIT_ALREADY_IN_USE = "NUIT_ALREADY_IN_USE";
+    public static final String SHORT_CODE_ALREADY_IN_USE = "SHORT_CODE_ALREADY_IN_USE";
+    /** O provedor do cliente indicado não existe ou não é do tipo {@code OMBUDSMAN} (400). */
+    public static final String OMBUDSMAN_INVALID = "OMBUDSMAN_INVALID";
+
+    // Convites e activação de staff (S1-04)
+    /** Perfil desconhecido ou que não pode ser atribuído no tipo de organização (400). */
+    public static final String ROLE_NOT_ALLOWED_FOR_ORGANIZATION = "ROLE_NOT_ALLOWED_FOR_ORGANIZATION";
+    /** O e-mail já pertence a outra conta de staff (409). */
+    public static final String EMAIL_ALREADY_IN_USE = "EMAIL_ALREADY_IN_USE";
+    /** Convite desconhecido, expirado, revogado ou já aceite (404). */
+    public static final String INVITATION_INVALID = "INVITATION_INVALID";
+    /** Activação antes de definir a palavra-passe ({@code accept}) (400). */
+    public static final String INVITATION_NOT_ACCEPTED = "INVITATION_NOT_ACCEPTED";
+    /** Código TOTP errado (400). */
+    public static final String TOTP_INVALID = "TOTP_INVALID";
+    /** Palavra-passe recusada pela política; os motivos vão em {@code errors[]} (400). */
+    public static final String PASSWORD_TOO_WEAK = "PASSWORD_TOO_WEAK";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -108,7 +132,18 @@ public final class ErrorCodes {
             Map.entry(OTP_EXPIRED, 400),
             Map.entry(OTP_INVALID, 400),
             Map.entry(OTP_ATTEMPTS_EXCEEDED, 400),
-            Map.entry(ACCOUNT_DISABLED, 403));
+            Map.entry(ACCOUNT_DISABLED, 403),
+            Map.entry(ORGANIZATION_NOT_FOUND, 404),
+            Map.entry(ORGANIZATION_NOT_ACTIVE, 409),
+            Map.entry(NUIT_ALREADY_IN_USE, 409),
+            Map.entry(SHORT_CODE_ALREADY_IN_USE, 409),
+            Map.entry(OMBUDSMAN_INVALID, 400),
+            Map.entry(ROLE_NOT_ALLOWED_FOR_ORGANIZATION, 400),
+            Map.entry(EMAIL_ALREADY_IN_USE, 409),
+            Map.entry(INVITATION_INVALID, 404),
+            Map.entry(INVITATION_NOT_ACCEPTED, 400),
+            Map.entry(TOTP_INVALID, 400),
+            Map.entry(PASSWORD_TOO_WEAK, 400));
 
     private ErrorCodes() {
     }
