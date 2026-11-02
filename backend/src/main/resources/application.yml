@@ -107,6 +107,14 @@ moseguros:
     web-base-url: ${moseguros.web.base-url}
     validity: P7D
     max-activation-attempts: 5
+  # Login de staff e recuperação de palavra-passe (S1-05): 5 falhas bloqueiam 15 min; o link
+  # {web.base-url}/recuperar/{token} vale 30 min; no máximo 3 e-mails por conta por hora.
+  staff-auth:
+    max-failed-attempts: 5
+    lock-duration: PT15M
+    web-base-url: ${moseguros.web.base-url}
+    reset-validity: PT30M
+    max-resets-per-hour: 3
   # Primeiro administrador da plataforma (S1-04): com o e-mail definido, o arranque convida-o se
   # ainda não houver nenhum PLATFORM_ADMIN activo nem um convite pendente para ele.
   bootstrap:

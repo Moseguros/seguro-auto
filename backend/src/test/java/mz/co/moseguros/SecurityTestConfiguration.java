@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -47,9 +48,10 @@ public class SecurityTestConfiguration {
     @Bean
     IdentityFixtures identityFixtures(TransactionTemplate tx, UserAccountRepository accounts,
                                       CustomerProfileRepository profiles, UserRoleRepository userRoles,
-                                      OrganizationRepository organizations, PostgreSQLContainer<?> postgres) {
+                                      OrganizationRepository organizations, PostgreSQLContainer<?> postgres,
+                                      PasswordEncoder passwordEncoder) {
         return new IdentityFixtures(tx, accounts, profiles, userRoles, organizations,
-                TestcontainersConfiguration.ownerJdbc(postgres));
+                TestcontainersConfiguration.ownerJdbc(postgres), passwordEncoder);
     }
 
     /** Relógio do sistema (UTC) com um avanço controlado pelo teste. */
@@ -90,15 +92,18 @@ public class SecurityTestConfiguration {
         private final UserRoleRepository userRoles;
         private final OrganizationRepository organizations;
         private final JdbcTemplate owner;
+        private final PasswordEncoder passwordEncoder;
 
         IdentityFixtures(TransactionTemplate tx, UserAccountRepository accounts, CustomerProfileRepository profiles,
-                         UserRoleRepository userRoles, OrganizationRepository organizations, JdbcTemplate owner) {
+                         UserRoleRepository userRoles, OrganizationRepository organizations, JdbcTemplate owner,
+                         PasswordEncoder passwordEncoder) {
             this.tx = tx;
             this.accounts = accounts;
             this.profiles = profiles;
             this.userRoles = userRoles;
             this.organizations = organizations;
             this.owner = owner;
+            this.passwordEncoder = passwordEncoder;
         }
 
         /** Cliente activo com o perfil {@code CUSTOMER} e o nome indicado no perfil. */
@@ -135,6 +140,25 @@ public class SecurityTestConfiguration {
             });
             setAccountStatus(account.getId(), "ACTIVE");
             return account;
+        }
+
+        /**
+         * Staff {@code ACTIVE} com palavra-passe e segredo TOTP (S1-05), como depois da activação;
+         * {@code organizationId} {@code null} = plataforma. Nenhum passo TOTP foi usado ainda.
+         */
+        public UserAccount activeStaff(String displayName, UUID organizationId, String password, String totpSecret,
+                                       String... roles) {
+            UserAccount account = UserAccount.newStaff("staff" + digits(8) + "@teste.co.mz", displayName,
+                    organizationId);
+            account.setCredentials(displayName, passwordEncoder.encode(password), totpSecret);
+            account.activate(0L);
+            return inSystem(() -> {
+                accounts.save(account);
+                for (String role : roles) {
+                    userRoles.save(new UserRole(account.getId(), role));
+                }
+                return account;
+            });
         }
 
         public void setAccountStatus(UUID accountId, String status) {

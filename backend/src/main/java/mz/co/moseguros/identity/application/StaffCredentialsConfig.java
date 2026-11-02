@@ -8,10 +8,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Credenciais do staff (ADR-003): palavras-passe com Argon2id (parâmetros do Spring Security
- * 5.8) e propriedades dos convites e do primeiro administrador.
+ * 5.8), propriedades dos convites e do primeiro administrador (S1-04) e do login e da
+ * recuperação de palavra-passe (S1-05).
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(InvitationProperties.class)
+@EnableConfigurationProperties({InvitationProperties.class, StaffAuthProperties.class})
 public class StaffCredentialsConfig {
 
     @Bean
