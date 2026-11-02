@@ -219,5 +219,133 @@
     "NAMPULA": "Nampula",
     "CABO_DELGADO": "Cabo Delgado",
     "NIASSA": "Niassa"
+  },
+  "auth": {
+    "loading": "A carregar…",
+    "retry": "Tentar de novo",
+    "retryIn": "Tente de novo dentro de {{seconds}} s.",
+    "login": {
+      "title": "Entrar na área do cliente",
+      "subtitle": "Use o seu telemóvel ou e-mail. Enviamos-lhe um código para entrar, sem palavra-passe."
+    },
+    "identifier": {
+      "typeLabel": "Entrar com",
+      "type": {
+        "MSISDN": "Telemóvel",
+        "EMAIL": "E-mail"
+      },
+      "msisdnLabel": "Número de telemóvel",
+      "msisdnHelper": "9 dígitos, por exemplo 84 123 4567.",
+      "emailLabel": "E-mail",
+      "channelLabel": "Receber o código por",
+      "submit": "Receber código"
+    },
+    "code": {
+      "subtitle": "Escreva o código que recebeu.",
+      "inputLabel": "Código recebido",
+      "digitLabel": "Dígito {{position}} de {{total}}",
+      "sentTo": "Enviámos um código por {{channel}} para {{destination}}.",
+      "change": "Alterar",
+      "fallback": "Não conseguimos enviar por {{requested}}. Enviámos o código por {{used}}.",
+      "wrongCode_one": "Código errado. Resta {{count}} tentativa.",
+      "wrongCode_other": "Código errado. Restam {{count}} tentativas.",
+      "resent": "Enviámos um código novo.",
+      "resend": "Reenviar código",
+      "resendIn": "Reenviar código ({{seconds}} s)"
+    },
+    "noAccess": {
+      "title": "Não tem acesso a esta área",
+      "description": "A sua sessão não permite abrir esta página.",
+      "goToArea": "Ir para a minha área",
+      "goHome": "Ir para o início"
+    },
+    "userMenu": {
+      "open": "Menu da conta",
+      "account": "A minha conta",
+      "logout": "Terminar sessão"
+    }
+  },
+  "customer": {
+    "home": {
+      "greeting": "Olá, {{name}}",
+      "greetingNoName": "Olá",
+      "incompleteProfile": "Complete o seu perfil para poder comprar um seguro.",
+      "completeProfile": "Completar perfil",
+      "quoteTitle": "Seguro automóvel",
+      "quoteText": "Compare os preços das seguradoras para o seu veículo.",
+      "quote": "Simular seguro"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalData": "Dados pessoais",
+    "completeNotice": "Precisamos destes dados para emitir as suas apólices.",
+    "fields": {
+      "fullName": "Nome completo",
+      "birthDate": "Data de nascimento",
+      "idDocType": "Tipo de documento",
+      "idDocNumber": "Número do documento",
+      "nuit": "NUIT",
+      "address": "Morada",
+      "province": "Província"
+    },
+    "choose": "Escolha…",
+    "change": "Alterar",
+    "changeDocument": "Alterar o número do documento",
+    "changeNuit": "Alterar o NUIT",
+    "nuitHelper": "9 dígitos.",
+    "optional": "Opcional.",
+    "save": "Guardar",
+    "saved": "Perfil guardado"
+  },
+  "contacts": {
+    "title": "Contactos",
+    "type": {
+      "MSISDN": "Telemóvel",
+      "EMAIL": "E-mail"
+    },
+    "verified": "Verificado",
+    "add": {
+      "MSISDN": "Acrescentar telemóvel",
+      "EMAIL": "Acrescentar e-mail"
+    },
+    "change": {
+      "MSISDN": "Alterar telemóvel",
+      "EMAIL": "Alterar e-mail"
+    },
+    "changeShort": "Alterar",
+    "remove": {
+      "MSISDN": "Remover telemóvel",
+      "EMAIL": "Remover e-mail"
+    },
+    "removeShort": "Remover",
+    "cancel": "Cancelar",
+    "saved": "Contacto confirmado",
+    "removed": "Contacto removido",
+    "confirmRemove": {
+      "title": "Remover contacto?",
+      "text": "Deixará de poder entrar e receber avisos em {{value}}.",
+      "confirm": "Remover"
+    },
+    "dialog": {
+      "add": {
+        "MSISDN": "Acrescentar telemóvel",
+        "EMAIL": "Acrescentar e-mail"
+      },
+      "change": {
+        "MSISDN": "Alterar telemóvel",
+        "EMAIL": "Alterar e-mail"
+      }
+    }
+  },
+  "idDocType": {
+    "BI": "Bilhete de Identidade",
+    "PASSPORT": "Passaporte",
+    "DIRE": "DIRE"
+  },
+  "channel": {
+    "SMS": "SMS",
+    "WHATSAPP": "WhatsApp",
+    "EMAIL": "E-mail"
   }
 }

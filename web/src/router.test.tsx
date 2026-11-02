@@ -28,7 +28,7 @@ describe('rotas', () => {
     expect(nav).toHaveTextContent('Configuração');
   });
 
-  it.each(['/cliente', '/admin/organizacoes', '/frota/x/y', '/verificar', '/v/abc'])(
+  it.each(['/admin/organizacoes', '/frota/x/y', '/verificar', '/v/abc'])(
     '%s mostra a página em construção',
     (path) => {
       renderRoute(path);

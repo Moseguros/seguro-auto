@@ -1,16 +1,10 @@
-import { isAxiosError } from 'axios';
-import type { ProblemDetail } from './generated';
+import { getProblem } from '../errors/problem';
 
 /**
  * Código de erro a traduzir com a chave i18n `errors.<código>`:
  * o `code` do ProblemDetail (RFC 7807), `NETWORK_ERROR` sem resposta do servidor,
- * ou `UNKNOWN` nos restantes casos.
+ * ou `UNKNOWN` nos restantes casos. Ver {@link getProblem} para o erro completo.
  */
 export function errorCode(error: unknown): string {
-  if (isAxiosError<Partial<ProblemDetail>>(error)) {
-    if (!error.response) return 'NETWORK_ERROR';
-    const code = error.response.data?.code;
-    if (typeof code === 'string' && code.length > 0) return code;
-  }
-  return 'UNKNOWN';
+  return getProblem(error).code;
 }

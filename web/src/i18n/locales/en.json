@@ -219,5 +219,133 @@
     "NAMPULA": "Nampula",
     "CABO_DELGADO": "Cabo Delgado",
     "NIASSA": "Niassa"
+  },
+  "auth": {
+    "loading": "Loading…",
+    "retry": "Try again",
+    "retryIn": "Try again in {{seconds}} s.",
+    "login": {
+      "title": "Sign in to your customer area",
+      "subtitle": "Use your mobile number or e-mail. We send you a code to sign in, no password needed."
+    },
+    "identifier": {
+      "typeLabel": "Sign in with",
+      "type": {
+        "MSISDN": "Mobile",
+        "EMAIL": "E-mail"
+      },
+      "msisdnLabel": "Mobile number",
+      "msisdnHelper": "9 digits, for example 84 123 4567.",
+      "emailLabel": "E-mail",
+      "channelLabel": "Receive the code by",
+      "submit": "Get code"
+    },
+    "code": {
+      "subtitle": "Enter the code you received.",
+      "inputLabel": "Code received",
+      "digitLabel": "Digit {{position}} of {{total}}",
+      "sentTo": "We sent a code by {{channel}} to {{destination}}.",
+      "change": "Change",
+      "fallback": "We could not send it by {{requested}}. We sent the code by {{used}}.",
+      "wrongCode_one": "Wrong code. {{count}} attempt left.",
+      "wrongCode_other": "Wrong code. {{count}} attempts left.",
+      "resent": "We sent a new code.",
+      "resend": "Resend code",
+      "resendIn": "Resend code ({{seconds}} s)"
+    },
+    "noAccess": {
+      "title": "You do not have access to this area",
+      "description": "Your session cannot open this page.",
+      "goToArea": "Go to my area",
+      "goHome": "Go to the home page"
+    },
+    "userMenu": {
+      "open": "Account menu",
+      "account": "My account",
+      "logout": "Sign out"
+    }
+  },
+  "customer": {
+    "home": {
+      "greeting": "Hello, {{name}}",
+      "greetingNoName": "Hello",
+      "incompleteProfile": "Complete your profile to be able to buy insurance.",
+      "completeProfile": "Complete profile",
+      "quoteTitle": "Car insurance",
+      "quoteText": "Compare insurers' prices for your vehicle.",
+      "quote": "Get a quote"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "personalData": "Personal details",
+    "completeNotice": "We need these details to issue your policies.",
+    "fields": {
+      "fullName": "Full name",
+      "birthDate": "Date of birth",
+      "idDocType": "Document type",
+      "idDocNumber": "Document number",
+      "nuit": "NUIT (tax number)",
+      "address": "Address",
+      "province": "Province"
+    },
+    "choose": "Choose…",
+    "change": "Change",
+    "changeDocument": "Change the document number",
+    "changeNuit": "Change the NUIT",
+    "nuitHelper": "9 digits.",
+    "optional": "Optional.",
+    "save": "Save",
+    "saved": "Profile saved"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "type": {
+      "MSISDN": "Mobile",
+      "EMAIL": "E-mail"
+    },
+    "verified": "Verified",
+    "add": {
+      "MSISDN": "Add mobile",
+      "EMAIL": "Add e-mail"
+    },
+    "change": {
+      "MSISDN": "Change mobile",
+      "EMAIL": "Change e-mail"
+    },
+    "changeShort": "Change",
+    "remove": {
+      "MSISDN": "Remove mobile",
+      "EMAIL": "Remove e-mail"
+    },
+    "removeShort": "Remove",
+    "cancel": "Cancel",
+    "saved": "Contact confirmed",
+    "removed": "Contact removed",
+    "confirmRemove": {
+      "title": "Remove contact?",
+      "text": "You will no longer be able to sign in or receive notices at {{value}}.",
+      "confirm": "Remove"
+    },
+    "dialog": {
+      "add": {
+        "MSISDN": "Add mobile",
+        "EMAIL": "Add e-mail"
+      },
+      "change": {
+        "MSISDN": "Change mobile",
+        "EMAIL": "Change e-mail"
+      }
+    }
+  },
+  "idDocType": {
+    "BI": "Identity Card (BI)",
+    "PASSPORT": "Passport",
+    "DIRE": "DIRE (residence permit)"
+  },
+  "channel": {
+    "SMS": "SMS",
+    "WHATSAPP": "WhatsApp",
+    "EMAIL": "E-mail"
   }
 }
