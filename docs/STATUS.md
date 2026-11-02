@@ -12,7 +12,7 @@ Actualizado em 02/11/2026.
 | S0-02 Esqueleto do backend | concluída (merged) | #2 |
 | S0-03 Tipos partilhados e auditoria | em revisão (branch `task/S0-03-shared-e-auditoria`) | — |
 | S0-04 Contrato OpenAPI | em revisão (branch `task/S0-04-openapi`) | — |
-| S0-05 Web | depende de S0-04 | — |
+| S0-05 Web | em revisão | — |
 | S0-06 Mobile | depende de S0-04 | — |
 | S0-07 Infra local | depende de S0-02 e S0-05 | — |
 | S0-08 CI | depende de S0-03 a S0-07 | — |

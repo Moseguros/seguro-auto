@@ -1,0 +1,139 @@
+{
+  "app": {
+    "name": "MoSeguros"
+  },
+  "language": {
+    "label": "Língua",
+    "pt-MZ": "Português",
+    "en": "English"
+  },
+  "nav": {
+    "openMenu": "Abrir menu"
+  },
+  "areas": {
+    "cliente": "Área do cliente",
+    "admin": "Administração",
+    "seguradora": "Seguradora",
+    "mediador": "Mediador",
+    "perito": "Perito",
+    "oficina": "Oficina",
+    "assistencia": "Assistência",
+    "provedor": "Provedor do cliente",
+    "supervisao": "Supervisão",
+    "frota": "Frota"
+  },
+  "menu": {
+    "cliente": {
+      "home": "Início",
+      "quote": "Simular seguro",
+      "policies": "As minhas apólices",
+      "vehicles": "Veículos",
+      "payments": "Pagamentos",
+      "claims": "Sinistros",
+      "complaints": "Reclamações",
+      "profile": "Perfil"
+    },
+    "admin": {
+      "home": "Painel",
+      "organizations": "Organizações",
+      "users": "Utilizadores",
+      "auth": "Autenticação",
+      "references": "Tabelas de referência",
+      "audit": "Auditoria"
+    },
+    "seguradora": {
+      "home": "Painel",
+      "products": "Produtos",
+      "tariffs": "Tarifas",
+      "proposals": "Propostas",
+      "policies": "Apólices",
+      "payments": "Pagamentos",
+      "claims": "Sinistros",
+      "complaints": "Reclamações",
+      "reports": "Relatórios",
+      "users": "Utilizadores",
+      "settings": "Configuração"
+    },
+    "mediador": {
+      "home": "Painel",
+      "customers": "Clientes",
+      "quotes": "Cotações",
+      "policies": "Apólices",
+      "reports": "Relatórios",
+      "users": "Utilizadores"
+    },
+    "perito": {
+      "home": "Painel",
+      "assessments": "Peritagens",
+      "users": "Utilizadores"
+    },
+    "oficina": {
+      "home": "Painel",
+      "repairs": "Reparações",
+      "estimates": "Orçamentos",
+      "users": "Utilizadores"
+    },
+    "assistencia": {
+      "home": "Painel",
+      "requests": "Pedidos",
+      "users": "Utilizadores"
+    },
+    "provedor": {
+      "home": "Painel",
+      "cases": "Processos",
+      "users": "Utilizadores"
+    },
+    "supervisao": {
+      "home": "Painel",
+      "insurers": "Seguradoras",
+      "reports": "Relatórios",
+      "users": "Utilizadores"
+    },
+    "frota": {
+      "home": "Painel",
+      "vehicles": "Veículos",
+      "policies": "Apólices",
+      "claims": "Sinistros",
+      "users": "Utilizadores"
+    }
+  },
+  "home": {
+    "tagline": "Compare, compre e gira o seu seguro automóvel num só lugar."
+  },
+  "systemStatus": {
+    "title": "Estado do sistema",
+    "loading": "A verificar a API…",
+    "version": "Versão",
+    "commit": "Commit",
+    "unknown": "desconhecido",
+    "error": "Não foi possível obter o estado da API."
+  },
+  "underConstruction": {
+    "title": "Em construção",
+    "description": "Esta página ainda está a ser preparada."
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "O endereço que procura não existe.",
+    "backHome": "Voltar ao início"
+  },
+  "errors": {
+    "NETWORK_ERROR": "Sem ligação ao servidor. Verifique a sua ligação à Internet.",
+    "UNKNOWN": "Ocorreu um erro inesperado.",
+    "VALIDATION_ERROR": "Os dados enviados não são válidos.",
+    "NOT_FOUND": "O recurso pedido não existe.",
+    "UNAUTHORIZED": "Precisa de iniciar sessão.",
+    "FORBIDDEN": "Não tem permissão para esta operação.",
+    "INTERNAL_ERROR": "Erro interno do servidor. Tente mais tarde.",
+    "INVALID_CURRENCY": "Moeda inválida.",
+    "INVALID_MSISDN": "Número de telemóvel inválido.",
+    "INVALID_NUIT": "NUIT inválido.",
+    "INVALID_PLATE": "Matrícula inválida."
+  },
+  "validation": {
+    "INVALID_CURRENCY": "Moeda inválida.",
+    "INVALID_MSISDN": "Número de telemóvel inválido (ex.: +258 84 123 4567).",
+    "INVALID_NUIT": "O NUIT tem 9 dígitos.",
+    "INVALID_PLATE": "Matrícula inválida."
+  }
+}
