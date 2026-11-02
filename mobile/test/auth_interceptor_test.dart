@@ -61,14 +61,9 @@ void main() {
         const {},
         {'Authorization': 'Bearer access-1'},
       )
-      ..on(
-        'GET',
-        '/api/v1/me',
-        200,
-        Fixtures.me(),
-        const {},
-        {'Authorization': 'Bearer access-2'},
-      );
+      ..on('GET', '/api/v1/me', 200, Fixtures.me(), const {}, {
+        'Authorization': 'Bearer access-2',
+      });
 
     final identity = api.client.identity;
     final responses = await Future.wait([
@@ -86,8 +81,10 @@ void main() {
       hasLength(3),
     );
     expect(storage.refreshToken, 'refresh-2');
-    expect(container.read(sessionControllerProvider).value?.accessToken,
-        'access-2');
+    expect(
+      container.read(sessionControllerProvider).value?.accessToken,
+      'access-2',
+    );
   });
 
   test('pedidos a /api/v1/auth/** não levam Authorization', () async {
@@ -120,24 +117,25 @@ void main() {
 
     await expectLater(
       api.client.identity.getMe(),
-      throwsA(
-        predicate((Object e) => Problem.from(e).code == 'UNAUTHORIZED'),
-      ),
+      throwsA(predicate((Object e) => Problem.from(e).code == 'UNAUTHORIZED')),
     );
     expect(container.read(sessionControllerProvider).value, isNull);
     expect(storage.refreshToken, isNull);
   });
 
-  test('ao arrangar, refresh token recusado fica anónimo e é apagado', () async {
-    api.on(
-      'POST',
-      '/api/v1/auth/refresh',
-      401,
-      MockApi.problem(401, 'REFRESH_TOKEN_INVALID'),
-    );
-    expect(await container.read(sessionControllerProvider.future), isNull);
-    expect(storage.refreshToken, isNull);
-  });
+  test(
+    'ao arrangar, refresh token recusado fica anónimo e é apagado',
+    () async {
+      api.on(
+        'POST',
+        '/api/v1/auth/refresh',
+        401,
+        MockApi.problem(401, 'REFRESH_TOKEN_INVALID'),
+      );
+      expect(await container.read(sessionControllerProvider.future), isNull);
+      expect(storage.refreshToken, isNull);
+    },
+  );
 
   test('logout chama logoutSession e apaga o refresh token', () async {
     final controller = await startSession();
