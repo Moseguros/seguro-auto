@@ -11,7 +11,7 @@ Actualizado em 02/11/2026.
 | S0-01 Fichas e ADRs | concluída (merged) | #1 |
 | S0-02 Esqueleto do backend | concluída (merged) | #2 |
 | S0-03 Tipos partilhados e auditoria | em revisão (branch `task/S0-03-shared-e-auditoria`) | — |
-| S0-04 Contrato OpenAPI | pronta — depois do S0-03 (usa os value objects) | — |
+| S0-04 Contrato OpenAPI | em revisão (branch `task/S0-04-openapi`) | — |
 | S0-05 Web | depende de S0-04 | — |
 | S0-06 Mobile | depende de S0-04 | — |
 | S0-07 Infra local | depende de S0-02 e S0-05 | — |
@@ -58,6 +58,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 - **MinIO:** a imagem `minio/minio` deixou de estar no Docker Hub. O armazenamento S3 local escolhe-se no Sprint 3. O e-mail de desenvolvimento usa o **Mailpit** (o MailHog deixou de ser mantido).
 - **A partir do S1-01** a aplicação liga-se à BD como `moseguros_app_user` (sem privilégios de dono) e o Flyway como dono; os testes precisam do `init-roles.sql`. Ver a adenda do ADR-002.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
+- **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
 - **Bloqueadas:** S5-07 e S5-08 (algoritmo SIMO e layout do ficheiro de pagamentos) — pedir ao proprietário do produto antes de implementar.
 
 ## Fonte de verdade

@@ -1,0 +1,143 @@
+openapi: 3.0.1
+info:
+  description: "API REST da plataforma MoSeguros. Erros em RFC 7807 (application/problem+json)\
+    \ com `code` e `errors[]`."
+  title: MoSeguros API
+  version: 0.1.0-SNAPSHOT
+servers:
+- url: /
+security:
+- bearerAuth: []
+tags:
+- description: Informação técnica da aplicação
+  name: Meta
+paths:
+  /api/v1/meta/version:
+    get:
+      operationId: getVersion
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Versão da API
+      tags:
+      - Meta
+components:
+  schemas:
+    FieldError:
+      type: object
+      description: Erro de um campo do pedido
+      properties:
+        code:
+          type: string
+          description: Código do erro do campo
+          example: INVALID_PLATE
+        field:
+          type: string
+          description: Caminho JSON do campo
+          example: vehicle.plate
+        message:
+          type: string
+          description: Mensagem técnica (não para o utilizador)
+      required:
+      - field
+      - code
+    Matricula:
+      type: string
+      description: Matrícula formatada; os formatos aceites são configuráveis
+      example: ABC-123-MC
+      pattern: "^[A-Z0-9]+(-[A-Z0-9]+)*$"
+    Money:
+      type: object
+      description: Valor monetário em centavos
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 299900
+        currency:
+          type: string
+          enum:
+          - MZN
+          example: MZN
+      required:
+      - amount
+      - currency
+    Msisdn:
+      type: string
+      description: Telemóvel moçambicano em E.164
+      example: "+258841234567"
+      pattern: "^\\+2588[2-7]\\d{7}$"
+    Nuit:
+      type: string
+      description: "NUIT: 9 dígitos"
+      example: "123456789"
+      pattern: "^\\d{9}$"
+    ProblemDetail:
+      type: object
+      description: Erro RFC 7807 (application/problem+json)
+      properties:
+        code:
+          type: string
+          description: Código do erro (ErrorCodes)
+          example: VALIDATION_ERROR
+        detail:
+          type: string
+          example: Request validation failed
+        errors:
+          type: array
+          description: "Erros por campo, quando o pedido é inválido"
+          items:
+            $ref: "#/components/schemas/FieldError"
+        instance:
+          type: string
+          format: uri
+        status:
+          type: integer
+          format: int32
+          example: 400
+        title:
+          type: string
+          example: Bad Request
+        type:
+          type: string
+          format: uri
+          example: https://moseguros.co.mz/problems/validation-error
+      required:
+      - type
+      - title
+      - status
+      - code
+    VersionResponse:
+      type: object
+      properties:
+        builtAt:
+          type: string
+          format: date-time
+        commit:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

@@ -270,4 +270,42 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!--
+      Exporta o contrato para ../api/openapi.yaml: arranca a aplicação com o perfil
+      Spring "test" + Testcontainers (OpenApiExportIT) e descarrega /v3/api-docs.yaml.
+      Uso: ./mvnw -B -Popenapi verify   (ou ./scripts/check-openapi.sh)
+    -->
+    <profile>
+      <id>openapi</id>
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/OpenApiExportIT.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <openapi.export>true</openapi.export>
+                <openapi.output>${project.basedir}/../api/openapi.yaml</openapi.output>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

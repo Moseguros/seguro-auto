@@ -45,6 +45,12 @@ management:
 springdoc:
   api-docs:
     path: /v3/api-docs
+  # Documento estável (comparado com api/openapi.yaml pelo scripts/check-openapi.sh)
+  writer-with-order-by-keys: true
+  default-produces-media-type: application/json
+  # As respostas de erro vêm do OpenApiConfig (ProblemDetail em 4XX/5XX), não do
+  # GlobalExceptionHandler.
+  override-with-generic-response: false
   swagger-ui:
     enabled: true
 
