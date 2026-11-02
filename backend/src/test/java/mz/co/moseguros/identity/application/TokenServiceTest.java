@@ -39,6 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
@@ -61,6 +62,10 @@ class TokenServiceTest {
         RSAKey key = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic()).privateKey(keyPair.getPrivate())
                 .keyID("test-kid").keyUse(KeyUse.SIGNATURE).algorithm(JWSAlgorithm.RS256).build();
         decoder = NimbusJwtDecoder.withPublicKey(key.toRSAPublicKey()).build();
+        // Valida exp/nbf com o mesmo relógio fixo da emissão (sem isto o teste falha depois de NOW + 15 min).
+        JwtTimestampValidator timestamps = new JwtTimestampValidator();
+        timestamps.setClock(Clock.fixed(NOW, ZoneOffset.UTC));
+        decoder.setJwtValidator(timestamps);
         service = new TokenService(new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(key))), PROPERTIES,
                 Clock.fixed(NOW, ZoneOffset.UTC), userRoles, roles, refreshTokens, organizations);
         when(refreshTokens.save(any(RefreshToken.class))).thenAnswer(inv -> inv.getArgument(0));
