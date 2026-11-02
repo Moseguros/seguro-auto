@@ -141,7 +141,20 @@
     "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
     "OUT_OF_RANGE": "Value outside the allowed range.",
     "REFRESH_TOKEN_INVALID": "Your session has ended. Please sign in again.",
-    "REFRESH_TOKEN_REUSED": "For your security, your session was ended. Please sign in again."
+    "REFRESH_TOKEN_REUSED": "For your security, your session was ended. Please sign in again.",
+    "CONCURRENT_MODIFICATION": "Someone else changed this data in the meantime. Refresh the page and try again.",
+    "OTP_CHANNEL_CHOICE_DISABLED": "Choosing the delivery channel is not allowed.",
+    "OTP_CHANNEL_NOT_AVAILABLE": "This channel is not available. Use another channel or sign in with the other identifier.",
+    "OTP_RATE_LIMITED": "You requested too many codes. Please try again later.",
+    "OTP_RESEND_TOO_SOON": "Please wait a moment before requesting a new code.",
+    "OTP_DELIVERY_FAILED": "The code could not be sent. Please try again in a moment.",
+    "OTP_CHALLENGE_NOT_FOUND": "Unknown code request. Please request a new code.",
+    "OTP_ALREADY_USED": "This code was already used. Please request a new code.",
+    "OTP_SUPERSEDED": "You requested a newer code. Use the last code you received.",
+    "OTP_EXPIRED": "The code has expired. Please request a new code.",
+    "OTP_INVALID": "Wrong code. Please check it and try again.",
+    "OTP_ATTEMPTS_EXCEEDED": "Too many wrong attempts. Please request a new code.",
+    "ACCOUNT_DISABLED": "This account is disabled. Please contact customer support."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -156,7 +169,8 @@
     "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
     "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
     "OUT_OF_RANGE": "Value outside the allowed range.",
-    "NOT_BLANK": "This field is required."
+    "NOT_BLANK": "This field is required.",
+    "NOT_NULL": "This field is required."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

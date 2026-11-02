@@ -141,7 +141,20 @@
     "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
     "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
     "REFRESH_TOKEN_INVALID": "A sua sessão terminou. Entre novamente.",
-    "REFRESH_TOKEN_REUSED": "Por segurança, a sua sessão foi terminada. Entre novamente."
+    "REFRESH_TOKEN_REUSED": "Por segurança, a sua sessão foi terminada. Entre novamente.",
+    "CONCURRENT_MODIFICATION": "Outra pessoa alterou estes dados entretanto. Actualize a página e tente de novo.",
+    "OTP_CHANNEL_CHOICE_DISABLED": "Não é possível escolher o canal de envio do código.",
+    "OTP_CHANNEL_NOT_AVAILABLE": "Este canal não está disponível. Use outro canal ou entre com o outro identificador.",
+    "OTP_RATE_LIMITED": "Pediu demasiados códigos. Tente mais tarde.",
+    "OTP_RESEND_TOO_SOON": "Aguarde um pouco antes de pedir um novo código.",
+    "OTP_DELIVERY_FAILED": "Não foi possível enviar o código. Tente de novo dentro de momentos.",
+    "OTP_CHALLENGE_NOT_FOUND": "Pedido de código desconhecido. Peça um novo código.",
+    "OTP_ALREADY_USED": "Este código já foi usado. Peça um novo código.",
+    "OTP_SUPERSEDED": "Pediu um código mais recente. Use o último código que recebeu.",
+    "OTP_EXPIRED": "O código expirou. Peça um novo código.",
+    "OTP_INVALID": "Código errado. Verifique e tente de novo.",
+    "OTP_ATTEMPTS_EXCEEDED": "Demasiadas tentativas erradas. Peça um novo código.",
+    "ACCOUNT_DISABLED": "Esta conta está desactivada. Contacte o apoio ao cliente."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -156,7 +169,8 @@
     "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
     "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
     "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
-    "NOT_BLANK": "Campo obrigatório."
+    "NOT_BLANK": "Campo obrigatório.",
+    "NOT_NULL": "Campo obrigatório."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
