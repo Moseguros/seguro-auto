@@ -347,5 +347,283 @@
     "SMS": "SMS",
     "WHATSAPP": "WhatsApp",
     "EMAIL": "E-mail"
+  },
+  "staffAuth": {
+    "login": {
+      "title": "Sign in to MoSeguros",
+      "subtitle": "For insurers, intermediaries and partners.",
+      "email": "Email",
+      "password": "Password",
+      "totp": "Authenticator app code",
+      "totpHelper": "6 digits.",
+      "submit": "Sign in",
+      "forgot": "I forgot my password",
+      "invalidCredentials": "Wrong email, password or code.",
+      "locked_one": "Account locked. Try again in {{count}} minute.",
+      "locked_other": "Account locked. Try again in {{count}} minutes.",
+      "customer": "Are you a customer? Sign in here"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password",
+      "rulesTitle": "The password must:",
+      "rules": {
+        "minLength": "Have at least 12 characters",
+        "noEmail": "Not contain your email",
+        "notCommon": "Not be a common password"
+      },
+      "ruleMet": "met",
+      "ruleNotMet": "not met",
+      "new": "New password",
+      "confirm": "Confirm password",
+      "mismatch": "The passwords do not match."
+    },
+    "forgot": {
+      "title": "Recover your password",
+      "subtitle": "Enter your account email. We will send you a link to set a new password.",
+      "submit": "Send link",
+      "sent": "If the email is registered, you will receive a link in the next few minutes.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "submit": "Save password",
+      "done": "Password changed",
+      "doneText": "You can now sign in with the new password.",
+      "goToLogin": "Sign in",
+      "invalid": "This link is no longer valid",
+      "requestNew": "Request a new link"
+    },
+    "invitation": {
+      "title": "Activate your account",
+      "invalid": "This invitation is no longer valid. Ask your organisation manager for a new one.",
+      "step1": "Password",
+      "step2": "Authenticator app",
+      "name": "Name",
+      "email": "Email",
+      "organization": "Organisation",
+      "platform": "MoSeguros (platform)",
+      "continue": "Continue"
+    },
+    "totp": {
+      "instructions": "Open your authenticator app and scan the QR code.",
+      "qrLabel": "QR code for the authenticator app",
+      "manual": "If you cannot scan the code, type this secret:",
+      "copy": "Copy the secret",
+      "copied": "Secret copied",
+      "code": "6-digit code",
+      "activate": "Activate account",
+      "invalid": "Wrong code. Check your phone's time."
+    }
+  },
+  "otpSettings": {
+    "title": "Customer authentication",
+    "subtitle": "How customers receive the sign-in code.",
+    "channels": "Active channels",
+    "defaultChannel": "Default channel",
+    "customerCanChoose": "Customers can choose the channel",
+    "fallback": "Fallback order",
+    "fallbackHelp": "If sending fails, the next channel is tried. Drag or use the buttons to change the order.",
+    "fallbackNote": "There is no fallback between phone and email.",
+    "moveUp": "Move {{channel}} up",
+    "moveDown": "Move {{channel}} down",
+    "drag": "Drag {{channel}}",
+    "parameters": "Code parameters",
+    "codeLength": "Code length",
+    "validityMinutes": "Validity (minutes)",
+    "maxAttempts": "Attempts",
+    "resendAfterSeconds": "Resend (seconds)",
+    "maxRequestsPerHour": "Requests per hour",
+    "range": "Between {{min}} and {{max}}.",
+    "save": "Save",
+    "saved": "Settings saved",
+    "conflict": "Someone else changed these settings",
+    "reload": "Reload",
+    "readOnly": "You can only view these settings.",
+    "test": {
+      "open": "Send test code",
+      "title": "Send test code",
+      "identifierType": "Identifier type",
+      "identifier": "Identifier",
+      "channel": "Channel",
+      "inactive": "{{channel}} (inactive)",
+      "send": "Send",
+      "close": "Close",
+      "result": "Result: {{status}} ({{channel}})."
+    }
+  },
+  "deliveryStatus": {
+    "PENDING": "Pending",
+    "SENT": "Sent",
+    "DELIVERED": "Delivered",
+    "FAILED": "Failed"
+  },
+  "organizations": {
+    "title": "Organisations",
+    "new": "New organisation",
+    "filters": {
+      "type": "Type",
+      "status": "Status",
+      "search": "Search",
+      "all": "All"
+    },
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "nuit": "NUIT",
+      "status": "Status",
+      "createdAt": "Created on"
+    },
+    "sections": {
+      "data": "Details",
+      "insurer": "Insurer profile",
+      "manager": "First manager"
+    },
+    "fields": {
+      "type": "Type",
+      "legalName": "Legal name",
+      "tradeName": "Trade name",
+      "nuit": "NUIT",
+      "licenseNumber": "ASFPM licence number",
+      "contactEmail": "Contact email",
+      "contactPhone": "Contact phone",
+      "address": "Address",
+      "province": "Province",
+      "shortCode": "Short code",
+      "complaintsEmail": "Complaints email",
+      "ombudsman": "Customer ombudsman",
+      "managerName": "Name",
+      "managerEmail": "Email"
+    },
+    "shortCodeHelper": "2 to 10 capital letters or digits.",
+    "optional": "Optional.",
+    "none": "None",
+    "choose": "Choose…",
+    "create": "Create organisation",
+    "save": "Save",
+    "saved": "Details saved",
+    "tabs": {
+      "data": "Details",
+      "users": "Users"
+    },
+    "noManager": "This organisation has no active manager yet.",
+    "inviteFailed": "The organisation was created, but the manager's invitation failed. Fix the details and send it again.",
+    "suspend": "Suspend",
+    "reactivate": "Reactivate",
+    "suspendDialog": {
+      "title": "Suspend the organisation",
+      "text": "The organisation's users can no longer sign in until it is reactivated.",
+      "reason": "Reason",
+      "confirm": "Suspend",
+      "cancel": "Cancel"
+    },
+    "reactivateDialog": {
+      "title": "Reactivate the organisation?",
+      "text": "The organisation's users can sign in again.",
+      "confirm": "Reactivate",
+      "cancel": "Cancel"
+    },
+    "suspended": "Organisation suspended",
+    "reactivated": "Organisation reactivated"
+  },
+  "users": {
+    "title": "Users",
+    "invite": "Invite user",
+    "invitations": "Invitations",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "roles": "Roles",
+      "status": "Status",
+      "lastLogin": "Last sign-in",
+      "expiresAt": "Expires on",
+      "actions": "Actions"
+    },
+    "noUsers": "No users yet.",
+    "noInvitations": "No invitations.",
+    "never": "Never",
+    "you": "(you)",
+    "actions": {
+      "open": "Actions for {{name}}",
+      "roles": "Change roles",
+      "disable": "Disable",
+      "enable": "Enable",
+      "unlock": "Unlock",
+      "resetAccess": "Reset access",
+      "resend": "Resend",
+      "revoke": "Revoke"
+    },
+    "resetConfirm": {
+      "title": "Reset access?",
+      "text": "The person receives a new invitation and will have to set up the password and the code again.",
+      "confirm": "Reset access",
+      "cancel": "Cancel"
+    },
+    "done": {
+      "roles": "Roles changed",
+      "disable": "User disabled",
+      "enable": "User enabled",
+      "unlock": "User unlocked",
+      "resetAccess": "We sent a new invitation",
+      "resend": "Invitation resent",
+      "revoke": "Invitation revoked",
+      "invite": "Invitation sent"
+    },
+    "inviteDialog": {
+      "title": "Invite user",
+      "fullName": "Name",
+      "email": "Email",
+      "roles": "Roles",
+      "send": "Send invitation",
+      "cancel": "Cancel"
+    },
+    "rolesDialog": {
+      "title": "Change roles of {{name}}",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  },
+  "role": {
+    "PLATFORM_ADMIN": "Platform administrator",
+    "INSURER_ADMIN": "Insurer manager",
+    "ORG_ADMIN": "Organisation manager",
+    "PRODUCT_MANAGER": "Product manager",
+    "UNDERWRITER": "Underwriter",
+    "CLAIMS_HANDLER": "Claims handler",
+    "COMPLAINTS_OFFICER": "Complaints officer",
+    "FINANCE": "Finance",
+    "BROKER": "Broker",
+    "AGENT": "Insurance agent",
+    "ASSESSOR": "Assessor",
+    "WORKSHOP": "Workshop",
+    "ASSISTANCE_PROVIDER": "Assistance provider",
+    "OMBUDSMAN": "Customer ombudsman",
+    "REGULATOR_VIEWER": "Supervisor (ASFPM)",
+    "POLICE_OFFICER": "Police officer",
+    "FLEET_MANAGER": "Fleet manager",
+    "CUSTOMER": "Customer"
+  },
+  "orgType": {
+    "INSURER": "Insurer",
+    "BROKER": "Brokerage",
+    "AGENT": "Insurance agent",
+    "WORKSHOP": "Workshop",
+    "ASSESSOR": "Loss assessor",
+    "ASSISTANCE": "Assistance",
+    "OMBUDSMAN": "Customer ombudsman",
+    "REGULATOR": "Regulator",
+    "POLICE": "Police",
+    "CORPORATE_CLIENT": "Corporate client"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "PENDING_ACTIVATION": "Pending activation",
+    "LOCKED": "Locked",
+    "DISABLED": "Disabled",
+    "SUSPENDED": "Suspended",
+    "PENDING": "Pending",
+    "EXPIRED": "Expired",
+    "REVOKED": "Revoked",
+    "ACCEPTED": "Accepted"
   }
 }

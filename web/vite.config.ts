@@ -15,6 +15,8 @@ export default defineConfig({
         // Bibliotecas em blocos próprios: mudam pouco e ficam em cache entre versões.
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined;
+          // A grelha de dados (MUI X) só é usada na administração: bloco à parte.
+          if (/[\\/]node_modules[\\/]@mui[\\/]x-/.test(id)) return 'mui-x';
           if (/[\\/]node_modules[\\/](@mui|@emotion)[\\/]/.test(id)) return 'mui';
           if (
             /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|@remix-run)[\\/]/.test(

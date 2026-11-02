@@ -19,6 +19,7 @@ import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
+import { hasPermission } from '../auth/permissions';
 import { useAuth } from '../auth/useAuth';
 import { Brand } from '../components/Brand';
 import { LanguageSelector } from '../components/LanguageSelector';
@@ -39,6 +40,11 @@ export function AppLayout({ area }: { area: Area }) {
   const desktop = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true });
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+  const { me } = useAuth();
+  // Itens sem a permissão não aparecem (o backend continua a decidir).
+  const items = menus[area].filter(
+    (item) => !item.permission || hasPermission(me, item.permission),
+  );
 
   const menu = (
     <List
@@ -46,7 +52,7 @@ export function AppLayout({ area }: { area: Area }) {
       aria-label={t(`areas.${area}`)}
       subheader={<ListSubheader component="div">{t(`areas.${area}`)}</ListSubheader>}
     >
-      {menus[area].map((item) => {
+      {items.map((item) => {
         const Icon = item.icon;
         return (
           <ListItemButton
