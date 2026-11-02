@@ -11,6 +11,7 @@ import 'package:moseguros_api/src/auth/bearer_auth.dart';
 import 'package:moseguros_api/src/auth/oauth.dart';
 import 'package:moseguros_api/src/api/identity_api.dart';
 import 'package:moseguros_api/src/api/meta_api.dart';
+import 'package:moseguros_api/src/api/notification_api.dart';
 
 class MosegurosApi {
   static const String basePath = r'http://localhost';
@@ -76,5 +77,11 @@ class MosegurosApi {
   /// by doing that all interceptors will not be executed
   MetaApi getMetaApi() {
     return MetaApi(dio, serializers);
+  }
+
+  /// Get NotificationApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  NotificationApi getNotificationApi() {
+    return NotificationApi(dio, serializers);
   }
 }
