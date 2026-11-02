@@ -24,12 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
  * indicado; o resto do pedido corre no âmbito de quem o faz.
  */
 @Component
-public class SystemLookups {
+public class IdentitySystemLookups {
 
     private final UserAccountRepository accounts;
     private final InvitationRepository invitations;
 
-    public SystemLookups(UserAccountRepository accounts, InvitationRepository invitations) {
+    public IdentitySystemLookups(UserAccountRepository accounts, InvitationRepository invitations) {
         this.accounts = accounts;
         this.invitations = invitations;
     }

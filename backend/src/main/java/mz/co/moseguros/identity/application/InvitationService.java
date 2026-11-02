@@ -53,7 +53,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  *
  * <p>Corre no âmbito de quem convida. Âmbito {@code PLATFORM}: qualquer organização e a
  * plataforma. Âmbito {@code ORG}: só a sua organização (outra → 404 {@code ORGANIZATION_NOT_FOUND}).
- * As verificações do e-mail que têm de ver todas as organizações estão no {@link SystemLookups}.
+ * As verificações do e-mail que têm de ver todas as organizações estão no {@link IdentitySystemLookups}.
  *
  * <p>O e-mail é enviado depois de gravar o convite, fora da transacção. O token só existe em
  * claro no link do e-mail: nunca é gravado (só o SHA-256) nem registado.
@@ -73,7 +73,7 @@ public class InvitationService {
 
     private final InvitationRepository invitations;
     private final RoleRepository roles;
-    private final SystemLookups lookups;
+    private final IdentitySystemLookups lookups;
     private final OrganizationApi organizations;
     private final NotificationApi notifications;
     private final AuditService audit;
@@ -83,7 +83,7 @@ public class InvitationService {
     private final Clock clock;
     private final SecureRandom random = new SecureRandom();
 
-    public InvitationService(InvitationRepository invitations, RoleRepository roles, SystemLookups lookups,
+    public InvitationService(InvitationRepository invitations, RoleRepository roles, IdentitySystemLookups lookups,
                              OrganizationApi organizations, NotificationApi notifications, AuditService audit,
                              CurrentUser currentUser, InvitationProperties properties, TransactionTemplate tx,
                              Clock clock) {
@@ -242,9 +242,9 @@ public class InvitationService {
             Instant now = clock.instant();
             checkRoles(codes, organization == null ? null : organization.type());
             UUID existingUserId = null;
-            Optional<SystemLookups.StaffAccount> existing = lookups.findStaffByEmail(email);
+            Optional<IdentitySystemLookups.StaffAccount> existing = lookups.findStaffByEmail(email);
             if (existing.isPresent()) {
-                SystemLookups.StaffAccount account = existing.get();
+                IdentitySystemLookups.StaffAccount account = existing.get();
                 if (!account.isPendingActivation() || !Objects.equals(account.organizationId(), organizationId)) {
                     throw DomainException.of(ErrorCodes.EMAIL_ALREADY_IN_USE,
                             "The e-mail address is already used by another staff account");

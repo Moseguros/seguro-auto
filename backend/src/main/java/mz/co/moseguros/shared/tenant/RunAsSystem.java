@@ -11,10 +11,11 @@ import java.lang.annotation.Target;
  * transacção, e repõe o âmbito anterior no fim ({@link RunAsSystemAspect}).
  *
  * <p>Só funciona em chamadas entre beans (é um aspecto): as verificações que precisam de
- * ver tudo ficam num bean próprio (ex.: {@code identity.application.SystemLookups}).
+ * ver tudo ficam num bean próprio (ex.: {@code identity.application.IdentitySystemLookups}).
  * Quem o usa filtra pelo utilizador ou pela organização certa no próprio código, porque
  * neste âmbito o RLS deixa ver tudo. Só é permitido nos módulos {@code identity} e
- * {@code notification} (teste {@code RunAsSystemUsageTest}).
+ * {@code notification} e, nos outros módulos, em classes do pacote {@code application} cujo nome
+ * termine em {@code Listener}, {@code Job} ou {@code SystemLookups} (teste {@code RunAsSystemUsageTest}).
  */
 @Documented
 @Target(ElementType.METHOD)

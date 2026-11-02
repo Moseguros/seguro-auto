@@ -34,7 +34,7 @@ class ContactServiceTest {
 
     private final CurrentUser currentUser = mock(CurrentUser.class);
     private final UserAccountRepository accounts = mock(UserAccountRepository.class);
-    private final SystemLookups lookups = mock(SystemLookups.class);
+    private final IdentitySystemLookups lookups = mock(IdentitySystemLookups.class);
     private final OtpService otpService = mock(OtpService.class);
     private final AuditService audit = mock(AuditService.class);
     private final TransactionTemplate tx = mock(TransactionTemplate.class);

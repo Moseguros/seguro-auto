@@ -30,7 +30,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * o telemóvel ou o e-mail com confirmação por OTP, e remover.
  *
  * <p>A conta lê-se e grava-se em âmbito {@code CUSTOMER} (RLS). Saber se o contacto pertence a
- * outra conta precisa de {@code SYSTEM} ({@link SystemLookups}); os códigos vêm do
+ * outra conta precisa de {@code SYSTEM} ({@link IdentitySystemLookups}); os códigos vêm do
  * {@link OtpService}. O envio do código fica fora de transacção, como no login.
  */
 @Service
@@ -40,12 +40,12 @@ public class ContactService {
 
     private final CurrentUser currentUser;
     private final UserAccountRepository accounts;
-    private final SystemLookups lookups;
+    private final IdentitySystemLookups lookups;
     private final OtpService otpService;
     private final AuditService audit;
     private final TransactionTemplate tx;
 
-    public ContactService(CurrentUser currentUser, UserAccountRepository accounts, SystemLookups lookups,
+    public ContactService(CurrentUser currentUser, UserAccountRepository accounts, IdentitySystemLookups lookups,
                           OtpService otpService, AuditService audit, TransactionTemplate tx) {
         this.currentUser = currentUser;
         this.accounts = accounts;
