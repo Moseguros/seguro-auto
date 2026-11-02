@@ -347,5 +347,283 @@
     "SMS": "SMS",
     "WHATSAPP": "WhatsApp",
     "EMAIL": "E-mail"
+  },
+  "staffAuth": {
+    "login": {
+      "title": "Entrar na MoSeguros",
+      "subtitle": "Área de seguradoras, mediadores e parceiros.",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "totp": "Código da aplicação de autenticação",
+      "totpHelper": "6 dígitos.",
+      "submit": "Entrar",
+      "forgot": "Esqueci-me da palavra-passe",
+      "invalidCredentials": "E-mail, palavra-passe ou código errados.",
+      "locked_one": "Conta bloqueada. Tente de novo dentro de {{count}} minuto.",
+      "locked_other": "Conta bloqueada. Tente de novo dentro de {{count}} minutos.",
+      "customer": "É cliente? Entre aqui"
+    },
+    "password": {
+      "show": "Mostrar a palavra-passe",
+      "hide": "Ocultar a palavra-passe",
+      "rulesTitle": "A palavra-passe tem de:",
+      "rules": {
+        "minLength": "Ter pelo menos 12 caracteres",
+        "noEmail": "Não conter o seu e-mail",
+        "notCommon": "Não ser uma palavra-passe comum"
+      },
+      "ruleMet": "cumprida",
+      "ruleNotMet": "por cumprir",
+      "new": "Nova palavra-passe",
+      "confirm": "Confirmar a palavra-passe",
+      "mismatch": "As palavras-passe não coincidem."
+    },
+    "forgot": {
+      "title": "Recuperar a palavra-passe",
+      "subtitle": "Indique o e-mail da sua conta. Enviamos um link para definir uma palavra-passe nova.",
+      "submit": "Enviar link",
+      "sent": "Se o e-mail estiver registado, vai receber um link nos próximos minutos.",
+      "backToLogin": "Voltar à entrada"
+    },
+    "reset": {
+      "title": "Definir nova palavra-passe",
+      "submit": "Guardar palavra-passe",
+      "done": "Palavra-passe alterada",
+      "doneText": "Já pode entrar com a nova palavra-passe.",
+      "goToLogin": "Entrar",
+      "invalid": "Este link já não é válido",
+      "requestNew": "Pedir um novo link"
+    },
+    "invitation": {
+      "title": "Activar a conta",
+      "invalid": "Este convite já não é válido. Peça um novo ao gestor da sua organização.",
+      "step1": "Palavra-passe",
+      "step2": "Aplicação de autenticação",
+      "name": "Nome",
+      "email": "E-mail",
+      "organization": "Organização",
+      "platform": "MoSeguros (plataforma)",
+      "continue": "Continuar"
+    },
+    "totp": {
+      "instructions": "Abra a aplicação de autenticação e leia o código QR.",
+      "qrLabel": "Código QR para a aplicação de autenticação",
+      "manual": "Se não conseguir ler o código, escreva este segredo:",
+      "copy": "Copiar o segredo",
+      "copied": "Segredo copiado",
+      "code": "Código de 6 dígitos",
+      "activate": "Activar a conta",
+      "invalid": "Código errado. Confirme a hora do telemóvel."
+    }
+  },
+  "otpSettings": {
+    "title": "Autenticação dos clientes",
+    "subtitle": "Como os clientes recebem o código para entrar.",
+    "channels": "Canais activos",
+    "defaultChannel": "Canal por defeito",
+    "customerCanChoose": "O cliente pode escolher o canal",
+    "fallback": "Ordem de alternativa",
+    "fallbackHelp": "Se o envio falhar, tenta-se o canal seguinte. Arraste ou use os botões para mudar a ordem.",
+    "fallbackNote": "Não há alternativa entre telemóvel e e-mail.",
+    "moveUp": "Subir {{channel}}",
+    "moveDown": "Descer {{channel}}",
+    "drag": "Arrastar {{channel}}",
+    "parameters": "Parâmetros do código",
+    "codeLength": "Tamanho do código",
+    "validityMinutes": "Validade (minutos)",
+    "maxAttempts": "Tentativas",
+    "resendAfterSeconds": "Reenvio (segundos)",
+    "maxRequestsPerHour": "Pedidos por hora",
+    "range": "Entre {{min}} e {{max}}.",
+    "save": "Guardar",
+    "saved": "Configuração guardada",
+    "conflict": "Outra pessoa alterou esta configuração",
+    "reload": "Recarregar",
+    "readOnly": "Só pode consultar esta configuração.",
+    "test": {
+      "open": "Enviar código de teste",
+      "title": "Enviar código de teste",
+      "identifierType": "Tipo de identificador",
+      "identifier": "Identificador",
+      "channel": "Canal",
+      "inactive": "{{channel}} (inactivo)",
+      "send": "Enviar",
+      "close": "Fechar",
+      "result": "Resultado: {{status}} ({{channel}})."
+    }
+  },
+  "deliveryStatus": {
+    "PENDING": "Pendente",
+    "SENT": "Enviado",
+    "DELIVERED": "Entregue",
+    "FAILED": "Falhou"
+  },
+  "organizations": {
+    "title": "Organizações",
+    "new": "Nova organização",
+    "filters": {
+      "type": "Tipo",
+      "status": "Estado",
+      "search": "Pesquisar",
+      "all": "Todos"
+    },
+    "columns": {
+      "name": "Nome",
+      "type": "Tipo",
+      "nuit": "NUIT",
+      "status": "Estado",
+      "createdAt": "Criada em"
+    },
+    "sections": {
+      "data": "Dados",
+      "insurer": "Perfil da seguradora",
+      "manager": "Primeiro gestor"
+    },
+    "fields": {
+      "type": "Tipo",
+      "legalName": "Nome legal",
+      "tradeName": "Nome comercial",
+      "nuit": "NUIT",
+      "licenseNumber": "N.º de autorização ASFPM",
+      "contactEmail": "E-mail de contacto",
+      "contactPhone": "Telefone de contacto",
+      "address": "Morada",
+      "province": "Província",
+      "shortCode": "Código curto",
+      "complaintsEmail": "E-mail de reclamações",
+      "ombudsman": "Provedor do cliente",
+      "managerName": "Nome",
+      "managerEmail": "E-mail"
+    },
+    "shortCodeHelper": "2 a 10 maiúsculas ou dígitos.",
+    "optional": "Opcional.",
+    "none": "Nenhum",
+    "choose": "Escolha…",
+    "create": "Criar organização",
+    "save": "Guardar",
+    "saved": "Dados guardados",
+    "tabs": {
+      "data": "Dados",
+      "users": "Utilizadores"
+    },
+    "noManager": "Esta organização ainda não tem gestor activo.",
+    "inviteFailed": "A organização foi criada, mas o convite ao gestor falhou. Corrija os dados e envie de novo.",
+    "suspend": "Suspender",
+    "reactivate": "Reactivar",
+    "suspendDialog": {
+      "title": "Suspender a organização",
+      "text": "Os utilizadores da organização deixam de poder entrar até ela ser reactivada.",
+      "reason": "Motivo",
+      "confirm": "Suspender",
+      "cancel": "Cancelar"
+    },
+    "reactivateDialog": {
+      "title": "Reactivar a organização?",
+      "text": "Os utilizadores da organização voltam a poder entrar.",
+      "confirm": "Reactivar",
+      "cancel": "Cancelar"
+    },
+    "suspended": "Organização suspensa",
+    "reactivated": "Organização reactivada"
+  },
+  "users": {
+    "title": "Utilizadores",
+    "invite": "Convidar utilizador",
+    "invitations": "Convites",
+    "columns": {
+      "name": "Nome",
+      "email": "E-mail",
+      "roles": "Perfis",
+      "status": "Estado",
+      "lastLogin": "Último acesso",
+      "expiresAt": "Expira em",
+      "actions": "Acções"
+    },
+    "noUsers": "Ainda não há utilizadores.",
+    "noInvitations": "Não há convites.",
+    "never": "Nunca",
+    "you": "(você)",
+    "actions": {
+      "open": "Acções para {{name}}",
+      "roles": "Alterar perfis",
+      "disable": "Desactivar",
+      "enable": "Activar",
+      "unlock": "Desbloquear",
+      "resetAccess": "Repor acesso",
+      "resend": "Reenviar",
+      "revoke": "Revogar"
+    },
+    "resetConfirm": {
+      "title": "Repor o acesso?",
+      "text": "A pessoa recebe um novo convite e terá de configurar de novo a palavra-passe e o código.",
+      "confirm": "Repor acesso",
+      "cancel": "Cancelar"
+    },
+    "done": {
+      "roles": "Perfis alterados",
+      "disable": "Utilizador desactivado",
+      "enable": "Utilizador activado",
+      "unlock": "Utilizador desbloqueado",
+      "resetAccess": "Enviámos um novo convite",
+      "resend": "Convite reenviado",
+      "revoke": "Convite revogado",
+      "invite": "Convite enviado"
+    },
+    "inviteDialog": {
+      "title": "Convidar utilizador",
+      "fullName": "Nome",
+      "email": "E-mail",
+      "roles": "Perfis",
+      "send": "Enviar convite",
+      "cancel": "Cancelar"
+    },
+    "rolesDialog": {
+      "title": "Alterar perfis de {{name}}",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    }
+  },
+  "role": {
+    "PLATFORM_ADMIN": "Administrador da plataforma",
+    "INSURER_ADMIN": "Gestor da seguradora",
+    "ORG_ADMIN": "Gestor da organização",
+    "PRODUCT_MANAGER": "Gestor de produto",
+    "UNDERWRITER": "Subscritor",
+    "CLAIMS_HANDLER": "Gestor de sinistros",
+    "COMPLAINTS_OFFICER": "Gestor de reclamações",
+    "FINANCE": "Financeiro",
+    "BROKER": "Corretor",
+    "AGENT": "Agente de seguros",
+    "ASSESSOR": "Perito",
+    "WORKSHOP": "Oficina",
+    "ASSISTANCE_PROVIDER": "Prestador de assistência",
+    "OMBUDSMAN": "Provedor do cliente",
+    "REGULATOR_VIEWER": "Supervisor (ASFPM)",
+    "POLICE_OFFICER": "Agente da polícia",
+    "FLEET_MANAGER": "Gestor de frota",
+    "CUSTOMER": "Cliente"
+  },
+  "orgType": {
+    "INSURER": "Seguradora",
+    "BROKER": "Corretora",
+    "AGENT": "Agente de seguros",
+    "WORKSHOP": "Oficina",
+    "ASSESSOR": "Peritagem",
+    "ASSISTANCE": "Assistência",
+    "OMBUDSMAN": "Provedor do cliente",
+    "REGULATOR": "Regulador",
+    "POLICE": "Polícia",
+    "CORPORATE_CLIENT": "Cliente empresarial"
+  },
+  "status": {
+    "ACTIVE": "Activo",
+    "PENDING_ACTIVATION": "Por activar",
+    "LOCKED": "Bloqueado",
+    "DISABLED": "Desactivado",
+    "SUSPENDED": "Suspenso",
+    "PENDING": "Pendente",
+    "EXPIRED": "Expirado",
+    "REVOKED": "Revogado",
+    "ACCEPTED": "Aceite"
   }
 }

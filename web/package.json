@@ -19,14 +19,18 @@
     "api:generate": "orval --config orval.config.ts && prettier --write src/api/generated.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^3.10.0",
     "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
+    "@mui/x-data-grid": "^7",
     "@tanstack/react-query": "^5.105.1",
     "axios": "^1.21.0",
     "i18next": "^23.16.8",
+    "qrcode.react": "^4.2.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.91.0",
