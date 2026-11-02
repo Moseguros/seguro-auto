@@ -27,6 +27,7 @@
     <git-commit-id-plugin.version>9.0.1</git-commit-id-plugin.version>
     <!-- 1.19.x (BOM do Boot 3.3) usa a API Docker 1.32, recusada pelo Docker 29+ -->
     <testcontainers.version>1.21.4</testcontainers.version>
+    <uuid-creator.version>6.0.0</uuid-creator.version>
   </properties>
 
   <dependencyManagement>
@@ -107,6 +108,13 @@
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
       <version>${mapstruct.version}</version>
+    </dependency>
+
+    <!-- Identificadores UUID v7 -->
+    <dependency>
+      <groupId>com.github.f4b6a3</groupId>
+      <artifactId>uuid-creator</artifactId>
+      <version>${uuid-creator.version}</version>
     </dependency>
 
     <!-- Logs JSON -->
