@@ -139,7 +139,9 @@
     "CHANNELS_DUPLICATED": "Each channel can only appear once.",
     "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
     "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
-    "OUT_OF_RANGE": "Value outside the allowed range."
+    "OUT_OF_RANGE": "Value outside the allowed range.",
+    "REFRESH_TOKEN_INVALID": "Your session has ended. Please sign in again.",
+    "REFRESH_TOKEN_REUSED": "For your security, your session was ended. Please sign in again."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -153,7 +155,8 @@
     "CHANNELS_DUPLICATED": "Each channel can only appear once.",
     "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
     "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
-    "OUT_OF_RANGE": "Value outside the allowed range."
+    "OUT_OF_RANGE": "Value outside the allowed range.",
+    "NOT_BLANK": "This field is required."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
