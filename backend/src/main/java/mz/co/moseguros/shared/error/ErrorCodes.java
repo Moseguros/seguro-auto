@@ -51,12 +51,31 @@ public final class ErrorCodes {
     /** Refresh token já usado numa renovação: toda a sessão (família) foi revogada. */
     public static final String REFRESH_TOKEN_REUSED = "REFRESH_TOKEN_REUSED";
 
-    // Definições de OTP (400; o S1-03 passa-os para FieldErrorCodes)
-    public static final String CHANNELS_EMPTY = "CHANNELS_EMPTY";
-    public static final String CHANNELS_DUPLICATED = "CHANNELS_DUPLICATED";
-    public static final String DEFAULT_CHANNEL_NOT_ENABLED = "DEFAULT_CHANNEL_NOT_ENABLED";
-    public static final String FALLBACK_ORDER_MISMATCH = "FALLBACK_ORDER_MISMATCH";
-    public static final String OUT_OF_RANGE = "OUT_OF_RANGE";
+    // Concorrência
+    /** O recurso foi alterado por outro pedido depois de ser lido ({@code version} diferente) (409). */
+    public static final String CONCURRENT_MODIFICATION = "CONCURRENT_MODIFICATION";
+
+    // OTP do cliente (S1-03). Os erros das definições são de campo (FieldErrorCodes).
+    /** O cliente escolheu o canal, mas a escolha está desligada nas definições (400). */
+    public static final String OTP_CHANNEL_CHOICE_DISABLED = "OTP_CHANNEL_CHOICE_DISABLED";
+    /** Canal inactivo ou incompatível com o tipo de identificador (400). */
+    public static final String OTP_CHANNEL_NOT_AVAILABLE = "OTP_CHANNEL_NOT_AVAILABLE";
+    /** Demasiados pedidos na última hora (429, com {@code retryAfterSeconds}). */
+    public static final String OTP_RATE_LIMITED = "OTP_RATE_LIMITED";
+    /** Novo pedido antes do tempo de reenvio (429, com {@code retryAfterSeconds}). */
+    public static final String OTP_RESEND_TOO_SOON = "OTP_RESEND_TOO_SOON";
+    /** Nenhum canal conseguiu enviar o código (502). */
+    public static final String OTP_DELIVERY_FAILED = "OTP_DELIVERY_FAILED";
+    public static final String OTP_CHALLENGE_NOT_FOUND = "OTP_CHALLENGE_NOT_FOUND";
+    public static final String OTP_ALREADY_USED = "OTP_ALREADY_USED";
+    /** Há um código mais recente para o mesmo identificador (400). */
+    public static final String OTP_SUPERSEDED = "OTP_SUPERSEDED";
+    public static final String OTP_EXPIRED = "OTP_EXPIRED";
+    /** Código errado (400, com {@code attemptsRemaining}). */
+    public static final String OTP_INVALID = "OTP_INVALID";
+    public static final String OTP_ATTEMPTS_EXCEEDED = "OTP_ATTEMPTS_EXCEEDED";
+    /** Conta desactivada (403). */
+    public static final String ACCOUNT_DISABLED = "ACCOUNT_DISABLED";
 
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
@@ -77,11 +96,19 @@ public final class ErrorCodes {
             Map.entry(LICENSE_NUMBER_REQUIRED, 400),
             Map.entry(REFRESH_TOKEN_INVALID, 401),
             Map.entry(REFRESH_TOKEN_REUSED, 401),
-            Map.entry(CHANNELS_EMPTY, 400),
-            Map.entry(CHANNELS_DUPLICATED, 400),
-            Map.entry(DEFAULT_CHANNEL_NOT_ENABLED, 400),
-            Map.entry(FALLBACK_ORDER_MISMATCH, 400),
-            Map.entry(OUT_OF_RANGE, 400));
+            Map.entry(CONCURRENT_MODIFICATION, 409),
+            Map.entry(OTP_CHANNEL_CHOICE_DISABLED, 400),
+            Map.entry(OTP_CHANNEL_NOT_AVAILABLE, 400),
+            Map.entry(OTP_RATE_LIMITED, 429),
+            Map.entry(OTP_RESEND_TOO_SOON, 429),
+            Map.entry(OTP_DELIVERY_FAILED, 502),
+            Map.entry(OTP_CHALLENGE_NOT_FOUND, 404),
+            Map.entry(OTP_ALREADY_USED, 400),
+            Map.entry(OTP_SUPERSEDED, 400),
+            Map.entry(OTP_EXPIRED, 400),
+            Map.entry(OTP_INVALID, 400),
+            Map.entry(OTP_ATTEMPTS_EXCEEDED, 400),
+            Map.entry(ACCOUNT_DISABLED, 403));
 
     private ErrorCodes() {
     }

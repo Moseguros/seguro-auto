@@ -7,15 +7,19 @@ import jakarta.validation.ConstraintViolationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;
+import mz.co.moseguros.shared.error.FieldValidationException;
 import mz.co.moseguros.shared.error.Problems;
 import mz.co.moseguros.shared.error.Problems.FieldError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -85,9 +89,33 @@ public class GlobalExceptionHandler {
         return Problems.of(HttpStatus.FORBIDDEN, ErrorCodes.FORBIDDEN, "Access denied");
     }
 
+    @ExceptionHandler(FieldValidationException.class)
+    ProblemDetail handleFieldValidation(FieldValidationException ex) {
+        return Problems.validation("Request validation failed",
+                List.of(new FieldError(ex.getField(), ex.getFieldCode(), ex.getMessage())));
+    }
+
+    /**
+     * Erro de regra de negócio: o estado e o {@code code} da excepção, mais as propriedades extra.
+     * A propriedade {@code retryAfterSeconds} gera também o cabeçalho {@code Retry-After}.
+     */
     @ExceptionHandler(DomainException.class)
-    ProblemDetail handleDomain(DomainException ex) {
-        return Problems.of(HttpStatusCode.valueOf(ex.getHttpStatus()), ex.getCode(), ex.getMessage());
+    ResponseEntity<ProblemDetail> handleDomain(DomainException ex) {
+        ProblemDetail problem = Problems.of(HttpStatusCode.valueOf(ex.getHttpStatus()), ex.getCode(), ex.getMessage());
+        ex.getProperties().forEach(problem::setProperty);
+        ResponseEntity.BodyBuilder response = ResponseEntity.status(ex.getHttpStatus());
+        Object retryAfter = ex.getProperties().get(DomainException.RETRY_AFTER_SECONDS);
+        if (retryAfter != null) {
+            response.header(HttpHeaders.RETRY_AFTER, String.valueOf(retryAfter));
+        }
+        return response.body(problem);
+    }
+
+    /** Conflito de versão (bloqueio optimista): alguém alterou o recurso entretanto. */
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    ProblemDetail handleOptimisticLock(OptimisticLockingFailureException ex) {
+        return Problems.of(HttpStatus.CONFLICT, ErrorCodes.CONCURRENT_MODIFICATION,
+                "The resource was changed by another request");
     }
 
     @ExceptionHandler(Exception.class)

@@ -23,9 +23,18 @@ public final class FieldErrorCodes {
     public static final String INVALID_EMAIL = ErrorCodes.INVALID_EMAIL;
     public static final String INVALID_PHONE = ErrorCodes.INVALID_PHONE;
 
+    // Definições de OTP (S1-03)
+    public static final String CHANNELS_EMPTY = "CHANNELS_EMPTY";
+    public static final String CHANNELS_DUPLICATED = "CHANNELS_DUPLICATED";
+    public static final String DEFAULT_CHANNEL_NOT_ENABLED = "DEFAULT_CHANNEL_NOT_ENABLED";
+    public static final String FALLBACK_ORDER_MISMATCH = "FALLBACK_ORDER_MISMATCH";
+    public static final String OUT_OF_RANGE = "OUT_OF_RANGE";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";
+    /** {@code @NotNull}: campo obrigatório em falta. */
+    public static final String NOT_NULL = "NOT_NULL";
 
     private FieldErrorCodes() {
     }
