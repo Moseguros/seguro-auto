@@ -1,24 +1,16 @@
 {
   "errors" : [
     {
-      "code" : "CHANNELS_DUPLICATED",
-      "status" : 400
+      "code" : "ACCOUNT_DISABLED",
+      "status" : 403
     },
     {
-      "code" : "CHANNELS_EMPTY",
-      "status" : 400
+      "code" : "CONCURRENT_MODIFICATION",
+      "status" : 409
     },
     {
       "code" : "DECRYPTION_FAILED",
       "status" : 500
-    },
-    {
-      "code" : "DEFAULT_CHANNEL_NOT_ENABLED",
-      "status" : 400
-    },
-    {
-      "code" : "FALLBACK_ORDER_MISMATCH",
-      "status" : 400
     },
     {
       "code" : "FORBIDDEN",
@@ -65,7 +57,47 @@
       "status" : 404
     },
     {
-      "code" : "OUT_OF_RANGE",
+      "code" : "OTP_ALREADY_USED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_ATTEMPTS_EXCEEDED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_CHALLENGE_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "OTP_CHANNEL_CHOICE_DISABLED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_CHANNEL_NOT_AVAILABLE",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_DELIVERY_FAILED",
+      "status" : 502
+    },
+    {
+      "code" : "OTP_EXPIRED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_RATE_LIMITED",
+      "status" : 429
+    },
+    {
+      "code" : "OTP_RESEND_TOO_SOON",
+      "status" : 429
+    },
+    {
+      "code" : "OTP_SUPERSEDED",
       "status" : 400
     },
     {
@@ -90,12 +122,18 @@
     }
   ],
   "validation" : [
+    "CHANNELS_DUPLICATED",
+    "CHANNELS_EMPTY",
+    "DEFAULT_CHANNEL_NOT_ENABLED",
+    "FALLBACK_ORDER_MISMATCH",
     "INVALID_CURRENCY",
     "INVALID_EMAIL",
     "INVALID_MSISDN",
     "INVALID_NUIT",
     "INVALID_PHONE",
     "INVALID_PLATE",
-    "NOT_BLANK"
+    "NOT_BLANK",
+    "NOT_NULL",
+    "OUT_OF_RANGE"
   ]
 }

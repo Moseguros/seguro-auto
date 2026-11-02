@@ -13,11 +13,9 @@ public record OtpOptionsResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<IdentifierType> identifierTypes,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
-                description = "Canais activos de cada tipo, pela ordem alternativa",
-                example = "{\"MSISDN\": [\"SMS\", \"WHATSAPP\"], \"EMAIL\": [\"EMAIL\"]}")
+                description = "Canais activos de cada tipo, pela ordem alternativa")
         Map<IdentifierType, List<Channel>> channels,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Canal por defeito de cada tipo",
-                example = "{\"MSISDN\": \"SMS\", \"EMAIL\": \"EMAIL\"}")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Canal por defeito de cada tipo")
         Map<IdentifierType, Channel> defaultChannels,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         boolean customerCanChoose,

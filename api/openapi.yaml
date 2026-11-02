@@ -11,6 +11,8 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
+- description: Envio de mensagens e recibos de entrega
+  name: Notification
 - description: "Identidade, sessões e utilizador autenticado"
   name: Identity
 paths:
@@ -40,6 +42,98 @@ paths:
       summary: Chaves públicas dos tokens (JWKS)
       tags:
       - Identity
+  /api/v1/admin/otp-settings:
+    get:
+      description: Permissão otp-settings:read.
+      operationId: getOtpSettings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Definições do OTP
+      tags:
+      - Identity
+    put:
+      description: Permissão otp-settings:manage. Todos os campos são obrigatórios;
+        version diferente da gravada → 409 CONCURRENT_MODIFICATION.
+      operationId: updateOtpSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOtpSettingsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as definições do OTP
+      tags:
+      - Identity
+  /api/v1/admin/otp-settings/test:
+    post:
+      description: "Permissão otp-settings:manage. Só pelo canal pedido, mesmo que\
+        \ esteja desactivado, e sem alternativa; o código não serve para entrar. Conta\
+        \ para o limite por hora."
+      operationId: testOtpDelivery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpTestRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpTestResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia um código de teste
+      tags:
+      - Identity
   /api/v1/auth/logout:
     post:
       description: Revoga a sessão do refresh token. Responde 204 mesmo que o token
@@ -67,6 +161,137 @@ paths:
           description: Server error (RFC 7807)
       security: []
       summary: Termina a sessão
+      tags:
+      - Identity
+  /api/v1/auth/otp/challenges/{challengeId}:
+    get:
+      description: Canal e estado de entrega do código activo (muda se houver alternativa
+        de canal). Desconhecido → 404 OTP_CHALLENGE_NOT_FOUND.
+      operationId: getOtpChallenge
+      parameters:
+      - in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpChallengeResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Estado do envio do código
+      tags:
+      - Identity
+  /api/v1/auth/otp/options:
+    get:
+      description: "Tipos de identificador e canais activos, conforme as definiçõ\
+        es actuais."
+      operationId: getOtpOptions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpOptionsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Opções do login por código
+      tags:
+      - Identity
+  /api/v1/auth/otp/request:
+    post:
+      description: "Envia um código pelo canal escolhido (ou o por defeito) e, se\
+        \ falhar, pelos outros canais compatíveis. A resposta é igual para identificadores\
+        \ novos e existentes."
+      operationId: requestOtp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestOtpRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpRequestResponse"
+          description: Código enviado
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Pede um código
+      tags:
+      - Identity
+  /api/v1/auth/otp/verify:
+    post:
+      description: "Abre a sessão (e cria a conta de cliente, se ainda não existir)."
+      operationId: verifyOtp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyOtpRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpVerifyResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Valida o código e entra
       tags:
       - Identity
   /api/v1/auth/refresh:
@@ -104,6 +329,51 @@ paths:
       summary: Renova a sessão
       tags:
       - Identity
+  /api/v1/integrations/delivery-receipts/{provider}:
+    post:
+      description: Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED;
+        fornecedor desconhecido → 404 NOT_FOUND; mensagem desconhecida → 204 (ignorado).
+        Uma falha de um código OTP faz o backend tentar o canal seguinte.
+      operationId: receiveDeliveryReceipt
+      parameters:
+      - description: "Valor da coluna provider (mock-sms, mock-whatsapp)"
+        example: mock-sms
+        in: path
+        name: provider
+        required: true
+        schema:
+          type: string
+      - description: Segredo partilhado com o fornecedor
+        in: header
+        name: X-Webhook-Secret
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryReceiptRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Recibo de entrega de um fornecedor
+      tags:
+      - Notification
   /api/v1/me:
     get:
       operationId: getMe
@@ -157,6 +427,28 @@ paths:
       - Meta
 components:
   schemas:
+    DeliveryReceiptRequest:
+      type: object
+      properties:
+        providerMessageId:
+          type: string
+          description: id devolvido pelo fornecedor no envio
+          maxLength: 100
+          minLength: 0
+        reason:
+          type: string
+          description: Motivo indicado pelo fornecedor (sem dados pessoais)
+          example: mock
+          maxLength: 150
+          minLength: 0
+        status:
+          type: string
+          enum:
+          - DELIVERED
+          - FAILED
+      required:
+      - providerMessageId
+      - status
     FieldError:
       type: object
       description: Erro de um campo do pedido
@@ -322,6 +614,254 @@ components:
       description: "NUIT: 9 dígitos"
       example: "123456789"
       pattern: "^\\d{9}$"
+    OtpChallengeResponse:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        deliveryStatus:
+          type: string
+          enum:
+          - PENDING
+          - SENT
+          - DELIVERED
+          - FAILED
+        expiresAt:
+          type: string
+          format: date-time
+        fallbackUsed:
+          type: boolean
+      required:
+      - channel
+      - deliveryStatus
+      - expiresAt
+      - fallbackUsed
+    OtpOptionsResponse:
+      type: object
+      properties:
+        channels:
+          type: object
+          additionalProperties:
+            type: array
+            description: "Canais activos de cada tipo, pela ordem alternativa"
+            items:
+              type: string
+              description: "Canais activos de cada tipo, pela ordem alternativa"
+              enum:
+              - SMS
+              - WHATSAPP
+              - EMAIL
+          description: "Canais activos de cada tipo, pela ordem alternativa"
+        codeLength:
+          type: integer
+          format: int32
+          example: 6
+        customerCanChoose:
+          type: boolean
+        defaultChannels:
+          type: object
+          additionalProperties:
+            type: string
+            description: Canal por defeito de cada tipo
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+          description: Canal por defeito de cada tipo
+        identifierTypes:
+          type: array
+          items:
+            type: string
+            enum:
+            - MSISDN
+            - EMAIL
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+      required:
+      - channels
+      - codeLength
+      - customerCanChoose
+      - defaultChannels
+      - identifierTypes
+      - resendAfterSeconds
+    OtpRequestResponse:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: Usar na validação e na consulta do estado (não muda com a alternativa
+            de canal)
+        channel:
+          type: string
+          description: Canal efectivamente usado
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        expiresAt:
+          type: string
+          format: date-time
+        fallbackUsed:
+          type: boolean
+          description: O canal mudou por falha do primeiro
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+      required:
+      - challengeId
+      - channel
+      - expiresAt
+      - fallbackUsed
+      - resendAfterSeconds
+    OtpSettingsResponse:
+      type: object
+      properties:
+        codeLength:
+          type: integer
+          format: int32
+          example: 6
+        customerCanChoose:
+          type: boolean
+        defaultChannel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        enabledChannels:
+          type: array
+          items:
+            type: string
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+        fallbackOrder:
+          type: array
+          description: Ordem da alternativa automática
+          items:
+            type: string
+            description: Ordem da alternativa automática
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        maxRequestsPerHour:
+          type: integer
+          format: int32
+          example: 5
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+          description: id do utilizador ou 'system'
+        validitySeconds:
+          type: integer
+          format: int32
+          example: 300
+        version:
+          type: integer
+          format: int64
+          description: Enviar no PUT seguinte
+      required:
+      - codeLength
+      - customerCanChoose
+      - defaultChannel
+      - enabledChannels
+      - fallbackOrder
+      - maxAttempts
+      - maxRequestsPerHour
+      - resendAfterSeconds
+      - updatedAt
+      - updatedBy
+      - validitySeconds
+      - version
+    OtpTestRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          example: WHATSAPP
+        identifier:
+          type: string
+          example: "841234567"
+        identifierType:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+          example: MSISDN
+      required:
+      - channel
+      - identifier
+      - identifierType
+    OtpTestResponse:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        deliveryStatus:
+          type: string
+          description: SENT ou FAILED
+          enum:
+          - PENDING
+          - SENT
+          - DELIVERED
+          - FAILED
+        messageId:
+          type: string
+          format: uuid
+          description: id da mensagem enviada
+      required:
+      - channel
+      - deliveryStatus
+      - messageId
+    OtpVerifyResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: "JWT de acesso (Bearer), válido 15 minutos"
+        expiresIn:
+          type: integer
+          format: int64
+          example: 900
+        isNewUser:
+          type: boolean
+          description: A conta foi criada agora
+        refreshToken:
+          type: string
+          description: Refresh token opaco
+      required:
+      - accessToken
+      - expiresIn
+      - isNewUser
+      - refreshToken
     ProblemDetail:
       type: object
       description: Erro RFC 7807 (application/problem+json)
@@ -365,6 +905,30 @@ components:
           description: Refresh token recebido no login ou na última renovação
       required:
       - refreshToken
+    RequestOtpRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Canal escolhido pelo cliente (só se customerCanChoose); sem
+            ele usa-se o canal por defeito
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        identifier:
+          type: string
+          description: "Telemóvel (841234567, +258841234567) ou e-mail"
+          example: "841234567"
+        identifierType:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+          example: MSISDN
+      required:
+      - identifier
+      - identifierType
     TokenResponse:
       type: object
       properties:
@@ -383,6 +947,97 @@ components:
       - accessToken
       - expiresIn
       - refreshToken
+    UpdateOtpSettingsRequest:
+      type: object
+      properties:
+        codeLength:
+          type: integer
+          format: int32
+          description: 4 a 8
+          example: 6
+        customerCanChoose:
+          type: boolean
+        defaultChannel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          example: SMS
+        enabledChannels:
+          type: array
+          example:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          items:
+            type: string
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+            example: "[\"SMS\",\"WHATSAPP\",\"EMAIL\"]"
+        fallbackOrder:
+          type: array
+          example:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          items:
+            type: string
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+            example: "[\"SMS\",\"WHATSAPP\",\"EMAIL\"]"
+        maxAttempts:
+          type: integer
+          format: int32
+          description: 1 a 10
+          example: 3
+        maxRequestsPerHour:
+          type: integer
+          format: int32
+          description: 1 a 50
+          example: 5
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          description: 15 a 600
+          example: 60
+        validitySeconds:
+          type: integer
+          format: int32
+          description: 60 a 1800
+          example: 300
+        version:
+          type: integer
+          format: int64
+          description: version lida no GET
+      required:
+      - codeLength
+      - customerCanChoose
+      - defaultChannel
+      - enabledChannels
+      - fallbackOrder
+      - maxAttempts
+      - maxRequestsPerHour
+      - resendAfterSeconds
+      - validitySeconds
+      - version
+    VerifyOtpRequest:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: challengeId devolvido no pedido
+        code:
+          type: string
+          example: "123456"
+      required:
+      - challengeId
+      - code
     VersionResponse:
       type: object
       properties:
