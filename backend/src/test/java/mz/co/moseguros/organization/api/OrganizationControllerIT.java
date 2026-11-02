@@ -2,6 +2,7 @@ package mz.co.moseguros.organization.api;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
@@ -9,6 +10,7 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -299,9 +301,10 @@ class OrganizationControllerIT {
 
         suspend(insurer.getId().toString(), "Fraude").then().statusCode(200);
 
-        assertThat(owner.queryForList(
+        // O listener do identity é assíncrono (@ApplicationModuleListener corre depois do commit).
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertThat(owner.queryForList(
                 "select revoked_reason from identity.refresh_token where user_id = ?", String.class, staff.getId()))
-                .containsExactly("ORG_SUSPENDED");
+                .containsExactly("ORG_SUSPENDED"));
         refresh(session.refreshToken()).then().statusCode(401).body("code", equalTo("REFRESH_TOKEN_INVALID"));
         refresh(otherSession.refreshToken()).then().statusCode(200);
     }
