@@ -1,0 +1,17 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # Cliente gerado pelo openapi-generator (tool/generate_api.sh): não se edita nem se analisa.
+    - packages/moseguros_api/**
+  language:
+    strict-casts: true
+    strict-raw-types: true
+
+linter:
+  rules:
+    prefer_single_quotes: true
+    always_declare_return_types: true
+    prefer_final_locals: true
+    require_trailing_commas: true
+    avoid_print: true

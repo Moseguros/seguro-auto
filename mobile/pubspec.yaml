@@ -1,0 +1,53 @@
+name: moseguros
+description: "App MoSeguros para clientes finais (Android e iOS)."
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  # Versão do Flutter fixada (o CI lê-a daqui). Actualizar é uma tarefa própria.
+  sdk: ^3.10.7
+  flutter: 3.38.6
+
+dependencies:
+  dio: ^5.11.1
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.3.2
+  flutter_secure_storage: ^11.2.0
+  flutter_svg: ^2.3.0
+  go_router: ^17.5.0
+  intl: ^0.20.2
+  moseguros_api:
+    path: packages/moseguros_api
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  mocktail: ^1.0.5
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/brand/
+
+# Ícone provisório (docs/brand/logo-mark.svg exportado para PNG). Regenerar com:
+#   dart run flutter_launcher_icons
+# e reverter a alteração que a 0.14.x faz no ios/Runner.xcodeproj/project.pbxproj
+# (troca ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES por AppIcon).
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 24
+  remove_alpha_ios: true
+  background_color_ios: "#142D4E"
+  adaptive_icon_background: "#142D4E"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"

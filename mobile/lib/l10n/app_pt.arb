@@ -1,0 +1,43 @@
+{
+  "@@locale": "pt",
+  "appName": "MoSeguros",
+  "@appName": {
+    "description": "Nome comercial da aplicação (não se traduz)."
+  },
+  "homeTagline": "Compare, compre e gira o seu seguro automóvel num só lugar.",
+  "@homeTagline": {
+    "description": "Frase do ecrã inicial (home.tagline na web)."
+  },
+  "systemStatusTitle": "Estado do sistema",
+  "systemStatusLoading": "A verificar a API…",
+  "systemStatusVersion": "Versão",
+  "systemStatusCommit": "Commit",
+  "systemStatusUnknown": "desconhecido",
+  "systemStatusError": "Não foi possível obter o estado da API.",
+  "retry": "Tentar de novo",
+  "notFoundTitle": "Página não encontrada",
+  "notFoundDescription": "O endereço que procura não existe.",
+  "backHome": "Voltar ao início",
+  "errorNetworkError": "Sem ligação ao servidor. Verifique a sua ligação à Internet.",
+  "@errorNetworkError": {
+    "description": "errors.NETWORK_ERROR"
+  },
+  "errorUnknown": "Ocorreu um erro inesperado.",
+  "errorValidationError": "Os dados enviados não são válidos.",
+  "errorNotFound": "O recurso pedido não existe.",
+  "errorUnauthorized": "Precisa de iniciar sessão.",
+  "errorForbidden": "Não tem permissão para esta operação.",
+  "errorInternalError": "Erro interno do servidor. Tente mais tarde.",
+  "errorInvalidCurrency": "Moeda inválida.",
+  "errorInvalidMsisdn": "Número de telemóvel inválido.",
+  "errorInvalidNuit": "NUIT inválido.",
+  "errorInvalidPlate": "Matrícula inválida.",
+  "validationInvalidCurrency": "Moeda inválida.",
+  "validationInvalidMsisdn": "Número de telemóvel inválido (ex.: +258 84 123 4567).",
+  "validationInvalidNuit": "O NUIT tem 9 dígitos.",
+  "validationInvalidPlate": "Matrícula inválida.",
+  "ctaQuote": "Simular seguro",
+  "ctaCompare": "Comparar propostas",
+  "ctaBuy": "Adquirir apólice",
+  "ctaRenew": "Renovar seguro"
+}
