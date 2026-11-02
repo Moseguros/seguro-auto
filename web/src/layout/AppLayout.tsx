@@ -1,3 +1,5 @@
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Logout from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -8,12 +10,16 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
+import Menu from '@mui/material/Menu';
+import MenuItemComponent from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../auth/useAuth';
 import { Brand } from '../components/Brand';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { menus, type Area, type MenuItem } from './menus';
@@ -77,6 +83,7 @@ export function AppLayout({ area }: { area: Area }) {
           <Brand />
           <Box sx={{ flexGrow: 1 }} />
           <LanguageSelector />
+          <UserMenu />
         </Toolbar>
       </AppBar>
       {desktop ? (
@@ -108,5 +115,54 @@ export function AppLayout({ area }: { area: Area }) {
         <Outlet />
       </Box>
     </Box>
+  );
+}
+
+/** Menu do utilizador na barra superior: nome e "Terminar sessão" (só com sessão). */
+function UserMenu() {
+  const { t } = useTranslation();
+  const { session, me, logout } = useAuth();
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  if (!session) return null;
+  const name = me?.displayName || me?.msisdn || me?.email || t('auth.userMenu.account');
+  return (
+    <>
+      <IconButton
+        color="inherit"
+        edge="end"
+        aria-label={t('auth.userMenu.open')}
+        aria-haspopup="menu"
+        aria-controls={anchor ? 'user-menu' : undefined}
+        aria-expanded={anchor ? true : undefined}
+        onClick={(event) => setAnchor(event.currentTarget)}
+      >
+        <AccountCircle />
+      </IconButton>
+      <Menu
+        id="user-menu"
+        anchorEl={anchor}
+        open={anchor !== null}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Box sx={{ px: 2, py: 1, maxWidth: 260 }}>
+          <Typography variant="subtitle2" noWrap data-testid="user-menu-name">
+            {name}
+          </Typography>
+        </Box>
+        <MenuItemComponent
+          onClick={() => {
+            setAnchor(null);
+            void logout();
+          }}
+        >
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          {t('auth.userMenu.logout')}
+        </MenuItemComponent>
+      </Menu>
+    </>
   );
 }
