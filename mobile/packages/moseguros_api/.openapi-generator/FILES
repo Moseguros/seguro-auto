@@ -4,6 +4,7 @@ README.md
 analysis_options.yaml
 lib/moseguros_api.dart
 lib/src/api.dart
+lib/src/api/identity_api.dart
 lib/src/api/meta_api.dart
 lib/src/api_util.dart
 lib/src/auth/api_key_auth.dart
@@ -14,8 +15,15 @@ lib/src/auth/oauth.dart
 lib/src/date_serializer.dart
 lib/src/model/date.dart
 lib/src/model/field_error.dart
+lib/src/model/jwk.dart
+lib/src/model/jwks_response.dart
+lib/src/model/logout_request.dart
+lib/src/model/me_organization.dart
+lib/src/model/me_response.dart
 lib/src/model/money.dart
 lib/src/model/problem_detail.dart
+lib/src/model/refresh_token_request.dart
+lib/src/model/token_response.dart
 lib/src/model/version_response.dart
 lib/src/serializers.dart
 pubspec.yaml
