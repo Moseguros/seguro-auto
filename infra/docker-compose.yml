@@ -1,0 +1,81 @@
+# Ambiente local da MoSeguros. Ver infra/README.md.
+# Imagens com versão fixada e listadas em scripts/images.txt (actualizar no mesmo PR).
+# Credenciais do .env (cópia do .env.example); os valores por defeito permitem correr sem .env.
+
+name: moseguros
+
+x-healthcheck: &healthcheck-timing
+  interval: 10s
+  timeout: 5s
+  retries: 12
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-moseguros}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      POSTGRES_DB: ${POSTGRES_DB:-moseguros}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:v1.33
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # interface web
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  sms-mock:
+    build: mocks/sms-mock
+    image: moseguros/sms-mock:local
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8090/actuator/health"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  backend:
+    build: ../backend
+    image: moseguros/backend:local
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-moseguros}
+      DB_USERNAME: ${POSTGRES_USER:-moseguros}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: "1025"
+      JAVA_OPTS: -XX:MaxRAMPercentage=75
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Healthcheck: o HEALTHCHECK do backend/Dockerfile (GET /api/v1/health).
+    restart: unless-stopped
+
+  web:
+    build: ../web
+    image: moseguros/web:local
+    ports:
+      - "3000:8080" # nginx sem root escuta na 8080 dentro do contentor
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:8080/"]
+      <<: *healthcheck-timing
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
