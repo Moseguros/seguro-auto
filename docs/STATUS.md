@@ -29,7 +29,7 @@ Actualizado em 02/11/2026.
 | S1-05 Login de staff e gestão de utilizadores | S1-04 | em revisão |
 | S1-06 Perfil e contactos do cliente | S1-03 | em revisão |
 | S1-07 Web: sessão e área do cliente | S0-05, S1-06 | em revisão |
-| S1-08 Web: staff, organizações e utilizadores | S1-07, S1-05 | pronta |
+| S1-08 Web: staff, organizações e utilizadores | S1-07, S1-05 | em revisão |
 | S1-09 Mobile: apresentação, login e perfil | S0-06, S1-06 | pronta — pode correr em paralelo com S1-07 |
 
 O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
@@ -60,8 +60,8 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 - **Chave dos JWT (S1-02):** fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_JWT_PRIVATE_KEY` (PEM PKCS#8, RSA 2048) e `MOSEGUROS_JWT_KEY_ID`. Em `local`/`test` gera um par no arranque: os tokens deixam de valer quando o backend reinicia.
 - **Códigos de erro (S1-02):** `api/error-codes.json` é gerado a partir de `ErrorCodes`/`FieldErrorCodes` (`./mvnw test -Dtest=ErrorCodesExportTest -Derror-codes.export=true`) e verificado pelo `scripts/check-openapi.sh`.
 - **OTP (S1-03):** fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_OTP_PEPPER` (segredo do HMAC dos códigos); `MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET` (recibos de entrega) vazio recusa todos os recibos. No perfil `local` o código vem no cabeçalho `X-Debug-Otp` (proibido em `prod`). Teste manual com o `sms-mock` em `infra/README.md`.
-- **Primeiro administrador (S1-04):** com `MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL` definido, o arranque convida esse e-mail para `PLATFORM_ADMIN` se ainda não houver nenhum activo nem um convite pendente. No compose é `admin@moseguros.local`: o e-mail com o link aparece no Mailpit (`http://localhost:8025`). Os links usam `MOSEGUROS_WEB_BASE_URL` (5173 local, 3000 no compose); o ecrã `/convite/{token}` chega no S1-08.
-- **Sessão da web (S1-07):** o token de acesso fica só em memória; o refresh token do cliente em `localStorage` (`moseguros.customer.rt`) e o do staff em `sessionStorage` (`moseguros.staff.rt`). Os interceptores de `web/src/api/http.ts` nunca mandam `Authorization` para `/api/v1/auth/**` e renovam uma única vez para vários 401 simultâneos. Só `/cliente` tem guarda por agora; as áreas de staff ficam abertas até ao S1-08.
+- **Primeiro administrador (S1-04):** com `MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL` definido, o arranque convida esse e-mail para `PLATFORM_ADMIN` se ainda não houver nenhum activo nem um convite pendente. No compose é `admin@moseguros.local`: o e-mail com o link aparece no Mailpit (`http://localhost:8025`). Os links usam `MOSEGUROS_WEB_BASE_URL` (5173 local, 3000 no compose); a activação é o ecrã `/convite/{token}` (S1-08).
+- **Sessão da web (S1-07):** o token de acesso fica só em memória; o refresh token do cliente em `localStorage` (`moseguros.customer.rt`) e o do staff em `sessionStorage` (`moseguros.staff.rt`). Os interceptores de `web/src/api/http.ts` nunca mandam `Authorization` para `/api/v1/auth/**` e renovam uma única vez para vários 401 simultâneos. As áreas de staff exigem sessão de staff da própria área (S1-08); itens de menu e páginas sem a permissão (`me.permissions`) não aparecem ou vão para `/sem-acesso`.
 - **Perfil e contactos do cliente (S1-06):** `/me/profile` e `/me/contacts` exigem `self:profile` (staff → 403). O documento e o NUIT só saem mascarados (resposta e auditoria). Os códigos de confirmação de contacto (`VERIFY_CONTACT`) contam para os limites de OTP do identificador.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
 - **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
