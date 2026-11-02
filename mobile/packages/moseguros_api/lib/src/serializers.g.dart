@@ -7,9 +7,23 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (Serializers().toBuilder()
+      ..add(AcceptInvitationRequest.serializer)
+      ..add(ActivateInvitationRequest.serializer)
+      ..add(AssignableRolesResponse.serializer)
+      ..add(CreateOrganizationRequest.serializer)
+      ..add(CreateOrganizationRequestProvinceEnum.serializer)
+      ..add(CreateOrganizationRequestTypeEnum.serializer)
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
       ..add(FieldError.serializer)
+      ..add(InsurerProfileRequest.serializer)
+      ..add(InsurerProfileResponse.serializer)
+      ..add(InvitationDetailsResponse.serializer)
+      ..add(InvitationOrganization.serializer)
+      ..add(InvitationOrganizationTypeEnum.serializer)
+      ..add(InvitationResponse.serializer)
+      ..add(InvitationResponseStatusEnum.serializer)
+      ..add(InviteUserRequest.serializer)
       ..add(Jwk.serializer)
       ..add(JwksResponse.serializer)
       ..add(LogoutRequest.serializer)
@@ -19,6 +33,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(MeResponseTypeEnum.serializer)
       ..add(Money.serializer)
       ..add(MoneyCurrencyEnum.serializer)
+      ..add(OrganizationResponse.serializer)
+      ..add(OrganizationResponseProvinceEnum.serializer)
+      ..add(OrganizationResponseStatusEnum.serializer)
+      ..add(OrganizationResponseTypeEnum.serializer)
+      ..add(OrganizationSummaryResponse.serializer)
+      ..add(OrganizationSummaryResponseStatusEnum.serializer)
+      ..add(OrganizationSummaryResponseTypeEnum.serializer)
       ..add(OtpChallengeResponse.serializer)
       ..add(OtpChallengeResponseChannelEnum.serializer)
       ..add(OtpChallengeResponseDeliveryStatusEnum.serializer)
@@ -38,12 +59,18 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpTestResponseChannelEnum.serializer)
       ..add(OtpTestResponseDeliveryStatusEnum.serializer)
       ..add(OtpVerifyResponse.serializer)
+      ..add(PageResponseInvitationResponse.serializer)
+      ..add(PageResponseOrganizationSummaryResponse.serializer)
       ..add(ProblemDetail.serializer)
       ..add(RefreshTokenRequest.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
+      ..add(SuspendOrganizationRequest.serializer)
       ..add(TokenResponse.serializer)
+      ..add(TotpSetupResponse.serializer)
+      ..add(UpdateOrganizationRequest.serializer)
+      ..add(UpdateOrganizationRequestProvinceEnum.serializer)
       ..add(UpdateOtpSettingsRequest.serializer)
       ..add(UpdateOtpSettingsRequestDefaultChannelEnum.serializer)
       ..add(UpdateOtpSettingsRequestEnabledChannelsEnum.serializer)
@@ -54,8 +81,15 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(FieldError)]),
           () => ListBuilder<FieldError>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(InvitationResponse)]),
+          () => ListBuilder<InvitationResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Jwk)]),
           () => ListBuilder<Jwk>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(OrganizationSummaryResponse)]),
+          () => ListBuilder<OrganizationSummaryResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseEnabledChannelsEnum)]),
@@ -64,6 +98,21 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())

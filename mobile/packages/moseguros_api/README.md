@@ -48,12 +48,14 @@ import 'package:moseguros_api/moseguros_api.dart';
 
 
 final api = MosegurosApi().getIdentityApi();
+final String token = token_example; // String | 
+final AcceptInvitationRequest acceptInvitationRequest = ; // AcceptInvitationRequest | 
 
 try {
-    final response = await api.getJwks();
+    final response = await api.acceptInvitation(token, acceptInvitationRequest);
     print(response);
 } catch on DioException (e) {
-    print("Exception when calling IdentityApi->getJwks: $e\n");
+    print("Exception when calling IdentityApi->acceptInvitation: $e\n");
 }
 
 ```
@@ -64,31 +66,59 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*IdentityApi*](doc/IdentityApi.md) | [**acceptInvitation**](doc/IdentityApi.md#acceptinvitation) | **POST** /api/v1/auth/invitations/{token}/accept | Define a palavra-passe e o TOTP
+[*IdentityApi*](doc/IdentityApi.md) | [**activateInvitation**](doc/IdentityApi.md#activateinvitation) | **POST** /api/v1/auth/invitations/{token}/activate | Activa a conta com o primeiro código TOTP
+[*IdentityApi*](doc/IdentityApi.md) | [**getInvitationByToken**](doc/IdentityApi.md#getinvitationbytoken) | **GET** /api/v1/auth/invitations/{token} | Consulta um convite pelo token
 [*IdentityApi*](doc/IdentityApi.md) | [**getJwks**](doc/IdentityApi.md#getjwks) | **GET** /.well-known/jwks.json | Chaves públicas dos tokens (JWKS)
 [*IdentityApi*](doc/IdentityApi.md) | [**getMe**](doc/IdentityApi.md#getme) | **GET** /api/v1/me | Utilizador autenticado
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpChallenge**](doc/IdentityApi.md#getotpchallenge) | **GET** /api/v1/auth/otp/challenges/{challengeId} | Estado do envio do código
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpOptions**](doc/IdentityApi.md#getotpoptions) | **GET** /api/v1/auth/otp/options | Opções do login por código
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpSettings**](doc/IdentityApi.md#getotpsettings) | **GET** /api/v1/admin/otp-settings | Definições do OTP
+[*IdentityApi*](doc/IdentityApi.md) | [**inviteOrganizationUser**](doc/IdentityApi.md#inviteorganizationuser) | **POST** /api/v1/organizations/{orgId}/users | Convida staff de uma organização
+[*IdentityApi*](doc/IdentityApi.md) | [**invitePlatformUser**](doc/IdentityApi.md#inviteplatformuser) | **POST** /api/v1/admin/users | Convida staff da plataforma
+[*IdentityApi*](doc/IdentityApi.md) | [**listAssignableRoles**](doc/IdentityApi.md#listassignableroles) | **GET** /api/v1/roles | Perfis atribuíveis
+[*IdentityApi*](doc/IdentityApi.md) | [**listOrganizationInvitations**](doc/IdentityApi.md#listorganizationinvitations) | **GET** /api/v1/organizations/{orgId}/invitations | Lista os convites de uma organização
+[*IdentityApi*](doc/IdentityApi.md) | [**listPlatformInvitations**](doc/IdentityApi.md#listplatforminvitations) | **GET** /api/v1/admin/invitations | Lista os convites da plataforma
 [*IdentityApi*](doc/IdentityApi.md) | [**logoutSession**](doc/IdentityApi.md#logoutsession) | **POST** /api/v1/auth/logout | Termina a sessão
 [*IdentityApi*](doc/IdentityApi.md) | [**refreshToken**](doc/IdentityApi.md#refreshtoken) | **POST** /api/v1/auth/refresh | Renova a sessão
 [*IdentityApi*](doc/IdentityApi.md) | [**requestOtp**](doc/IdentityApi.md#requestotp) | **POST** /api/v1/auth/otp/request | Pede um código
+[*IdentityApi*](doc/IdentityApi.md) | [**resendInvitation**](doc/IdentityApi.md#resendinvitation) | **POST** /api/v1/invitations/{id}/resend | Reenvia um convite
+[*IdentityApi*](doc/IdentityApi.md) | [**revokeInvitation**](doc/IdentityApi.md#revokeinvitation) | **POST** /api/v1/invitations/{id}/revoke | Revoga um convite
 [*IdentityApi*](doc/IdentityApi.md) | [**testOtpDelivery**](doc/IdentityApi.md#testotpdelivery) | **POST** /api/v1/admin/otp-settings/test | Envia um código de teste
 [*IdentityApi*](doc/IdentityApi.md) | [**updateOtpSettings**](doc/IdentityApi.md#updateotpsettings) | **PUT** /api/v1/admin/otp-settings | Altera as definições do OTP
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyOtp**](doc/IdentityApi.md#verifyotp) | **POST** /api/v1/auth/otp/verify | Valida o código e entra
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
 [*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
+[*OrganizationApi*](doc/OrganizationApi.md) | [**createOrganization**](doc/OrganizationApi.md#createorganization) | **POST** /api/v1/organizations | Cria uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**getOrganization**](doc/OrganizationApi.md#getorganization) | **GET** /api/v1/organizations/{id} | Consulta uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**listOrganizations**](doc/OrganizationApi.md#listorganizations) | **GET** /api/v1/organizations | Lista as organizações
+[*OrganizationApi*](doc/OrganizationApi.md) | [**reactivateOrganization**](doc/OrganizationApi.md#reactivateorganization) | **POST** /api/v1/organizations/{id}/reactivate | Reactiva uma organização suspensa
+[*OrganizationApi*](doc/OrganizationApi.md) | [**suspendOrganization**](doc/OrganizationApi.md#suspendorganization) | **POST** /api/v1/organizations/{id}/suspend | Suspende uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 
 
 ## Documentation For Models
 
+ - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
+ - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
+ - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
+ - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [FieldError](doc/FieldError.md)
+ - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
+ - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
+ - [InvitationDetailsResponse](doc/InvitationDetailsResponse.md)
+ - [InvitationOrganization](doc/InvitationOrganization.md)
+ - [InvitationResponse](doc/InvitationResponse.md)
+ - [InviteUserRequest](doc/InviteUserRequest.md)
  - [Jwk](doc/Jwk.md)
  - [JwksResponse](doc/JwksResponse.md)
  - [LogoutRequest](doc/LogoutRequest.md)
  - [MeOrganization](doc/MeOrganization.md)
  - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
+ - [OrganizationResponse](doc/OrganizationResponse.md)
+ - [OrganizationSummaryResponse](doc/OrganizationSummaryResponse.md)
  - [OtpChallengeResponse](doc/OtpChallengeResponse.md)
  - [OtpOptionsResponse](doc/OtpOptionsResponse.md)
  - [OtpRequestResponse](doc/OtpRequestResponse.md)
@@ -96,10 +126,15 @@ Class | Method | HTTP request | Description
  - [OtpTestRequest](doc/OtpTestRequest.md)
  - [OtpTestResponse](doc/OtpTestResponse.md)
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
+ - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
+ - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
+ - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
  - [TokenResponse](doc/TokenResponse.md)
+ - [TotpSetupResponse](doc/TotpSetupResponse.md)
+ - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)
  - [VersionResponse](doc/VersionResponse.md)
