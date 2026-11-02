@@ -14,6 +14,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SPEC="api/openapi.yaml"
 
 cd "$ROOT/backend"
+mkdir -p target
 echo "A gerar $SPEC (./mvnw -Popenapi verify)..."
 if ! ./mvnw -B -q -Popenapi verify > "$ROOT/backend/target/check-openapi.log" 2>&1; then
   echo "ERRO: a geração do contrato falhou. Últimas linhas de backend/target/check-openapi.log:" >&2
