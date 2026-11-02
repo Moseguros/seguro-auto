@@ -21,7 +21,7 @@ Tomadas pelo responsável do plano depois de os 11 agentes escreverem as fichas 
 **D9. Número da carta de condução.** É cifrado e tem índice cego (S2-03, S8-02). O S9-04 lê-o com o método que o S8-02 define, nunca de um JSON em claro.
 
 **D10. Consultas a staff no `IdentityApi`.** Fica um só conjunto de métodos, cada um criado pela primeira ficha que o usa:
-- `staffWithPermission(UUID orgId, String permission) → List<StaffContact(userId, displayName, email)>`, criado no S4 (era o `staffContacts`);
+- `staffWithPermission(UUID orgId, String permission) → List<StaffContact(userId, displayName, email, preferredLanguage)>`, criado no S4 (era o `staffContacts`);
 - `staffDisplayNames(Set<UUID>) → Map<UUID,String>`, criado no S8;
 - `staffMember(UUID) → Optional<StaffContact>`, criado no S10.
 

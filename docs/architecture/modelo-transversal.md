@@ -35,16 +35,42 @@ integration   → rating, proposal, payment, policy, verification, identity, veh
 
 - **Pagamentos.** `payment` não conhece propostas nem apólices.
   - Define no seu pacote público a interface `PaymentTargetResolver` (`supports(targetType)`, `resolve(targetType, targetId) → PayableTarget(insurerId, payerUserId, amount, description, purpose, expiresAt)`).
-  - `proposal` (`PROPOSAL`), `policy` (`INSTALMENT`, `RENEWAL`, `ENDORSEMENT`, `FLEET_INCLUSION`) e `claim` (`DEDUCTIBLE`, se vier a existir) implementam-na.
+  - `proposal` (`PROPOSAL`: `ProposalPaymentTargetResolver`, S5-02), `policy` (`PolicyPaymentTargetResolver`: `INSTALMENT` no S7-02, `RENEWAL` no S7-03, `ENDORSEMENT` no S7-04, `FLEET_INCLUSION` no S7-06) e `claim` (`DEDUCTIBLE`, se vier a existir; a cobrança da franquia está fora do âmbito do S9-04) implementam-na.
   - O `payment` encontra as implementações como beans Spring.
   - Os endpoints `POST /proposals/{id}/payment-intents` etc. ficam no módulo dono do alvo e chamam `PaymentApi.createIntent(...)`.
 - **Ficheiros.** `document` guarda e serve ficheiros mas não decide quem os vê.
-  - Define `FileAccessPolicy` (`supports(ownerType)`, `canRead(ownerType, ownerId, CurrentUser)`), implementada por cada módulo dono (`VEHICLE`, `PRODUCT_VERSION`, `KYC`, `PROPOSAL`, `INSPECTION`, `POLICY`, `CLAIM`, `COMPLAINT`…).
+  - Define `FileAccessPolicy` (`ownerTypes()`, `supports(ownerType)`, `canRead(ownerType, ownerId, CurrentUser)`; S2-01), implementada por cada módulo dono. O `FileAccessPolicyRegistry` recusa arrancar com `ownerTypes()` vazio ou com dois beans para o mesmo tipo; o `store` e o `renderPdf` recusam um `ownerType` sem política.
   - Sem política que diga "sim" → 404.
-- **Histórico de sinistros (bónus/malus).** O `policy` não pode ouvir o `claim` (o `claim` depende do `policy`). Por isso o `claim`, ao pagar uma indemnização (S9-04), chama `PolicyApi.recordClaimOutcome(policyId, claimId, driverLicenceNumber, atFault, paidAmount, occurredAt)`, que grava em `policy.claims_history` e reduz o capital disponível da anuidade.
+  - Tipos de dono definidos nas fichas:
+
+    | `ownerType` | Módulo (classe) | Ficha |
+    | --- | --- | --- |
+    | `VEHICLE` | vehicle (`VehicleFileAccessPolicy`) | S2-03 |
+    | `PRODUCT_VERSION` | catalog (`ProductVersionFileAccessPolicy`) | S2-04 |
+    | `INSURER_LOGO` | catalog (`InsurerLogoFileAccessPolicy`; leitura sempre permitida) | S2-04 |
+    | `KYC` | identity (`KycFileAccessPolicy`) | S4-01 |
+    | `INSPECTION` | proposal (`InspectionFileAccessPolicy`) | S4-03 |
+    | `PROPOSAL` | proposal (`ProposalFileAccessPolicy`) | S4-04 |
+    | `PAYMENT_REFERENCE` | payment (`PaymentFileAccessPolicy`) | S5-02 (S7-06: também o pagador em âmbito `ORG`) |
+    | `POLICY` | policy (`PolicyFileAccessPolicy`) | S6-02 (S7-06: também o gestor de frota) |
+    | `CLAIM` | claim (`ClaimFileAccessPolicy`) | S8-01 (S9-02: a oficina escolhida lê `PHOTO_DAMAGE` e `PHOTO_SCENE`) |
+    | `ACCIDENT_STATEMENT` | claim (`StatementFileAccessPolicy`) | S8-02 |
+    | `CLAIM_ASSESSMENT` | claim (`ClaimFileAccessPolicy`) | S9-01 |
+    | `CLAIM_WORKSHOP_QUOTE` | claim (`ClaimFileAccessPolicy`) | S9-02 |
+    | `CLAIM_SETTLEMENT` | claim (`ClaimFileAccessPolicy`; só a seguradora) | S9-04 |
+    | `COMPLAINT`, `COMPLAINT_INTERNAL` | complaint (`ComplaintFileAccessPolicy`; `COMPLAINT_INTERNAL` só a seguradora com `complaint:read`) | S10-01 |
+    | `COMMISSION_STATEMENT` | policy (`CommissionStatementFileAccessPolicy`) | S11-02 |
+
+  - O `reporting` não usa o `DocumentApi`: os ficheiros das exportações ficam em `reporting.report_run` (S11-05).
+- **Retirar um veículo.** O `vehicle` não pode depender do `policy`. Define no pacote raiz `VehicleRemovalGuard` (`boolean blocksRemoval(UUID vehicleId)`, no âmbito de quem chama, dentro da transacção do `DELETE`; S2-03 §7.1). O `VehicleService` recebe a lista de guards e o primeiro `true` dá 409 `VEHICLE_REMOVAL_BLOCKED`. O `policy` implementa-a no S6-01 (`PolicyVehicleRemovalGuard`: apólice `ACTIVE` ou `SUSPENDED` com o veículo). Até lá a remoção é permitida (D29).
+- **Valores de referência e matrículas.** O `vehicle` valida dados sem depender do `catalog` através de interfaces do `shared`, cada uma com uma só implementação no `catalog`:
+  - `shared.reference.ReferenceValueLookup` (`boolean isActive(String domain, String code)`), implementada por `ReferenceValueService` (S2-02);
+  - `PlateFormatProvider` (S0-03), implementada por `DbPlateFormatProvider` (S2-02), que substitui o `ConfigPlateFormatProvider`.
+- **Nomes de quem fez a acção na auditoria.** O `shared` não depende de nenhum módulo. Define `ActorNameResolver` (`Map<String, String> displayNames(Set<String> actorIds)`, S11-06), implementada pelo `identity` (`AuditActorNameResolver`, que delega em `IdentityApi.staffDisplayNames` no âmbito de quem pesquisa). Sem implementação, os nomes ficam `null`.
+- **Histórico de sinistros (bónus/malus).** O `policy` não pode ouvir o `claim` (o `claim` depende do `policy`). Por isso o `claim`, ao pagar uma indemnização (S9-04), chama `PolicyApi.recordClaimOutcome(policyId, claimId, driverLicenceNumber, atFault, paidAmount, occurredAt)` (S7-03), que grava em `policy.claims_history` e reduz o capital disponível da anuidade. `driverLicenceNumber` pode ser `null` (sinistro sem declaração amigável); com valor, o `claim` lê-o com `AccidentStatement.driverLicenceNumber(VehicleKey)` do S8-02 (D9).
 - **Pagamento da proposta → emissão.** O `proposal` ouve `PaymentSucceeded` (alvo `PROPOSAL`), passa a `PAID` e publica `ProposalPaid`; é este evento que o `policy` ouve para emitir (S6). Assim não há corrida entre os dois módulos.
-- **Destinatários das notificações.** O `notification` não pode depender do `identity` (o `identity` já depende dele). Define a interface `NotificationRecipientResolver` (`resolve(UUID userId) → Recipient(msisdn, email, preferredLanguage, deviceTokens)`), implementada pelo `identity` (S6-04).
-- **Notificações.** Quem quer notificar chama `NotificationApi.notify(userId, templateCode, params, NotificationCategory)`. O `notification` nunca ouve eventos de outros módulos.
+- **Destinatários das notificações.** O `notification` não pode depender do `identity` (o `identity` já depende dele). Define a interface `NotificationRecipientResolver` (`Optional<NotificationRecipient> resolve(UUID userId)`, com `NotificationRecipient(userId, msisdn, msisdnVerified, email, emailVerified, language, active)`), implementada pelo `identity` (`IdentityRecipientResolver`, S6-04). Tem de existir exactamente um bean.
+- **Notificações.** Quem quer notificar chama `NotificationApi.notify(userId, templateCode, params, NotificationCategory)`. O `notification` nunca ouve eventos de outros módulos: os avisos saem de listeners nos módulos donos dos eventos (`ProposalNotificationsListener`, `PaymentNotificationsListener`, S6-04) ou de jobs (`QuoteExpiryNotifierJob` do `rating`, S6-04, D16).
 
 ### 1.2 Eventos de domínio
 
@@ -56,16 +82,36 @@ Records imutáveis no pacote raiz do módulo que publica, com `UUID eventId`, `I
 | --- | --- | --- | --- |
 | `OrganizationSuspended`, `OrganizationReactivated` | organization | 1 | identity |
 | `OtpDeliveryFailed` | notification | 1 | identity |
-| `ProductVersionPublished` | catalog | 2 | — |
-| `QuoteCreated` | rating | 3 | — |
-| `ProposalSubmitted`, `ProposalAccepted`, `ProposalRejected`, `ProposalInfoRequested`, `ProposalExpired` | proposal | 4 | — (o `fraud` não depende do `proposal`) |
-| `ProposalPaid` | proposal | 5 | policy (S6: emite a apólice) |
-| `PaymentSucceeded`, `PaymentFailed`, `PaymentRefunded` | payment | 5 | proposal (alvo `PROPOSAL` → `PAID` → publica `ProposalPaid`), policy (alvos `INSTALMENT`, `RENEWAL`, `ENDORSEMENT`, `FLEET_INCLUSION`, S7), fraud (S11) |
-| `ReferenceGenerated` | payment | 5 | — (o `payment` notifica directamente) |
-| `PolicyIssued`, `PolicyStatusChanged`, `PolicyRenewed`, `EndorsementApplied` | policy | 6–7 | verification (cache), fraud (S11), policy (comissões S11) |
-| `ClaimReported`, `ClaimRegistered`, `ClaimRejected`, `ClaimDisputed`, `ClaimPaid`, `ClaimClosed` | claim | 8–9 | complaint (`ClaimDisputed`), fraud (S11) |
-| `ComplaintSubmitted`, `ComplaintAnswered`, `ComplaintEscalated` | complaint | 10 | — |
-| `AssistanceRequested` | assistance | 10 | — |
+| `ProductVersionPublished` | catalog | 2 (S2-04) | — |
+| `QuoteCreated` | rating | 3 (S3-02) | — |
+| `ProposalSubmitted` | proposal | 4 (S4-05) | — |
+| `ProposalAccepted`, `ProposalRejected`, `ProposalInfoRequested` (S4-05), `ProposalExpired` (S4-02) | proposal | 4 | proposal (`ProposalNotificationsListener`, S6-04: avisos ao cliente). O `fraud` não ouve eventos de proposta (D17) |
+| `ProposalPaid` | proposal | 5 (S5-02) | policy (`ProposalPaidListener`, S6-01: emite a apólice) |
+| `PaymentSucceeded` | payment | 5 (S5-02) | proposal (`ProposalPaymentListener`, S5-02: alvo `PROPOSAL` → `PAID` → publica `ProposalPaid`, ou `raiseTargetNotPayable`), payment (`PaymentNotificationsListener`, S6-04), policy (`PolicyPaymentListener`, S7-02: `INSTALMENT`; `RENEWAL` S7-03, `ENDORSEMENT` S7-04, `FLEET_INCLUSION` S7-06), fraud (`FraudEventsListener`, S11-03: regras `PAYMENT`) |
+| `PaymentFailed` | payment | 5 (S5-02) | payment (`PaymentNotificationsListener`, S6-04) |
+| `ReferenceGenerated` | payment | 5 (S5-02) | payment (`PaymentNotificationsListener`, S6-04) |
+| `PaymentRefunded` | payment | 5 (record S5-02); publicado a partir do S7-05, que lhe acrescenta `refundRequestId` | — |
+| `PolicyIssued` | policy | 6 (S6-01; S7-06 nas apólices de frota) | policy (`PolicyDocumentsListener`, S6-02; `CommissionListener`, S11-02: linha `ISSUE`), verification (`PolicyCacheListener`, S6-03), integration (`UssdPolicyIssuedListener`, S12-02: certificado por SMS) |
+| `PolicyStatusChanged` | policy | 7 (S7-01) | verification (`PolicyCacheListener`, S7-01), policy (`CommissionListener`, S11-02: `CANCELLATION` e `REINSTATEMENT`) |
+| `PolicyRenewed` | policy | 7 (S7-03) | policy (`CommissionListener`, S11-02: linha `RENEWAL`) |
+| `EndorsementApplied` | policy | 7 (S7-04) | policy (`RefundListener`, S7-05; `FleetCertificateListener`, S7-06, só `FLEET_INCLUSION`; `CommissionListener`, S11-02: linha `ENDORSEMENT`) |
+| `ClaimReported` | claim | 8 (S8-03, S8-04; S12-01 pelo USSD) | claim (`ClaimReportedListener`, S8-03: cobertura, ligação, rejeição automática), fraud (`FraudEventsListener`, S11-03) |
+| `ClaimRegistered` | claim | 8 (S8-05) | fraud (`FraudEventsListener`, S11-03) |
+| `ClaimRejected` | claim | 8 (S8-03 automático, S8-05 manual) | — |
+| `ClaimDisputed` | claim | 9 (S9-03) | complaint (`ClaimDisputedListener`, S10-03: reclamação automática) |
+| `ClaimPaid` | claim | 9 (S9-04) | fraud (`FraudEventsListener`, S11-03) |
+| `ClaimClosed` | claim | 9 (S9-04) | — |
+| `ComplaintSubmitted`, `ComplaintAnswered` (S10-01), `ComplaintEscalated` (S10-02) | complaint | 10 | — |
+| `AssistanceRequested` | assistance | 10 (S10-04) | — |
+
+Eventos internos (no pacote `application` do módulo, ouvidos só pelo próprio módulo):
+
+| Evento | Módulo | Ficha | Ouvido por |
+| --- | --- | --- | --- |
+| `RefundRequested(refundId)` | policy | S7-05 | `RefundDispatchListener` (chama `PaymentApi.refund`) |
+| `ReportRunRequested(runId)` | reporting | S11-05 | `ReportRunListener` |
+
+As mensagens RabbitMQ do `payment-contracts` (S5-06: `ReferencePaymentReceived`, `PaymentFileProcessed`, `PaymentFileRejected`, `PaymentSourcePolled`) não são eventos do Spring Modulith: o `payment-file-worker` publica-as (S5-09) e o `payment` consome-as com `@RabbitListener` (`ReferencePaymentListener` e `PaymentFileEventsListener`, S5-10).
 
 ### 1.3 Excepção: `reporting`
 
@@ -85,49 +131,208 @@ or (s = 'CUSTOMER' and <coluna do cliente> = u)
 
 | Sprint | Módulo | Tabelas novas (detalhe nas fichas) |
 | --- | --- | --- |
-| 2 | document | `document.file` |
-| 2 | catalog | `catalog.reference_value`, `catalog.platform_setting`, `catalog.plate_format`, `catalog.product`, `catalog.product_version`, `catalog.coverage`, `catalog.product_document` |
-| 2 | vehicle | `vehicle.vehicle`, `vehicle.driver`, `vehicle.vehicle_driver` |
-| 3 | rating | `rating.quote_request`, `rating.quote`; `organization.insurer_profile` ganha `rating_mode`, `rating_endpoint_url`, `rating_secret_ref`, `charges jsonb` |
-| 4 | identity | `identity.kyc_check` |
-| 4 | proposal | `proposal.proposal`, `proposal.declaration`, `proposal.suitability_answer`, `proposal.inspection`, `proposal.inspection_photo`, `proposal.signature` |
-| 4 | shared | `shared.business_sequence` (numeração) |
-| 5 | payment | `payment.insurer_payment_method`, `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.inbound_message`, `payment.payment_exception`, `payment.file_import`; `shared.idempotency_record` (idempotência de todos os módulos, `IdempotencyService`) |
-| 5 | (worker) | schema `payment_worker`: `processed_file`, `file_record`, `shedlock` |
-| 6 | policy | `policy.policy`, `policy.instalment`, `policy.certificate`, `policy.policy_event`; o `policy` implementa `VehicleRemovalGuard` do `vehicle` (não se retira um veículo com apólice activa) |
-| 6 | verification | `verification.check_log` |
-| 6 | notification | `notification.template`, `notification.message`, `notification.preference`, `notification.device` |
-| 6 | shared | `shared.shedlock` (jobs agendados de todos os módulos) |
-| 7 | policy | `policy.endorsement`, `policy.refund`, `policy.claims_history`, `policy.fleet`, `policy.policy_vehicle`, `policy.renewal` |
-| 8 | claim | `claim.claim`, `claim.accident_statement`, `claim.statement_signature`, `claim.claim_party`, `claim.claim_document`, `claim.claim_event` |
-| 9 | claim | `claim.assessment`, `claim.assessment_photo`, `claim.workshop_quote`, `claim.liability_decision`, `claim.settlement_offer`, `claim.indemnity_payment`, `claim.reserve` |
-| 9 | organization | `organization.workshop_profile` (morada, província, coordenadas, especialidades), `organization.assistance_coverage` (prestador × província) |
-| 10 | complaint | `complaint.complaint`, `complaint.complaint_message`, `complaint.ombudsman_case`, `complaint.external_proceeding`, `complaint.sla_config` |
-| 10 | assistance | `assistance.request`, `assistance.request_event` |
-| 11 | organization | `organization.broker_appointment` |
-| 11 | policy | `policy.commission`, `policy.commission_statement` |
-| 11 | fraud | `fraud.rule`, `fraud.alert` |
-| 11 | reporting | `reporting.report_template`, `reporting.report_run`, vistas materializadas `reporting.mv_*` |
-| 11 | audit | papel de BD só-de-inserção; `audit.audit_event` ganha `access_type` (`WRITE`/`READ_SENSITIVE`) |
-| 12 | integration | `integration.ussd_session` |
+| 2 | document | `document.file` (S2-01) |
+| 2 | catalog | `catalog.reference_value`, `catalog.platform_setting`, `catalog.plate_format` (S2-02); `catalog.product`, `catalog.product_version`, `catalog.coverage`, `catalog.product_document` (S2-04). O S2-04 preenche `organization.insurer_profile.logo_file_id` (D27) |
+| 2 | vehicle | `vehicle.vehicle`, `vehicle.driver`, `vehicle.vehicle_driver` (S2-03) |
+| 3 | organization | `organization.insurer_profile` ganha `rating_mode`, `rating_endpoint_url`, `rating_secret_ref`, `charges jsonb` e `ck_insurer_profile_external` (S3-01) |
+| 3 | rating | `rating.quote_request`, `rating.quote` (S3-02) |
+| 4 | identity | `identity.kyc_check` (S4-01) |
+| 4 | proposal | `proposal.proposal`, `proposal.declaration`, `proposal.suitability_answer` (S4-02; `ck_proposal_status` e `ck_proposal_channel` com nome fixo); `proposal.inspection`, `proposal.inspection_photo` (S4-03); `proposal.signature` (S4-04) |
+| 4 | proposal | `proposal.proposal` ganha `sign_request_file_id`, `sign_request_hash`, `sign_request_challenge_id`, `sign_request_revision`, `sign_request_assisted_by_user_id`, `current_signature_id` (S4-04); `underwriting_result`, `acceptance_mode`, `review_started_at`, `sla_alert_at`, `sla_due_at`, `sla_alerted_at`, `decided_by`, `decided_at`, `rejection_reason_code`, `decision_reason`, `info_request_message`, `info_request_items`, `info_requested_at` (S4-05); `policyholder_source` (`PROFILE`/`BROKER`, S4-06) |
+| 4 | shared | `shared.business_sequence` (numeração, S4-02) |
+| 5 | payment | `payment.insurer_payment_method` (S5-01); `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.payment_exception` (S5-02); `payment.inbound_message`, `payment.file_import` (S5-10) |
+| 5 | shared | `shared.idempotency_record` (idempotência de todos os módulos, `IdempotencyService`, S5-02) |
+| 5 | proposal | `proposal.proposal` ganha `paid_at`, `payment_intent_id` e `ck_proposal_paid`; `ck_proposal_status` recriada (S5-02, D4) |
+| 5 | (worker) | schema `payment_worker`: `processed_file`, `file_record`, `shedlock` (S5-09) |
+| 6 | policy | `policy.policy`, `policy.instalment`, `policy.certificate`, `policy.policy_event` (S6-01); o `policy` implementa `VehicleRemovalGuard` do `vehicle` (§1.1) |
+| 6 | proposal | `proposal.proposal` ganha `policy_id` e `ck_proposal_converted` (S6-01) |
+| 6 | verification | `verification.check_log` (S6-03) |
+| 6 | notification | `notification.template`, `notification.message`, `notification.preference`, `notification.device` (S6-04) |
+| 6 | rating | `rating.quote_request` ganha `expiry_notified_at` (S6-04, D16) |
+| 6 | shared | `shared.shedlock` (jobs agendados de todos os módulos; S6-01, ou S6-04 se chegar primeiro) |
+| 7 | policy | `policy.policy` ganha `inception_at`, `period_no`, `cancellation_reason`, `cancelled_effective_at`, `suspended_at`, `suspension_ends_on`, `bonus_malus_class`, `ck_policy_cancelled_fields`, `ck_policy_suspended_fields`; `policy.instalment` ganha `period_no`, `credited_amount`; `policy.policy_event` ganha `dedup_key` e `ck_policy_event_type` (S7-01). Parâmetros do ciclo de vida em `catalog.platform_setting` (S7-01) |
+| 7 | policy | `policy.renewal`, `policy.claims_history` (com `driver_licence_enc` e `driver_licence_hash`, ambos `null` sem carta); `policy.policy` ganha `claims_paid_period_amount` (S7-03) |
+| 7 | policy | `policy.endorsement`; `policy.policy` ganha `policyholder_address`, `policyholder_province` (S7-04) |
+| 7 | policy | `policy.refund` (S7-05) |
+| 7 | policy | `policy.fleet`, `policy.policy_vehicle`; `policy.policy` ganha `fleet_id`, `corporate_org_id` e `policyholder_user_id`, `vehicle_id`, `proposal_id` passam a `null` permitido (com `check`); `policy.certificate` ganha `policy_vehicle_id`; `policy.endorsement` e `policy.refund` ganham `corporate_org_id` (S7-06) |
+| 7 | payment | `payment.payment_intent` ganha `refunded_amount`; `payment.payment_event` ganha `refund_request_id` e o tipo `REFUND` (S7-05); política RLS `payment_intent_org_payer` em `payment_intent` e `reference_payment` (S7-06) |
+| 8 | claim | `claim.claim` (com `accident_statement_id`), `claim.claim_party`, `claim.claim_document`, `claim.claim_event` (S8-01); `claim.accident_statement`, `claim.statement_signature` e a FK `fk_claim_statement` (S8-02) |
+| 9 | claim | `claim.assessment`, `claim.assessment_photo`; `claim.claim` ganha `assessor_org_id` (S9-01) |
+| 9 | claim | `claim.workshop_quote`; `claim.claim` ganha `workshop_org_id`, `external_workshop_name`, `external_workshop_phone`, `external_workshop_address`, `workshop_chosen_at`, `workshop_chosen_by` (S9-02) |
+| 9 | claim | `claim.liability_decision`, `claim.settlement_offer`; `claim.claim` ganha `vehicle_recovered_at` (S9-03) |
+| 9 | claim | `claim.indemnity_payment`, `claim.reserve`; `claim.claim` ganha `closed_at`, `close_reason` (S9-04) |
+| 9 | organization | `organization.workshop_profile` (morada, província, coordenadas, especialidades), `organization.assistance_coverage` (prestador × província) (S9-02); `organization.insurer_profile` ganha `indemnity_dual_approval_amount` (S9-04) |
+| 10 | complaint | `complaint.complaint` (com `origin`, `source_event_id`, `claim_id`), `complaint.complaint_message`, `complaint.sla_config` (S10-01); `complaint.ombudsman_case` (S10-02); `complaint.external_proceeding` e `complaint.complaint_message.source_event_id` (S10-03) |
+| 10 | assistance | `assistance.request`, `assistance.request_event` (S10-04) |
+| 11 | organization | `organization.broker_appointment` (S11-01) |
+| 11 | policy | `policy.renewal` ganha `broker_org_id`; política RLS só de leitura `policy_broker_read` em `policy.policy` (S11-01); `policy.commission`, `policy.commission_statement` (S11-02) |
+| 11 | fraud | `fraud.rule`, `fraud.alert` (S11-03) |
+| 11 | claim, identity | `claim.claim_document` ganha `photo_dhash`, `photo_dhash_computed_at`; `identity.refresh_token` ganha `device_id` (S11-03) |
+| 11 | reporting | papel `moseguros_reporting`; vistas materializadas `reporting.mv_insurer`, `mv_policy`, `mv_renewal`, `mv_instalment`, `mv_payment`, `mv_claim`, `mv_complaint`, vistas `reporting.v_insurer_*`, função `reporting.refresh_all()` (S11-04); `reporting.report_template`, `reporting.report_run`, `mv_intermediary`, `mv_commission`, vistas `v_asfpm_*` e `v_regulator_insurer`, `v_regulator_insurer_month` (S11-05) |
+| 11 | audit | `audit.audit_event` ganha `access_type` (`WRITE`/`READ_SENSITIVE`), *triggers* que recusam `update`/`delete`/`truncate`, índices e RLS; a aplicação fica só com `select` e `insert` (S11-06) |
+| 12 | integration | `integration.ussd_session` (com `proposal_id` e `payment_intent_id`, preenchidos pelo S12-02) (S12-01) |
+| 12 | proposal, policy | `ck_proposal_channel` e `ck_policy_channel` passam a aceitar `USSD`; `proposal.signature`: `ck_signature_method` (`OTP`, `USSD`), `otp_challenge_id`, `otp_channel` e `destination_masked` passam a `null` permitido com `ck_signature_otp` (S12-02) |
 
 ## 3. Contratos públicos principais (`<Modulo>Api`)
 
-Só os métodos que outros módulos usam. As fichas podem acrescentar métodos, nunca mudar estes.
+Só os métodos que outros módulos usam. As fichas podem acrescentar métodos, nunca mudar estes. As subtabelas seguem a forma da ficha que cria cada método (coluna "Ficha"); as diferenças entre fichas estão no §10.
 
-| Módulo | Métodos |
-| --- | --- |
-| `DocumentApi` (S2) | `store(StoreFileCommand) → FileRef`, `open(UUID fileId) → FileContent`, `metadata(UUID) → FileRef`, `renderPdf(String templateCode, Map<String,Object> model, Locale, PdfTarget target) → FileRef` (S4-04; `PdfTarget` = dono do ficheiro), `markLinked` (S2-01). Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por job ao fim de 30 dias |
-| `VehicleApi` (S2) | `findOwned(UUID vehicleId, UUID ownerUserId) → Optional<VehicleView>`, `snapshot(UUID vehicleId) → VehicleSnapshot`, `driverSnapshot(UUID driverId) → DriverSnapshot` |
-| `CatalogApi` (S2) | `findPublishedVersions(VehicleCategory, VehicleUsage, ProductType?) → List<ProductVersionView>`, `version(UUID) → ProductVersionView` (coberturas, regras, documentos), `platformSetting(String key) → String` |
-| `RatingApi` (S3) | `quote(UUID quoteId) → QuoteView`, `markUsed(UUID quoteId)`, `rateRenewal(RenewalRatingRequest) → QuoteResult` (S7) |
-| `IdentityApi` (S1/S4) | `customer(UUID userId) → CustomerView`, `kycStatus(UUID userId) → KycStatus`, `findOrCreateCustomerByMsisdn(Msisdn) → UUID` (criado no S3-02; usado no S4-06, S8 e S12), `requestSignOtp`/`verifySignOtp` (S4-04), `staffWithPermission(orgId, permission)` (S4), `staffDisplayNames(Set<UUID>)` (S8), `staffMember(UUID)` (S10) |
-| `ProposalApi` (S4) | `view(UUID) → ProposalView`, `markConverted(UUID proposalId, UUID policyId)` (S6) |
-| `PaymentApi` (S5) | `createIntent(CreateIntentCommand) → IntentView`, `intent(UUID) → IntentView`, `refund(RefundCommand) → RefundView` (S7) |
-| `PolicyApi` (S6) | `findActiveByPlate(String plate, Instant at) → Optional<PolicyCoverView>`, `coverAt(UUID policyId, Instant at) → CoverStatus`, `view(UUID) → PolicyView`, `customerPolicies(UUID userId)`, `recordClaimOutcome(...)` (S7, usado pelo `claim` no S9) |
-| `ClaimApi` (S8) | `view(UUID) → ClaimView` |
-| `OrganizationApi` (S1+) | `findSummary(UUID)`, `insurerProfile(UUID) → InsurerProfileView` (S3), `activeAppointment(UUID brokerOrgId, UUID insurerId) → Optional<AppointmentView>` (S11), `workshopsByProvince(Province)` (S9), `assistanceProvider(UUID insurerId, Province)` (S10) |
-| `NotificationApi` (S1+) | `sendOtp`, `sendEmail` (S1), `notify(UUID userId, String templateCode, Map<String,Object> params, NotificationCategory)` (S6) |
+Salvo indicação em contrário, os métodos correm no âmbito de quem chama (o RLS aplica-se). "`SYSTEM`" quer dizer que delegam numa classe `<Modulo>SystemLookups` com `@RunAsSystem`.
+
+### `DocumentApi` (document)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `FileRef store(StoreFileCommand)` | S2-01 | `REQUIRES_NEW`; o `ownerType` tem de ter `FileAccessPolicy` |
+| `void markLinked(UUID fileId)` | S2-01 | na transacção de quem chama; idempotente |
+| `FileContent open(UUID fileId)` | S2-01 | não verifica a `FileAccessPolicy` (quem chama é o dono) |
+| `FileRef metadata(UUID fileId)` | S2-01 | idem |
+| `FileRef renderPdf(String templateCode, Map<String,Object> model, Locale locale, PdfTarget target)` | S4-04 | única forma (D5); `PdfTarget(ownerType, ownerId, purpose, insurerId, FileClassification classification, fileName)`; `MANDATORY` |
+
+Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por job ao fim de 30 dias (o `FileStorage` tem `delete`, D26).
+
+### `VehicleApi` (vehicle)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `Optional<VehicleView> findOwned(UUID vehicleId, UUID ownerUserId)` | S2-03 | vazio se não for do dono ou estiver `REMOVED` |
+| `VehicleSnapshot snapshot(UUID vehicleId)` | S2-03 | `VEHICLE_NOT_FOUND` |
+| `DriverSnapshot driverSnapshot(UUID driverId)` | S2-03 | `DRIVER_NOT_FOUND`; leva `licenceNumberMasked` e `licenceNumberHash`, nunca o número em claro |
+| `RegisteredVehicle registerForCustomer(UUID ownerUserId, NewVehicle vehicle, NewDriver driver)` | S4-06 | `RegisteredVehicle(VehicleSnapshot, DriverSnapshot)` |
+| `Optional<VehicleView> findOwnedByPlate(UUID ownerUserId, Matricula plate)` | S12-02 | `self:vehicles`; só `ACTIVE` |
+| `UUID registerVehicle(UUID ownerUserId, NewVehicle vehicle)` | S12-02 | regras do `createMyVehicle` (S2-03) |
+| `Optional<UUID> findOwnerDriver(UUID ownerUserId)` | S12-02 | condutor `is_owner` e `ACTIVE` |
+| `UUID registerOwnerDriver(UUID ownerUserId, NewDriver driver, UUID vehicleId)` | S12-02 | regras do `createMyDriver` (S2-03) |
+
+### `CatalogApi` (catalog)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `String platformSetting(String key)` | S2-02 | chave desconhecida → `IllegalArgumentException` |
+| `List<ProductVersionView> findPublishedVersions(VehicleCategory category, VehicleUsage usage, ProductType type)` | S2-04 | `type` nulo = todos; `SYSTEM` (`CatalogSystemLookups`) |
+| `ProductVersionView version(UUID productVersionId)` | S2-04 | só versões com `published_at`; senão `PRODUCT_VERSION_NOT_FOUND` |
+| `ProductVersionView insurerVersion(UUID productVersionId)` | S3-01 | qualquer estado, só a seguradora dona (RLS) |
+| `long updateRatingRules(UUID productVersionId, JsonNode rating, long expectedVersion)` | S3-01 | só `DRAFT` |
+
+### `RatingApi` (rating)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `QuoteView quote(UUID quoteId)` | S3-02 | `QUOTE_NOT_FOUND` |
+| `void markUsed(UUID quoteId)` | S3-02 | `MANDATORY` (transacção da proposta) |
+| `QuoteResult rateRenewal(RenewalRatingRequest request)` | S7-03 | também usado pelo S7-04 (`purpose = ENDORSEMENT`); não grava `rating.quote` |
+| `List<QuoteView> quoteForUssd(UssdQuoteCommand(UUID customerUserId, UUID vehicleId, UUID driverId, String productType, int durationDays, LocalDate startDate))` | S12-02 | só `OFFERED` |
+
+### `IdentityApi` (identity)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `UUID findOrCreateCustomerByMsisdn(Msisdn)` | S3-02 | `SYSTEM` (D2); usado no S4-06, S8 e S12 |
+| `Optional<CustomerView> customer(UUID userId)` | S4-01 | `SYSTEM`; `CustomerView` com `idDocNumber` e `nuit` em claro, nunca serializado |
+| `KycStatus kycStatus(UUID userId)` | S4-01 | `SYSTEM` |
+| `SignOtpChallenge requestSignOtp(SignOtpRequest)` | S4-04 | `SYSTEM` |
+| `SignOtpVerification verifySignOtp(UUID signerUserId, UUID challengeId, String code, String documentHash)` | S4-04 | `SYSTEM`; também verifica os códigos do S8-02 |
+| `List<StaffContact> staffWithPermission(UUID orgId, String permission)` | S4-05 | `SYSTEM`; `StaffContact(UUID userId, String displayName, String email, String preferredLanguage)` (D10) |
+| `SignOtpChallenge requestStatementSignOtp(StatementSignOtpRequest)` | S8-02 | `SYSTEM` |
+| `Map<UUID,String> staffDisplayNames(Set<UUID> userIds)` | S8-05 | âmbito de quem chama |
+| `Optional<StaffContact> staffMember(UUID userId)` | S10-01 | `SYSTEM`; qualquer estado da conta |
+| `int accountsSharingDevices(UUID userId, Instant since)` | S11-03 | `SYSTEM` |
+| `confirmMsisdnByNetwork(UUID userId)` | S12-01 | `SYSTEM`; marca o `msisdn` como verificado |
+| `CustomerClaims customerClaims(UUID userId)` | S12-01 | `SYSTEM`; `CustomerClaims(userId, AccountStatus status, preferredLanguage, List<String> roles, List<String> permissions)` |
+| `completeProfile(ProfileCompletionCommand(UUID userId, String fullName, LocalDate birthDate, String idDocType, String idDocNumber, Nuit nuit, Province province))` | S12-02 | `self:profile`; regras do `PUT /me/profile` (S1-06) |
+
+### `ProposalApi` (proposal)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `Optional<ProposalView> view(UUID proposalId)` | S4-02 | `ProposalView` com `commercialPremiumAmount` (ver §10) e `signedDocumentFileId` (S4-04) |
+| `void markConverted(UUID proposalId, UUID policyId)` | S6-01 | `PAID → CONVERTED` |
+| `List<BrokerCustomerRef> brokerCustomers(UUID brokerOrgId)` | S11-01 | `BrokerCustomerRef(UUID customerUserId, int openProposals, Instant lastProposalAt)`; âmbito do mediador |
+| `UssdProposalResult submitFromUssd(UssdProposalCommand)` | S12-02 | `self:proposals` |
+| `List<ProposalView> findAwaitingPayment(UUID customerUserId)` | S12-02 | `ACCEPTED`, não expiradas |
+| `Optional<ProposalView> findByQuoteId(UUID quoteId)` | S12-02 | |
+
+### `PaymentApi` (payment)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `IntentView createIntent(CreateIntentCommand)` | S5-02 | idempotente pela chave (`shared.idempotency_record`) |
+| `IntentView intent(UUID intentId)` | S5-02 | |
+| `List<PaymentMethodOption> availableMethods(UUID insurerId, Money amount)` | S5-02 | |
+| `Optional<IntentView> activeIntent(PaymentTargetType, UUID targetId)` | S5-02 | `CREATED`, `PENDING` ou `UNKNOWN` |
+| `boolean hasBlockingIntent(PaymentTargetType, UUID targetId)` | S5-02 | M-Pesa ou e-Mola em curso |
+| `boolean isPaid(PaymentTargetType, UUID targetId)` | S5-02 | |
+| `void raiseTargetNotPayable(UUID intentId, String detail)` | S5-02 | cria `payment_exception` `TARGET_NOT_PAYABLE` |
+| `RefundView refund(RefundCommand)` | S7-05 | `RefundCommand(UUID refundRequestId, UUID intentId, Money amount, String reason)`; idempotente por `refundRequestId` |
+
+### `PolicyApi` (policy)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `Optional<PolicyCoverView> findActiveByPlate(String plate, Instant at)` | S6-01 | `SYSTEM` |
+| `CoverStatus coverAt(UUID policyId, Instant at)` | S6-01 | `SYSTEM`; regras refeitas no S7-01 e no S7-03 (valores do S6-01, D8) |
+| `PolicyView view(UUID policyId)` | S6-01 | `POLICY_NOT_FOUND` (D24); o S7-03 acrescenta `claimsPaidInPeriod` |
+| `List<PolicySummaryView> customerPolicies(UUID userId)` | S6-01 | |
+| `Optional<PolicyCoverView> findLatestByPlate(String plate, Instant at)` | S6-01 | `SYSTEM`; para o S6-03 |
+| `Optional<PolicyCoverView> findByCertificateToken(String token)` | S6-01 | `SYSTEM`; para o S6-03 |
+| `void recordClaimOutcome(UUID policyId, UUID claimId, String driverLicenceNumber, boolean atFault, Money paidAmount, Instant occurredAt)` | S7-03 | usado pelo `claim` no S9-04 (§1.1); idempotente por `claimId` |
+| `PolicyClaimTerms claimTerms(UUID policyId, Instant at)` | S9-03 | anuidade que contém `at` |
+| `Optional<AssistanceEntitlement> assistanceEntitlement(UUID policyId, Instant at)` | S10-04 | |
+| `Set<UUID> brokerPolicyIds(UUID brokerOrgId)` | S11-01 | âmbito do mediador (`policy_broker_read`) |
+| `Set<UUID> policyIdsByPlate(String plate)` | S11-03 | chamado em `SYSTEM` pelo `fraud` |
+| `Optional<CertificateSummary> certificateSummary(UUID policyId)` | S12-02 | `CertificateSummary(certificateNumber, policyNumber, plate, insurerName, validFrom, validTo, verificationUrl)` |
+
+### `ClaimApi` (claim)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `Optional<ClaimView> view(UUID claimId)` | S8-01 | |
+| `ClaimFraudFacts fraudFacts(UUID claimId)` | S11-03 | chamado em `SYSTEM` pelo `fraud` |
+| `ClaimMatchResult countClaimsMatching(ClaimMatchQuery q)` | S11-03 | idem |
+| `List<SimilarPhoto> findSimilarPhotos(UUID claimId, int maxDistance, UUID insurerId)` | S11-03 | `insurerId` nulo = todas |
+| `WorkshopAssessorStats workshopAssessorStats(UUID insurerId, UUID workshopOrgId, Instant from, Instant to)` | S11-03 | |
+| `ClaimReference reportByUssd(UssdClaimReport(policyId, userId, at))` | S12-01 | `self:claims`; `ClaimReference(UUID claimId, String number)` |
+
+### `OrganizationApi` (organization)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `findSummary(UUID)` | S1 | |
+| `Map<UUID, OrganizationSummary> findSummaries(Set<UUID>)` | S2-04 | |
+| `Optional<UUID> insurerLogoFileId(UUID insurerId)`, `void setInsurerLogo(UUID insurerId, UUID fileIdOrNull)` | S2-04 | |
+| `Optional<InsurerProfileView> insurerProfile(UUID insurerId)` | S3-01 | `SYSTEM`; o S9-04 acrescenta `indemnityDualApprovalAmount` ao `InsurerProfileView` |
+| `Map<UUID, InsurerProfileView> insurerProfiles(Collection<UUID> insurerIds)` | S3-01 | `SYSTEM` |
+| `Optional<OrganizationSummary> findActiveCorporateClientByNuit(Nuit)` | S7-06 | `SYSTEM`; só `CORPORATE_CLIENT` `ACTIVE` |
+| `List<OrganizationSummary> activeByType(OrganizationType)` | S9-01 | `SYSTEM` |
+| `List<WorkshopView> workshopsByProvince(Province)` | S9-02 | `SYSTEM`; só `ACTIVE` e `listed` |
+| `Optional<WorkshopView> workshop(UUID organizationId)` | S9-02 | `SYSTEM` |
+| `List<OrganizationSummary> activeInsurers()` | S10-01 | `SYSTEM` |
+| `Optional<OrganizationContact> findContact(UUID orgId)` | S10-01 | `SYSTEM`; `OrganizationContact(id, displayName, contactEmail, contactPhone)` |
+| `Optional<AssistanceProviderView> assistanceProvider(UUID insurerId, Province province)` | S10-04 | `SYSTEM`; `AssistanceProviderView(orgId, displayName, contactPhone, contactEmail)` |
+| `Optional<AppointmentView> activeAppointment(UUID brokerOrgId, UUID insurerId)` | S11-01 | `SYSTEM`; "activa" = hoje em `Africa/Maputo` |
+| `Set<UUID> activeAppointedInsurers(UUID brokerOrgId)` | S11-01 | `SYSTEM` |
+| `AppointmentView requireActiveAppointment(UUID brokerOrgId, UUID insurerId)` | S11-01 | 403 `BROKER_NOT_APPOINTED` |
+| `Optional<IntermediaryContactView> intermediaryContact(UUID orgId)` | S11-01 | `SYSTEM` |
+| `Optional<AppointmentView> latestAppointment(UUID brokerOrgId, UUID insurerId, LocalDate onOrBefore)` | S11-02 | `SYSTEM`; qualquer estado |
+
+### `NotificationApi` (notification)
+
+| Método | Ficha | Notas |
+| --- | --- | --- |
+| `sendOtp`, `sendEmail` | S1 | |
+| `DeliveryResult sendSignOtp(Channel channel, String destination, String code, int validityMinutes, SignOtpText text, String language, UUID correlationId)` | S4-04 | síncrono, nunca lança |
+| `DeliveryResult sendSms(String toE164, String templateKey, Object[] args, String language, String purpose, UUID correlationId)` | S5-02 | só para números escritos pelo utilizador e links do mediador (S6-04 §9) |
+| `UUID notify(UUID userId, String templateCode, Map<String,Object> params, NotificationCategory category)` | S6-04 | `REQUIRED`; envio depois do *commit* |
+| `DeliveryResult sendStatementSignOtp(Channel channel, String destination, String code, int validityMinutes, String occurredDate, String language, UUID correlationId)` | S8-02 | igual ao `sendSignOtp` |
+
+### Outros módulos
+
+| Módulo | Métodos | Ficha |
+| --- | --- | --- |
+| `VerificationApi` (verification) | `VerificationView verifyPlate(String rawPlate)` (`VerificationView(status, plateMasked, insurerName, validFrom, validTo, coverageType)`; grava `check_log` como `PUBLIC`) | S12-02 |
+| `ComplaintApi` (complaint) | sem métodos (classe criada para os eventos) | S10-01 |
+| `AssistanceApi` (assistance) | sem métodos | S10-04 |
+| `fraud`, `reporting`, `integration` | não têm `<Modulo>Api` usado por outros módulos | — |
 
 ## 4. Numeração de negócio
 
@@ -216,6 +421,8 @@ As migrações de cada sprint usam carimbos dentro do intervalo do sprint, e cad
 | 10 | `20270401HHmm` |
 | 11 | `20270415HHmm` |
 | 12 | `20270501HHmm` |
+
+**Ordem de chegada ao `main`.** As tarefas correm em paralelo, por isso uma migração pode chegar depois de outra com carimbo maior. O Flyway corre com `spring.flyway.out-of-order: true` em todos os perfis (S0-03), e aplica-a na mesma. Cada migração tem de funcionar sozinha sobre o estado das tarefas de que a sua tarefa depende ("Depende de"), e nunca sobre o de uma tarefa paralela.
 
 O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `payment_worker`, começando em `V202701150000`.
 
@@ -316,7 +523,7 @@ IDs do plano, com uma tarefa nova (S5-12):
 | S6-02 | PDF do certificado com QR e documentos da apólice | S6-01, S6-04 |
 | S6-03 | Verificação pública e área da polícia (API, CAPTCHA, registo) | S6-01 |
 | S6-04 | Notificações: modelos, mensagens, preferências, dispositivos, push; aviso de cotação a expirar (`QuoteExpiryNotifierJob` no `rating`) | S5 |
-| S6-05 | Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-03, S6-04 |
+| S6-05 | Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-02, S6-03, S6-04 |
 | S6-06 | Web cliente: apólices, certificado, notificações e preferências | S6-02, S6-04 |
 | S6-07 | Mobile: apólices offline, "mostrar à polícia", push e deep links | S6-02, S6-04 |
 | S6-08 | Release 1: staging, observabilidade, carga (k6), ASVS nível 1, distribuição do APK | S6-05, S6-06, S6-07 |
@@ -327,12 +534,12 @@ IDs do plano, com uma tarefa nova (S5-12):
 | --- | --- | --- |
 | S7-01 | Jobs diários e máquina de estados da apólice (avisos, prestações em atraso, resolução, caducidade) | S6 |
 | S7-02 | Pagamento de prestações | S7-01 |
-| S7-03 | Renovação (proposta 30 dias antes, nova tarifa, bónus/malus) | S7-01 |
-| S7-04 | Endossos (alterações com ou sem prémio) e decisão da seguradora | S7-01 |
+| S7-03 | Renovação (proposta 30 dias antes, nova tarifa, bónus/malus) | S7-01, S7-02 |
+| S7-04 | Endossos (alterações com ou sem prémio) e decisão da seguradora | S7-01, S7-02 |
 | S7-05 | Venda, substituição de veículo, cancelamento e estornos | S7-04 |
-| S7-06 | Frotas: apólice de frota, importação CSV, inclusões e exclusões pro rata, área `/frota` (backend) | S7-04 |
-| S7-07 | Web cliente e seguradora: detalhe da apólice com linha temporal e acções; web `/frota` | S7-05, S7-06 |
-| S7-08 | Mobile: acções na apólice e calendário de prestações | S7-05 |
+| S7-06 | Frotas: apólice de frota, importação CSV, inclusões e exclusões pro rata, área `/frota` (backend) | S7-04, S7-05 |
+| S7-07 | Web cliente e seguradora: detalhe da apólice com linha temporal e acções; web `/frota` | S7-03, S7-05, S7-06 |
+| S7-08 | Mobile: acções na apólice e calendário de prestações | S7-03, S7-05 |
 
 ### Sprint 8 — Sinistros I
 
@@ -381,7 +588,7 @@ IDs do plano, com uma tarefa nova (S5-12):
 | S11-02 | Comissões: cálculo, extractos mensais, estorno | S11-01 |
 | S11-03 | Antifraude: motor de regras, 7 regras, alertas | S10 |
 | S11-04 | Painéis da seguradora (vistas materializadas) | S10 |
-| S11-05 | Exportações ASFPM configuráveis e área `/supervisao` (API) | S11-04 |
+| S11-05 | Exportações ASFPM configuráveis e área `/supervisao` (API) | S11-02, S11-04 |
 | S11-06 | Auditoria: só-de-inserção, leituras sensíveis, pesquisa e exportação (API) | S10 |
 | S11-07 | Web: mediador, antifraude, painéis, supervisão, auditoria | S11-01 a S11-06 |
 | S11-08 | Web cliente e mobile: mediador associado à apólice | S11-01 |
@@ -424,3 +631,9 @@ As fichas registam-nas em "Questões". Quando uma decisão bloqueia a tarefa, a 
 | Agregador USSD e código curto | S12-01 | não para o simulador; sim para produção |
 | Acessos INATRO e PRM | S12 (melhorias diferidas) | não (mocks) |
 | Entidade de pentest externo | S12-06 | sim para a parte externa |
+
+## 10. Divergências encontradas ao actualizar o inventário
+
+Resolvidas em 02/11/2026 nas fichas: `ProposalView.commercialPremiumAmount` existe desde o S4-02; `claims_history.driver_licence_enc` aceita `null` (S7-03, S9-04); a verificação pública não ouve `EndorsementApplied` (calcula o estado no pedido); `OrganizationSystemLookups` é criada no S3-01; `StaffContact` tem quatro campos, incluindo `preferredLanguage` (D10).
+
+As secções §1.1, §1.2, §2 e §3 descrevem as fichas tal como estão; onde o texto antigo deste modelo divergia de uma ficha, foi actualizado para a ficha.
