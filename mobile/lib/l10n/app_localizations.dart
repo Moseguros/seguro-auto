@@ -398,6 +398,24 @@ abstract class AppLocalizations {
   /// **'Valor fora dos limites permitidos.'**
   String get validationOutOfRange;
 
+  /// No description provided for @errorRefreshTokenInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'A sua sessão terminou. Entre novamente.'**
+  String get errorRefreshTokenInvalid;
+
+  /// No description provided for @errorRefreshTokenReused.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por segurança, a sua sessão foi terminada. Entre novamente.'**
+  String get errorRefreshTokenReused;
+
+  /// No description provided for @validationNotBlank.
+  ///
+  /// In pt, this message translates to:
+  /// **'Campo obrigatório.'**
+  String get validationNotBlank;
+
   /// province.MAPUTO_CITY (Province no backend).
   ///
   /// In pt, this message translates to:

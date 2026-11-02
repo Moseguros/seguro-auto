@@ -139,7 +139,9 @@
     "CHANNELS_DUPLICATED": "Cada canal só pode aparecer uma vez.",
     "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
     "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
-    "OUT_OF_RANGE": "Valor fora dos limites permitidos."
+    "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
+    "REFRESH_TOKEN_INVALID": "A sua sessão terminou. Entre novamente.",
+    "REFRESH_TOKEN_REUSED": "Por segurança, a sua sessão foi terminada. Entre novamente."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -153,7 +155,8 @@
     "CHANNELS_DUPLICATED": "Cada canal só pode aparecer uma vez.",
     "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
     "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
-    "OUT_OF_RANGE": "Valor fora dos limites permitidos."
+    "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
+    "NOT_BLANK": "Campo obrigatório."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",

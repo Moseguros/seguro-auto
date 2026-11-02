@@ -15,16 +15,30 @@ import 'package:moseguros_api/src/date_serializer.dart';
 import 'package:moseguros_api/src/model/date.dart';
 
 import 'package:moseguros_api/src/model/field_error.dart';
+import 'package:moseguros_api/src/model/jwk.dart';
+import 'package:moseguros_api/src/model/jwks_response.dart';
+import 'package:moseguros_api/src/model/logout_request.dart';
+import 'package:moseguros_api/src/model/me_organization.dart';
+import 'package:moseguros_api/src/model/me_response.dart';
 import 'package:moseguros_api/src/model/money.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
+import 'package:moseguros_api/src/model/refresh_token_request.dart';
+import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/version_response.dart';
 
 part 'serializers.g.dart';
 
 @SerializersFor([
   FieldError,
+  Jwk,
+  JwksResponse,
+  LogoutRequest,
+  MeOrganization,
+  MeResponse,
   Money,
   ProblemDetail,
+  RefreshTokenRequest,
+  TokenResponse,
   VersionResponse,
 ])
 Serializers serializers = (_$serializers.toBuilder()

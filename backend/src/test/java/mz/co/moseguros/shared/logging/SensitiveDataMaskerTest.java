@@ -33,6 +33,14 @@ class SensitiveDataMaskerTest {
     }
 
     @Test
+    void masksRefreshTokenJsonFields() {
+        assertThat(SensitiveDataMasker.mask("body={\"refreshToken\" : \"q1w2-e3_r4\", \"x\":1}"))
+                .isEqualTo("body={\"refreshToken\":\"***\", \"x\":1}");
+        assertThat(SensitiveDataMasker.mask("{\"accessToken\":\"a\",\"refreshToken\":\"b\"}"))
+                .isEqualTo("{\"accessToken\":\"a\",\"refreshToken\":\"***\"}");
+    }
+
+    @Test
     void leavesOrdinaryTextUnchanged() {
         assertThat(SensitiveDataMasker.mask("policy AP-2026-000123 issued")).isEqualTo("policy AP-2026-000123 issued");
         assertThat(SensitiveDataMasker.mask(null)).isNull();

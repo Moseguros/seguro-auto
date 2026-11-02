@@ -11,7 +11,124 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
+- description: "Identidade, sessões e utilizador autenticado"
+  name: Identity
 paths:
+  /.well-known/jwks.json:
+    get:
+      operationId: getJwks
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwksResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Chaves públicas dos tokens (JWKS)
+      tags:
+      - Identity
+  /api/v1/auth/logout:
+    post:
+      description: Revoga a sessão do refresh token. Responde 204 mesmo que o token
+        seja desconhecido.
+      operationId: logoutSession
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutRequest"
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Termina a sessão
+      tags:
+      - Identity
+  /api/v1/auth/refresh:
+    post:
+      description: Troca o refresh token por um par novo (rotação). Um token já usado
+        revoga a sessão inteira (401 REFRESH_TOKEN_REUSED); outro token recusado dá
+        401 REFRESH_TOKEN_INVALID.
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Renova a sessão
+      tags:
+      - Identity
+  /api/v1/me:
+    get:
+      operationId: getMe
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Utilizador autenticado
+      tags:
+      - Identity
   /api/v1/meta/version:
     get:
       operationId: getVersion
@@ -58,11 +175,127 @@ components:
       required:
       - field
       - code
+    Jwk:
+      type: object
+      properties:
+        alg:
+          type: string
+          example: RS256
+        e:
+          type: string
+          description: Expoente (Base64 URL)
+          example: AQAB
+        kid:
+          type: string
+          example: dev
+        kty:
+          type: string
+          example: RSA
+        "n":
+          type: string
+          description: Módulo (Base64 URL)
+        use:
+          type: string
+          example: sig
+      required:
+      - alg
+      - e
+      - kid
+      - kty
+      - "n"
+      - use
+    JwksResponse:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: "#/components/schemas/Jwk"
+      required:
+      - keys
+    LogoutRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: Refresh token da sessão a terminar
     Matricula:
       type: string
       description: Matrícula formatada; os formatos aceites são configuráveis
       example: ABC-123-MC
       pattern: "^[A-Z0-9]+(-[A-Z0-9]+)*$"
+    MeOrganization:
+      type: object
+      description: Organização do staff; omitida para clientes e staff da plataforma
+      properties:
+        displayName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+      required:
+      - displayName
+      - id
+      - type
+    MeResponse:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: "Staff: nome da conta; cliente: nome completo do perfil"
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        msisdn:
+          $ref: "#/components/schemas/Msisdn"
+        msisdnVerified:
+          type: boolean
+        organization:
+          $ref: "#/components/schemas/MeOrganization"
+        permissions:
+          type: array
+          items:
+            type: string
+        preferredLanguage:
+          type: string
+          example: pt
+        profileComplete:
+          type: boolean
+          description: "Só clientes: o perfil tem todos os dados obrigatórios"
+        roles:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+          enum:
+          - CUSTOMER
+          - STAFF
+      required:
+      - emailVerified
+      - id
+      - msisdnVerified
+      - permissions
+      - preferredLanguage
+      - roles
+      - type
     Money:
       type: object
       description: Valor monetário em centavos
@@ -124,6 +357,32 @@ components:
       - title
       - status
       - code
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: Refresh token recebido no login ou na última renovação
+      required:
+      - refreshToken
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: "JWT de acesso (Bearer), válido 15 minutos"
+        expiresIn:
+          type: integer
+          format: int64
+          description: "Validade do token de acesso, em segundos"
+          example: 900
+        refreshToken:
+          type: string
+          description: Refresh token opaco; cada renovação devolve um novo
+      required:
+      - accessToken
+      - expiresIn
+      - refreshToken
     VersionResponse:
       type: object
       properties:

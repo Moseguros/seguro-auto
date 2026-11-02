@@ -59,6 +59,17 @@ springdoc:
     enabled: true
 
 moseguros:
+  # Tokens JWT (ADR-003). Sem private-key, os perfis local e test geram um par RSA no
+  # arranque; os outros perfis não arrancam (MOSEGUROS_JWT_PRIVATE_KEY, PEM PKCS#8, RSA 2048).
+  security:
+    jwt:
+      issuer: https://api.moseguros.co.mz
+      audience: moseguros-api
+      access-token-ttl: PT15M
+      customer-refresh-ttl: P60D        # deslizante: cada renovação dá mais 60 dias
+      staff-refresh-ttl: PT12H          # absoluto: a sessão de staff acaba 12 h depois do login
+      key-id: ${MOSEGUROS_JWT_KEY_ID:dev}
+      private-key: ${MOSEGUROS_JWT_PRIVATE_KEY:}
   # Cifra de colunas (AES-256-GCM): versão → chave de 32 bytes em Base64. Sem chave a
   # aplicação não arranca. Em staging/produção vem de MOSEGUROS_DATA_KEY_1 (cofre de
   # segredos no Sprint 5).

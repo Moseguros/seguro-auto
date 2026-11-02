@@ -1,0 +1,101 @@
+{
+  "errors" : [
+    {
+      "code" : "CHANNELS_DUPLICATED",
+      "status" : 400
+    },
+    {
+      "code" : "CHANNELS_EMPTY",
+      "status" : 400
+    },
+    {
+      "code" : "DECRYPTION_FAILED",
+      "status" : 500
+    },
+    {
+      "code" : "DEFAULT_CHANNEL_NOT_ENABLED",
+      "status" : 400
+    },
+    {
+      "code" : "FALLBACK_ORDER_MISMATCH",
+      "status" : 400
+    },
+    {
+      "code" : "FORBIDDEN",
+      "status" : 403
+    },
+    {
+      "code" : "INTERNAL_ERROR",
+      "status" : 500
+    },
+    {
+      "code" : "INVALID_CURRENCY",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_EMAIL",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_MSISDN",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_NUIT",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_PHONE",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_PLATE",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_STATE_TRANSITION",
+      "status" : 409
+    },
+    {
+      "code" : "LICENSE_NUMBER_REQUIRED",
+      "status" : 400
+    },
+    {
+      "code" : "NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "OUT_OF_RANGE",
+      "status" : 400
+    },
+    {
+      "code" : "REFRESH_TOKEN_INVALID",
+      "status" : 401
+    },
+    {
+      "code" : "REFRESH_TOKEN_REUSED",
+      "status" : 401
+    },
+    {
+      "code" : "TENANT_REQUIRED",
+      "status" : 500
+    },
+    {
+      "code" : "UNAUTHORIZED",
+      "status" : 401
+    },
+    {
+      "code" : "VALIDATION_ERROR",
+      "status" : 400
+    }
+  ],
+  "validation" : [
+    "INVALID_CURRENCY",
+    "INVALID_EMAIL",
+    "INVALID_MSISDN",
+    "INVALID_NUIT",
+    "INVALID_PHONE",
+    "INVALID_PLATE",
+    "NOT_BLANK"
+  ]
+}

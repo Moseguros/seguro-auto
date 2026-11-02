@@ -47,13 +47,13 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:moseguros_api/moseguros_api.dart';
 
 
-final api = MosegurosApi().getMetaApi();
+final api = MosegurosApi().getIdentityApi();
 
 try {
-    final response = await api.getVersion();
+    final response = await api.getJwks();
     print(response);
 } catch on DioException (e) {
-    print("Exception when calling MetaApi->getVersion: $e\n");
+    print("Exception when calling IdentityApi->getJwks: $e\n");
 }
 
 ```
@@ -64,14 +64,25 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*IdentityApi*](doc/IdentityApi.md) | [**getJwks**](doc/IdentityApi.md#getjwks) | **GET** /.well-known/jwks.json | Chaves públicas dos tokens (JWKS)
+[*IdentityApi*](doc/IdentityApi.md) | [**getMe**](doc/IdentityApi.md#getme) | **GET** /api/v1/me | Utilizador autenticado
+[*IdentityApi*](doc/IdentityApi.md) | [**logoutSession**](doc/IdentityApi.md#logoutsession) | **POST** /api/v1/auth/logout | Termina a sessão
+[*IdentityApi*](doc/IdentityApi.md) | [**refreshToken**](doc/IdentityApi.md#refreshtoken) | **POST** /api/v1/auth/refresh | Renova a sessão
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
 
 
 ## Documentation For Models
 
  - [FieldError](doc/FieldError.md)
+ - [Jwk](doc/Jwk.md)
+ - [JwksResponse](doc/JwksResponse.md)
+ - [LogoutRequest](doc/LogoutRequest.md)
+ - [MeOrganization](doc/MeOrganization.md)
+ - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
  - [ProblemDetail](doc/ProblemDetail.md)
+ - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
+ - [TokenResponse](doc/TokenResponse.md)
  - [VersionResponse](doc/VersionResponse.md)
 
 

@@ -11,6 +11,8 @@ import mz.co.moseguros.shared.error.Problems;
 import mz.co.moseguros.shared.error.Problems.FieldError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -26,7 +28,12 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  *
  * <p>Erros inesperados devolvem 500 {@code INTERNAL_ERROR} sem detalhes internos;
  * o stack trace fica apenas no log.
+ *
+ * <p>Tem precedência sobre o {@code ProblemDetailsExceptionHandler} do Spring Boot
+ * ({@code spring.mvc.problemdetails.enabled}), que também trata
+ * {@code MethodArgumentNotValidException} mas sem {@code code} nem {@code errors[]}.
  */
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

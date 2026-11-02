@@ -174,6 +174,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationOutOfRange => 'Valor fora dos limites permitidos.';
 
   @override
+  String get errorRefreshTokenInvalid =>
+      'A sua sessão terminou. Entre novamente.';
+
+  @override
+  String get errorRefreshTokenReused =>
+      'Por segurança, a sua sessão foi terminada. Entre novamente.';
+
+  @override
+  String get validationNotBlank => 'Campo obrigatório.';
+
+  @override
   String get provinceMaputoCity => 'Maputo Cidade';
 
   @override
