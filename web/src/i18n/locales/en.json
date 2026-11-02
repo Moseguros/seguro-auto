@@ -1,0 +1,139 @@
+{
+  "app": {
+    "name": "MoSeguros"
+  },
+  "language": {
+    "label": "Language",
+    "pt-MZ": "Português",
+    "en": "English"
+  },
+  "nav": {
+    "openMenu": "Open menu"
+  },
+  "areas": {
+    "cliente": "Customer area",
+    "admin": "Administration",
+    "seguradora": "Insurer",
+    "mediador": "Broker",
+    "perito": "Assessor",
+    "oficina": "Repair shop",
+    "assistencia": "Roadside assistance",
+    "provedor": "Customer ombudsman",
+    "supervisao": "Supervision",
+    "frota": "Fleet"
+  },
+  "menu": {
+    "cliente": {
+      "home": "Home",
+      "quote": "Get a quote",
+      "policies": "My policies",
+      "vehicles": "Vehicles",
+      "payments": "Payments",
+      "claims": "Claims",
+      "complaints": "Complaints",
+      "profile": "Profile"
+    },
+    "admin": {
+      "home": "Dashboard",
+      "organizations": "Organizations",
+      "users": "Users",
+      "auth": "Authentication",
+      "references": "Reference tables",
+      "audit": "Audit"
+    },
+    "seguradora": {
+      "home": "Dashboard",
+      "products": "Products",
+      "tariffs": "Tariffs",
+      "proposals": "Proposals",
+      "policies": "Policies",
+      "payments": "Payments",
+      "claims": "Claims",
+      "complaints": "Complaints",
+      "reports": "Reports",
+      "users": "Users",
+      "settings": "Settings"
+    },
+    "mediador": {
+      "home": "Dashboard",
+      "customers": "Customers",
+      "quotes": "Quotes",
+      "policies": "Policies",
+      "reports": "Reports",
+      "users": "Users"
+    },
+    "perito": {
+      "home": "Dashboard",
+      "assessments": "Assessments",
+      "users": "Users"
+    },
+    "oficina": {
+      "home": "Dashboard",
+      "repairs": "Repairs",
+      "estimates": "Estimates",
+      "users": "Users"
+    },
+    "assistencia": {
+      "home": "Dashboard",
+      "requests": "Requests",
+      "users": "Users"
+    },
+    "provedor": {
+      "home": "Dashboard",
+      "cases": "Cases",
+      "users": "Users"
+    },
+    "supervisao": {
+      "home": "Dashboard",
+      "insurers": "Insurers",
+      "reports": "Reports",
+      "users": "Users"
+    },
+    "frota": {
+      "home": "Dashboard",
+      "vehicles": "Vehicles",
+      "policies": "Policies",
+      "claims": "Claims",
+      "users": "Users"
+    }
+  },
+  "home": {
+    "tagline": "Compare, buy and manage your car insurance in one place."
+  },
+  "systemStatus": {
+    "title": "System status",
+    "loading": "Checking the API…",
+    "version": "Version",
+    "commit": "Commit",
+    "unknown": "unknown",
+    "error": "Could not get the API status."
+  },
+  "underConstruction": {
+    "title": "Under construction",
+    "description": "This page is still being prepared."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The address you are looking for does not exist.",
+    "backHome": "Back to home"
+  },
+  "errors": {
+    "NETWORK_ERROR": "No connection to the server. Check your Internet connection.",
+    "UNKNOWN": "An unexpected error occurred.",
+    "VALIDATION_ERROR": "The data sent is not valid.",
+    "NOT_FOUND": "The requested resource does not exist.",
+    "UNAUTHORIZED": "You need to sign in.",
+    "FORBIDDEN": "You do not have permission for this operation.",
+    "INTERNAL_ERROR": "Internal server error. Please try again later.",
+    "INVALID_CURRENCY": "Invalid currency.",
+    "INVALID_MSISDN": "Invalid mobile number.",
+    "INVALID_NUIT": "Invalid NUIT.",
+    "INVALID_PLATE": "Invalid number plate."
+  },
+  "validation": {
+    "INVALID_CURRENCY": "Invalid currency.",
+    "INVALID_MSISDN": "Invalid mobile number (e.g. +258 84 123 4567).",
+    "INVALID_NUIT": "The NUIT has 9 digits.",
+    "INVALID_PLATE": "Invalid number plate."
+  }
+}
