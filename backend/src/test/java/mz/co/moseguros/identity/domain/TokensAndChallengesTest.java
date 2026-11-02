@@ -79,6 +79,93 @@ class TokensAndChallengesTest {
     }
 
     @Test
+    void invitationLifecycle() {
+        UUID org = UUID.randomUUID();
+        UUID inviter = UUID.randomUUID();
+        Invitation invitation = Invitation.create("a@b.mz", "A", org, List.of("INSURER_ADMIN"), HASH,
+                NOW.plusSeconds(60), inviter);
+        UUID user = UUID.randomUUID();
+        invitation.linkUser(user);
+        invitation.registerFailedActivation();
+        invitation.accept(NOW);
+        invitation.revoke(NOW);
+        invitation.revoke(NOW.plusSeconds(1));
+
+        assertThat(invitation.getOrganizationId()).isEqualTo(org);
+        assertThat(invitation.getInvitedByUserId()).isEqualTo(inviter);
+        assertThat(invitation.getUserId()).isEqualTo(user);
+        assertThat(invitation.getActivationAttempts()).isEqualTo(1);
+        assertThat(invitation.getAcceptedAt()).isEqualTo(NOW);
+        assertThat(invitation.getRevokedAt()).isEqualTo(NOW);
+        assertThat(invitation.getTokenHash()).isEqualTo(HASH);
+        assertThat(invitation.getExpiresAt()).isEqualTo(NOW.plusSeconds(60));
+        assertThatThrownBy(() -> Invitation.create("a@b.mz", " ", null, List.of("X"), HASH, NOW, null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void challengeConsumptionAndFailure() {
+        UUID user = UUID.randomUUID();
+        OtpChallenge challenge = OtpChallenge.issue("a@b.mz", IdentifierType.EMAIL, Channel.EMAIL,
+                Purpose.VERIFY_CONTACT, user, HASH, NOW.plusSeconds(60), null);
+        challenge.markFailed();
+        challenge.consume(NOW);
+
+        assertThat(challenge.getDeliveryStatus()).isEqualTo(DeliveryStatus.FAILED);
+        assertThat(challenge.getConsumedAt()).isEqualTo(NOW);
+        assertThat(challenge.getUserId()).isEqualTo(user);
+        assertThat(challenge.getIdentifier()).isEqualTo("a@b.mz");
+        assertThat(challenge.getIdentifierType()).isEqualTo(IdentifierType.EMAIL);
+        assertThat(challenge.getChannel()).isEqualTo(Channel.EMAIL);
+        assertThat(challenge.getPurpose()).isEqualTo(Purpose.VERIFY_CONTACT);
+        assertThat(challenge.getCodeHash()).isEqualTo(HASH);
+        assertThat(challenge.getExpiresAt()).isEqualTo(NOW.plusSeconds(60));
+        assertThat(challenge.getSentAt()).isNull();
+    }
+
+    @Test
+    void refreshTokenAndPasswordResetAccessors() {
+        UUID user = UUID.randomUUID();
+        UUID family = UUID.randomUUID();
+        RefreshToken token = RefreshToken.issue(user, family, HASH, NOW, NOW.plusSeconds(3600), null);
+        assertThat(token.getUserId()).isEqualTo(user);
+        assertThat(token.getFamilyId()).isEqualTo(family);
+        assertThat(token.getTokenHash()).isEqualTo(HASH);
+        assertThat(token.getExpiresAt()).isEqualTo(NOW);
+        assertThat(token.getSessionExpiresAt()).isEqualTo(NOW.plusSeconds(3600));
+        assertThat(token.getDeviceInfo()).isNull();
+
+        PasswordReset reset = PasswordReset.create(user, HASH, NOW);
+        reset.markUsed(NOW);
+        assertThat(reset.getUsedAt()).isEqualTo(NOW);
+        assertThat(reset.getUserId()).isEqualTo(user);
+        assertThat(reset.getTokenHash()).isEqualTo(HASH);
+        assertThat(reset.getExpiresAt()).isEqualTo(NOW);
+    }
+
+    @Test
+    void associationKeys() {
+        UUID user = UUID.randomUUID();
+        UserRole role = new UserRole(user, "CUSTOMER");
+        assertThat(role.isNew()).isTrue();
+        assertThat(role.getId()).isEqualTo(new UserRole.Key(user, "CUSTOMER"));
+        assertThat(role.getId()).hasSameHashCodeAs(new UserRole.Key(user, "CUSTOMER"));
+        assertThat(role.getId()).isNotEqualTo(new UserRole.Key(user, "BROKER"));
+        assertThat(role.getId().getUserId()).isEqualTo(user);
+        assertThat(role.getId().getRoleCode()).isEqualTo("CUSTOMER");
+        assertThat(role.getUserId()).isEqualTo(user);
+        assertThat(role.getRoleCode()).isEqualTo("CUSTOMER");
+        role.markNotNew();
+        assertThat(role.isNew()).isFalse();
+        assertThatThrownBy(() -> new UserRole(null, "X")).isInstanceOf(NullPointerException.class);
+
+        assertThat(new RolePermission.Key("CUSTOMER", "self:profile"))
+                .isEqualTo(new RolePermission.Key("CUSTOMER", "self:profile"))
+                .hasSameHashCodeAs(new RolePermission.Key("CUSTOMER", "self:profile"))
+                .isNotEqualTo(new RolePermission.Key("CUSTOMER", "x"));
+    }
+
+    @Test
     void roleAssignability() {
         Role role = new Role();
         assertThat(role.isAssignableIn(null)).isTrue(); // org_types null = só fora de organizações
