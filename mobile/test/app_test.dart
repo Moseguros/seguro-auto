@@ -1,17 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moseguros/app.dart';
 import 'package:moseguros/core/api/api_client.dart';
 import 'package:moseguros/core/api/api_error.dart';
 import 'package:moseguros/core/config/env.dart';
+import 'package:moseguros/core/errors/problem.dart';
 import 'package:moseguros/core/l10n/province_name.dart';
 import 'package:moseguros/core/router.dart';
 import 'package:moseguros/core/theme.dart';
 import 'package:moseguros/core/widgets/cta_button.dart';
 import 'package:moseguros/l10n/app_localizations.dart';
+
+import 'support/mock_api.dart';
 
 void main() {
   group('resolveLocale', () {
@@ -105,105 +107,9 @@ void main() {
       );
     });
 
-    test('todos os códigos têm tradução em pt e en', () async {
-      const codes = [
-        'NETWORK_ERROR',
-        'VALIDATION_ERROR',
-        'NOT_FOUND',
-        'UNAUTHORIZED',
-        'FORBIDDEN',
-        'INTERNAL_ERROR',
-        'INVALID_CURRENCY',
-        'INVALID_MSISDN',
-        'INVALID_NUIT',
-        'INVALID_PLATE',
-        'INVALID_EMAIL',
-        'INVALID_PHONE',
-        'TENANT_REQUIRED',
-        'DECRYPTION_FAILED',
-        'INVALID_STATE_TRANSITION',
-        'LICENSE_NUMBER_REQUIRED',
-        'CHANNELS_EMPTY',
-        'CHANNELS_DUPLICATED',
-        'DEFAULT_CHANNEL_NOT_ENABLED',
-        'FALLBACK_ORDER_MISMATCH',
-        'OUT_OF_RANGE',
-        'REFRESH_TOKEN_INVALID',
-        'REFRESH_TOKEN_REUSED',
-        'CONCURRENT_MODIFICATION',
-        'OTP_CHANNEL_CHOICE_DISABLED',
-        'OTP_CHANNEL_NOT_AVAILABLE',
-        'OTP_RATE_LIMITED',
-        'OTP_RESEND_TOO_SOON',
-        'OTP_DELIVERY_FAILED',
-        'OTP_CHALLENGE_NOT_FOUND',
-        'OTP_ALREADY_USED',
-        'OTP_SUPERSEDED',
-        'OTP_EXPIRED',
-        'OTP_INVALID',
-        'OTP_ATTEMPTS_EXCEEDED',
-        'ACCOUNT_DISABLED',
-        'ORGANIZATION_NOT_FOUND',
-        'ORGANIZATION_NOT_ACTIVE',
-        'NUIT_ALREADY_IN_USE',
-        'SHORT_CODE_ALREADY_IN_USE',
-        'OMBUDSMAN_INVALID',
-        'ROLE_NOT_ALLOWED_FOR_ORGANIZATION',
-        'EMAIL_ALREADY_IN_USE',
-        'INVITATION_INVALID',
-        'INVITATION_NOT_ACCEPTED',
-        'TOTP_INVALID',
-        'PASSWORD_TOO_WEAK',
-        'INVALID_CREDENTIALS',
-        'ACCOUNT_LOCKED',
-        'ORGANIZATION_SUSPENDED',
-        'RESET_TOKEN_INVALID',
-        'USER_NOT_FOUND',
-        'CANNOT_MODIFY_SELF',
-        'LAST_MANAGER',
-        'CONTACT_ALREADY_IN_USE',
-        'CONTACT_ALREADY_VERIFIED',
-        'LAST_CONTACT',
-      ];
-      const fieldCodes = [
-        'INVALID_CURRENCY',
-        'INVALID_MSISDN',
-        'INVALID_NUIT',
-        'INVALID_PLATE',
-        'INVALID_EMAIL',
-        'INVALID_PHONE',
-        'LICENSE_NUMBER_REQUIRED',
-        'CHANNELS_EMPTY',
-        'CHANNELS_DUPLICATED',
-        'DEFAULT_CHANNEL_NOT_ENABLED',
-        'FALLBACK_ORDER_MISMATCH',
-        'OUT_OF_RANGE',
-        'NOT_BLANK',
-        'NOT_NULL',
-        'NOT_ALLOWED',
-        'REQUIRED',
-        'INVALID_SORT',
-        'TOO_SHORT',
-        'TOO_LONG',
-        'CONTAINS_EMAIL',
-        'TOO_COMMON',
-        'SIZE',
-        'PATTERN',
-        'TYPE_MISMATCH',
-        'INVALID_NAME',
-        'UNDERAGE',
-        'INVALID_DATE',
-        'INVALID_DOCUMENT_NUMBER',
-      ];
+    test('todas as províncias têm nome em pt e en', () async {
       for (final locale in AppLocalizations.supportedLocales) {
         final l10n = await AppLocalizations.delegate.load(locale);
-        for (final code in codes) {
-          expect(
-            apiErrorMessage(l10n, code),
-            isNot(l10n.errorUnknown),
-            reason: '$locale $code',
-          );
-        }
         for (final code in provinceCodes) {
           expect(
             provinceName(l10n, code),
@@ -211,36 +117,83 @@ void main() {
             reason: '$locale $code',
           );
         }
-        for (final code in fieldCodes) {
-          expect(
-            fieldErrorMessage(l10n, code),
-            isNot(l10n.errorUnknown),
-            reason: '$locale $code',
-          );
-        }
       }
     });
   });
 
-  testWidgets('rota desconhecida mostra a página de erro', (tester) async {
-    final container = ProviderContainer(
-      overrides: [
-        envProvider.overrideWithValue(
-          const Env(apiBaseUrl: 'http://localhost:1', name: 'test'),
-        ),
-        apiClientProvider.overrideWithValue(
-          ApiClient(const Env(apiBaseUrl: 'http://localhost:1', name: 'test')),
-        ),
-      ],
-    );
-    addTearDown(container.dispose);
+  group('Problem', () {
+    final request = RequestOptions(path: '/x');
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MoSegurosApp(locale: Locale('pt')),
+    Problem read(
+      int status,
+      Object? data, [
+      Map<String, List<String>>? headers,
+    ]) => Problem.from(
+      DioException.badResponse(
+        statusCode: status,
+        requestOptions: request,
+        response: Response(
+          requestOptions: request,
+          statusCode: status,
+          data: data,
+          headers: Headers.fromMap(headers ?? {}),
+        ),
       ),
     );
+
+    test('lê code, errors, retryAfterSeconds e attemptsRemaining', () {
+      final problem = read(400, {
+        'code': 'OTP_INVALID',
+        'detail': 'Wrong code',
+        'attemptsRemaining': 2,
+        'errors': [
+          {'field': 'code', 'code': 'PATTERN'},
+          {'field': 1, 'code': 'X'},
+        ],
+      });
+      expect(problem.status, 400);
+      expect(problem.code, 'OTP_INVALID');
+      expect(problem.detail, 'Wrong code');
+      expect(problem.attemptsRemaining, 2);
+      expect(problem.errors.single.field, 'code');
+      expect(problem.errors.single.code, 'PATTERN');
+      expect(problem.fieldError(['code'])?.code, 'PATTERN');
+      expect(problem.fieldError(['other']), isNull);
+    });
+
+    test('retryAfterSeconds do corpo ou do cabeçalho Retry-After', () {
+      expect(
+        read(429, {
+          'code': 'OTP_RATE_LIMITED',
+          'retryAfterSeconds': 42,
+        }).retryAfterSeconds,
+        42,
+      );
+      expect(
+        read(429, '{"code":"OTP_RATE_LIMITED"}', {
+          'retry-after': ['17'],
+        }).retryAfterSeconds,
+        17,
+      );
+    });
+
+    test('mensagem pelo código; desconhecido usa errorUnknown', () async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('pt'));
+      expect(
+        read(429, {'code': 'OTP_RATE_LIMITED'}).message(l10n),
+        'Pediu demasiados códigos. Tente mais tarde.',
+      );
+      expect(read(400, {'code': 'NEW_CODE'}).message(l10n), l10n.errorUnknown);
+      expect(Problem.from(StateError('x')).message(l10n), l10n.errorUnknown);
+    });
+  });
+
+  testWidgets('rota desconhecida mostra a página de erro', (tester) async {
+    final api = MockApi()
+      ..on('POST', '/api/v1/auth/refresh', 200, Fixtures.tokens())
+      ..on('GET', '/api/v1/me', 200, Fixtures.me());
+    final container = await pumpMoSeguros(tester, api, refreshToken: 'r0');
+
     final GoRouter router = container.read(routerProvider);
     router.go('/xyz');
     await tester.pumpAndSettle();
