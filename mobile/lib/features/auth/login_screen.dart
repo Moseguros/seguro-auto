@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moseguros_api/moseguros_api.dart';
 
@@ -74,12 +75,24 @@ class AuthScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context).appName)),
+      appBar: AppBar(title: Text(l10n.appName)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: SvgPicture.asset(
+                theme.brightness == Brightness.dark
+                    ? 'assets/brand/logo-white.svg'
+                    : 'assets/brand/logo.svg',
+                height: 40,
+                semanticsLabel: l10n.appName,
+              ),
+            ),
+            const SizedBox(height: 24),
             Text(title, style: theme.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
