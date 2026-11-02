@@ -117,6 +117,14 @@ public final class ErrorCodes {
     /** A organização (ou a plataforma) ficaria sem nenhum gestor activo (400). */
     public static final String LAST_MANAGER = "LAST_MANAGER";
 
+    // Perfil e contactos do cliente (S1-06)
+    /** O telemóvel ou e-mail já pertence a outra conta de cliente (409). */
+    public static final String CONTACT_ALREADY_IN_USE = "CONTACT_ALREADY_IN_USE";
+    /** O contacto já é o actual da conta e está verificado (409). */
+    public static final String CONTACT_ALREADY_VERIFIED = "CONTACT_ALREADY_VERIFIED";
+    /** A conta ficaria sem nenhum contacto verificado (400). */
+    public static final String LAST_CONTACT = "LAST_CONTACT";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -166,7 +174,10 @@ public final class ErrorCodes {
             Map.entry(RESET_TOKEN_INVALID, 400),
             Map.entry(USER_NOT_FOUND, 404),
             Map.entry(CANNOT_MODIFY_SELF, 400),
-            Map.entry(LAST_MANAGER, 400));
+            Map.entry(LAST_MANAGER, 400),
+            Map.entry(CONTACT_ALREADY_IN_USE, 409),
+            Map.entry(CONTACT_ALREADY_VERIFIED, 409),
+            Map.entry(LAST_CONTACT, 400));
 
     private ErrorCodes() {
     }

@@ -133,20 +133,54 @@ public class OtpService {
     @RunAsSystem
     public RequestResult request(String rawIdentifier, IdentifierType type, Channel channel) {
         OtpIdentifier identifier = OtpIdentifier.parse(rawIdentifier, type, "identifier");
+        return send(identifier, channel, Purpose.LOGIN, null);
+    }
+
+    /**
+     * Pede um código para confirmar um contacto novo do cliente {@code userId} (S1-06): desafio
+     * {@code VERIFY_CONTACT} com o {@code user_id} do cliente, com as mesmas regras de canal,
+     * alternativa e limites do login. As verificações de posse do contacto são de quem chama.
+     *
+     * @param identifier contacto já normalizado
+     * @param channel    canal escolhido pelo cliente, ou {@code null} para o canal por defeito
+     * @throws DomainException como {@link #request}
+     */
+    @RunAsSystem
+    public RequestResult requestForContact(OtpIdentifier identifier, UUID userId, Channel channel) {
+        Objects.requireNonNull(identifier, "identifier");
+        Objects.requireNonNull(userId, "userId");
+        return send(identifier, channel, Purpose.VERIFY_CONTACT, userId);
+    }
+
+    /**
+     * Escolhe o canal, aplica os limites, substitui os códigos anteriores da mesma finalidade,
+     * grava o desafio e envia (com alternativa de canal).
+     *
+     * @param owner conta que pede ({@code VERIFY_CONTACT}); no login a conta vem do identificador
+     */
+    private RequestResult send(OtpIdentifier identifier, Channel channel, Purpose purpose, UUID owner) {
         OtpSettings settings = tx.execute(status -> settings());
         Channel chosen = chooseChannel(settings, identifier.type(), channel);
 
         Start start = tx.execute(status -> {
             Instant now = clock.instant();
             checkLimits(identifier, settings, now, true);
-            supersedeActive(identifier, Purpose.LOGIN, now);
-            Optional<UserAccount> account = findCustomer(identifier);
-            Issued issued = issue(identifier, chosen, Purpose.LOGIN, account.map(UserAccount::getId).orElse(null),
-                    settings, now, null);
-            return new Start(issued, account.map(UserAccount::getPreferredLanguage).orElse(DEFAULT_LANGUAGE));
+            supersedeActive(identifier, purpose, now);
+            UUID userId;
+            String language;
+            if (purpose == Purpose.LOGIN) {
+                Optional<UserAccount> account = findCustomer(identifier);
+                userId = account.map(UserAccount::getId).orElse(null);
+                language = account.map(UserAccount::getPreferredLanguage).orElse(DEFAULT_LANGUAGE);
+            } else {
+                userId = owner;
+                language = languageOf(owner);
+            }
+            Issued issued = issue(identifier, chosen, purpose, userId, settings, now, null);
+            return new Start(issued, language);
         });
         UUID rootId = start.issued().challenge().getId();
-        log.info("OTP challenge {} requested for {} via {}", rootId, identifier, chosen);
+        log.info("OTP challenge {} ({}) requested for {} via {}", rootId, purpose, identifier, chosen);
 
         Delivery delivery = deliver(identifier, start.issued(), settings, start.language(), true);
         if (delivery.failed()) {
@@ -187,29 +221,7 @@ public class OtpService {
         if (challenge.getPurpose() != Purpose.LOGIN) {
             throw challengeNotFound();
         }
-        OtpSettings settings = settings();
-        if (challenge.getConsumedAt() != null) {
-            throw DomainException.of(ErrorCodes.OTP_ALREADY_USED, "The code was already used");
-        }
-        if (challenge.getSupersededAt() != null) {
-            throw DomainException.of(ErrorCodes.OTP_SUPERSEDED, "A newer code was requested");
-        }
-        if (challenge.isExpired(now)) {
-            throw DomainException.of(ErrorCodes.OTP_EXPIRED, "The code has expired");
-        }
-        if (challenge.getAttempts() >= settings.getMaxAttempts()) {
-            throw attemptsExceeded();
-        }
-        if (!hasher.matches(challenge.getId(), code, challenge.getCodeHash())) {
-            challenge.registerFailedAttempt();
-            int remaining = settings.getMaxAttempts() - challenge.getAttempts();
-            log.info("OTP challenge {}: wrong code ({} attempts remaining)", challenge.getId(), Math.max(remaining, 0));
-            if (remaining <= 0) {
-                throw attemptsExceeded();
-            }
-            throw DomainException.of(ErrorCodes.OTP_INVALID, "Wrong code").withProperty("attemptsRemaining", remaining);
-        }
-        challenge.consume(now);
+        consumeIfValid(challenge, code, now);
 
         OtpIdentifier identifier = new OtpIdentifier(challenge.getIdentifierType(), challenge.getIdentifier());
         Optional<UserAccount> existing = findCustomer(identifier);
@@ -230,6 +242,26 @@ public class OtpService {
         log.info("OTP challenge {}: customer {} signed in (new account: {})", challenge.getId(), account.getId(),
                 newUser);
         return new LoginResult(tokens, newUser);
+    }
+
+    /**
+     * Valida o código de confirmação de um contacto (S1-06), com as mesmas regras do login. O
+     * desafio tem de ser {@code VERIFY_CONTACT} e do cliente {@code userId}; senão
+     * {@code OTP_CHALLENGE_NOT_FOUND}. As tentativas erradas ficam gravadas mesmo com a resposta de
+     * erro. Não altera a conta: devolve o contacto confirmado.
+     */
+    @RunAsSystem
+    @Transactional(noRollbackFor = DomainException.class)
+    public OtpIdentifier verifyContact(UUID challengeId, String code, UUID userId) {
+        Instant now = clock.instant();
+        UUID rootId = challenges.findRootId(challengeId).orElseThrow(OtpService::challengeNotFound);
+        OtpChallenge challenge = tail(challenges.findChainForUpdate(rootId));
+        if (challenge.getPurpose() != Purpose.VERIFY_CONTACT || !Objects.equals(challenge.getUserId(), userId)) {
+            throw challengeNotFound();
+        }
+        consumeIfValid(challenge, code, now);
+        log.info("OTP challenge {}: contact confirmed for customer {}", challenge.getId(), userId);
+        return new OtpIdentifier(challenge.getIdentifierType(), challenge.getIdentifier());
     }
 
     /**
@@ -301,6 +333,36 @@ public class OtpService {
     }
 
     // --- passos internos (já em SYSTEM) ---
+
+    /**
+     * Valida o código do desafio (consumido, substituído, expirado, tentativas, código errado) e
+     * consome-o. Um código errado conta uma tentativa.
+     */
+    private void consumeIfValid(OtpChallenge challenge, String code, Instant now) {
+        OtpSettings settings = settings();
+        if (challenge.getConsumedAt() != null) {
+            throw DomainException.of(ErrorCodes.OTP_ALREADY_USED, "The code was already used");
+        }
+        if (challenge.getSupersededAt() != null) {
+            throw DomainException.of(ErrorCodes.OTP_SUPERSEDED, "A newer code was requested");
+        }
+        if (challenge.isExpired(now)) {
+            throw DomainException.of(ErrorCodes.OTP_EXPIRED, "The code has expired");
+        }
+        if (challenge.getAttempts() >= settings.getMaxAttempts()) {
+            throw attemptsExceeded();
+        }
+        if (!hasher.matches(challenge.getId(), code, challenge.getCodeHash())) {
+            challenge.registerFailedAttempt();
+            int remaining = settings.getMaxAttempts() - challenge.getAttempts();
+            log.info("OTP challenge {}: wrong code ({} attempts remaining)", challenge.getId(), Math.max(remaining, 0));
+            if (remaining <= 0) {
+                throw attemptsExceeded();
+            }
+            throw DomainException.of(ErrorCodes.OTP_INVALID, "Wrong code").withProperty("attemptsRemaining", remaining);
+        }
+        challenge.consume(now);
+    }
 
     private Channel chooseChannel(OtpSettings settings, IdentifierType type, Channel requested) {
         if (requested != null) {

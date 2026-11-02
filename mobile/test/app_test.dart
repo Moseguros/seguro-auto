@@ -161,6 +161,9 @@ void main() {
         'USER_NOT_FOUND',
         'CANNOT_MODIFY_SELF',
         'LAST_MANAGER',
+        'CONTACT_ALREADY_IN_USE',
+        'CONTACT_ALREADY_VERIFIED',
+        'LAST_CONTACT',
       ];
       const fieldCodes = [
         'INVALID_CURRENCY',
@@ -187,6 +190,10 @@ void main() {
         'SIZE',
         'PATTERN',
         'TYPE_MISMATCH',
+        'INVALID_NAME',
+        'UNDERAGE',
+        'INVALID_DATE',
+        'INVALID_DOCUMENT_NUMBER',
       ];
       for (final locale in AppLocalizations.supportedLocales) {
         final l10n = await AppLocalizations.delegate.load(locale);

@@ -306,6 +306,18 @@ class AppLocalizationsPt extends AppLocalizations {
       'A organização tem de ficar com pelo menos um gestor activo.';
 
   @override
+  String get errorContactAlreadyInUse =>
+      'Este contacto já está associado a outra conta.';
+
+  @override
+  String get errorContactAlreadyVerified =>
+      'Este contacto já está confirmado na sua conta.';
+
+  @override
+  String get errorLastContact =>
+      'A conta tem de ficar com pelo menos um contacto confirmado.';
+
+  @override
   String get validationNotAllowed => 'Este campo não se aplica neste caso.';
 
   @override
@@ -338,6 +350,20 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get validationTypeMismatch => 'Valor inválido.';
+
+  @override
+  String get validationInvalidName =>
+      'Indique o nome completo (pelo menos duas palavras, só letras, espaços, \' e -).';
+
+  @override
+  String get validationUnderage => 'Tem de ter pelo menos 18 anos.';
+
+  @override
+  String get validationInvalidDate => 'Data inválida.';
+
+  @override
+  String get validationInvalidDocumentNumber =>
+      'Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).';
 
   @override
   String get provinceMaputoCity => 'Maputo Cidade';

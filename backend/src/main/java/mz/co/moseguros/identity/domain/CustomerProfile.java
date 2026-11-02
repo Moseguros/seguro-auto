@@ -1,6 +1,7 @@
 package mz.co.moseguros.identity.domain;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -12,6 +13,9 @@ import jakarta.persistence.Table;
 import mz.co.moseguros.shared.crypto.EncryptedStringConverter;
 import mz.co.moseguros.shared.domain.Nuit;
 import mz.co.moseguros.shared.domain.Province;
+import mz.co.moseguros.shared.error.DomainException;
+import mz.co.moseguros.shared.error.ErrorCodes;
+import mz.co.moseguros.shared.error.Problems.FieldError;
 import mz.co.moseguros.shared.persistence.BaseEntity;
 
 /**
@@ -77,6 +81,43 @@ public class CustomerProfile extends BaseEntity {
         this.nuit = nuit == null || nuit.isBlank() ? null : Nuit.of(nuit).value();
         this.address = blankToNull(address);
         this.province = province;
+    }
+
+    /**
+     * Alteração pelo cliente (S1-06): valida com {@link CustomerProfileRules} e grava. O número do
+     * documento e o NUIT {@code null} mantêm os actuais; um valor substitui-os.
+     *
+     * @param today data de hoje em {@link CustomerProfileRules#ZONE}
+     * @throws DomainException 400 {@code VALIDATION_ERROR} com um erro por campo em {@code errors}
+     */
+    public void apply(CustomerProfileRules.Changes changes, LocalDate today) {
+        List<FieldError> errors = CustomerProfileRules.validate(this, changes, today);
+        if (!errors.isEmpty()) {
+            throw DomainException.of(ErrorCodes.VALIDATION_ERROR, "Request validation failed")
+                    .withProperty("errors", errors);
+        }
+        this.fullName = CustomerProfileRules.normalizeName(changes.fullName());
+        this.birthDate = changes.birthDate();
+        this.idDocType = changes.idDocType();
+        String documentNumber = CustomerProfileRules.normalizeDocumentNumber(changes.idDocNumber());
+        if (documentNumber != null) {
+            this.idDocNumber = documentNumber;
+        }
+        if (changes.nuit() != null && !changes.nuit().isBlank()) {
+            this.nuit = Nuit.of(changes.nuit()).value();
+        }
+        this.address = blankToNull(changes.address());
+        this.province = changes.province();
+    }
+
+    /** {@code *********345A}, ou {@code null} sem documento. */
+    public String idDocNumberMasked() {
+        return CustomerProfileRules.maskDocumentNumber(idDocNumber);
+    }
+
+    /** {@code *****6789}, ou {@code null} sem NUIT. */
+    public String nuitMasked() {
+        return nuit == null ? null : Nuit.of(nuit).masked();
     }
 
     /** Completo quando tem nome, data de nascimento, documento, NUIT e província. */

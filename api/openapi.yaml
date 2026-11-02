@@ -830,6 +830,221 @@ paths:
       summary: Utilizador autenticado
       tags:
       - Identity
+    put:
+      description: "Língua preferida e, só para staff, o nome (para clientes o nome\
+        \ está no perfil e displayName é ignorado)."
+      operationId: updateMe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMeRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as preferências da conta
+      tags:
+      - Identity
+  /api/v1/me/contacts:
+    get:
+      operationId: listMyContacts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Contactos do cliente
+      tags:
+      - Identity
+    post:
+      description: "Acrescenta ou troca o telemóvel ou o e-mail: envia um código com\
+        \ as regras de canal, alternativa e limites do login. Para reenviar, chama-se\
+        \ de novo. Contacto de outra conta → 409 CONTACT_ALREADY_IN_USE; igual ao\
+        \ actual e verificado → 409 CONTACT_ALREADY_VERIFIED."
+      operationId: startContactVerification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartContactVerificationRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpRequestResponse"
+          description: Código enviado
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia um código para um contacto novo
+      tags:
+      - Identity
+  /api/v1/me/contacts/verify:
+    post:
+      description: "Mesmas validações do verifyOtp. O contacto substitui o anterior\
+        \ do mesmo tipo, verificado. Desafio de outra finalidade ou de outro cliente\
+        \ → 404 OTP_CHALLENGE_NOT_FOUND."
+      operationId: verifyContact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyContactRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Confirma o código e grava o contacto
+      tags:
+      - Identity
+  /api/v1/me/contacts/{type}:
+    delete:
+      description: A conta não pode ficar sem nenhum contacto verificado → 400 LAST_CONTACT.
+      operationId: removeMyContact
+      parameters:
+      - in: path
+        name: type
+        required: true
+        schema:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+      responses:
+        "204":
+          description: Removido (ou já não existia)
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Remove um contacto
+      tags:
+      - Identity
+  /api/v1/me/profile:
+    get:
+      description: O documento e o NUIT vêm mascarados; os campos por preencher são
+        omitidos.
+      operationId: getMyProfile
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfileResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Perfil do cliente
+      tags:
+      - Identity
+    put:
+      description: "Erros de validação → 400 VALIDATION_ERROR com errors[]; version\
+        \ antiga → 409 CONCURRENT_MODIFICATION."
+      operationId: updateMyProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMyProfileRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfileResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera o perfil do cliente
+      tags:
+      - Identity
   /api/v1/meta/version:
     get:
       operationId: getVersion
@@ -1589,6 +1804,33 @@ components:
       - managerInviteRoles
       - managerRoles
       - roles
+    ContactResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+        value:
+          type: string
+          description: Telemóvel em E.164 ou e-mail
+          example: "+258841234567"
+        verified:
+          type: boolean
+      required:
+      - type
+      - value
+      - verified
+    ContactsResponse:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactResponse"
+      required:
+      - contacts
     CreateOrganizationRequest:
       type: object
       properties:
@@ -1656,6 +1898,56 @@ components:
       - legalName
       - nuit
       - type
+    CustomerProfileResponse:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "Av. Julius Nyerere, 1234"
+        birthDate:
+          type: string
+          format: date
+          example: 1990-05-14
+        complete:
+          type: boolean
+          description: "Tem nome, data de nascimento, documento, NUIT e província"
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+        idDocNumberMasked:
+          type: string
+          description: Todos os caracteres menos os últimos 4 trocados por *
+          example: '*********345A'
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        nuitMasked:
+          type: string
+          example: '*****6789'
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        version:
+          type: integer
+          format: int64
+          description: Enviar na alteração
+      required:
+      - complete
+      - version
     DeliveryReceiptRequest:
       type: object
       properties:
@@ -2565,6 +2857,30 @@ components:
       - roles
       - status
       - version
+    StartContactVerificationRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Canal escolhido pelo cliente (só se customerCanChoose); sem
+            ele usa-se o canal por defeito
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        type:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+          example: EMAIL
+        value:
+          type: string
+          description: "Telemóvel (841234567, +258841234567) ou e-mail"
+          example: ana@exemplo.co.mz
+      required:
+      - type
+      - value
     SuspendOrganizationRequest:
       type: object
       properties:
@@ -2605,6 +2921,81 @@ components:
       required:
       - otpauthUri
       - totpSecret
+    UpdateMeRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: "Só staff, 2–120 caracteres; omitido mantém o actual. Ignorado\
+            \ para clientes (o nome está no perfil)."
+          example: Bruno Staff
+        preferredLanguage:
+          type: string
+          enum:
+          - pt
+          - en
+          example: pt
+          pattern: pt|en
+      required:
+      - preferredLanguage
+    UpdateMyProfileRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "Av. Julius Nyerere, 1234"
+          maxLength: 300
+        birthDate:
+          type: string
+          format: date
+          description: "Pelo menos 18 anos, no máximo 120"
+          example: 1990-05-14
+        fullName:
+          type: string
+          description: "Letras, espaços, apóstrofo e hífen; pelo menos duas palavras"
+          example: Ana Maria Mussa
+          maxLength: 120
+          minLength: 2
+        idDocNumber:
+          type: string
+          description: "Maiúsculas e dígitos, 5–20 (espaços ignorados). Obrigatório\
+            \ se ainda não existir ou se idDocType mudar; omitido mantém o actual."
+          example: 110100123345A
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        nuit:
+          type: string
+          description: 9 dígitos. Obrigatório se ainda não existir; omitido mantém
+            o actual.
+          example: "123456789"
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - birthDate
+      - fullName
+      - idDocType
+      - province
+      - version
     UpdateOrganizationRequest:
       type: object
       properties:
@@ -2752,6 +3143,19 @@ components:
       required:
       - roleCodes
       - version
+    VerifyContactRequest:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: challengeId devolvido no pedido
+        code:
+          type: string
+          example: "123456"
+      required:
+      - challengeId
+      - code
     VerifyOtpRequest:
       type: object
       properties:

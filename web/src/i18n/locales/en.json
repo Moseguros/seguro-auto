@@ -172,7 +172,10 @@
     "RESET_TOKEN_INVALID": "This recovery link is no longer valid. Please request a new one.",
     "USER_NOT_FOUND": "User not found.",
     "CANNOT_MODIFY_SELF": "You cannot change your own account.",
-    "LAST_MANAGER": "The organization must keep at least one active manager."
+    "LAST_MANAGER": "The organization must keep at least one active manager.",
+    "CONTACT_ALREADY_IN_USE": "This contact already belongs to another account.",
+    "CONTACT_ALREADY_VERIFIED": "This contact is already confirmed on your account.",
+    "LAST_CONTACT": "The account must keep at least one confirmed contact."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -198,7 +201,11 @@
     "TOO_COMMON": "This password is too common. Choose another one.",
     "SIZE": "Length outside the allowed limits.",
     "PATTERN": "Invalid format.",
-    "TYPE_MISMATCH": "Invalid value."
+    "TYPE_MISMATCH": "Invalid value.",
+    "INVALID_NAME": "Enter your full name (at least two words, only letters, spaces, ' and -).",
+    "UNDERAGE": "You must be at least 18 years old.",
+    "INVALID_DATE": "Invalid date.",
+    "INVALID_DOCUMENT_NUMBER": "Invalid document number (5 to 20 upper-case letters or digits)."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

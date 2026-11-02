@@ -17,6 +17,14 @@
       "status" : 409
     },
     {
+      "code" : "CONTACT_ALREADY_IN_USE",
+      "status" : 409
+    },
+    {
+      "code" : "CONTACT_ALREADY_VERIFIED",
+      "status" : 409
+    },
+    {
       "code" : "DECRYPTION_FAILED",
       "status" : 500
     },
@@ -70,6 +78,10 @@
     },
     {
       "code" : "INVITATION_NOT_ACCEPTED",
+      "status" : 400
+    },
+    {
+      "code" : "LAST_CONTACT",
       "status" : 400
     },
     {
@@ -200,8 +212,11 @@
     "DEFAULT_CHANNEL_NOT_ENABLED",
     "FALLBACK_ORDER_MISMATCH",
     "INVALID_CURRENCY",
+    "INVALID_DATE",
+    "INVALID_DOCUMENT_NUMBER",
     "INVALID_EMAIL",
     "INVALID_MSISDN",
+    "INVALID_NAME",
     "INVALID_NUIT",
     "INVALID_PHONE",
     "INVALID_PLATE",
@@ -216,6 +231,7 @@
     "TOO_COMMON",
     "TOO_LONG",
     "TOO_SHORT",
-    "TYPE_MISMATCH"
+    "TYPE_MISMATCH",
+    "UNDERAGE"
   ]
 }

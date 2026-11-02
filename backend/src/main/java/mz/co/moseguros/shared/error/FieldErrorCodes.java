@@ -44,6 +44,16 @@ public final class FieldErrorCodes {
     public static final String CONTAINS_EMAIL = "CONTAINS_EMAIL";
     public static final String TOO_COMMON = "TOO_COMMON";
 
+    // Perfil do cliente (S1-06)
+    /** Nome completo com caracteres não permitidos, fora de 2–120 ou com menos de duas palavras. */
+    public static final String INVALID_NAME = "INVALID_NAME";
+    /** Menos de 18 anos à data de hoje (em {@code Africa/Maputo}). */
+    public static final String UNDERAGE = "UNDERAGE";
+    /** Data impossível para o campo (ex.: nascimento há mais de 120 anos). */
+    public static final String INVALID_DATE = "INVALID_DATE";
+    /** Número de documento fora de {@code ^[A-Z0-9]{5,20}$}. */
+    public static final String INVALID_DOCUMENT_NUMBER = "INVALID_DOCUMENT_NUMBER";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

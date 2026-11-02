@@ -41,6 +41,25 @@ export interface AssignableRolesResponse {
   roles: string[];
 }
 
+export type ContactResponseType = (typeof ContactResponseType)[keyof typeof ContactResponseType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ContactResponseType = {
+  MSISDN: 'MSISDN',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface ContactResponse {
+  type: ContactResponseType;
+  /** Telemóvel em E.164 ou e-mail */
+  value: string;
+  verified: boolean;
+}
+
+export interface ContactsResponse {
+  contacts: ContactResponse[];
+}
+
 export type CreateOrganizationRequestProvince =
   (typeof CreateOrganizationRequestProvince)[keyof typeof CreateOrganizationRequestProvince];
 
@@ -108,6 +127,49 @@ export interface CreateOrganizationRequest {
    */
   tradeName?: string;
   type: CreateOrganizationRequestType;
+}
+
+export type CustomerProfileResponseIdDocType =
+  (typeof CustomerProfileResponseIdDocType)[keyof typeof CustomerProfileResponseIdDocType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CustomerProfileResponseIdDocType = {
+  BI: 'BI',
+  PASSPORT: 'PASSPORT',
+  DIRE: 'DIRE',
+} as const;
+
+export type CustomerProfileResponseProvince =
+  (typeof CustomerProfileResponseProvince)[keyof typeof CustomerProfileResponseProvince];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CustomerProfileResponseProvince = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface CustomerProfileResponse {
+  address?: string;
+  birthDate?: string;
+  /** Tem nome, data de nascimento, documento, NUIT e província */
+  complete: boolean;
+  fullName?: string;
+  /** Todos os caracteres menos os últimos 4 trocados por * */
+  idDocNumberMasked?: string;
+  idDocType?: CustomerProfileResponseIdDocType;
+  nuitMasked?: string;
+  province?: CustomerProfileResponseProvince;
+  /** Enviar na alteração */
+  version: number;
 }
 
 export type DeliveryReceiptRequestStatus =
@@ -789,6 +851,36 @@ export interface StaffUserResponse {
   version: number;
 }
 
+/**
+ * Canal escolhido pelo cliente (só se customerCanChoose); sem ele usa-se o canal por defeito
+ */
+export type StartContactVerificationRequestChannel =
+  (typeof StartContactVerificationRequestChannel)[keyof typeof StartContactVerificationRequestChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const StartContactVerificationRequestChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type StartContactVerificationRequestType =
+  (typeof StartContactVerificationRequestType)[keyof typeof StartContactVerificationRequestType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const StartContactVerificationRequestType = {
+  MSISDN: 'MSISDN',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface StartContactVerificationRequest {
+  /** Canal escolhido pelo cliente (só se customerCanChoose); sem ele usa-se o canal por defeito */
+  channel?: StartContactVerificationRequestChannel;
+  type: StartContactVerificationRequestType;
+  /** Telemóvel (841234567, +258841234567) ou e-mail */
+  value: string;
+}
+
 export interface SuspendOrganizationRequest {
   /**
    * @minLength 0
@@ -811,6 +903,74 @@ export interface TotpSetupResponse {
   otpauthUri: string;
   /** Segredo em Base32 (entrada manual) */
   totpSecret: string;
+}
+
+/**
+ * @pattern pt|en
+ */
+export type UpdateMeRequestPreferredLanguage =
+  (typeof UpdateMeRequestPreferredLanguage)[keyof typeof UpdateMeRequestPreferredLanguage];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateMeRequestPreferredLanguage = {
+  pt: 'pt',
+  en: 'en',
+} as const;
+
+export interface UpdateMeRequest {
+  /** Só staff, 2–120 caracteres; omitido mantém o actual. Ignorado para clientes (o nome está no perfil). */
+  displayName?: string;
+  /** @pattern pt|en */
+  preferredLanguage: UpdateMeRequestPreferredLanguage;
+}
+
+export type UpdateMyProfileRequestIdDocType =
+  (typeof UpdateMyProfileRequestIdDocType)[keyof typeof UpdateMyProfileRequestIdDocType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateMyProfileRequestIdDocType = {
+  BI: 'BI',
+  PASSPORT: 'PASSPORT',
+  DIRE: 'DIRE',
+} as const;
+
+export type UpdateMyProfileRequestProvince =
+  (typeof UpdateMyProfileRequestProvince)[keyof typeof UpdateMyProfileRequestProvince];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateMyProfileRequestProvince = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface UpdateMyProfileRequest {
+  /** @maxLength 300 */
+  address?: string;
+  /** Pelo menos 18 anos, no máximo 120 */
+  birthDate: string;
+  /**
+   * Letras, espaços, apóstrofo e hífen; pelo menos duas palavras
+   * @minLength 2
+   * @maxLength 120
+   */
+  fullName: string;
+  /** Maiúsculas e dígitos, 5–20 (espaços ignorados). Obrigatório se ainda não existir ou se idDocType mudar; omitido mantém o actual. */
+  idDocNumber?: string;
+  idDocType: UpdateMyProfileRequestIdDocType;
+  /** 9 dígitos. Obrigatório se ainda não existir; omitido mantém o actual. */
+  nuit?: string;
+  province: UpdateMyProfileRequestProvince;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
 }
 
 export type UpdateOrganizationRequestProvince =
@@ -920,6 +1080,12 @@ export interface UpdateUserRolesRequest {
   roleCodes: string[];
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
+}
+
+export interface VerifyContactRequest {
+  /** challengeId devolvido no pedido */
+  challengeId: string;
+  code: string;
 }
 
 export interface VerifyOtpRequest {
@@ -3302,6 +3468,644 @@ export function useGetMe<
 
   return query;
 }
+
+/**
+ * Língua preferida e, só para staff, o nome (para clientes o nome está no perfil e displayName é ignorado).
+ * @summary Altera as preferências da conta
+ */
+export const updateMe = (
+  updateMeRequest: BodyType<UpdateMeRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<MeResponse>(
+    {
+      url: `/api/v1/me`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateMeRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateMeMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMe>>,
+    TError,
+    { data: BodyType<UpdateMeRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateMe>>,
+  TError,
+  { data: BodyType<UpdateMeRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateMe'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateMe>>,
+    { data: BodyType<UpdateMeRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateMe(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateMeMutationResult = NonNullable<Awaited<ReturnType<typeof updateMe>>>;
+export type UpdateMeMutationBody = BodyType<UpdateMeRequest>;
+export type UpdateMeMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera as preferências da conta
+ */
+export const useUpdateMe = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateMe>>,
+      TError,
+      { data: BodyType<UpdateMeRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateMe>>,
+  TError,
+  { data: BodyType<UpdateMeRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateMeMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * @summary Contactos do cliente
+ */
+export const listMyContacts = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<ContactsResponse>({ url: `/api/v1/me/contacts`, method: 'GET', signal }, options);
+};
+
+export const getListMyContactsQueryKey = () => {
+  return [`/api/v1/me/contacts`] as const;
+};
+
+export const getListMyContactsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyContacts>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyContacts>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyContactsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyContacts>>> = ({ signal }) =>
+    listMyContacts(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyContacts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyContactsQueryResult = NonNullable<Awaited<ReturnType<typeof listMyContacts>>>;
+export type ListMyContactsQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyContacts<
+  TData = Awaited<ReturnType<typeof listMyContacts>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyContacts>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyContacts>>,
+          TError,
+          Awaited<ReturnType<typeof listMyContacts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyContacts<
+  TData = Awaited<ReturnType<typeof listMyContacts>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyContacts>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyContacts>>,
+          TError,
+          Awaited<ReturnType<typeof listMyContacts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyContacts<
+  TData = Awaited<ReturnType<typeof listMyContacts>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyContacts>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Contactos do cliente
+ */
+
+export function useListMyContacts<
+  TData = Awaited<ReturnType<typeof listMyContacts>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyContacts>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyContactsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Acrescenta ou troca o telemóvel ou o e-mail: envia um código com as regras de canal, alternativa e limites do login. Para reenviar, chama-se de novo. Contacto de outra conta → 409 CONTACT_ALREADY_IN_USE; igual ao actual e verificado → 409 CONTACT_ALREADY_VERIFIED.
+ * @summary Envia um código para um contacto novo
+ */
+export const startContactVerification = (
+  startContactVerificationRequest: BodyType<StartContactVerificationRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OtpRequestResponse>(
+    {
+      url: `/api/v1/me/contacts`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: startContactVerificationRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getStartContactVerificationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof startContactVerification>>,
+    TError,
+    { data: BodyType<StartContactVerificationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof startContactVerification>>,
+  TError,
+  { data: BodyType<StartContactVerificationRequest> },
+  TContext
+> => {
+  const mutationKey = ['startContactVerification'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof startContactVerification>>,
+    { data: BodyType<StartContactVerificationRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return startContactVerification(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type StartContactVerificationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof startContactVerification>>
+>;
+export type StartContactVerificationMutationBody = BodyType<StartContactVerificationRequest>;
+export type StartContactVerificationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia um código para um contacto novo
+ */
+export const useStartContactVerification = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof startContactVerification>>,
+      TError,
+      { data: BodyType<StartContactVerificationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof startContactVerification>>,
+  TError,
+  { data: BodyType<StartContactVerificationRequest> },
+  TContext
+> => {
+  const mutationOptions = getStartContactVerificationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Mesmas validações do verifyOtp. O contacto substitui o anterior do mesmo tipo, verificado. Desafio de outra finalidade ou de outro cliente → 404 OTP_CHALLENGE_NOT_FOUND.
+ * @summary Confirma o código e grava o contacto
+ */
+export const verifyContact = (
+  verifyContactRequest: BodyType<VerifyContactRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ContactsResponse>(
+    {
+      url: `/api/v1/me/contacts/verify`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: verifyContactRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getVerifyContactMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyContact>>,
+    TError,
+    { data: BodyType<VerifyContactRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof verifyContact>>,
+  TError,
+  { data: BodyType<VerifyContactRequest> },
+  TContext
+> => {
+  const mutationKey = ['verifyContact'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof verifyContact>>,
+    { data: BodyType<VerifyContactRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return verifyContact(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type VerifyContactMutationResult = NonNullable<Awaited<ReturnType<typeof verifyContact>>>;
+export type VerifyContactMutationBody = BodyType<VerifyContactRequest>;
+export type VerifyContactMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Confirma o código e grava o contacto
+ */
+export const useVerifyContact = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof verifyContact>>,
+      TError,
+      { data: BodyType<VerifyContactRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof verifyContact>>,
+  TError,
+  { data: BodyType<VerifyContactRequest> },
+  TContext
+> => {
+  const mutationOptions = getVerifyContactMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * A conta não pode ficar sem nenhum contacto verificado → 400 LAST_CONTACT.
+ * @summary Remove um contacto
+ */
+export const removeMyContact = (
+  type: 'MSISDN' | 'EMAIL',
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<void>({ url: `/api/v1/me/contacts/${type}`, method: 'DELETE' }, options);
+};
+
+export const getRemoveMyContactMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof removeMyContact>>,
+    TError,
+    { type: 'MSISDN' | 'EMAIL' },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof removeMyContact>>,
+  TError,
+  { type: 'MSISDN' | 'EMAIL' },
+  TContext
+> => {
+  const mutationKey = ['removeMyContact'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof removeMyContact>>,
+    { type: 'MSISDN' | 'EMAIL' }
+  > = (props) => {
+    const { type } = props ?? {};
+
+    return removeMyContact(type, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RemoveMyContactMutationResult = NonNullable<
+  Awaited<ReturnType<typeof removeMyContact>>
+>;
+
+export type RemoveMyContactMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Remove um contacto
+ */
+export const useRemoveMyContact = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof removeMyContact>>,
+      TError,
+      { type: 'MSISDN' | 'EMAIL' },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof removeMyContact>>,
+  TError,
+  { type: 'MSISDN' | 'EMAIL' },
+  TContext
+> => {
+  const mutationOptions = getRemoveMyContactMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * O documento e o NUIT vêm mascarados; os campos por preencher são omitidos.
+ * @summary Perfil do cliente
+ */
+export const getMyProfile = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<CustomerProfileResponse>(
+    { url: `/api/v1/me/profile`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetMyProfileQueryKey = () => {
+  return [`/api/v1/me/profile`] as const;
+};
+
+export const getGetMyProfileQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyProfile>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfile>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyProfileQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyProfile>>> = ({ signal }) =>
+    getMyProfile(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyProfile>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getMyProfile>>>;
+export type GetMyProfileQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMyProfile<
+  TData = Awaited<ReturnType<typeof getMyProfile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfile>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyProfile>>,
+          TError,
+          Awaited<ReturnType<typeof getMyProfile>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyProfile<
+  TData = Awaited<ReturnType<typeof getMyProfile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfile>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyProfile>>,
+          TError,
+          Awaited<ReturnType<typeof getMyProfile>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyProfile<
+  TData = Awaited<ReturnType<typeof getMyProfile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfile>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Perfil do cliente
+ */
+
+export function useGetMyProfile<
+  TData = Awaited<ReturnType<typeof getMyProfile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyProfile>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyProfileQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Erros de validação → 400 VALIDATION_ERROR com errors[]; version antiga → 409 CONCURRENT_MODIFICATION.
+ * @summary Altera o perfil do cliente
+ */
+export const updateMyProfile = (
+  updateMyProfileRequest: BodyType<UpdateMyProfileRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<CustomerProfileResponse>(
+    {
+      url: `/api/v1/me/profile`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateMyProfileRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateMyProfileMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMyProfile>>,
+    TError,
+    { data: BodyType<UpdateMyProfileRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateMyProfile>>,
+  TError,
+  { data: BodyType<UpdateMyProfileRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateMyProfile'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateMyProfile>>,
+    { data: BodyType<UpdateMyProfileRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateMyProfile(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateMyProfileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateMyProfile>>
+>;
+export type UpdateMyProfileMutationBody = BodyType<UpdateMyProfileRequest>;
+export type UpdateMyProfileMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera o perfil do cliente
+ */
+export const useUpdateMyProfile = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateMyProfile>>,
+      TError,
+      { data: BodyType<UpdateMyProfileRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateMyProfile>>,
+  TError,
+  { data: BodyType<UpdateMyProfileRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateMyProfileMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 
 /**
  * @summary Versão da API

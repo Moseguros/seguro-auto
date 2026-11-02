@@ -89,6 +89,9 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'USER_NOT_FOUND' => l10n.errorUserNotFound,
   'CANNOT_MODIFY_SELF' => l10n.errorCannotModifySelf,
   'LAST_MANAGER' => l10n.errorLastManager,
+  'CONTACT_ALREADY_IN_USE' => l10n.errorContactAlreadyInUse,
+  'CONTACT_ALREADY_VERIFIED' => l10n.errorContactAlreadyVerified,
+  'LAST_CONTACT' => l10n.errorLastContact,
   _ => l10n.errorUnknown,
 };
 
@@ -118,5 +121,9 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'SIZE' => l10n.validationSize,
   'PATTERN' => l10n.validationPattern,
   'TYPE_MISMATCH' => l10n.validationTypeMismatch,
+  'INVALID_NAME' => l10n.validationInvalidName,
+  'UNDERAGE' => l10n.validationUnderage,
+  'INVALID_DATE' => l10n.validationInvalidDate,
+  'INVALID_DOCUMENT_NUMBER' => l10n.validationInvalidDocumentNumber,
   _ => l10n.errorUnknown,
 };

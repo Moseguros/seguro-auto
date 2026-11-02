@@ -172,7 +172,10 @@
     "RESET_TOKEN_INVALID": "Este link de recuperação já não é válido. Peça um novo.",
     "USER_NOT_FOUND": "Utilizador não encontrado.",
     "CANNOT_MODIFY_SELF": "Não pode alterar a sua própria conta.",
-    "LAST_MANAGER": "A organização tem de ficar com pelo menos um gestor activo."
+    "LAST_MANAGER": "A organização tem de ficar com pelo menos um gestor activo.",
+    "CONTACT_ALREADY_IN_USE": "Este contacto já está associado a outra conta.",
+    "CONTACT_ALREADY_VERIFIED": "Este contacto já está confirmado na sua conta.",
+    "LAST_CONTACT": "A conta tem de ficar com pelo menos um contacto confirmado."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -198,7 +201,11 @@
     "TOO_COMMON": "Esta palavra-passe é demasiado comum. Escolha outra.",
     "SIZE": "Comprimento fora dos limites permitidos.",
     "PATTERN": "Formato inválido.",
-    "TYPE_MISMATCH": "Valor inválido."
+    "TYPE_MISMATCH": "Valor inválido.",
+    "INVALID_NAME": "Indique o nome completo (pelo menos duas palavras, só letras, espaços, ' e -).",
+    "UNDERAGE": "Tem de ter pelo menos 18 anos.",
+    "INVALID_DATE": "Data inválida.",
+    "INVALID_DOCUMENT_NUMBER": "Número de documento inválido (5 a 20 letras maiúsculas ou dígitos)."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
