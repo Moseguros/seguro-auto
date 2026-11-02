@@ -4,6 +4,7 @@ import 'package:moseguros_api/moseguros_api.dart';
 
 import '../auth/auth_interceptor.dart';
 import '../config/env.dart';
+import 'api_serializers.dart';
 
 /// Envolve o Dio e o cliente gerado (`packages/moseguros_api`).
 ///
@@ -20,7 +21,11 @@ class ApiClient {
         language: this.language,
       ),
     );
-    _api = MosegurosApi(dio: this.dio, interceptors: const []);
+    _api = MosegurosApi(
+      dio: this.dio,
+      serializers: apiSerializers,
+      interceptors: const [],
+    );
   }
 
   static const timeout = Duration(seconds: 15);
@@ -61,7 +66,7 @@ class ApiClient {
   /// `Identity` sem renovação automática: usado pelo `SessionController` para
   /// `refreshToken` e `logoutSession`.
   IdentityApi get sessionIdentity =>
-      IdentityApi(bareDio(), standardSerializers);
+      IdentityApi(bareDio(), apiSerializers);
 }
 
 final apiClientProvider = Provider<ApiClient>(
