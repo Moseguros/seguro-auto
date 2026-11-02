@@ -326,7 +326,8 @@ function Section({
   } else {
     body = (
       <Paper variant="outlined">
-        <TableContainer>
+        {/* relative: o texto escondido das acções (absolute) fica dentro do scroll da tabela. */}
+        <TableContainer sx={{ position: 'relative' }}>
           <Table size="small" aria-label={title} data-testid={testId}>
             <TableHead>
               <TableRow>
@@ -371,8 +372,9 @@ function Section({
 
 const visuallyHidden = {
   position: 'absolute',
-  width: 1,
-  height: 1,
+  // Em px: no sx do MUI, 1 seria 100%.
+  width: '1px',
+  height: '1px',
   overflow: 'hidden',
   clip: 'rect(0 0 0 0)',
   whiteSpace: 'nowrap',
