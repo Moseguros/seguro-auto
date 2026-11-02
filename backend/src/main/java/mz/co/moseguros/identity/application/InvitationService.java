@@ -134,6 +134,16 @@ public class InvitationService {
         return invite(null, fullName, email, roleCodes, Actor.system());
     }
 
+    /**
+     * Convite da reposição de acesso (S1-05 §3, {@link StaffUserService#resetAccess}): a conta já
+     * está {@code PENDING_ACTIVATION} na mesma organização, por isso o convite fica ligado a ela.
+     * Sem verificação de permissões: quem chama já as verificou e corre na sua transacção.
+     */
+    InvitationView inviteForAccessReset(OrganizationSummary organization, String fullName, String email,
+                                        List<String> roleCodes) {
+        return invite(organization, fullName, email, roleCodes, Actor.staff(currentUser.id()));
+    }
+
     /** Convites de uma organização, do mais recente para o mais antigo por defeito. */
     @PreAuthorize("hasAuthority('org-user:read')")
     @Transactional(readOnly = true)

@@ -30,14 +30,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID>,
             + "and a.email = :email")
     Optional<UserAccount> findStaffByEmailForUpdate(@Param("email") String email);
 
-    /**
-     * Lê a conta e incrementa já a {@code version} (alteração de perfis: a linha da conta não
-     * muda, mas quem a leu antes tem de ver uma versão nova).
-     */
-    @Lock(LockModeType.PESSIMISTIC_FORCE_INCREMENT)
-    @Query("select a from UserAccount a where a.id = :id")
-    Optional<UserAccount> findByIdForceIncrement(@Param("id") UUID id);
-
     List<UserAccount> findByOrganizationId(UUID organizationId);
 
     /** Ids das contas da organização (ex.: para revogar as sessões quando é suspensa). */
