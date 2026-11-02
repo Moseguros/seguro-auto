@@ -23,6 +23,93 @@ import type {
 
 import { http } from './http';
 import type { ErrorType, BodyType } from './http';
+export interface AcceptInvitationRequest {
+  /** 12 a 128 caracteres, sem a parte local do e-mail e fora das mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[]) */
+  password: string;
+}
+
+export interface ActivateInvitationRequest {
+  totpCode: string;
+}
+
+export interface AssignableRolesResponse {
+  /** Perfis a dar ao primeiro gestor no ecrã de criação de organização */
+  managerInviteRoles: string[];
+  /** Perfis que fazem de alguém gestor (INSURER_ADMIN, ORG_ADMIN ou PLATFORM_ADMIN) */
+  managerRoles: string[];
+  /** Perfis atribuíveis */
+  roles: string[];
+}
+
+export type CreateOrganizationRequestProvince =
+  (typeof CreateOrganizationRequestProvince)[keyof typeof CreateOrganizationRequestProvince];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateOrganizationRequestProvince = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export type CreateOrganizationRequestType =
+  (typeof CreateOrganizationRequestType)[keyof typeof CreateOrganizationRequestType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateOrganizationRequestType = {
+  INSURER: 'INSURER',
+  BROKER: 'BROKER',
+  AGENT: 'AGENT',
+  WORKSHOP: 'WORKSHOP',
+  ASSESSOR: 'ASSESSOR',
+  ASSISTANCE: 'ASSISTANCE',
+  OMBUDSMAN: 'OMBUDSMAN',
+  REGULATOR: 'REGULATOR',
+  POLICE: 'POLICE',
+  CORPORATE_CLIENT: 'CORPORATE_CLIENT',
+} as const;
+
+export interface CreateOrganizationRequest {
+  /**
+   * @minLength 0
+   * @maxLength 300
+   */
+  address?: string;
+  contactEmail: string;
+  /**
+   * Só dígitos, com + opcional, sem espaços
+   * @pattern ^\+?[0-9]{9,15}$
+   */
+  contactPhone?: string;
+  insurerProfile?: InsurerProfileRequest;
+  /**
+   * @minLength 2
+   * @maxLength 200
+   */
+  legalName: string;
+  /**
+   * Número de autorização da ASFPM; obrigatório para INSURER, BROKER e AGENT (400 LICENSE_NUMBER_REQUIRED)
+   * @minLength 0
+   * @maxLength 40
+   */
+  licenseNumber?: string;
+  nuit: Nuit;
+  province?: CreateOrganizationRequestProvince;
+  /**
+   * @minLength 0
+   * @maxLength 120
+   */
+  tradeName?: string;
+  type: CreateOrganizationRequestType;
+}
+
 export type DeliveryReceiptRequestStatus =
   (typeof DeliveryReceiptRequestStatus)[keyof typeof DeliveryReceiptRequestStatus];
 
@@ -58,6 +145,96 @@ export interface FieldError {
   field: string;
   /** Mensagem técnica (não para o utilizador) */
   message?: string;
+}
+
+export interface InsurerProfileRequest {
+  complaintsEmail: string;
+  /** Provedor do cliente: organização existente do tipo OMBUDSMAN (400 OMBUDSMAN_INVALID) */
+  ombudsmanOrganizationId?: string;
+  /**
+   * Código curto único: 2 a 10 maiúsculas ou dígitos (409 SHORT_CODE_ALREADY_IN_USE)
+   * @pattern ^[A-Z0-9]{2,10}$
+   */
+  shortCode: string;
+}
+
+/**
+ * Só nas seguradoras
+ */
+export interface InsurerProfileResponse {
+  complaintsEmail: string;
+  ombudsmanOrganizationId?: string;
+  shortCode: string;
+}
+
+export interface InvitationDetailsResponse {
+  email: string;
+  expiresAt: string;
+  fullName: string;
+  organization?: InvitationOrganization;
+}
+
+export type InvitationOrganizationType =
+  (typeof InvitationOrganizationType)[keyof typeof InvitationOrganizationType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InvitationOrganizationType = {
+  INSURER: 'INSURER',
+  BROKER: 'BROKER',
+  AGENT: 'AGENT',
+  WORKSHOP: 'WORKSHOP',
+  ASSESSOR: 'ASSESSOR',
+  ASSISTANCE: 'ASSISTANCE',
+  OMBUDSMAN: 'OMBUDSMAN',
+  REGULATOR: 'REGULATOR',
+  POLICE: 'POLICE',
+  CORPORATE_CLIENT: 'CORPORATE_CLIENT',
+} as const;
+
+/**
+ * Omitida nos convites da plataforma
+ */
+export interface InvitationOrganization {
+  displayName: string;
+  type: InvitationOrganizationType;
+}
+
+export type InvitationResponseStatus =
+  (typeof InvitationResponseStatus)[keyof typeof InvitationResponseStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InvitationResponseStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+} as const;
+
+export interface InvitationResponse {
+  createdAt: string;
+  email: string;
+  expiresAt: string;
+  fullName: string;
+  id: string;
+  /** Omitido nos convites da plataforma */
+  organizationId?: string;
+  roleCodes: string[];
+  status: InvitationResponseStatus;
+}
+
+export interface InviteUserRequest {
+  email: string;
+  /**
+   * @minLength 2
+   * @maxLength 120
+   */
+  fullName: string;
+  /**
+   * Perfis permitidos no tipo da organização (400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION)
+   * @minItems 1
+   * @maxItems 20
+   */
+  roleCodes: string[];
 }
 
 export interface Jwk {
@@ -162,6 +339,105 @@ export type Msisdn = string;
  * @pattern ^\d{9}$
  */
 export type Nuit = string;
+
+export type OrganizationResponseProvince =
+  (typeof OrganizationResponseProvince)[keyof typeof OrganizationResponseProvince];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OrganizationResponseProvince = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export type OrganizationResponseStatus =
+  (typeof OrganizationResponseStatus)[keyof typeof OrganizationResponseStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OrganizationResponseStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+} as const;
+
+export type OrganizationResponseType =
+  (typeof OrganizationResponseType)[keyof typeof OrganizationResponseType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OrganizationResponseType = {
+  INSURER: 'INSURER',
+  BROKER: 'BROKER',
+  AGENT: 'AGENT',
+  WORKSHOP: 'WORKSHOP',
+  ASSESSOR: 'ASSESSOR',
+  ASSISTANCE: 'ASSISTANCE',
+  OMBUDSMAN: 'OMBUDSMAN',
+  REGULATOR: 'REGULATOR',
+  POLICE: 'POLICE',
+  CORPORATE_CLIENT: 'CORPORATE_CLIENT',
+} as const;
+
+export interface OrganizationResponse {
+  address?: string;
+  contactEmail: string;
+  contactPhone?: string;
+  createdAt: string;
+  /** tradeName, se existir, senão legalName */
+  displayName: string;
+  id: string;
+  insurerProfile?: InsurerProfileResponse;
+  legalName: string;
+  licenseNumber?: string;
+  nuit: Nuit;
+  province?: OrganizationResponseProvince;
+  status: OrganizationResponseStatus;
+  tradeName?: string;
+  type: OrganizationResponseType;
+  updatedAt: string;
+  version: number;
+}
+
+export type OrganizationSummaryResponseStatus =
+  (typeof OrganizationSummaryResponseStatus)[keyof typeof OrganizationSummaryResponseStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OrganizationSummaryResponseStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+} as const;
+
+export type OrganizationSummaryResponseType =
+  (typeof OrganizationSummaryResponseType)[keyof typeof OrganizationSummaryResponseType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OrganizationSummaryResponseType = {
+  INSURER: 'INSURER',
+  BROKER: 'BROKER',
+  AGENT: 'AGENT',
+  WORKSHOP: 'WORKSHOP',
+  ASSESSOR: 'ASSESSOR',
+  ASSISTANCE: 'ASSISTANCE',
+  OMBUDSMAN: 'OMBUDSMAN',
+  REGULATOR: 'REGULATOR',
+  POLICE: 'POLICE',
+  CORPORATE_CLIENT: 'CORPORATE_CLIENT',
+} as const;
+
+export interface OrganizationSummaryResponse {
+  createdAt: string;
+  displayName: string;
+  id: string;
+  nuit: Nuit;
+  status: OrganizationSummaryResponseStatus;
+  type: OrganizationSummaryResponseType;
+}
 
 export type OtpChallengeResponseChannel =
   (typeof OtpChallengeResponseChannel)[keyof typeof OtpChallengeResponseChannel];
@@ -376,6 +652,20 @@ export interface OtpVerifyResponse {
   refreshToken: string;
 }
 
+export interface PageResponseInvitationResponse {
+  content: InvitationResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseOrganizationSummaryResponse {
+  content: OrganizationSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 /**
  * Erro RFC 7807 (application/problem+json)
  */
@@ -426,6 +716,14 @@ export interface RequestOtpRequest {
   identifierType: RequestOtpRequestIdentifierType;
 }
 
+export interface SuspendOrganizationRequest {
+  /**
+   * @minLength 0
+   * @maxLength 500
+   */
+  reason: string;
+}
+
 export interface TokenResponse {
   /** JWT de acesso (Bearer), válido 15 minutos */
   accessToken: string;
@@ -433,6 +731,62 @@ export interface TokenResponse {
   expiresIn: number;
   /** Refresh token opaco; cada renovação devolve um novo */
   refreshToken: string;
+}
+
+export interface TotpSetupResponse {
+  /** URI para o QR code */
+  otpauthUri: string;
+  /** Segredo em Base32 (entrada manual) */
+  totpSecret: string;
+}
+
+export type UpdateOrganizationRequestProvince =
+  (typeof UpdateOrganizationRequestProvince)[keyof typeof UpdateOrganizationRequestProvince];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateOrganizationRequestProvince = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface UpdateOrganizationRequest {
+  /**
+   * @minLength 0
+   * @maxLength 300
+   */
+  address?: string;
+  contactEmail: string;
+  /** @pattern ^\+?[0-9]{9,15}$ */
+  contactPhone?: string;
+  insurerProfile?: InsurerProfileRequest;
+  /**
+   * @minLength 2
+   * @maxLength 200
+   */
+  legalName: string;
+  /**
+   * @minLength 0
+   * @maxLength 40
+   */
+  licenseNumber?: string;
+  nuit: Nuit;
+  province?: UpdateOrganizationRequestProvince;
+  /**
+   * @minLength 0
+   * @maxLength 120
+   */
+  tradeName?: string;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
 }
 
 export type UpdateOtpSettingsRequestDefaultChannel =
@@ -496,6 +850,99 @@ export interface VersionResponse {
   name?: string;
   version?: string;
 }
+
+export type ListPlatformInvitationsParams = {
+  status?: ListPlatformInvitationsStatus;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
+
+export type ListPlatformInvitationsStatus =
+  (typeof ListPlatformInvitationsStatus)[keyof typeof ListPlatformInvitationsStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListPlatformInvitationsStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+} as const;
+
+export type ListOrganizationsParams = {
+  type?: ListOrganizationsType;
+  status?: ListOrganizationsStatus;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * createdAt ou legalName, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListOrganizationsType =
+  (typeof ListOrganizationsType)[keyof typeof ListOrganizationsType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListOrganizationsType = {
+  INSURER: 'INSURER',
+  BROKER: 'BROKER',
+  AGENT: 'AGENT',
+  WORKSHOP: 'WORKSHOP',
+  ASSESSOR: 'ASSESSOR',
+  ASSISTANCE: 'ASSISTANCE',
+  OMBUDSMAN: 'OMBUDSMAN',
+  REGULATOR: 'REGULATOR',
+  POLICE: 'POLICE',
+  CORPORATE_CLIENT: 'CORPORATE_CLIENT',
+} as const;
+
+export type ListOrganizationsStatus =
+  (typeof ListOrganizationsStatus)[keyof typeof ListOrganizationsStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListOrganizationsStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+} as const;
+
+export type ListOrganizationInvitationsParams = {
+  status?: ListOrganizationInvitationsStatus;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
+
+export type ListOrganizationInvitationsStatus =
+  (typeof ListOrganizationInvitationsStatus)[keyof typeof ListOrganizationInvitationsStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListOrganizationInvitationsStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+} as const;
+
+export type ListAssignableRolesParams = {
+  /**
+   * Organização (ou scope=PLATFORM)
+   */
+  organizationId?: string;
+  /**
+   * PLATFORM (ou organizationId)
+   */
+  scope?: ListAssignableRolesScope;
+};
+
+export type ListAssignableRolesScope =
+  (typeof ListAssignableRolesScope)[keyof typeof ListAssignableRolesScope];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListAssignableRolesScope = {
+  PLATFORM: 'PLATFORM',
+} as const;
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -595,6 +1042,140 @@ export function useGetJwks<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getGetJwksQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão org-user:read e âmbito da plataforma. Ordenação por createdAt, expiresAt ou email.
+ * @summary Lista os convites da plataforma
+ */
+export const listPlatformInvitations = (
+  params?: ListPlatformInvitationsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInvitationResponse>(
+    { url: `/api/v1/admin/invitations`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListPlatformInvitationsQueryKey = (params?: ListPlatformInvitationsParams) => {
+  return [`/api/v1/admin/invitations`, ...(params ? [params] : [])] as const;
+};
+
+export const getListPlatformInvitationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPlatformInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPlatformInvitationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlatformInvitations>>> = ({
+    signal,
+  }) => listPlatformInvitations(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPlatformInvitations>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPlatformInvitationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPlatformInvitations>>
+>;
+export type ListPlatformInvitationsQueryError = ErrorType<ProblemDetail>;
+
+export function useListPlatformInvitations<
+  TData = Awaited<ReturnType<typeof listPlatformInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListPlatformInvitationsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformInvitations>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlatformInvitations>>,
+          TError,
+          Awaited<ReturnType<typeof listPlatformInvitations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlatformInvitations<
+  TData = Awaited<ReturnType<typeof listPlatformInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformInvitations>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlatformInvitations>>,
+          TError,
+          Awaited<ReturnType<typeof listPlatformInvitations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlatformInvitations<
+  TData = Awaited<ReturnType<typeof listPlatformInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os convites da plataforma
+ */
+
+export function useListPlatformInvitations<
+  TData = Awaited<ReturnType<typeof listPlatformInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPlatformInvitationsQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -885,6 +1466,405 @@ export const useTestOtpDelivery = <TError = ErrorType<ProblemDetail>, TContext =
   TContext
 > => {
   const mutationOptions = getTestOtpDeliveryMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:manage e âmbito da plataforma (senão 403 FORBIDDEN). Só perfis sem organização (excepto CUSTOMER). Convites pendentes para o mesmo e-mail são substituídos.
+ * @summary Convida staff da plataforma
+ */
+export const invitePlatformUser = (
+  inviteUserRequest: BodyType<InviteUserRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InvitationResponse>(
+    {
+      url: `/api/v1/admin/users`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: inviteUserRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getInvitePlatformUserMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof invitePlatformUser>>,
+    TError,
+    { data: BodyType<InviteUserRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof invitePlatformUser>>,
+  TError,
+  { data: BodyType<InviteUserRequest> },
+  TContext
+> => {
+  const mutationKey = ['invitePlatformUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof invitePlatformUser>>,
+    { data: BodyType<InviteUserRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return invitePlatformUser(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type InvitePlatformUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof invitePlatformUser>>
+>;
+export type InvitePlatformUserMutationBody = BodyType<InviteUserRequest>;
+export type InvitePlatformUserMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Convida staff da plataforma
+ */
+export const useInvitePlatformUser = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof invitePlatformUser>>,
+      TError,
+      { data: BodyType<InviteUserRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof invitePlatformUser>>,
+  TError,
+  { data: BodyType<InviteUserRequest> },
+  TContext
+> => {
+  const mutationOptions = getInvitePlatformUserMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Token desconhecido, convite expirado, revogado ou já aceite → 404 INVITATION_INVALID.
+ * @summary Consulta um convite pelo token
+ */
+export const getInvitationByToken = (
+  token: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InvitationDetailsResponse>(
+    { url: `/api/v1/auth/invitations/${token}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInvitationByTokenQueryKey = (token?: string) => {
+  return [`/api/v1/auth/invitations/${token}`] as const;
+};
+
+export const getGetInvitationByTokenQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInvitationByToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInvitationByToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInvitationByTokenQueryKey(token);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvitationByToken>>> = ({ signal }) =>
+    getInvitationByToken(token, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!token, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInvitationByToken>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInvitationByTokenQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInvitationByToken>>
+>;
+export type GetInvitationByTokenQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInvitationByToken<
+  TData = Awaited<ReturnType<typeof getInvitationByToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInvitationByToken>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvitationByToken>>,
+          TError,
+          Awaited<ReturnType<typeof getInvitationByToken>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInvitationByToken<
+  TData = Awaited<ReturnType<typeof getInvitationByToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInvitationByToken>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInvitationByToken>>,
+          TError,
+          Awaited<ReturnType<typeof getInvitationByToken>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInvitationByToken<
+  TData = Awaited<ReturnType<typeof getInvitationByToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInvitationByToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta um convite pelo token
+ */
+
+export function useGetInvitationByToken<
+  TData = Awaited<ReturnType<typeof getInvitationByToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInvitationByToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInvitationByTokenQueryOptions(token, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Aplica a política de palavras-passe (400 PASSWORD_TOO_WEAK) e devolve um segredo TOTP novo. Pode repetir-se até à activação: cada chamada substitui a palavra-passe e o segredo.
+ * @summary Define a palavra-passe e o TOTP
+ */
+export const acceptInvitation = (
+  token: string,
+  acceptInvitationRequest: BodyType<AcceptInvitationRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<TotpSetupResponse>(
+    {
+      url: `/api/v1/auth/invitations/${token}/accept`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: acceptInvitationRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getAcceptInvitationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof acceptInvitation>>,
+    TError,
+    { token: string; data: BodyType<AcceptInvitationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof acceptInvitation>>,
+  TError,
+  { token: string; data: BodyType<AcceptInvitationRequest> },
+  TContext
+> => {
+  const mutationKey = ['acceptInvitation'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof acceptInvitation>>,
+    { token: string; data: BodyType<AcceptInvitationRequest> }
+  > = (props) => {
+    const { token, data } = props ?? {};
+
+    return acceptInvitation(token, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AcceptInvitationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof acceptInvitation>>
+>;
+export type AcceptInvitationMutationBody = BodyType<AcceptInvitationRequest>;
+export type AcceptInvitationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Define a palavra-passe e o TOTP
+ */
+export const useAcceptInvitation = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof acceptInvitation>>,
+      TError,
+      { token: string; data: BodyType<AcceptInvitationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof acceptInvitation>>,
+  TError,
+  { token: string; data: BodyType<AcceptInvitationRequest> },
+  TContext
+> => {
+  const mutationOptions = getAcceptInvitationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Sem accept antes → 400 INVITATION_NOT_ACCEPTED. Código errado → 400 TOTP_INVALID; ao 5.º o convite é revogado (404 INVITATION_INVALID). Certo → conta activa e sessão iniciada.
+ * @summary Activa a conta com o primeiro código TOTP
+ */
+export const activateInvitation = (
+  token: string,
+  activateInvitationRequest: BodyType<ActivateInvitationRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<TokenResponse>(
+    {
+      url: `/api/v1/auth/invitations/${token}/activate`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: activateInvitationRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getActivateInvitationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof activateInvitation>>,
+    TError,
+    { token: string; data: BodyType<ActivateInvitationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof activateInvitation>>,
+  TError,
+  { token: string; data: BodyType<ActivateInvitationRequest> },
+  TContext
+> => {
+  const mutationKey = ['activateInvitation'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof activateInvitation>>,
+    { token: string; data: BodyType<ActivateInvitationRequest> }
+  > = (props) => {
+    const { token, data } = props ?? {};
+
+    return activateInvitation(token, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ActivateInvitationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof activateInvitation>>
+>;
+export type ActivateInvitationMutationBody = BodyType<ActivateInvitationRequest>;
+export type ActivateInvitationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Activa a conta com o primeiro código TOTP
+ */
+export const useActivateInvitation = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof activateInvitation>>,
+      TError,
+      { token: string; data: BodyType<ActivateInvitationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof activateInvitation>>,
+  TError,
+  { token: string; data: BodyType<ActivateInvitationRequest> },
+  TContext
+> => {
+  const mutationOptions = getActivateInvitationMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -1554,6 +2534,167 @@ export const useReceiveDeliveryReceipt = <TError = ErrorType<ProblemDetail>, TCo
 };
 
 /**
+ * Permissão org-user:manage. Gera um token novo (o anterior deixa de funcionar) válido por 7 dias. Só PENDING ou EXPIRED, senão 409 INVALID_STATE_TRANSITION.
+ * @summary Reenvia um convite
+ */
+export const resendInvitation = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InvitationResponse>(
+    { url: `/api/v1/invitations/${id}/resend`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getResendInvitationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof resendInvitation>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof resendInvitation>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['resendInvitation'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof resendInvitation>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return resendInvitation(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ResendInvitationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof resendInvitation>>
+>;
+
+export type ResendInvitationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Reenvia um convite
+ */
+export const useResendInvitation = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof resendInvitation>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof resendInvitation>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getResendInvitationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:manage. Só PENDING ou EXPIRED, senão 409 INVALID_STATE_TRANSITION.
+ * @summary Revoga um convite
+ */
+export const revokeInvitation = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>({ url: `/api/v1/invitations/${id}/revoke`, method: 'POST', signal }, options);
+};
+
+export const getRevokeInvitationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof revokeInvitation>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof revokeInvitation>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['revokeInvitation'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof revokeInvitation>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return revokeInvitation(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RevokeInvitationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof revokeInvitation>>
+>;
+
+export type RevokeInvitationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Revoga um convite
+ */
+export const useRevokeInvitation = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof revokeInvitation>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof revokeInvitation>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getRevokeInvitationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * @summary Utilizador autenticado
  */
 export const getMe = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
@@ -1755,6 +2896,961 @@ export function useGetVersion<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getGetVersionQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão organization:read. q procura na denominação e no nome comercial (sem diferenciar maiúsculas) ou no NUIT exacto. Ordenação por createdAt ou legalName.
+ * @summary Lista as organizações
+ */
+export const listOrganizations = (
+  params?: ListOrganizationsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseOrganizationSummaryResponse>(
+    { url: `/api/v1/organizations`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListOrganizationsQueryKey = (params?: ListOrganizationsParams) => {
+  return [`/api/v1/organizations`, ...(params ? [params] : [])] as const;
+};
+
+export const getListOrganizationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listOrganizations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListOrganizationsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listOrganizations>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListOrganizationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listOrganizations>>> = ({ signal }) =>
+    listOrganizations(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listOrganizations>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListOrganizationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listOrganizations>>
+>;
+export type ListOrganizationsQueryError = ErrorType<ProblemDetail>;
+
+export function useListOrganizations<
+  TData = Awaited<ReturnType<typeof listOrganizations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListOrganizationsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listOrganizations>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listOrganizations>>,
+          TError,
+          Awaited<ReturnType<typeof listOrganizations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListOrganizations<
+  TData = Awaited<ReturnType<typeof listOrganizations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListOrganizationsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listOrganizations>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listOrganizations>>,
+          TError,
+          Awaited<ReturnType<typeof listOrganizations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListOrganizations<
+  TData = Awaited<ReturnType<typeof listOrganizations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListOrganizationsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listOrganizations>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as organizações
+ */
+
+export function useListOrganizations<
+  TData = Awaited<ReturnType<typeof listOrganizations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListOrganizationsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listOrganizations>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListOrganizationsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão organization:manage. O primeiro gestor é convidado a seguir com inviteOrganizationUser. insurerProfile é obrigatório em INSURER e proibido nos outros tipos.
+ * @summary Cria uma organização
+ */
+export const createOrganization = (
+  createOrganizationRequest: BodyType<CreateOrganizationRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OrganizationResponse>(
+    {
+      url: `/api/v1/organizations`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createOrganizationRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateOrganizationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createOrganization>>,
+    TError,
+    { data: BodyType<CreateOrganizationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createOrganization>>,
+  TError,
+  { data: BodyType<CreateOrganizationRequest> },
+  TContext
+> => {
+  const mutationKey = ['createOrganization'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createOrganization>>,
+    { data: BodyType<CreateOrganizationRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createOrganization(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateOrganizationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createOrganization>>
+>;
+export type CreateOrganizationMutationBody = BodyType<CreateOrganizationRequest>;
+export type CreateOrganizationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Cria uma organização
+ */
+export const useCreateOrganization = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createOrganization>>,
+      TError,
+      { data: BodyType<CreateOrganizationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createOrganization>>,
+  TError,
+  { data: BodyType<CreateOrganizationRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreateOrganizationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão organization:read. Não existe → 404 ORGANIZATION_NOT_FOUND.
+ * @summary Consulta uma organização
+ */
+export const getOrganization = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OrganizationResponse>(
+    { url: `/api/v1/organizations/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetOrganizationQueryKey = (id?: string) => {
+  return [`/api/v1/organizations/${id}`] as const;
+};
+
+export const getGetOrganizationQueryOptions = <
+  TData = Awaited<ReturnType<typeof getOrganization>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrganization>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetOrganizationQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrganization>>> = ({ signal }) =>
+    getOrganization(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getOrganization>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetOrganizationQueryResult = NonNullable<Awaited<ReturnType<typeof getOrganization>>>;
+export type GetOrganizationQueryError = ErrorType<ProblemDetail>;
+
+export function useGetOrganization<
+  TData = Awaited<ReturnType<typeof getOrganization>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrganization>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOrganization>>,
+          TError,
+          Awaited<ReturnType<typeof getOrganization>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOrganization<
+  TData = Awaited<ReturnType<typeof getOrganization>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrganization>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOrganization>>,
+          TError,
+          Awaited<ReturnType<typeof getOrganization>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOrganization<
+  TData = Awaited<ReturnType<typeof getOrganization>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrganization>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma organização
+ */
+
+export function useGetOrganization<
+  TData = Awaited<ReturnType<typeof getOrganization>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrganization>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetOrganizationQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão organization:manage. O tipo não muda; version diferente da gravada → 409 CONCURRENT_MODIFICATION.
+ * @summary Altera uma organização
+ */
+export const updateOrganization = (
+  id: string,
+  updateOrganizationRequest: BodyType<UpdateOrganizationRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<OrganizationResponse>(
+    {
+      url: `/api/v1/organizations/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateOrganizationRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateOrganizationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateOrganization>>,
+    TError,
+    { id: string; data: BodyType<UpdateOrganizationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateOrganization>>,
+  TError,
+  { id: string; data: BodyType<UpdateOrganizationRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateOrganization'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateOrganization>>,
+    { id: string; data: BodyType<UpdateOrganizationRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateOrganization(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateOrganizationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateOrganization>>
+>;
+export type UpdateOrganizationMutationBody = BodyType<UpdateOrganizationRequest>;
+export type UpdateOrganizationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera uma organização
+ */
+export const useUpdateOrganization = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateOrganization>>,
+      TError,
+      { id: string; data: BodyType<UpdateOrganizationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateOrganization>>,
+  TError,
+  { id: string; data: BodyType<UpdateOrganizationRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateOrganizationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão organization:manage. Já activa → 409 INVALID_STATE_TRANSITION.
+ * @summary Reactiva uma organização suspensa
+ */
+export const reactivateOrganization = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OrganizationResponse>(
+    { url: `/api/v1/organizations/${id}/reactivate`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getReactivateOrganizationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof reactivateOrganization>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof reactivateOrganization>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['reactivateOrganization'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof reactivateOrganization>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return reactivateOrganization(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ReactivateOrganizationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof reactivateOrganization>>
+>;
+
+export type ReactivateOrganizationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Reactiva uma organização suspensa
+ */
+export const useReactivateOrganization = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof reactivateOrganization>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof reactivateOrganization>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getReactivateOrganizationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão organization:manage. Revoga as sessões dos utilizadores da organização. Já suspensa → 409 INVALID_STATE_TRANSITION.
+ * @summary Suspende uma organização
+ */
+export const suspendOrganization = (
+  id: string,
+  suspendOrganizationRequest: BodyType<SuspendOrganizationRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OrganizationResponse>(
+    {
+      url: `/api/v1/organizations/${id}/suspend`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: suspendOrganizationRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSuspendOrganizationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof suspendOrganization>>,
+    TError,
+    { id: string; data: BodyType<SuspendOrganizationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof suspendOrganization>>,
+  TError,
+  { id: string; data: BodyType<SuspendOrganizationRequest> },
+  TContext
+> => {
+  const mutationKey = ['suspendOrganization'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof suspendOrganization>>,
+    { id: string; data: BodyType<SuspendOrganizationRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return suspendOrganization(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SuspendOrganizationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof suspendOrganization>>
+>;
+export type SuspendOrganizationMutationBody = BodyType<SuspendOrganizationRequest>;
+export type SuspendOrganizationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Suspende uma organização
+ */
+export const useSuspendOrganization = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof suspendOrganization>>,
+      TError,
+      { id: string; data: BodyType<SuspendOrganizationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof suspendOrganization>>,
+  TError,
+  { id: string; data: BodyType<SuspendOrganizationRequest> },
+  TContext
+> => {
+  const mutationOptions = getSuspendOrganizationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:read. Ordenação por createdAt, expiresAt ou email.
+ * @summary Lista os convites de uma organização
+ */
+export const listOrganizationInvitations = (
+  orgId: string,
+  params?: ListOrganizationInvitationsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInvitationResponse>(
+    { url: `/api/v1/organizations/${orgId}/invitations`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListOrganizationInvitationsQueryKey = (
+  orgId?: string,
+  params?: ListOrganizationInvitationsParams,
+) => {
+  return [`/api/v1/organizations/${orgId}/invitations`, ...(params ? [params] : [])] as const;
+};
+
+export const getListOrganizationInvitationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listOrganizationInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListOrganizationInvitationsQueryKey(orgId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listOrganizationInvitations>>> = ({
+    signal,
+  }) => listOrganizationInvitations(orgId, params, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!orgId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listOrganizationInvitations>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListOrganizationInvitationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listOrganizationInvitations>>
+>;
+export type ListOrganizationInvitationsQueryError = ErrorType<ProblemDetail>;
+
+export function useListOrganizationInvitations<
+  TData = Awaited<ReturnType<typeof listOrganizationInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params: undefined | ListOrganizationInvitationsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationInvitations>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listOrganizationInvitations>>,
+          TError,
+          Awaited<ReturnType<typeof listOrganizationInvitations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListOrganizationInvitations<
+  TData = Awaited<ReturnType<typeof listOrganizationInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationInvitations>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listOrganizationInvitations>>,
+          TError,
+          Awaited<ReturnType<typeof listOrganizationInvitations>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListOrganizationInvitations<
+  TData = Awaited<ReturnType<typeof listOrganizationInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os convites de uma organização
+ */
+
+export function useListOrganizationInvitations<
+  TData = Awaited<ReturnType<typeof listOrganizationInvitations>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationInvitationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationInvitations>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListOrganizationInvitationsQueryOptions(orgId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão org-user:manage. A plataforma convida para qualquer organização; o staff de uma organização só para a sua (outra → 404 ORGANIZATION_NOT_FOUND). Organização suspensa → 409 ORGANIZATION_NOT_ACTIVE. E-mail de outra conta de staff → 409 EMAIL_ALREADY_IN_USE.
+ * @summary Convida staff de uma organização
+ */
+export const inviteOrganizationUser = (
+  orgId: string,
+  inviteUserRequest: BodyType<InviteUserRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InvitationResponse>(
+    {
+      url: `/api/v1/organizations/${orgId}/users`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: inviteUserRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getInviteOrganizationUserMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof inviteOrganizationUser>>,
+    TError,
+    { orgId: string; data: BodyType<InviteUserRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof inviteOrganizationUser>>,
+  TError,
+  { orgId: string; data: BodyType<InviteUserRequest> },
+  TContext
+> => {
+  const mutationKey = ['inviteOrganizationUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof inviteOrganizationUser>>,
+    { orgId: string; data: BodyType<InviteUserRequest> }
+  > = (props) => {
+    const { orgId, data } = props ?? {};
+
+    return inviteOrganizationUser(orgId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type InviteOrganizationUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof inviteOrganizationUser>>
+>;
+export type InviteOrganizationUserMutationBody = BodyType<InviteUserRequest>;
+export type InviteOrganizationUserMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Convida staff de uma organização
+ */
+export const useInviteOrganizationUser = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof inviteOrganizationUser>>,
+      TError,
+      { orgId: string; data: BodyType<InviteUserRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof inviteOrganizationUser>>,
+  TError,
+  { orgId: string; data: BodyType<InviteUserRequest> },
+  TContext
+> => {
+  const mutationOptions = getInviteOrganizationUserMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:read. Indicar organizationId ou scope=PLATFORM (um dos dois), com as regras de âmbito dos convites. Devolve também os perfis de gestor e os do primeiro gestor.
+ * @summary Perfis atribuíveis
+ */
+export const listAssignableRoles = (
+  params?: ListAssignableRolesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<AssignableRolesResponse>(
+    { url: `/api/v1/roles`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListAssignableRolesQueryKey = (params?: ListAssignableRolesParams) => {
+  return [`/api/v1/roles`, ...(params ? [params] : [])] as const;
+};
+
+export const getListAssignableRolesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listAssignableRoles>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListAssignableRolesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAssignableRoles>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListAssignableRolesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listAssignableRoles>>> = ({ signal }) =>
+    listAssignableRoles(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listAssignableRoles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAssignableRolesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listAssignableRoles>>
+>;
+export type ListAssignableRolesQueryError = ErrorType<ProblemDetail>;
+
+export function useListAssignableRoles<
+  TData = Awaited<ReturnType<typeof listAssignableRoles>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListAssignableRolesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAssignableRoles>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAssignableRoles>>,
+          TError,
+          Awaited<ReturnType<typeof listAssignableRoles>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListAssignableRoles<
+  TData = Awaited<ReturnType<typeof listAssignableRoles>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListAssignableRolesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAssignableRoles>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAssignableRoles>>,
+          TError,
+          Awaited<ReturnType<typeof listAssignableRoles>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListAssignableRoles<
+  TData = Awaited<ReturnType<typeof listAssignableRoles>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListAssignableRolesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAssignableRoles>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Perfis atribuíveis
+ */
+
+export function useListAssignableRoles<
+  TData = Awaited<ReturnType<typeof listAssignableRoles>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListAssignableRolesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAssignableRoles>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListAssignableRolesQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
