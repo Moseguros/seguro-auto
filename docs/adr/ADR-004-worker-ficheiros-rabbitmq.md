@@ -32,3 +32,7 @@ Os pagamentos por entidade e referência (rede SIMO) são confirmados por fichei
 ## Pendente
 
 O algoritmo SIMO de geração de referências e o layout do ficheiro de pagamentos têm de ser fornecidos pelo proprietário do produto (tarefas S5-07 e S5-08).
+
+## Adenda de 02/11/2026 — versão do RabbitMQ
+
+A versão passa de 3.13 para **4.1** (imagem `rabbitmq:4.1-management`), porque a 3.13 deixou de ter suporte da comunidade. As filas continuam *quorum*, com dead-letter. As ligações do exchange `payments.events` são explícitas por routing key (a ficha S5-06 tem o detalhe).

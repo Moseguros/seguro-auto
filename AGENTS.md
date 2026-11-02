@@ -18,7 +18,7 @@ Este ficheiro é incluído no contexto de todas as tarefas. Se uma ficha de tare
 | --- | --- |
 | Backend | Java 17 (Temurin), Spring Boot 3.3.x, Maven, Spring Modulith, PostgreSQL 16, Flyway |
 | Worker de ficheiros | Java 17, Spring Boot, Spring Integration SFTP, Spring AMQP |
-| Mensageria | RabbitMQ 3.13 (worker ↔ backend); eventos internos com Spring Modulith + outbox |
+| Mensageria | RabbitMQ 4.1 (worker ↔ backend); eventos internos com Spring Modulith + outbox |
 | Web | React 18, TypeScript 5 (strict), Vite, MUI, TanStack Query, React Router, i18next, orval; Node 22 LTS, pnpm 9 |
 | Mobile | Flutter estável ≥ 3.24, Riverpod, go_router, Dio, drift |
 | Infra | Docker, docker-compose, GitHub Actions |
@@ -47,6 +47,7 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 - Contrato primeiro: DTO + anotações OpenAPI antes da implementação; regenerar `api/openapi.yaml` e os clientes web e mobile no mesmo PR.
 - Erros RFC 7807 (`application/problem+json`) com `type`, `title`, `status`, `detail`, `code` (ex.: `POLICY_NOT_ACTIVE`) e `errors[]` por campo.
 - Os códigos de erro estão em `ErrorCodes` (topo) e `FieldErrorCodes` (`errors[].code`) e exportados para `api/error-codes.json`. Erros de value objects ao ler um pedido são erros de campo (`VALIDATION_ERROR`). Quem acrescenta um código acrescenta as traduções `errors.<CODE>` / `validation.<CODE>` na web e na app (pt e en) no mesmo PR.
+- Dependências entre módulos, eventos, `<Modulo>Api`, numeração e permissões por sprint: `docs/architecture/modelo-transversal.md` (ADR-006). Uma dependência fora desse grafo é uma pergunta, não uma decisão de quem implementa.
 - Paginação `?page=0&size=20&sort=createdAt,desc` → `{ content, page, size, totalElements }`.
 - Datas ISO 8601 em UTC; apresentação em `Africa/Maputo`.
 - Dinheiro `{ "amount": 299900, "currency": "MZN" }` em centavos.
@@ -54,12 +55,12 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 - Transições de estado são acções: `POST /policies/{id}/cancel`, nunca `PATCH status`.
 - IDs públicos UUID v7; números de negócio com prefixo (`AP-2026-000123`, `SN-…`, `RC-…`, `PR-…`, `PG-…`).
 - Todo o endpoint tem `@Operation(operationId = "verboRecurso")` explícito (`getVersion`, `listOrganizations`, `cancelPolicy`) e o controlador tem `@Tag` com o nome do módulo. Os clientes web e mobile são gerados a partir destes nomes; mudá-los é uma alteração de contrato.
-- Textos para o utilizador vêm do i18n do frontend, não da API. Excepção: mensagens que o backend envia por SMS, WhatsApp, e-mail ou push, que vêm de `backend/src/main/resources/messages/*.properties` (pt e en).
+- Textos para o utilizador vêm do i18n do frontend, não da API. Excepção: mensagens que o backend envia por SMS, WhatsApp, e-mail ou push, que vêm de `backend/src/main/resources/messages/notifications_{pt,en}.properties` (o administrador pode sobrepor um modelo em `/admin/notificacoes`, gravado em `notification.template`), e os textos dos PDF, em `messages/pdf_{pt,en}.properties`. Nenhuma migração insere textos de mensagens.
 
 ## 5. Base de dados
 
 - Um schema PostgreSQL por módulo; snake_case em inglês.
-- Colunas obrigatórias: `id uuid pk`, `created_at`, `created_by`, `updated_at`, `updated_by`, `version`. Excepções: `audit.audit_event`, que só recebe inserções; tabelas de associação (só chaves estrangeiras, ex.: `identity.user_role`), que têm chave primária composta e apenas `created_at` e `created_by`.
+- Colunas obrigatórias: `id uuid pk`, `created_at`, `created_by`, `updated_at`, `updated_by`, `version`. Excepções: `audit.audit_event`, que só recebe inserções; tabelas de associação (só chaves estrangeiras, ex.: `identity.user_role`), que têm chave primária composta e apenas `created_at` e `created_by`; tabelas de infra-estrutura do schema `shared` (`shedlock`, `business_sequence`, `idempotency_record`) e do worker.
 - A aplicação liga-se à BD com um utilizador que não é dono das tabelas; o Flyway usa o dono. Isolamento por âmbito (`TenantContext`: sistema, plataforma, organização, cliente) com RLS — ver ADR-002 e a adenda.
 - Dados de seguradora têm `insurer_id`; isolamento por `TenantContext` no serviço **e** Row Level Security.
 - Migrações Flyway `V{AAAAMMDDHHmm}__{modulo}_{descricao}.sql`; nunca editar uma migração aplicada.
@@ -87,7 +88,7 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 - [ ] CI verde; sem avisos novos do analisador.
 - [ ] Migração Flyway incluída (se houver mudança de BD).
 - [ ] Textos em i18n (pt-MZ); ecrãs utilizáveis a 360 px.
-- [ ] Funcionalidades de cliente entregues na web (`/cliente`) **e** na app, salvo diferenças permitidas (offline e câmara guiada só na app).
+- [ ] Funcionalidades de cliente entregues na web (`/cliente`) **e** na app, salvo diferenças permitidas, que só existem na app: offline, câmara guiada, OCR, biometria e leitura automática do SMS.
 - [ ] PR revisto e aprovado por um humano.
 
 ## 9. Como trabalhar (agentes de IA)

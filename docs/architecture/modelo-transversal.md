@@ -2,6 +2,8 @@
 
 Este documento fixa o que tem de ser igual em todas as fichas dos Sprints 2 a 12: quem é dono de cada tabela, o sentido das dependências entre módulos, os contratos públicos (`<Modulo>Api` e eventos), as permissões, a numeração, os intervalos de migração e a lista de tarefas. As fichas detalham; este documento manda. Se uma ficha contradisser este documento, a ficha está errada: pare e escreva na secção "Questões" da ficha.
 
+As decisões tomadas ao reconciliar as fichas escritas em paralelo estão em `decisoes-reconciliacao.md` (D1–D33) e já estão reflectidas aqui.
+
 Regras gerais em `AGENTS.md`; isolamento em ADR-002 e adenda; fichas do Sprint 1 como exemplo do nível de detalhe esperado.
 
 ## 1. Dependências entre módulos
@@ -16,7 +18,7 @@ document      → shared
 identity      → organization, notification, document
 vehicle       → identity, document
 catalog       → organization, document
-rating        → catalog, vehicle, organization, identity
+rating        → catalog, vehicle, organization, identity, notification
 payment       → organization, notification, document
 proposal      → rating, catalog, vehicle, identity, organization, document, notification, payment
 policy        → proposal, payment, rating, catalog, vehicle, identity, organization, document, notification
@@ -41,6 +43,7 @@ integration   → rating, proposal, payment, policy, verification, identity, veh
   - Sem política que diga "sim" → 404.
 - **Histórico de sinistros (bónus/malus).** O `policy` não pode ouvir o `claim` (o `claim` depende do `policy`). Por isso o `claim`, ao pagar uma indemnização (S9-04), chama `PolicyApi.recordClaimOutcome(policyId, claimId, driverLicenceNumber, atFault, paidAmount, occurredAt)`, que grava em `policy.claims_history` e reduz o capital disponível da anuidade.
 - **Pagamento da proposta → emissão.** O `proposal` ouve `PaymentSucceeded` (alvo `PROPOSAL`), passa a `PAID` e publica `ProposalPaid`; é este evento que o `policy` ouve para emitir (S6). Assim não há corrida entre os dois módulos.
+- **Destinatários das notificações.** O `notification` não pode depender do `identity` (o `identity` já depende dele). Define a interface `NotificationRecipientResolver` (`resolve(UUID userId) → Recipient(msisdn, email, preferredLanguage, deviceTokens)`), implementada pelo `identity` (S6-04).
 - **Notificações.** Quem quer notificar chama `NotificationApi.notify(userId, templateCode, params, NotificationCategory)`. O `notification` nunca ouve eventos de outros módulos.
 
 ### 1.2 Eventos de domínio
@@ -55,7 +58,7 @@ Records imutáveis no pacote raiz do módulo que publica, com `UUID eventId`, `I
 | `OtpDeliveryFailed` | notification | 1 | identity |
 | `ProductVersionPublished` | catalog | 2 | — |
 | `QuoteCreated` | rating | 3 | — |
-| `ProposalSubmitted`, `ProposalAccepted`, `ProposalRejected`, `ProposalInfoRequested`, `ProposalExpired` | proposal | 4 | fraud (S11) |
+| `ProposalSubmitted`, `ProposalAccepted`, `ProposalRejected`, `ProposalInfoRequested`, `ProposalExpired` | proposal | 4 | — (o `fraud` não depende do `proposal`) |
 | `ProposalPaid` | proposal | 5 | policy (S6: emite a apólice) |
 | `PaymentSucceeded`, `PaymentFailed`, `PaymentRefunded` | payment | 5 | proposal (alvo `PROPOSAL` → `PAID` → publica `ProposalPaid`), policy (alvos `INSTALMENT`, `RENEWAL`, `ENDORSEMENT`, `FLEET_INCLUSION`, S7), fraud (S11) |
 | `ReferenceGenerated` | payment | 5 | — (o `payment` notifica directamente) |
@@ -89,9 +92,9 @@ or (s = 'CUSTOMER' and <coluna do cliente> = u)
 | 4 | identity | `identity.kyc_check` |
 | 4 | proposal | `proposal.proposal`, `proposal.declaration`, `proposal.suitability_answer`, `proposal.inspection`, `proposal.inspection_photo`, `proposal.signature` |
 | 4 | shared | `shared.business_sequence` (numeração) |
-| 5 | payment | `payment.insurer_payment_method`, `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.inbound_message`, `payment.payment_exception`, `payment.file_import`, `payment.idempotency_record` |
+| 5 | payment | `payment.insurer_payment_method`, `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.inbound_message`, `payment.payment_exception`, `payment.file_import`; `shared.idempotency_record` (idempotência de todos os módulos, `IdempotencyService`) |
 | 5 | (worker) | schema `payment_worker`: `processed_file`, `file_record`, `shedlock` |
-| 6 | policy | `policy.policy`, `policy.instalment`, `policy.certificate`, `policy.policy_event` |
+| 6 | policy | `policy.policy`, `policy.instalment`, `policy.certificate`, `policy.policy_event`; o `policy` implementa `VehicleRemovalGuard` do `vehicle` (não se retira um veículo com apólice activa) |
 | 6 | verification | `verification.check_log` |
 | 6 | notification | `notification.template`, `notification.message`, `notification.preference`, `notification.device` |
 | 6 | shared | `shared.shedlock` (jobs agendados de todos os módulos) |
@@ -114,11 +117,11 @@ Só os métodos que outros módulos usam. As fichas podem acrescentar métodos, 
 
 | Módulo | Métodos |
 | --- | --- |
-| `DocumentApi` (S2) | `store(StoreFileCommand) → FileRef`, `open(UUID fileId) → FileContent`, `metadata(UUID) → FileRef`, `renderPdf(String templateCode, Map<String,Object> model, Locale) → FileRef` (S4), `delete` não existe (ficheiros não se apagam; ficam órfãos e são limpos por job ao fim de 30 dias se nunca tiverem sido ligados) |
+| `DocumentApi` (S2) | `store(StoreFileCommand) → FileRef`, `open(UUID fileId) → FileContent`, `metadata(UUID) → FileRef`, `renderPdf(String templateCode, Map<String,Object> model, Locale, PdfTarget target) → FileRef` (S4-04; `PdfTarget` = dono do ficheiro), `markLinked` (S2-01). Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por job ao fim de 30 dias |
 | `VehicleApi` (S2) | `findOwned(UUID vehicleId, UUID ownerUserId) → Optional<VehicleView>`, `snapshot(UUID vehicleId) → VehicleSnapshot`, `driverSnapshot(UUID driverId) → DriverSnapshot` |
 | `CatalogApi` (S2) | `findPublishedVersions(VehicleCategory, VehicleUsage, ProductType?) → List<ProductVersionView>`, `version(UUID) → ProductVersionView` (coberturas, regras, documentos), `platformSetting(String key) → String` |
 | `RatingApi` (S3) | `quote(UUID quoteId) → QuoteView`, `markUsed(UUID quoteId)`, `rateRenewal(RenewalRatingRequest) → QuoteResult` (S7) |
-| `IdentityApi` (S1/S4) | `customer(UUID userId) → CustomerView`, `kycStatus(UUID userId) → KycStatus`, `findOrCreateCustomerByMsisdn(Msisdn) → UUID` (S8 terceiro lesado, S12 USSD), `requestOtp/verifyOtp` para `SIGN` (S4) |
+| `IdentityApi` (S1/S4) | `customer(UUID userId) → CustomerView`, `kycStatus(UUID userId) → KycStatus`, `findOrCreateCustomerByMsisdn(Msisdn) → UUID` (criado no S3-02; usado no S4-06, S8 e S12), `requestSignOtp`/`verifySignOtp` (S4-04), `staffWithPermission(orgId, permission)` (S4), `staffDisplayNames(Set<UUID>)` (S8), `staffMember(UUID)` (S10) |
 | `ProposalApi` (S4) | `view(UUID) → ProposalView`, `markConverted(UUID proposalId, UUID policyId)` (S6) |
 | `PaymentApi` (S5) | `createIntent(CreateIntentCommand) → IntentView`, `intent(UUID) → IntentView`, `refund(RefundCommand) → RefundView` (S7) |
 | `PolicyApi` (S6) | `findActiveByPlate(String plate, Instant at) → Optional<PolicyCoverView>`, `coverAt(UUID policyId, Instant at) → CoverStatus`, `view(UUID) → PolicyView`, `customerPolicies(UUID userId)`, `recordClaimOutcome(...)` (S7, usado pelo `claim` no S9) |
@@ -225,7 +228,10 @@ O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `paym
 | 4 | PDF | Modelos Thymeleaf (XHTML) em `backend/src/main/resources/templates/pdf/` → Flying Saucer (`org.xhtmlrenderer:flying-saucer-pdf-openpdf`). Fonte Inter embebida. Cada PDF guarda o SHA-256 |
 | 3 | HTTP de saída | Resilience4j (`resilience4j-spring-boot3`): timeout, circuit breaker e bulkhead por seguradora/fornecedor. Clientes com `RestClient` |
 | 5 | Cofre de segredos | `SecretStore` (`put`, `get`, `delete`, `exists`) com `VaultSecretStore` (HashiCorp Vault KV v2) e `InMemorySecretStore` (testes). Compose: Vault em modo dev. A BD guarda só a referência (`secret/…`) |
-| 5 | Mensageria | RabbitMQ 3.13 (ADR-004) |
+| 5 | Mensageria | RabbitMQ 4.1 (ADR-004 e adenda) |
+| 5 | Idempotência | `shared.idempotency_record` + `IdempotencyService` (S5-02): mesma `Idempotency-Key` + mesmo corpo → mesma resposta durante 24 h; mesma chave com corpo diferente → 422 `IDEMPOTENCY_KEY_REUSED`; sem chave onde é obrigatória → 400 `IDEMPOTENCY_KEY_REQUIRED` |
+| 5 | Build | Reactor Maven na raiz (`pom.xml` agregador: `payment-contracts`, `backend`, `payment-file-worker`), introduzido no S5-06 |
+| 6 | Modelos de mensagem | `messages/notifications_{pt,en}.properties` com sobreposição opcional em `notification.template` (`AGENTS.md` §4). Nenhuma migração insere modelos |
 | 6 | Jobs | `@Scheduled` + ShedLock (`net.javacrumbs.shedlock`, JDBC, tabela `shared.shedlock`). Cron em `Africa/Maputo`. Cada job é idempotente e regista início, fim e contagens em log estruturado |
 | 6 | Push | `PushSender` com `FcmPushSender` (Firebase Admin SDK) e `MockPushSender` |
 | 6 | CAPTCHA | `CaptchaVerifier` com `TurnstileCaptchaVerifier` (Cloudflare Turnstile) e `AlwaysValidCaptchaVerifier` (local/testes). Decisão a confirmar pelo proprietário do produto |
@@ -266,7 +272,7 @@ As fichas usam exactamente estes IDs, títulos e dependências. "S{n-1}" quer di
 | S3-01 | Modelo de tarifa (`rating-v1.json`), avaliador interno e casos de referência | S2 |
 | S3-02 | Cotações: pedido, avaliação em paralelo, tarifação externa, validade, simulador | S3-01 |
 | S3-03 | Web seguradora: editor de tarifa, importação/exportação CSV, simulador | S3-02 |
-| S3-04 | Web cliente `/cliente/cotar` e web mediador `/mediador/cotacoes` | S3-02 |
+| S3-04 | Web cliente `/cliente/simular` e web mediador `/mediador/cotacoes` | S3-02 |
 | S3-05 | Mobile: "Fazer seguro" até à comparação | S3-02 |
 
 ### Sprint 4 — Proposta, KYC, adequação e aceitação
@@ -307,9 +313,9 @@ IDs do plano, com uma tarefa nova (S5-12):
 | ID | Tarefa | Depende de |
 | --- | --- | --- |
 | S6-01 | Emissão da apólice, prestações e certificado (dados) | S5 |
-| S6-02 | PDF do certificado com QR e documentos da apólice | S6-01 |
+| S6-02 | PDF do certificado com QR e documentos da apólice | S6-01, S6-04 |
 | S6-03 | Verificação pública e área da polícia (API, CAPTCHA, registo) | S6-01 |
-| S6-04 | Notificações: modelos, mensagens, preferências, dispositivos, push | S5 |
+| S6-04 | Notificações: modelos, mensagens, preferências, dispositivos, push; aviso de cotação a expirar (`QuoteExpiryNotifierJob` no `rating`) | S5 |
 | S6-05 | Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-03, S6-04 |
 | S6-06 | Web cliente: apólices, certificado, notificações e preferências | S6-02, S6-04 |
 | S6-07 | Mobile: apólices offline, "mostrar à polícia", push e deep links | S6-02, S6-04 |
@@ -364,8 +370,8 @@ IDs do plano, com uma tarefa nova (S5-12):
 | S10-03 | Processos externos, reclamação automática a partir de `ClaimDisputed`, relatório mensal | S10-01 |
 | S10-04 | Assistência: pedido, elegibilidade, despacho por província, estados, alerta | S9 |
 | S10-05 | Web seguradora `/seguradora/reclamacoes` e web `/provedor` | S10-02, S10-03 |
-| S10-06 | Web `/assistencia` (prestador) e web cliente (reclamações e assistência) | S10-03, S10-04 |
-| S10-07 | Mobile: reclamar, conversar, provedor, assistência com localização | S10-03, S10-04 |
+| S10-06 | Web `/assistencia` (prestador) e web cliente (reclamações e assistência) | S10-02, S10-03, S10-04 |
+| S10-07 | Mobile: reclamar, conversar, provedor, assistência com localização | S10-02, S10-03, S10-04 |
 
 ### Sprint 11 — Mediadores, antifraude, relatórios e auditoria
 
@@ -387,7 +393,7 @@ IDs do plano, com uma tarefa nova (S5-12):
 | S12-01 | USSD: porta do agregador, simulador, sessões e menus | S11 |
 | S12-02 | USSD: compra de RC, pagamento, certificado por SMS, verificação | S12-01 |
 | S12-03 | Mobile: OCR do livrete e do documento (ML Kit) | S11 |
-| S12-04 | Mobile: login biométrico | S11 |
+| S12-04 | Mobile: login biométrico e leitura automática do código por SMS (SMS Retriever) | S11 |
 | S12-05 | Inglês completo na web, na app e nas mensagens | S11 |
 | S12-06 | Segurança: preparação para ASVS nível 2 e correcções do pentest | S11 |
 | S12-07 | Carga, cópias de segurança e recuperação (RPO/RTO), runbook | S11 |

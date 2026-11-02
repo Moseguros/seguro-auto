@@ -9,7 +9,7 @@ A partir do Sprint 2 a plataforma guarda ficheiros: fotos do livrete, documentos
 
 ## Decisão
 
-- Módulo `document` com a porta `FileStorage` (`put`, `get`, `exists`) e duas implementações:
+- Módulo `document` com a porta `FileStorage` (`put`, `get`, `exists`, `delete` — este só para a limpeza de ficheiros órfãos) e duas implementações:
   - `FilesystemFileStorage`: perfis `local` e `test`, e o docker-compose, com o volume `files`;
   - `S3FileStorage` (AWS SDK v2): staging e produção, com qualquer serviço compatível com S3, escolhido com o alojamento.
 - Metadados em `document.file`: dono (`owner_type`, `owner_id`), seguradora, tipo de conteúdo, tamanho, SHA-256, chave de armazenamento, classificação (`PUBLIC`, `PERSONAL`, `SENSITIVE`).
