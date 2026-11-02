@@ -608,6 +608,24 @@ abstract class AppLocalizations {
   /// **'A organização tem de ficar com pelo menos um gestor activo.'**
   String get errorLastManager;
 
+  /// No description provided for @errorContactAlreadyInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este contacto já está associado a outra conta.'**
+  String get errorContactAlreadyInUse;
+
+  /// No description provided for @errorContactAlreadyVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este contacto já está confirmado na sua conta.'**
+  String get errorContactAlreadyVerified;
+
+  /// No description provided for @errorLastContact.
+  ///
+  /// In pt, this message translates to:
+  /// **'A conta tem de ficar com pelo menos um contacto confirmado.'**
+  String get errorLastContact;
+
   /// No description provided for @validationNotAllowed.
   ///
   /// In pt, this message translates to:
@@ -667,6 +685,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Valor inválido.'**
   String get validationTypeMismatch;
+
+  /// No description provided for @validationInvalidName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indique o nome completo (pelo menos duas palavras, só letras, espaços, \' e -).'**
+  String get validationInvalidName;
+
+  /// No description provided for @validationUnderage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tem de ter pelo menos 18 anos.'**
+  String get validationUnderage;
+
+  /// No description provided for @validationInvalidDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data inválida.'**
+  String get validationInvalidDate;
+
+  /// No description provided for @validationInvalidDocumentNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).'**
+  String get validationInvalidDocumentNumber;
 
   /// province.MAPUTO_CITY (Province no backend).
   ///

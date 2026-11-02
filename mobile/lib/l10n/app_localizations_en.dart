@@ -306,6 +306,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'The organization must keep at least one active manager.';
 
   @override
+  String get errorContactAlreadyInUse =>
+      'This contact already belongs to another account.';
+
+  @override
+  String get errorContactAlreadyVerified =>
+      'This contact is already confirmed on your account.';
+
+  @override
+  String get errorLastContact =>
+      'The account must keep at least one confirmed contact.';
+
+  @override
   String get validationNotAllowed => 'This field does not apply here.';
 
   @override
@@ -338,6 +350,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validationTypeMismatch => 'Invalid value.';
+
+  @override
+  String get validationInvalidName =>
+      'Enter your full name (at least two words, only letters, spaces, \' and -).';
+
+  @override
+  String get validationUnderage => 'You must be at least 18 years old.';
+
+  @override
+  String get validationInvalidDate => 'Invalid date.';
+
+  @override
+  String get validationInvalidDocumentNumber =>
+      'Invalid document number (5 to 20 upper-case letters or digits).';
 
   @override
   String get provinceMaputoCity => 'Maputo City';
