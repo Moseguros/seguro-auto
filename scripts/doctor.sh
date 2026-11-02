@@ -16,7 +16,7 @@ set -u
 
 # ---------------------------------------------------------------- versões exigidas
 JAVA_MAJOR=17
-NODE_MAJOR=20          # AGENTS.md §2; se existir web/.nvmrc, vale esse
+NODE_MAJOR=22          # AGENTS.md §2; se existir web/.nvmrc, vale esse
 PNPM_MAJOR=9
 FLUTTER_MIN="3.24.0"   # se o mobile/pubspec.yaml fixar "flutter: x.y.z", vale essa
 DOCKER_MIN_MEM_GB=4

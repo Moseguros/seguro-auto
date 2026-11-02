@@ -46,7 +46,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 
 - Verificar tudo de uma vez: `./scripts/doctor.sh` (ou `/verificar-ambiente` no Claude Code).
 
-- JDK 17 (Temurin), Docker em execução (Testcontainers), Node 20 + pnpm 9, Flutter estável (versão fixada em `mobile/pubspec.yaml` a partir do S0-06).
+- JDK 17 (Temurin), Docker em execução (Testcontainers), Node 22 LTS + pnpm 9, Flutter estável (versão fixada em `mobile/pubspec.yaml` a partir do S0-06).
 - Backend: `cd backend && ./mvnw -B verify`.
 
 ## Notas e armadilhas conhecidas
