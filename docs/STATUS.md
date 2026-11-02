@@ -10,7 +10,7 @@ Actualizado em 02/11/2026.
 | --- | --- | --- |
 | S0-01 Fichas e ADRs | concluída (merged) | #1 |
 | S0-02 Esqueleto do backend | concluída (merged) | #2 |
-| S0-03 Tipos partilhados e auditoria | pronta — começar depois do merge do #2 | — |
+| S0-03 Tipos partilhados e auditoria | em revisão (branch `task/S0-03-shared-e-auditoria`) | — |
 | S0-04 Contrato OpenAPI | pronta — depois do S0-03 (usa os value objects) | — |
 | S0-05 Web | depende de S0-04 | — |
 | S0-06 Mobile | depende de S0-04 | — |

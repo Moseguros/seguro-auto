@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.validation.ConstraintViolationException;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.error.Problems;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +38,23 @@ public class GlobalExceptionHandler {
                 .map(e -> new FieldError(e.getField(), codeOf(e.getCode()), e.getDefaultMessage()))
                 .toList();
         return Problems.validation("Request validation failed", errors);
+    }
+
+    /**
+     * Corpo ilegível. Se a causa for um value object inválido (ex.: {@code Msisdn}), é um
+     * erro de campo: 400 {@code VALIDATION_ERROR} com {@code errors[0].field} = caminho
+     * JSON do campo e {@code errors[0].code} = código do value object.
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ProblemDetail handleUnreadableBody(HttpMessageNotReadableException ex) {
+        DomainException domain = findCause(ex, DomainException.class);
+        if (domain != null) {
+            JsonMappingException mapping = findCause(ex, JsonMappingException.class);
+            String field = mapping == null ? "" : fieldPath(mapping.getPath());
+            return Problems.validation("Request validation failed",
+                    List.of(new FieldError(field, domain.getCode(), domain.getMessage())));
+        }
+        return Problems.validation("Malformed request body", List.of());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -69,6 +88,33 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error", ex);
         return Problems.of(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNAL_ERROR,
                 "An unexpected error occurred");
+    }
+
+    /** Caminho JSON de um erro do Jackson: {@code vehicle.plate}, {@code drivers[0].msisdn}. */
+    static String fieldPath(List<JsonMappingException.Reference> path) {
+        StringBuilder sb = new StringBuilder();
+        for (JsonMappingException.Reference ref : path) {
+            if (ref.getFieldName() != null) {
+                if (!sb.isEmpty()) {
+                    sb.append('.');
+                }
+                sb.append(ref.getFieldName());
+            } else if (ref.getIndex() >= 0) {
+                sb.append('[').append(ref.getIndex()).append(']');
+            }
+        }
+        return sb.toString();
+    }
+
+    private static <T extends Throwable> T findCause(Throwable ex, Class<T> type) {
+        Throwable current = ex;
+        while (current != null) {
+            if (type.isInstance(current)) {
+                return type.cast(current);
+            }
+            current = current.getCause() == current ? null : current.getCause();
+        }
+        return null;
     }
 
     /** Converte o nome de uma restrição (ex.: {@code NotBlank}) em código (ex.: {@code NOT_BLANK}). */
