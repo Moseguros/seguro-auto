@@ -175,6 +175,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationOutOfRange => 'Value outside the allowed range.';
 
   @override
+  String get errorRefreshTokenInvalid =>
+      'Your session has ended. Please sign in again.';
+
+  @override
+  String get errorRefreshTokenReused =>
+      'For your security, your session was ended. Please sign in again.';
+
+  @override
+  String get validationNotBlank => 'This field is required.';
+
+  @override
   String get provinceMaputoCity => 'Maputo City';
 
   @override

@@ -55,6 +55,8 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'DEFAULT_CHANNEL_NOT_ENABLED' => l10n.errorDefaultChannelNotEnabled,
   'FALLBACK_ORDER_MISMATCH' => l10n.errorFallbackOrderMismatch,
   'OUT_OF_RANGE' => l10n.errorOutOfRange,
+  'REFRESH_TOKEN_INVALID' => l10n.errorRefreshTokenInvalid,
+  'REFRESH_TOKEN_REUSED' => l10n.errorRefreshTokenReused,
   _ => l10n.errorUnknown,
 };
 
@@ -72,5 +74,6 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'DEFAULT_CHANNEL_NOT_ENABLED' => l10n.validationDefaultChannelNotEnabled,
   'FALLBACK_ORDER_MISMATCH' => l10n.validationFallbackOrderMismatch,
   'OUT_OF_RANGE' => l10n.validationOutOfRange,
+  'NOT_BLANK' => l10n.validationNotBlank,
   _ => l10n.errorUnknown,
 };

@@ -128,6 +128,8 @@ void main() {
         'DEFAULT_CHANNEL_NOT_ENABLED',
         'FALLBACK_ORDER_MISMATCH',
         'OUT_OF_RANGE',
+        'REFRESH_TOKEN_INVALID',
+        'REFRESH_TOKEN_REUSED',
       ];
       const fieldCodes = [
         'INVALID_CURRENCY',
@@ -142,6 +144,7 @@ void main() {
         'DEFAULT_CHANNEL_NOT_ENABLED',
         'FALLBACK_ORDER_MISMATCH',
         'OUT_OF_RANGE',
+        'NOT_BLANK',
       ];
       for (final locale in AppLocalizations.supportedLocales) {
         final l10n = await AppLocalizations.delegate.load(locale);
