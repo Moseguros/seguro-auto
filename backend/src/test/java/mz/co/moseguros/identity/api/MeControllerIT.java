@@ -1,6 +1,7 @@
 package mz.co.moseguros.identity.api;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasKey;
@@ -12,6 +13,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -184,6 +186,64 @@ class MeControllerIT {
                 .body("keys[0].n", equalTo(signingKey.getModulus().toString()))
                 .body("keys[0].e", equalTo("AQAB"))
                 .body("keys[0]", not(hasKey("d")));
+    }
+
+    // --- PUT /me (S1-06) ---
+
+    @Test
+    void customerChangesTheLanguageAndTheNameIsIgnored() {
+        UserAccount customer = fixtures.customer("Ana Mussa");
+        String token = identityApi.issueTokens(customer, null).accessToken();
+
+        given().auth().oauth2(token).contentType("application/json")
+                .body(Map.of("displayName", "Outro Nome", "preferredLanguage", "en"))
+                .put("/api/v1/me")
+                .then().statusCode(200)
+                .body("preferredLanguage", equalTo("en"))
+                .body("displayName", equalTo("Ana Mussa"));
+        assertThat(fixtures.owner().queryForObject(
+                "select coalesce(display_name, '-') from identity.user_account where id = ?", String.class,
+                customer.getId())).isEqualTo("-");
+    }
+
+    @Test
+    void staffChangesTheNameAndTheLanguage() {
+        UserAccount staff = fixtures.staff("Bruno Staff", null, "PLATFORM_ADMIN");
+        String token = identityApi.issueTokens(staff, null).accessToken();
+
+        given().auth().oauth2(token).contentType("application/json")
+                .body(Map.of("displayName", " Bruno Novo ", "preferredLanguage", "en"))
+                .put("/api/v1/me")
+                .then().statusCode(200)
+                .body("displayName", equalTo("Bruno Novo"))
+                .body("preferredLanguage", equalTo("en"));
+        given().auth().oauth2(token).contentType("application/json")
+                .body(Map.of("preferredLanguage", "pt"))
+                .put("/api/v1/me")
+                .then().statusCode(200)
+                .body("displayName", equalTo("Bruno Novo"))
+                .body("preferredLanguage", equalTo("pt"));
+    }
+
+    @Test
+    void updateMeValidation() {
+        UserAccount staff = fixtures.staff("Bruno Staff", null, "PLATFORM_ADMIN");
+        String token = identityApi.issueTokens(staff, null).accessToken();
+
+        given().auth().oauth2(token).contentType("application/json")
+                .body(Map.of("preferredLanguage", "fr"))
+                .put("/api/v1/me")
+                .then().statusCode(400)
+                .body("code", equalTo("VALIDATION_ERROR"))
+                .body("errors[0].field", equalTo("preferredLanguage"));
+        given().auth().oauth2(token).contentType("application/json")
+                .body(Map.of("displayName", "B", "preferredLanguage", "pt"))
+                .put("/api/v1/me")
+                .then().statusCode(400)
+                .body("errors[0].field", equalTo("displayName"))
+                .body("errors[0].code", equalTo("SIZE"));
+        given().contentType("application/json").body(Map.of("preferredLanguage", "pt")).put("/api/v1/me")
+                .then().statusCode(401);
     }
 
     private static String token(JwtEncoder encoder, UserAccount account, Instant issuedAt, String issuer,
