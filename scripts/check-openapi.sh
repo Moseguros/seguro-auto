@@ -13,6 +13,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SPEC="api/openapi.yaml"
 
+cd "$ROOT"
+# Uma alteração local por gravar seria apagada pela geração sem ser detectada.
+if [ -f "$SPEC" ] && ! git diff --quiet -- "$SPEC"; then
+  echo "ERRO: $SPEC tem alterações locais por gravar (o ficheiro é gerado, não se edita à mão)." >&2
+  echo "      Descarta-as com 'git checkout -- $SPEC' ou faz commit do ficheiro gerado." >&2
+  exit 1
+fi
+
 cd "$ROOT/backend"
 mkdir -p target
 echo "A gerar $SPEC (./mvnw -Popenapi verify)..."
