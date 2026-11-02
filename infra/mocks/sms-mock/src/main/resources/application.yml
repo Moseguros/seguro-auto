@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: sms-mock
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8090}
+
+# Só o health fica exposto (/actuator/health), usado pelo healthcheck do compose.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
