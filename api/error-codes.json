@@ -5,6 +5,14 @@
       "status" : 403
     },
     {
+      "code" : "ACCOUNT_LOCKED",
+      "status" : 403
+    },
+    {
+      "code" : "CANNOT_MODIFY_SELF",
+      "status" : 400
+    },
+    {
       "code" : "CONCURRENT_MODIFICATION",
       "status" : 409
     },
@@ -23,6 +31,10 @@
     {
       "code" : "INTERNAL_ERROR",
       "status" : 500
+    },
+    {
+      "code" : "INVALID_CREDENTIALS",
+      "status" : 401
     },
     {
       "code" : "INVALID_CURRENCY",
@@ -61,6 +73,10 @@
       "status" : 400
     },
     {
+      "code" : "LAST_MANAGER",
+      "status" : 400
+    },
+    {
       "code" : "LICENSE_NUMBER_REQUIRED",
       "status" : 400
     },
@@ -83,6 +99,10 @@
     {
       "code" : "ORGANIZATION_NOT_FOUND",
       "status" : 404
+    },
+    {
+      "code" : "ORGANIZATION_SUSPENDED",
+      "status" : 403
     },
     {
       "code" : "OTP_ALREADY_USED",
@@ -141,6 +161,10 @@
       "status" : 401
     },
     {
+      "code" : "RESET_TOKEN_INVALID",
+      "status" : 400
+    },
+    {
       "code" : "ROLE_NOT_ALLOWED_FOR_ORGANIZATION",
       "status" : 400
     },
@@ -159,6 +183,10 @@
     {
       "code" : "UNAUTHORIZED",
       "status" : 401
+    },
+    {
+      "code" : "USER_NOT_FOUND",
+      "status" : 404
     },
     {
       "code" : "VALIDATION_ERROR",
