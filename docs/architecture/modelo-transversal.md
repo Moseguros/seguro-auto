@@ -19,7 +19,7 @@ catalog       → organization, document
 rating        → catalog, vehicle, organization, identity
 payment       → organization, notification, document
 proposal      → rating, catalog, vehicle, identity, organization, document, notification, payment
-policy        → proposal, payment, catalog, vehicle, identity, organization, document, notification
+policy        → proposal, payment, rating, catalog, vehicle, identity, organization, document, notification
 verification  → policy, organization
 claim         → policy, vehicle, identity, organization, document, notification, payment
 complaint     → claim, policy, payment, organization, identity, document, notification
