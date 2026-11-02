@@ -5,21 +5,24 @@
  * API REST da plataforma MoSeguros. Erros em RFC 7807 (application/problem+json) com `code` e `errors[]`.
  * OpenAPI spec version: 0.1.0-SNAPSHOT
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
 
 import { http } from './http';
-import type { ErrorType } from './http';
+import type { ErrorType, BodyType } from './http';
 /**
  * Erro de um campo do pedido
  */
@@ -32,11 +35,81 @@ export interface FieldError {
   message?: string;
 }
 
+export interface Jwk {
+  alg: string;
+  /** Expoente (Base64 URL) */
+  e: string;
+  kid: string;
+  kty: string;
+  /** Módulo (Base64 URL) */
+  n: string;
+  use: string;
+}
+
+export interface JwksResponse {
+  keys: Jwk[];
+}
+
+export interface LogoutRequest {
+  /** Refresh token da sessão a terminar */
+  refreshToken?: string;
+}
+
 /**
  * Matrícula formatada; os formatos aceites são configuráveis
  * @pattern ^[A-Z0-9]+(-[A-Z0-9]+)*$
  */
 export type Matricula = string;
+
+export type MeOrganizationType = (typeof MeOrganizationType)[keyof typeof MeOrganizationType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const MeOrganizationType = {
+  INSURER: 'INSURER',
+  BROKER: 'BROKER',
+  AGENT: 'AGENT',
+  WORKSHOP: 'WORKSHOP',
+  ASSESSOR: 'ASSESSOR',
+  ASSISTANCE: 'ASSISTANCE',
+  OMBUDSMAN: 'OMBUDSMAN',
+  REGULATOR: 'REGULATOR',
+  POLICE: 'POLICE',
+  CORPORATE_CLIENT: 'CORPORATE_CLIENT',
+} as const;
+
+/**
+ * Organização do staff; omitida para clientes e staff da plataforma
+ */
+export interface MeOrganization {
+  displayName: string;
+  id: string;
+  type: MeOrganizationType;
+}
+
+export type MeResponseType = (typeof MeResponseType)[keyof typeof MeResponseType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const MeResponseType = {
+  CUSTOMER: 'CUSTOMER',
+  STAFF: 'STAFF',
+} as const;
+
+export interface MeResponse {
+  /** Staff: nome da conta; cliente: nome completo do perfil */
+  displayName?: string;
+  email?: string;
+  emailVerified: boolean;
+  id: string;
+  msisdn?: Msisdn;
+  msisdnVerified: boolean;
+  organization?: MeOrganization;
+  permissions: string[];
+  preferredLanguage: string;
+  /** Só clientes: o perfil tem todos os dados obrigatórios */
+  profileComplete?: boolean;
+  roles: string[];
+  type: MeResponseType;
+}
 
 export type MoneyCurrency = (typeof MoneyCurrency)[keyof typeof MoneyCurrency];
 
@@ -80,6 +153,20 @@ export interface ProblemDetail {
   type: string;
 }
 
+export interface RefreshTokenRequest {
+  /** Refresh token recebido no login ou na última renovação */
+  refreshToken: string;
+}
+
+export interface TokenResponse {
+  /** JWT de acesso (Bearer), válido 15 minutos */
+  accessToken: string;
+  /** Validade do token de acesso, em segundos */
+  expiresIn: number;
+  /** Refresh token opaco; cada renovação devolve um novo */
+  refreshToken: string;
+}
+
 export interface VersionResponse {
   builtAt?: string;
   commit?: string;
@@ -88,6 +175,390 @@ export interface VersionResponse {
 }
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+/**
+ * @summary Chaves públicas dos tokens (JWKS)
+ */
+export const getJwks = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<JwksResponse>({ url: `/.well-known/jwks.json`, method: 'GET', signal }, options);
+};
+
+export const getGetJwksQueryKey = () => {
+  return [`/.well-known/jwks.json`] as const;
+};
+
+export const getGetJwksQueryOptions = <
+  TData = Awaited<ReturnType<typeof getJwks>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getJwks>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetJwksQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getJwks>>> = ({ signal }) =>
+    getJwks(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getJwks>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetJwksQueryResult = NonNullable<Awaited<ReturnType<typeof getJwks>>>;
+export type GetJwksQueryError = ErrorType<ProblemDetail>;
+
+export function useGetJwks<
+  TData = Awaited<ReturnType<typeof getJwks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getJwks>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getJwks>>,
+          TError,
+          Awaited<ReturnType<typeof getJwks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetJwks<
+  TData = Awaited<ReturnType<typeof getJwks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getJwks>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getJwks>>,
+          TError,
+          Awaited<ReturnType<typeof getJwks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetJwks<
+  TData = Awaited<ReturnType<typeof getJwks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getJwks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Chaves públicas dos tokens (JWKS)
+ */
+
+export function useGetJwks<
+  TData = Awaited<ReturnType<typeof getJwks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getJwks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetJwksQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Revoga a sessão do refresh token. Responde 204 mesmo que o token seja desconhecido.
+ * @summary Termina a sessão
+ */
+export const logoutSession = (
+  logoutRequest: BodyType<LogoutRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>(
+    {
+      url: `/api/v1/auth/logout`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: logoutRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getLogoutSessionMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof logoutSession>>,
+    TError,
+    { data: BodyType<LogoutRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof logoutSession>>,
+  TError,
+  { data: BodyType<LogoutRequest> },
+  TContext
+> => {
+  const mutationKey = ['logoutSession'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof logoutSession>>,
+    { data: BodyType<LogoutRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return logoutSession(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LogoutSessionMutationResult = NonNullable<Awaited<ReturnType<typeof logoutSession>>>;
+export type LogoutSessionMutationBody = BodyType<LogoutRequest>;
+export type LogoutSessionMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Termina a sessão
+ */
+export const useLogoutSession = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof logoutSession>>,
+      TError,
+      { data: BodyType<LogoutRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof logoutSession>>,
+  TError,
+  { data: BodyType<LogoutRequest> },
+  TContext
+> => {
+  const mutationOptions = getLogoutSessionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Troca o refresh token por um par novo (rotação). Um token já usado revoga a sessão inteira (401 REFRESH_TOKEN_REUSED); outro token recusado dá 401 REFRESH_TOKEN_INVALID.
+ * @summary Renova a sessão
+ */
+export const refreshToken = (
+  refreshTokenRequest: BodyType<RefreshTokenRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<TokenResponse>(
+    {
+      url: `/api/v1/auth/refresh`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: refreshTokenRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRefreshTokenMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshToken>>,
+    TError,
+    { data: BodyType<RefreshTokenRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof refreshToken>>,
+  TError,
+  { data: BodyType<RefreshTokenRequest> },
+  TContext
+> => {
+  const mutationKey = ['refreshToken'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof refreshToken>>,
+    { data: BodyType<RefreshTokenRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return refreshToken(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RefreshTokenMutationResult = NonNullable<Awaited<ReturnType<typeof refreshToken>>>;
+export type RefreshTokenMutationBody = BodyType<RefreshTokenRequest>;
+export type RefreshTokenMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Renova a sessão
+ */
+export const useRefreshToken = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof refreshToken>>,
+      TError,
+      { data: BodyType<RefreshTokenRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof refreshToken>>,
+  TError,
+  { data: BodyType<RefreshTokenRequest> },
+  TContext
+> => {
+  const mutationOptions = getRefreshTokenMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * @summary Utilizador autenticado
+ */
+export const getMe = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<MeResponse>({ url: `/api/v1/me`, method: 'GET', signal }, options);
+};
+
+export const getGetMeQueryKey = () => {
+  return [`/api/v1/me`] as const;
+};
+
+export const getGetMeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMe>>> = ({ signal }) =>
+    getMe(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMe>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>;
+export type GetMeQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMe>>,
+          TError,
+          Awaited<ReturnType<typeof getMe>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMe>>,
+          TError,
+          Awaited<ReturnType<typeof getMe>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Utilizador autenticado
+ */
+
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMeQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * @summary Versão da API
