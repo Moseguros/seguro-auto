@@ -1,0 +1,68 @@
+name: web
+
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - "api/**"
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "api/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm 9: a versão exacta vem do campo "packageManager" do web/package.json
+      # (indicar também "version" aqui faz a acção falhar por versões em conflito).
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.nvmrc
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      # O cliente gerado tem de corresponder ao api/openapi.yaml versionado.
+      - name: Cliente da API actualizado
+        run: |
+          pnpm api:generate
+          git diff --exit-code src/api
+
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+      - name: Instalar o Chromium do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - run: pnpm test:e2e
+
+      - name: Relatório Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            web/playwright-report/
+            web/test-results/
+          if-no-files-found: ignore
