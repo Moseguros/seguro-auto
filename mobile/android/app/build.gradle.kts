@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "mz.co.moseguros.moseguros"
+    namespace = "mz.co.moseguros.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,20 +20,36 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "mz.co.moseguros.moseguros"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        applicationId = "mz.co.moseguros.app"
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    // Três ambientes. O HTTP sem TLS só é permitido no flavor dev
+    // (src/dev/res/xml/network_security_config.xml).
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            resValue("string", "app_name", "MoSeguros Dev")
+        }
+        create("staging") {
+            dimension = "environment"
+            applicationIdSuffix = ".staging"
+            resValue("string", "app_name", "MoSeguros Staging")
+        }
+        create("prod") {
+            dimension = "environment"
+            resValue("string", "app_name", "MoSeguros")
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // A assinatura das builds de loja é do Sprint 12; por agora usa a chave de debug.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
