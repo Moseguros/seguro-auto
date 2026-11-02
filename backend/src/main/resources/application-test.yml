@@ -1,4 +1,9 @@
-# Testes: a base de dados vem do Testcontainers (@ServiceConnection)
+# Testes: a base de dados vem do Testcontainers (TestcontainersConfiguration)
 logging:
   level:
     mz.co.moseguros: DEBUG
+
+moseguros:
+  crypto:
+    data-keys:
+      1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento

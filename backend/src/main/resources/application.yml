@@ -1,10 +1,12 @@
 spring:
   application:
     name: moseguros-backend
+  # A aplicação liga-se com um utilizador sem privilégios de dono (o RLS aplica-se a ele);
+  # o Flyway usa o dono das tabelas (ADR-002, adenda de 01/11/2026).
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/moseguros}
-    username: ${DB_USERNAME:moseguros}
-    password: ${DB_PASSWORD:moseguros}
+    username: ${DB_USERNAME:moseguros_app_user}
+    password: ${DB_PASSWORD:moseguros_app}
   jpa:
     open-in-view: false
     hibernate:
@@ -15,6 +17,8 @@ spring:
           time_zone: UTC
   flyway:
     enabled: true
+    user: ${DB_OWNER_USERNAME:moseguros}
+    password: ${DB_OWNER_PASSWORD:moseguros}
     # A migração V202610311200 cria os schemas; o histórico do Flyway fica em public.
     default-schema: public
   jackson:
@@ -55,6 +59,13 @@ springdoc:
     enabled: true
 
 moseguros:
+  # Cifra de colunas (AES-256-GCM): versão → chave de 32 bytes em Base64. Sem chave a
+  # aplicação não arranca. Em staging/produção vem de MOSEGUROS_DATA_KEY_1 (cofre de
+  # segredos no Sprint 5).
+  crypto:
+    current-key-version: 1
+    data-keys:
+      1: ${MOSEGUROS_DATA_KEY_1:}
   plates:
     # Formatos de matrícula aceites, testados por ordem. O pattern aplica-se ao valor
     # normalizado (maiúsculas, sem espaços nem hífens); o display-template usa {grupo}.
