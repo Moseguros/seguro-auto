@@ -104,18 +104,6 @@ abstract class AppLocalizations {
   /// **'MoSeguros'**
   String get appName;
 
-  /// Frase do ecrã inicial (home.tagline na web).
-  ///
-  /// In pt, this message translates to:
-  /// **'Compare, compre e gira o seu seguro automóvel num só lugar.'**
-  String get homeTagline;
-
-  /// No description provided for @systemStatusTitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'Estado do sistema'**
-  String get systemStatusTitle;
-
   /// No description provided for @systemStatusLoading.
   ///
   /// In pt, this message translates to:
@@ -775,6 +763,516 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Niassa'**
   String get provinceNiassa;
+
+  /// Cartão com a versão da API, no fundo do perfil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobre'**
+  String get aboutTitle;
+
+  /// No description provided for @loading.
+  ///
+  /// In pt, this message translates to:
+  /// **'A carregar…'**
+  String get loading;
+
+  /// No description provided for @cancel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saltar'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguinte'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar'**
+  String get onboardingStart;
+
+  /// Indicador de página da apresentação (leitores de ecrã).
+  ///
+  /// In pt, this message translates to:
+  /// **'Página {current} de {total}'**
+  String onboardingPage(int current, int total);
+
+  /// No description provided for @onboarding1Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compare seguradoras'**
+  String get onboarding1Title;
+
+  /// No description provided for @onboarding1Text.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veja as propostas de várias seguradoras lado a lado e escolha a que lhe serve.'**
+  String get onboarding1Text;
+
+  /// No description provided for @onboarding2Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compre em minutos'**
+  String get onboarding2Title;
+
+  /// No description provided for @onboarding2Text.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simule, pague com M-Pesa ou por referência e receba a apólice no telemóvel.'**
+  String get onboarding2Text;
+
+  /// No description provided for @onboarding3Title.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo num só lugar'**
+  String get onboarding3Title;
+
+  /// No description provided for @onboarding3Text.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólices, pagamentos e sinistros sempre consigo.'**
+  String get onboarding3Text;
+
+  /// auth.login.title na web.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar na área do cliente'**
+  String get authLoginTitle;
+
+  /// No description provided for @authLoginSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Use o seu telemóvel ou e-mail. Enviamos-lhe um código para entrar, sem palavra-passe.'**
+  String get authLoginSubtitle;
+
+  /// No description provided for @authIdentifierTypeLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar com'**
+  String get authIdentifierTypeLabel;
+
+  /// No description provided for @authIdentifierTypeMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Telemóvel'**
+  String get authIdentifierTypeMsisdn;
+
+  /// No description provided for @authIdentifierTypeEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get authIdentifierTypeEmail;
+
+  /// No description provided for @authMsisdnLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de telemóvel'**
+  String get authMsisdnLabel;
+
+  /// No description provided for @authMsisdnHelper.
+  ///
+  /// In pt, this message translates to:
+  /// **'9 dígitos, por exemplo 84 123 4567.'**
+  String get authMsisdnHelper;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get authEmailLabel;
+
+  /// No description provided for @authChannelLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Receber o código por'**
+  String get authChannelLabel;
+
+  /// No description provided for @authSubmit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Receber código'**
+  String get authSubmit;
+
+  /// No description provided for @authRetryIn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tente de novo dentro de {seconds} s.'**
+  String authRetryIn(int seconds);
+
+  /// No description provided for @authCodeSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreva o código que recebeu.'**
+  String get authCodeSubtitle;
+
+  /// No description provided for @authCodeInputLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Código recebido'**
+  String get authCodeInputLabel;
+
+  /// No description provided for @authCodeSentTo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviámos um código por {channel} para {destination}.'**
+  String authCodeSentTo(String channel, String destination);
+
+  /// No description provided for @authCodeChange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar'**
+  String get authCodeChange;
+
+  /// No description provided for @authCodeFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não conseguimos enviar por {requested}. Enviámos o código por {used}.'**
+  String authCodeFallback(String requested, String used);
+
+  /// OTP_INVALID com attemptsRemaining.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{Código errado. Resta 1 tentativa.} other{Código errado. Restam {count} tentativas.}}'**
+  String authCodeWrongCode(int count);
+
+  /// No description provided for @authCodeResent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviámos um código novo.'**
+  String get authCodeResent;
+
+  /// No description provided for @authCodeResend.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reenviar código'**
+  String get authCodeResend;
+
+  /// No description provided for @authCodeResendIn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reenviar código ({seconds} s)'**
+  String authCodeResendIn(int seconds);
+
+  /// No description provided for @channelSms.
+  ///
+  /// In pt, this message translates to:
+  /// **'SMS'**
+  String get channelSms;
+
+  /// No description provided for @channelWhatsapp.
+  ///
+  /// In pt, this message translates to:
+  /// **'WhatsApp'**
+  String get channelWhatsapp;
+
+  /// No description provided for @channelEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get channelEmail;
+
+  /// No description provided for @logout.
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminar sessão'**
+  String get logout;
+
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminar sessão?'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para voltar a entrar vai precisar de um código novo.'**
+  String get logoutConfirmText;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In pt, this message translates to:
+  /// **'Olá, {name}'**
+  String homeGreeting(String name);
+
+  /// No description provided for @homeGreetingNoName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Olá'**
+  String get homeGreetingNoName;
+
+  /// No description provided for @homeIncompleteProfile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Complete o seu perfil para poder comprar um seguro.'**
+  String get homeIncompleteProfile;
+
+  /// No description provided for @homeCompleteProfile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Completar perfil'**
+  String get homeCompleteProfile;
+
+  /// No description provided for @homeQuoteTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguro automóvel'**
+  String get homeQuoteTitle;
+
+  /// No description provided for @homeQuoteText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compare os preços das seguradoras para o seu veículo.'**
+  String get homeQuoteText;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível em breve'**
+  String get comingSoon;
+
+  /// No description provided for @profileOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil'**
+  String get profileOpen;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil'**
+  String get profileTitle;
+
+  /// No description provided for @profilePersonalData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados pessoais'**
+  String get profilePersonalData;
+
+  /// No description provided for @profileCompleteNotice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisamos destes dados para emitir as suas apólices.'**
+  String get profileCompleteNotice;
+
+  /// No description provided for @profileFieldFullName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome completo'**
+  String get profileFieldFullName;
+
+  /// No description provided for @profileFieldBirthDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de nascimento'**
+  String get profileFieldBirthDate;
+
+  /// No description provided for @profileFieldIdDocType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de documento'**
+  String get profileFieldIdDocType;
+
+  /// No description provided for @profileFieldIdDocNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número do documento'**
+  String get profileFieldIdDocNumber;
+
+  /// No description provided for @profileFieldNuit.
+  ///
+  /// In pt, this message translates to:
+  /// **'NUIT'**
+  String get profileFieldNuit;
+
+  /// No description provided for @profileFieldAddress.
+  ///
+  /// In pt, this message translates to:
+  /// **'Morada'**
+  String get profileFieldAddress;
+
+  /// No description provided for @profileFieldProvince.
+  ///
+  /// In pt, this message translates to:
+  /// **'Província'**
+  String get profileFieldProvince;
+
+  /// No description provided for @profileChoose.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha…'**
+  String get profileChoose;
+
+  /// No description provided for @profileChange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar'**
+  String get profileChange;
+
+  /// No description provided for @profileChangeDocument.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar o número do documento'**
+  String get profileChangeDocument;
+
+  /// No description provided for @profileChangeNuit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar o NUIT'**
+  String get profileChangeNuit;
+
+  /// No description provided for @profileNuitHelper.
+  ///
+  /// In pt, this message translates to:
+  /// **'9 dígitos.'**
+  String get profileNuitHelper;
+
+  /// No description provided for @profileOptional.
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcional.'**
+  String get profileOptional;
+
+  /// No description provided for @profileSave.
+  ///
+  /// In pt, this message translates to:
+  /// **'Guardar'**
+  String get profileSave;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil guardado'**
+  String get profileSaved;
+
+  /// idDocType.BI na web.
+  ///
+  /// In pt, this message translates to:
+  /// **'Bilhete de Identidade'**
+  String get idDocTypeBi;
+
+  /// No description provided for @idDocTypePassport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Passaporte'**
+  String get idDocTypePassport;
+
+  /// No description provided for @idDocTypeDire.
+  ///
+  /// In pt, this message translates to:
+  /// **'DIRE'**
+  String get idDocTypeDire;
+
+  /// No description provided for @contactsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contactos'**
+  String get contactsTitle;
+
+  /// No description provided for @contactTypeMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Telemóvel'**
+  String get contactTypeMsisdn;
+
+  /// No description provided for @contactTypeEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail'**
+  String get contactTypeEmail;
+
+  /// No description provided for @contactsVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verificado'**
+  String get contactsVerified;
+
+  /// No description provided for @contactsAddMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar telemóvel'**
+  String get contactsAddMsisdn;
+
+  /// No description provided for @contactsAddEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar e-mail'**
+  String get contactsAddEmail;
+
+  /// No description provided for @contactsChangeMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar telemóvel'**
+  String get contactsChangeMsisdn;
+
+  /// No description provided for @contactsChangeEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar e-mail'**
+  String get contactsChangeEmail;
+
+  /// No description provided for @contactsChangeShort.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar'**
+  String get contactsChangeShort;
+
+  /// No description provided for @contactsRemoveMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover telemóvel'**
+  String get contactsRemoveMsisdn;
+
+  /// No description provided for @contactsRemoveEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover e-mail'**
+  String get contactsRemoveEmail;
+
+  /// No description provided for @contactsRemoveShort.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover'**
+  String get contactsRemoveShort;
+
+  /// No description provided for @contactsSaved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contacto confirmado'**
+  String get contactsSaved;
+
+  /// No description provided for @contactsRemoved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contacto removido'**
+  String get contactsRemoved;
+
+  /// No description provided for @contactsConfirmRemoveTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover contacto?'**
+  String get contactsConfirmRemoveTitle;
+
+  /// No description provided for @contactsConfirmRemoveText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deixará de poder entrar e receber avisos em {value}.'**
+  String contactsConfirmRemoveText(String value);
+
+  /// No description provided for @contactsConfirmRemove.
+  ///
+  /// In pt, this message translates to:
+  /// **'Remover'**
+  String get contactsConfirmRemove;
 }
 
 class _AppLocalizationsDelegate

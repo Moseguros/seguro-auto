@@ -12,13 +12,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'MoSeguros';
 
   @override
-  String get homeTagline =>
-      'Compare, buy and manage your car insurance in one place.';
-
-  @override
-  String get systemStatusTitle => 'System status';
-
-  @override
   String get systemStatusLoading => 'Checking the API…';
 
   @override
@@ -397,4 +390,287 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get provinceNiassa => 'Niassa';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String get loading => 'Loading…';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingStart => 'Get started';
+
+  @override
+  String onboardingPage(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String get onboarding1Title => 'Compare insurers';
+
+  @override
+  String get onboarding1Text =>
+      'See offers from several insurers side by side and pick the one that suits you.';
+
+  @override
+  String get onboarding2Title => 'Buy in minutes';
+
+  @override
+  String get onboarding2Text =>
+      'Get a quote, pay with M-Pesa or by reference and receive your policy on your phone.';
+
+  @override
+  String get onboarding3Title => 'Everything in one place';
+
+  @override
+  String get onboarding3Text =>
+      'Policies, payments and claims always with you.';
+
+  @override
+  String get authLoginTitle => 'Sign in to your customer area';
+
+  @override
+  String get authLoginSubtitle =>
+      'Use your mobile number or e-mail. We send you a code to sign in, no password needed.';
+
+  @override
+  String get authIdentifierTypeLabel => 'Sign in with';
+
+  @override
+  String get authIdentifierTypeMsisdn => 'Mobile';
+
+  @override
+  String get authIdentifierTypeEmail => 'E-mail';
+
+  @override
+  String get authMsisdnLabel => 'Mobile number';
+
+  @override
+  String get authMsisdnHelper => '9 digits, for example 84 123 4567.';
+
+  @override
+  String get authEmailLabel => 'E-mail';
+
+  @override
+  String get authChannelLabel => 'Receive the code by';
+
+  @override
+  String get authSubmit => 'Get code';
+
+  @override
+  String authRetryIn(int seconds) {
+    return 'Try again in $seconds s.';
+  }
+
+  @override
+  String get authCodeSubtitle => 'Enter the code you received.';
+
+  @override
+  String get authCodeInputLabel => 'Code received';
+
+  @override
+  String authCodeSentTo(String channel, String destination) {
+    return 'We sent a code by $channel to $destination.';
+  }
+
+  @override
+  String get authCodeChange => 'Change';
+
+  @override
+  String authCodeFallback(String requested, String used) {
+    return 'We could not send it by $requested. We sent the code by $used.';
+  }
+
+  @override
+  String authCodeWrongCode(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Wrong code. $count attempts left.',
+      one: 'Wrong code. 1 attempt left.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get authCodeResent => 'We sent a new code.';
+
+  @override
+  String get authCodeResend => 'Resend code';
+
+  @override
+  String authCodeResendIn(int seconds) {
+    return 'Resend code ($seconds s)';
+  }
+
+  @override
+  String get channelSms => 'SMS';
+
+  @override
+  String get channelWhatsapp => 'WhatsApp';
+
+  @override
+  String get channelEmail => 'E-mail';
+
+  @override
+  String get logout => 'Sign out';
+
+  @override
+  String get logoutConfirmTitle => 'Sign out?';
+
+  @override
+  String get logoutConfirmText => 'You will need a new code to sign in again.';
+
+  @override
+  String homeGreeting(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
+  String get homeGreetingNoName => 'Hello';
+
+  @override
+  String get homeIncompleteProfile =>
+      'Complete your profile to be able to buy insurance.';
+
+  @override
+  String get homeCompleteProfile => 'Complete profile';
+
+  @override
+  String get homeQuoteTitle => 'Car insurance';
+
+  @override
+  String get homeQuoteText => 'Compare insurers\' prices for your vehicle.';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get profileOpen => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profilePersonalData => 'Personal details';
+
+  @override
+  String get profileCompleteNotice =>
+      'We need these details to issue your policies.';
+
+  @override
+  String get profileFieldFullName => 'Full name';
+
+  @override
+  String get profileFieldBirthDate => 'Date of birth';
+
+  @override
+  String get profileFieldIdDocType => 'Document type';
+
+  @override
+  String get profileFieldIdDocNumber => 'Document number';
+
+  @override
+  String get profileFieldNuit => 'NUIT (tax number)';
+
+  @override
+  String get profileFieldAddress => 'Address';
+
+  @override
+  String get profileFieldProvince => 'Province';
+
+  @override
+  String get profileChoose => 'Choose…';
+
+  @override
+  String get profileChange => 'Change';
+
+  @override
+  String get profileChangeDocument => 'Change the document number';
+
+  @override
+  String get profileChangeNuit => 'Change the NUIT';
+
+  @override
+  String get profileNuitHelper => '9 digits.';
+
+  @override
+  String get profileOptional => 'Optional.';
+
+  @override
+  String get profileSave => 'Save';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get idDocTypeBi => 'Identity Card (BI)';
+
+  @override
+  String get idDocTypePassport => 'Passport';
+
+  @override
+  String get idDocTypeDire => 'DIRE (residence permit)';
+
+  @override
+  String get contactsTitle => 'Contacts';
+
+  @override
+  String get contactTypeMsisdn => 'Mobile';
+
+  @override
+  String get contactTypeEmail => 'E-mail';
+
+  @override
+  String get contactsVerified => 'Verified';
+
+  @override
+  String get contactsAddMsisdn => 'Add mobile';
+
+  @override
+  String get contactsAddEmail => 'Add e-mail';
+
+  @override
+  String get contactsChangeMsisdn => 'Change mobile';
+
+  @override
+  String get contactsChangeEmail => 'Change e-mail';
+
+  @override
+  String get contactsChangeShort => 'Change';
+
+  @override
+  String get contactsRemoveMsisdn => 'Remove mobile';
+
+  @override
+  String get contactsRemoveEmail => 'Remove e-mail';
+
+  @override
+  String get contactsRemoveShort => 'Remove';
+
+  @override
+  String get contactsSaved => 'Contact confirmed';
+
+  @override
+  String get contactsRemoved => 'Contact removed';
+
+  @override
+  String get contactsConfirmRemoveTitle => 'Remove contact?';
+
+  @override
+  String contactsConfirmRemoveText(String value) {
+    return 'You will no longer be able to sign in or receive notices at $value.';
+  }
+
+  @override
+  String get contactsConfirmRemove => 'Remove';
 }
