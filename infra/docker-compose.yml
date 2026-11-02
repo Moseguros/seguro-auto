@@ -20,6 +20,8 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Papéis da aplicação (ADR-002); só corre com o volume vazio (ver README).
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       <<: *healthcheck-timing
@@ -51,8 +53,11 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: local
       DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-moseguros}
-      DB_USERNAME: ${POSTGRES_USER:-moseguros}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      # A aplicação liga-se sem privilégios de dono (o RLS aplica-se a ela); o Flyway usa o dono.
+      DB_USERNAME: moseguros_app_user
+      DB_PASSWORD: moseguros_app
+      DB_OWNER_USERNAME: ${POSTGRES_USER:-moseguros}
+      DB_OWNER_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
       SPRING_MAIL_HOST: mailpit
       SPRING_MAIL_PORT: "1025"
       JAVA_OPTS: -XX:MaxRAMPercentage=75
