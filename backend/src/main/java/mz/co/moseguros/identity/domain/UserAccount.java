@@ -143,6 +143,79 @@ public class UserAccount extends BaseEntity {
         this.emailVerified = true;
     }
 
+    // --- preferências e contactos (S1-06) ---
+
+    /**
+     * Língua preferida ({@code pt} ou {@code en}) e, só para staff, o nome ({@code null} mantém o
+     * actual). Para clientes o nome é ignorado: está no perfil.
+     */
+    public void updatePreferences(String displayName, String preferredLanguage) {
+        if (!"pt".equals(preferredLanguage) && !"en".equals(preferredLanguage)) {
+            throw new IllegalArgumentException("Unsupported language: " + preferredLanguage);
+        }
+        this.preferredLanguage = preferredLanguage;
+        if (isStaff() && displayName != null) {
+            this.displayName = displayName.trim();
+        }
+    }
+
+    /** O contacto do tipo indicado é o actual e está verificado. */
+    public boolean hasVerifiedContact(OtpIdentifier identifier) {
+        return switch (identifier.type()) {
+            case MSISDN -> msisdnVerified && msisdn != null && msisdn.value().equals(identifier.value());
+            case EMAIL -> emailVerified && identifier.value().equals(email);
+        };
+    }
+
+    /** Cliente: grava o contacto confirmado por OTP no lugar do anterior do mesmo tipo, verificado. */
+    public void replaceContact(OtpIdentifier identifier) {
+        requireCustomer();
+        switch (identifier.type()) {
+            case MSISDN -> {
+                this.msisdn = identifier.msisdn();
+                this.msisdnVerified = true;
+            }
+            case EMAIL -> {
+                this.email = identifier.email();
+                this.emailVerified = true;
+            }
+        }
+    }
+
+    /**
+     * Cliente: remove o contacto do tipo indicado. Sem esse contacto não muda nada e devolve
+     * {@code false}.
+     *
+     * @throws DomainException {@code LAST_CONTACT} se a conta ficasse sem nenhum contacto verificado
+     */
+    public boolean removeContact(OtpChallenge.IdentifierType type) {
+        requireCustomer();
+        boolean present = type == OtpChallenge.IdentifierType.MSISDN ? msisdn != null : email != null;
+        if (!present) {
+            return false;
+        }
+        boolean otherVerified = type == OtpChallenge.IdentifierType.MSISDN
+                ? email != null && emailVerified
+                : msisdn != null && msisdnVerified;
+        if (!otherVerified) {
+            throw DomainException.of(ErrorCodes.LAST_CONTACT, "The account must keep at least one verified contact");
+        }
+        if (type == OtpChallenge.IdentifierType.MSISDN) {
+            this.msisdn = null;
+            this.msisdnVerified = false;
+        } else {
+            this.email = null;
+            this.emailVerified = false;
+        }
+        return true;
+    }
+
+    private void requireCustomer() {
+        if (!isCustomer()) {
+            throw new IllegalStateException("Only customer accounts");
+        }
+    }
+
     /**
      * Staff que aceitou o convite: grava a palavra-passe (hash Argon2id) e um segredo TOTP novo.
      * Pode repetir-se até à activação (cada chamada substitui os anteriores).
