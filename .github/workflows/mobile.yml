@@ -1,0 +1,60 @@
+name: mobile
+
+on:
+  pull_request:
+    paths:
+      - "mobile/**"
+      - "api/**"
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - "api/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      # Versão do Flutter fixada em environment.flutter do mobile/pubspec.yaml (S0-06).
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+
+      # O openapi-generator (usado pelo generate_api.sh) e o Gradle precisam de Java 17.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # O cliente gerado tem de corresponder ao api/openapi.yaml versionado.
+      - name: Cliente da API actualizado
+        run: |
+          ./tool/generate_api.sh
+          git diff --exit-code packages/moseguros_api
+
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+      - name: APK de desenvolvimento
+        run: flutter build apk --flavor dev -t lib/main_dev.dart --debug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moseguros-dev-debug-apk
+          path: mobile/build/app/outputs/flutter-apk/app-dev-debug.apk
+          if-no-files-found: error
