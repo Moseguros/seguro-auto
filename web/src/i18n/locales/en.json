@@ -165,7 +165,14 @@
     "INVITATION_INVALID": "This invitation is no longer valid. Ask the person who invited you for a new one.",
     "INVITATION_NOT_ACCEPTED": "Set your password first.",
     "TOTP_INVALID": "Wrong code. Check your authenticator app and try again.",
-    "PASSWORD_TOO_WEAK": "The password does not meet the security rules."
+    "PASSWORD_TOO_WEAK": "The password does not meet the security rules.",
+    "INVALID_CREDENTIALS": "Wrong e-mail, password or authentication code.",
+    "ACCOUNT_LOCKED": "Too many failed attempts. The account is temporarily locked; please try again later.",
+    "ORGANIZATION_SUSPENDED": "Your organization is suspended. Please contact the MoSeguros administration.",
+    "RESET_TOKEN_INVALID": "This recovery link is no longer valid. Please request a new one.",
+    "USER_NOT_FOUND": "User not found.",
+    "CANNOT_MODIFY_SELF": "You cannot change your own account.",
+    "LAST_MANAGER": "The organization must keep at least one active manager."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",

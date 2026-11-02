@@ -154,6 +154,13 @@ void main() {
         'INVITATION_NOT_ACCEPTED',
         'TOTP_INVALID',
         'PASSWORD_TOO_WEAK',
+        'INVALID_CREDENTIALS',
+        'ACCOUNT_LOCKED',
+        'ORGANIZATION_SUSPENDED',
+        'RESET_TOKEN_INVALID',
+        'USER_NOT_FOUND',
+        'CANNOT_MODIFY_SELF',
+        'LAST_MANAGER',
       ];
       const fieldCodes = [
         'INVALID_CURRENCY',

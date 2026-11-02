@@ -26,7 +26,7 @@ Actualizado em 02/11/2026.
 | S1-02 Tokens JWT, sessões e permissões | S1-01 | em revisão |
 | S1-03 OTP do cliente e canais de envio | S1-02 | em revisão |
 | S1-04 Organizações, convites e activação de staff | S1-03 | em revisão |
-| S1-05 Login de staff e gestão de utilizadores | S1-04 | pronta |
+| S1-05 Login de staff e gestão de utilizadores | S1-04 | em revisão |
 | S1-06 Perfil e contactos do cliente | S1-03 | pronta — pode correr em paralelo com S1-04 |
 | S1-07 Web: sessão e área do cliente | S0-05, S1-06 | pronta |
 | S1-08 Web: staff, organizações e utilizadores | S1-07, S1-05 | pronta |

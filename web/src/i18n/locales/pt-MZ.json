@@ -165,7 +165,14 @@
     "INVITATION_INVALID": "Este convite já não é válido. Peça um novo convite a quem o convidou.",
     "INVITATION_NOT_ACCEPTED": "Defina primeiro a sua palavra-passe.",
     "TOTP_INVALID": "Código errado. Verifique a aplicação de autenticação e tente de novo.",
-    "PASSWORD_TOO_WEAK": "A palavra-passe não cumpre as regras de segurança."
+    "PASSWORD_TOO_WEAK": "A palavra-passe não cumpre as regras de segurança.",
+    "INVALID_CREDENTIALS": "E-mail, palavra-passe ou código de autenticação errados.",
+    "ACCOUNT_LOCKED": "Demasiadas tentativas erradas. A conta está bloqueada temporariamente; tente mais tarde.",
+    "ORGANIZATION_SUSPENDED": "A sua organização está suspensa. Contacte a administração da MoSeguros.",
+    "RESET_TOKEN_INVALID": "Este link de recuperação já não é válido. Peça um novo.",
+    "USER_NOT_FOUND": "Utilizador não encontrado.",
+    "CANNOT_MODIFY_SELF": "Não pode alterar a sua própria conta.",
+    "LAST_MANAGER": "A organização tem de ficar com pelo menos um gestor activo."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",

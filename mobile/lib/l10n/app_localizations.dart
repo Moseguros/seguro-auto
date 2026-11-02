@@ -566,6 +566,48 @@ abstract class AppLocalizations {
   /// **'A palavra-passe não cumpre as regras de segurança.'**
   String get errorPasswordTooWeak;
 
+  /// No description provided for @errorInvalidCredentials.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail, palavra-passe ou código de autenticação errados.'**
+  String get errorInvalidCredentials;
+
+  /// No description provided for @errorAccountLocked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Demasiadas tentativas erradas. A conta está bloqueada temporariamente; tente mais tarde.'**
+  String get errorAccountLocked;
+
+  /// No description provided for @errorOrganizationSuspended.
+  ///
+  /// In pt, this message translates to:
+  /// **'A sua organização está suspensa. Contacte a administração da MoSeguros.'**
+  String get errorOrganizationSuspended;
+
+  /// No description provided for @errorResetTokenInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este link de recuperação já não é válido. Peça um novo.'**
+  String get errorResetTokenInvalid;
+
+  /// No description provided for @errorUserNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Utilizador não encontrado.'**
+  String get errorUserNotFound;
+
+  /// No description provided for @errorCannotModifySelf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não pode alterar a sua própria conta.'**
+  String get errorCannotModifySelf;
+
+  /// No description provided for @errorLastManager.
+  ///
+  /// In pt, this message translates to:
+  /// **'A organização tem de ficar com pelo menos um gestor activo.'**
+  String get errorLastManager;
+
   /// No description provided for @validationNotAllowed.
   ///
   /// In pt, this message translates to:

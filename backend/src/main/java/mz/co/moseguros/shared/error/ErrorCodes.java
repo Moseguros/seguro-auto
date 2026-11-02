@@ -101,6 +101,22 @@ public final class ErrorCodes {
     /** Palavra-passe recusada pela política; os motivos vão em {@code errors[]} (400). */
     public static final String PASSWORD_TOO_WEAK = "PASSWORD_TOO_WEAK";
 
+    // Login de staff, recuperação de palavra-passe e gestão de utilizadores (S1-05)
+    /** E-mail, palavra-passe ou código TOTP errados, sem dizer qual (401). */
+    public static final String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
+    /** Conta bloqueada por falhas de login (403, com {@code retryAfterSeconds}). */
+    public static final String ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
+    /** Login de staff de uma organização suspensa (403). */
+    public static final String ORGANIZATION_SUSPENDED = "ORGANIZATION_SUSPENDED";
+    /** Token de recuperação desconhecido, expirado, já usado ou invalidado (400). */
+    public static final String RESET_TOKEN_INVALID = "RESET_TOKEN_INVALID";
+    /** Utilizador de staff inexistente ou fora do âmbito de quem pede (404). */
+    public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
+    /** O gestor não pode alterar, desactivar nem repor o acesso da própria conta (400). */
+    public static final String CANNOT_MODIFY_SELF = "CANNOT_MODIFY_SELF";
+    /** A organização (ou a plataforma) ficaria sem nenhum gestor activo (400). */
+    public static final String LAST_MANAGER = "LAST_MANAGER";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -143,7 +159,14 @@ public final class ErrorCodes {
             Map.entry(INVITATION_INVALID, 404),
             Map.entry(INVITATION_NOT_ACCEPTED, 400),
             Map.entry(TOTP_INVALID, 400),
-            Map.entry(PASSWORD_TOO_WEAK, 400));
+            Map.entry(PASSWORD_TOO_WEAK, 400),
+            Map.entry(INVALID_CREDENTIALS, 401),
+            Map.entry(ACCOUNT_LOCKED, 403),
+            Map.entry(ORGANIZATION_SUSPENDED, 403),
+            Map.entry(RESET_TOKEN_INVALID, 400),
+            Map.entry(USER_NOT_FOUND, 404),
+            Map.entry(CANNOT_MODIFY_SELF, 400),
+            Map.entry(LAST_MANAGER, 400));
 
     private ErrorCodes() {
     }

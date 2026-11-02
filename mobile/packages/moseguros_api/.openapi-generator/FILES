@@ -22,6 +22,7 @@ lib/src/model/create_organization_request.dart
 lib/src/model/date.dart
 lib/src/model/delivery_receipt_request.dart
 lib/src/model/field_error.dart
+lib/src/model/forgot_password_request.dart
 lib/src/model/insurer_profile_request.dart
 lib/src/model/insurer_profile_response.dart
 lib/src/model/invitation_details_response.dart
@@ -45,14 +46,19 @@ lib/src/model/otp_test_response.dart
 lib/src/model/otp_verify_response.dart
 lib/src/model/page_response_invitation_response.dart
 lib/src/model/page_response_organization_summary_response.dart
+lib/src/model/page_response_staff_user_response.dart
 lib/src/model/problem_detail.dart
 lib/src/model/refresh_token_request.dart
 lib/src/model/request_otp_request.dart
+lib/src/model/reset_password_request.dart
+lib/src/model/staff_login_request.dart
+lib/src/model/staff_user_response.dart
 lib/src/model/suspend_organization_request.dart
 lib/src/model/token_response.dart
 lib/src/model/totp_setup_response.dart
 lib/src/model/update_organization_request.dart
 lib/src/model/update_otp_settings_request.dart
+lib/src/model/update_user_roles_request.dart
 lib/src/model/verify_otp_request.dart
 lib/src/model/version_response.dart
 lib/src/serializers.dart

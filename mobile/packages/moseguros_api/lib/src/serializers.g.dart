@@ -16,6 +16,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
       ..add(FieldError.serializer)
+      ..add(ForgotPasswordRequest.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
       ..add(InvitationDetailsResponse.serializer)
@@ -61,11 +62,16 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpVerifyResponse.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
+      ..add(PageResponseStaffUserResponse.serializer)
       ..add(ProblemDetail.serializer)
       ..add(RefreshTokenRequest.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
+      ..add(ResetPasswordRequest.serializer)
+      ..add(StaffLoginRequest.serializer)
+      ..add(StaffUserResponse.serializer)
+      ..add(StaffUserResponseStatusEnum.serializer)
       ..add(SuspendOrganizationRequest.serializer)
       ..add(TokenResponse.serializer)
       ..add(TotpSetupResponse.serializer)
@@ -75,6 +81,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateOtpSettingsRequestDefaultChannelEnum.serializer)
       ..add(UpdateOtpSettingsRequestEnabledChannelsEnum.serializer)
       ..add(UpdateOtpSettingsRequestFallbackOrderEnum.serializer)
+      ..add(UpdateUserRolesRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
       ..add(VersionResponse.serializer)
       ..addBuilderFactory(
@@ -98,6 +105,15 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(StaffUserResponse)]),
+          () => ListBuilder<StaffUserResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())

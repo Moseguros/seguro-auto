@@ -147,6 +147,14 @@ export interface FieldError {
   message?: string;
 }
 
+export interface ForgotPasswordRequest {
+  /**
+   * @minLength 0
+   * @maxLength 254
+   */
+  email: string;
+}
+
 export interface InsurerProfileRequest {
   complaintsEmail: string;
   /** Provedor do cliente: organização existente do tipo OMBUDSMAN (400 OMBUDSMAN_INVALID) */
@@ -666,6 +674,13 @@ export interface PageResponseOrganizationSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseStaffUserResponse {
+  content: StaffUserResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 /**
  * Erro RFC 7807 (application/problem+json)
  */
@@ -714,6 +729,64 @@ export interface RequestOtpRequest {
   /** Telemóvel (841234567, +258841234567) ou e-mail */
   identifier: string;
   identifierType: RequestOtpRequestIdentifierType;
+}
+
+export interface ResetPasswordRequest {
+  /** 12 a 128 caracteres, sem a parte local do e-mail e fora das mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[], campo newPassword) */
+  newPassword: string;
+  /**
+   * Token do link enviado por e-mail
+   * @minLength 0
+   * @maxLength 128
+   */
+  token: string;
+}
+
+export interface StaffLoginRequest {
+  /**
+   * @minLength 0
+   * @maxLength 254
+   */
+  email: string;
+  /**
+   * @minLength 0
+   * @maxLength 1024
+   */
+  password: string;
+  /**
+   * @minLength 0
+   * @maxLength 16
+   */
+  totpCode: string;
+}
+
+/**
+ * LOCKED só enquanto o bloqueio não passou
+ */
+export type StaffUserResponseStatus =
+  (typeof StaffUserResponseStatus)[keyof typeof StaffUserResponseStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const StaffUserResponseStatus = {
+  PENDING_ACTIVATION: 'PENDING_ACTIVATION',
+  ACTIVE: 'ACTIVE',
+  LOCKED: 'LOCKED',
+  DISABLED: 'DISABLED',
+} as const;
+
+export interface StaffUserResponse {
+  createdAt: string;
+  /** Omitido se ainda não tiver nome */
+  displayName?: string;
+  email: string;
+  id: string;
+  /** Omitido se nunca entrou */
+  lastLoginAt?: string;
+  roles: string[];
+  /** LOCKED só enquanto o bloqueio não passou */
+  status: StaffUserResponseStatus;
+  /** Para a alteração de perfis */
+  version: number;
 }
 
 export interface SuspendOrganizationRequest {
@@ -838,6 +911,17 @@ export interface UpdateOtpSettingsRequest {
   version: number;
 }
 
+export interface UpdateUserRolesRequest {
+  /**
+   * Perfis permitidos no tipo da organização (400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION)
+   * @minItems 1
+   * @maxItems 20
+   */
+  roleCodes: string[];
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface VerifyOtpRequest {
   /** challengeId devolvido no pedido */
   challengeId: string;
@@ -867,6 +951,25 @@ export const ListPlatformInvitationsStatus = {
   ACCEPTED: 'ACCEPTED',
   EXPIRED: 'EXPIRED',
   REVOKED: 'REVOKED',
+} as const;
+
+export type ListPlatformUsersParams = {
+  status?: ListPlatformUsersStatus;
+  q?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
+
+export type ListPlatformUsersStatus =
+  (typeof ListPlatformUsersStatus)[keyof typeof ListPlatformUsersStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListPlatformUsersStatus = {
+  PENDING_ACTIVATION: 'PENDING_ACTIVATION',
+  ACTIVE: 'ACTIVE',
+  LOCKED: 'LOCKED',
+  DISABLED: 'DISABLED',
 } as const;
 
 export type ListOrganizationsParams = {
@@ -923,6 +1026,25 @@ export const ListOrganizationInvitationsStatus = {
   ACCEPTED: 'ACCEPTED',
   EXPIRED: 'EXPIRED',
   REVOKED: 'REVOKED',
+} as const;
+
+export type ListOrganizationUsersParams = {
+  status?: ListOrganizationUsersStatus;
+  q?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
+
+export type ListOrganizationUsersStatus =
+  (typeof ListOrganizationUsersStatus)[keyof typeof ListOrganizationUsersStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListOrganizationUsersStatus = {
+  PENDING_ACTIVATION: 'PENDING_ACTIVATION',
+  ACTIVE: 'ACTIVE',
+  LOCKED: 'LOCKED',
+  DISABLED: 'DISABLED',
 } as const;
 
 export type ListAssignableRolesParams = {
@@ -1471,6 +1593,129 @@ export const useTestOtpDelivery = <TError = ErrorType<ProblemDetail>, TContext =
 };
 
 /**
+ * Permissão org-user:read e âmbito da plataforma (senão 403 FORBIDDEN). Filtros status e q. Ordenação por createdAt, email, displayName ou lastLoginAt.
+ * @summary Lista o staff da plataforma
+ */
+export const listPlatformUsers = (
+  params?: ListPlatformUsersParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseStaffUserResponse>(
+    { url: `/api/v1/admin/users`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListPlatformUsersQueryKey = (params?: ListPlatformUsersParams) => {
+  return [`/api/v1/admin/users`, ...(params ? [params] : [])] as const;
+};
+
+export const getListPlatformUsersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPlatformUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlatformUsers>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPlatformUsersQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlatformUsers>>> = ({ signal }) =>
+    listPlatformUsers(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPlatformUsers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPlatformUsersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPlatformUsers>>
+>;
+export type ListPlatformUsersQueryError = ErrorType<ProblemDetail>;
+
+export function useListPlatformUsers<
+  TData = Awaited<ReturnType<typeof listPlatformUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListPlatformUsersParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlatformUsers>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlatformUsers>>,
+          TError,
+          Awaited<ReturnType<typeof listPlatformUsers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlatformUsers<
+  TData = Awaited<ReturnType<typeof listPlatformUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlatformUsers>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlatformUsers>>,
+          TError,
+          Awaited<ReturnType<typeof listPlatformUsers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlatformUsers<
+  TData = Awaited<ReturnType<typeof listPlatformUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlatformUsers>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista o staff da plataforma
+ */
+
+export function useListPlatformUsers<
+  TData = Awaited<ReturnType<typeof listPlatformUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPlatformUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlatformUsers>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPlatformUsersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão org-user:manage e âmbito da plataforma (senão 403 FORBIDDEN). Só perfis sem organização (excepto CUSTOMER). Convites pendentes para o mesmo e-mail são substituídos.
  * @summary Convida staff da plataforma
  */
@@ -1865,6 +2110,92 @@ export const useActivateInvitation = <TError = ErrorType<ProblemDetail>, TContex
   TContext
 > => {
   const mutationOptions = getActivateInvitationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * E-mail, palavra-passe e código TOTP. Qualquer um errado → 401 INVALID_CREDENTIALS (sem dizer qual). À 5.ª falha seguida a conta bloqueia 15 minutos: 403 ACCOUNT_LOCKED com retryAfterSeconds e Retry-After. Credenciais certas numa conta desactivada → 403 ACCOUNT_DISABLED; numa organização suspensa → 403 ORGANIZATION_SUSPENDED. A sessão dura 12 h.
+ * @summary Login de staff
+ */
+export const loginStaff = (
+  staffLoginRequest: BodyType<StaffLoginRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<TokenResponse>(
+    {
+      url: `/api/v1/auth/login`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: staffLoginRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getLoginStaffMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof loginStaff>>,
+    TError,
+    { data: BodyType<StaffLoginRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof loginStaff>>,
+  TError,
+  { data: BodyType<StaffLoginRequest> },
+  TContext
+> => {
+  const mutationKey = ['loginStaff'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof loginStaff>>,
+    { data: BodyType<StaffLoginRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return loginStaff(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LoginStaffMutationResult = NonNullable<Awaited<ReturnType<typeof loginStaff>>>;
+export type LoginStaffMutationBody = BodyType<StaffLoginRequest>;
+export type LoginStaffMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Login de staff
+ */
+export const useLoginStaff = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof loginStaff>>,
+      TError,
+      { data: BodyType<StaffLoginRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof loginStaff>>,
+  TError,
+  { data: BodyType<StaffLoginRequest> },
+  TContext
+> => {
+  const mutationOptions = getLoginStaffMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -2354,6 +2685,178 @@ export const useVerifyOtp = <TError = ErrorType<ProblemDetail>, TContext = unkno
   TContext
 > => {
   const mutationOptions = getVerifyOtpMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Responde sempre 202, sem corpo. Se o e-mail for de uma conta de staff activa ou bloqueada, envia um link válido 30 minutos (no máximo 3 e-mails por conta por hora); os pedidos anteriores por usar deixam de funcionar.
+ * @summary Pede a recuperação da palavra-passe de staff
+ */
+export const forgotPassword = (
+  forgotPasswordRequest: BodyType<ForgotPasswordRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>(
+    {
+      url: `/api/v1/auth/password/forgot`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: forgotPasswordRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getForgotPasswordMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof forgotPassword>>,
+    TError,
+    { data: BodyType<ForgotPasswordRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof forgotPassword>>,
+  TError,
+  { data: BodyType<ForgotPasswordRequest> },
+  TContext
+> => {
+  const mutationKey = ['forgotPassword'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof forgotPassword>>,
+    { data: BodyType<ForgotPasswordRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return forgotPassword(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ForgotPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof forgotPassword>>>;
+export type ForgotPasswordMutationBody = BodyType<ForgotPasswordRequest>;
+export type ForgotPasswordMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pede a recuperação da palavra-passe de staff
+ */
+export const useForgotPassword = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof forgotPassword>>,
+      TError,
+      { data: BodyType<ForgotPasswordRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof forgotPassword>>,
+  TError,
+  { data: BodyType<ForgotPasswordRequest> },
+  TContext
+> => {
+  const mutationOptions = getForgotPasswordMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Com o token do link. Token desconhecido, expirado, usado ou substituído → 400 RESET_TOKEN_INVALID; palavra-passe fraca → 400 PASSWORD_TOO_WEAK (campo newPassword). Desbloqueia a conta e termina todas as sessões; o TOTP não muda.
+ * @summary Define a palavra-passe nova
+ */
+export const resetPassword = (
+  resetPasswordRequest: BodyType<ResetPasswordRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>(
+    {
+      url: `/api/v1/auth/password/reset`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: resetPasswordRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getResetPasswordMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof resetPassword>>,
+    TError,
+    { data: BodyType<ResetPasswordRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof resetPassword>>,
+  TError,
+  { data: BodyType<ResetPasswordRequest> },
+  TContext
+> => {
+  const mutationKey = ['resetPassword'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof resetPassword>>,
+    { data: BodyType<ResetPasswordRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return resetPassword(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ResetPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof resetPassword>>>;
+export type ResetPasswordMutationBody = BodyType<ResetPasswordRequest>;
+export type ResetPasswordMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Define a palavra-passe nova
+ */
+export const useResetPassword = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof resetPassword>>,
+      TError,
+      { data: BodyType<ResetPasswordRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof resetPassword>>,
+  TError,
+  { data: BodyType<ResetPasswordRequest> },
+  TContext
+> => {
+  const mutationOptions = getResetPasswordMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -3640,6 +4143,148 @@ export function useListOrganizationInvitations<
 }
 
 /**
+ * Permissão org-user:read. A plataforma vê qualquer organização; o staff de uma organização só a sua (outra → 404 ORGANIZATION_NOT_FOUND). Filtros status e q (parte do nome ou do e-mail). Ordenação por createdAt, email, displayName ou lastLoginAt.
+ * @summary Lista o staff de uma organização
+ */
+export const listOrganizationUsers = (
+  orgId: string,
+  params?: ListOrganizationUsersParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseStaffUserResponse>(
+    { url: `/api/v1/organizations/${orgId}/users`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListOrganizationUsersQueryKey = (
+  orgId?: string,
+  params?: ListOrganizationUsersParams,
+) => {
+  return [`/api/v1/organizations/${orgId}/users`, ...(params ? [params] : [])] as const;
+};
+
+export const getListOrganizationUsersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listOrganizationUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationUsersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationUsers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListOrganizationUsersQueryKey(orgId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listOrganizationUsers>>> = ({ signal }) =>
+    listOrganizationUsers(orgId, params, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!orgId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listOrganizationUsers>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListOrganizationUsersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listOrganizationUsers>>
+>;
+export type ListOrganizationUsersQueryError = ErrorType<ProblemDetail>;
+
+export function useListOrganizationUsers<
+  TData = Awaited<ReturnType<typeof listOrganizationUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params: undefined | ListOrganizationUsersParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationUsers>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listOrganizationUsers>>,
+          TError,
+          Awaited<ReturnType<typeof listOrganizationUsers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListOrganizationUsers<
+  TData = Awaited<ReturnType<typeof listOrganizationUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationUsersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationUsers>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listOrganizationUsers>>,
+          TError,
+          Awaited<ReturnType<typeof listOrganizationUsers>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListOrganizationUsers<
+  TData = Awaited<ReturnType<typeof listOrganizationUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationUsersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationUsers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista o staff de uma organização
+ */
+
+export function useListOrganizationUsers<
+  TData = Awaited<ReturnType<typeof listOrganizationUsers>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  orgId: string,
+  params?: ListOrganizationUsersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listOrganizationUsers>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListOrganizationUsersQueryOptions(orgId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão org-user:manage. A plataforma convida para qualquer organização; o staff de uma organização só para a sua (outra → 404 ORGANIZATION_NOT_FOUND). Organização suspensa → 409 ORGANIZATION_NOT_ACTIVE. E-mail de outra conta de staff → 409 EMAIL_ALREADY_IN_USE.
  * @summary Convida staff de uma organização
  */
@@ -3860,3 +4505,512 @@ export function useListAssignableRoles<
 
   return query;
 }
+
+/**
+ * Permissão org-user:read. Fora do âmbito → 404 USER_NOT_FOUND.
+ * @summary Consulta um utilizador de staff
+ */
+export const getStaffUser = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<StaffUserResponse>({ url: `/api/v1/users/${id}`, method: 'GET', signal }, options);
+};
+
+export const getGetStaffUserQueryKey = (id?: string) => {
+  return [`/api/v1/users/${id}`] as const;
+};
+
+export const getGetStaffUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getStaffUser>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getStaffUser>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetStaffUserQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getStaffUser>>> = ({ signal }) =>
+    getStaffUser(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getStaffUser>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetStaffUserQueryResult = NonNullable<Awaited<ReturnType<typeof getStaffUser>>>;
+export type GetStaffUserQueryError = ErrorType<ProblemDetail>;
+
+export function useGetStaffUser<
+  TData = Awaited<ReturnType<typeof getStaffUser>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getStaffUser>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStaffUser>>,
+          TError,
+          Awaited<ReturnType<typeof getStaffUser>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetStaffUser<
+  TData = Awaited<ReturnType<typeof getStaffUser>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getStaffUser>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStaffUser>>,
+          TError,
+          Awaited<ReturnType<typeof getStaffUser>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetStaffUser<
+  TData = Awaited<ReturnType<typeof getStaffUser>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getStaffUser>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta um utilizador de staff
+ */
+
+export function useGetStaffUser<
+  TData = Awaited<ReturnType<typeof getStaffUser>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getStaffUser>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetStaffUserQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão org-user:manage. ACTIVE ou LOCKED → DISABLED e revoga as sessões. O próprio → 400 CANNOT_MODIFY_SELF; último gestor activo → 400 LAST_MANAGER; outro estado → 409 INVALID_STATE_TRANSITION.
+ * @summary Desactiva um utilizador de staff
+ */
+export const disableUser = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<StaffUserResponse>(
+    { url: `/api/v1/users/${id}/disable`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getDisableUserMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof disableUser>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof disableUser>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['disableUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof disableUser>>, { id: string }> = (
+    props,
+  ) => {
+    const { id } = props ?? {};
+
+    return disableUser(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DisableUserMutationResult = NonNullable<Awaited<ReturnType<typeof disableUser>>>;
+
+export type DisableUserMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Desactiva um utilizador de staff
+ */
+export const useDisableUser = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof disableUser>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof disableUser>>, TError, { id: string }, TContext> => {
+  const mutationOptions = getDisableUserMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:manage. DISABLED → ACTIVE; outro estado → 409 INVALID_STATE_TRANSITION.
+ * @summary Reactiva um utilizador de staff
+ */
+export const enableUser = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<StaffUserResponse>(
+    { url: `/api/v1/users/${id}/enable`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getEnableUserMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof enableUser>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof enableUser>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['enableUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof enableUser>>, { id: string }> = (
+    props,
+  ) => {
+    const { id } = props ?? {};
+
+    return enableUser(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EnableUserMutationResult = NonNullable<Awaited<ReturnType<typeof enableUser>>>;
+
+export type EnableUserMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Reactiva um utilizador de staff
+ */
+export const useEnableUser = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof enableUser>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof enableUser>>, TError, { id: string }, TContext> => {
+  const mutationOptions = getEnableUserMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:manage. Para quem perdeu o telemóvel do TOTP ou não consegue entrar: a conta volta a PENDING_ACTIVATION sem palavra-passe nem TOTP, as sessões são revogadas e é enviado um convite novo com os perfis actuais. Só ACTIVE ou LOCKED (senão 409 INVALID_STATE_TRANSITION); o próprio → 400 CANNOT_MODIFY_SELF.
+ * @summary Repõe o acesso de um utilizador de staff
+ */
+export const resetUserAccess = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InvitationResponse>(
+    { url: `/api/v1/users/${id}/reset-access`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getResetUserAccessMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof resetUserAccess>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof resetUserAccess>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['resetUserAccess'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof resetUserAccess>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return resetUserAccess(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ResetUserAccessMutationResult = NonNullable<
+  Awaited<ReturnType<typeof resetUserAccess>>
+>;
+
+export type ResetUserAccessMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Repõe o acesso de um utilizador de staff
+ */
+export const useResetUserAccess = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof resetUserAccess>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof resetUserAccess>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getResetUserAccessMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:manage. Vale no login ou na renovação seguinte do token. O próprio → 400 CANNOT_MODIFY_SELF; perfil não permitido → 400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION; retirar o último gestor activo → 400 LAST_MANAGER; conta por activar → 409 INVALID_STATE_TRANSITION.
+ * @summary Altera os perfis de um utilizador de staff
+ */
+export const updateUserRoles = (
+  id: string,
+  updateUserRolesRequest: BodyType<UpdateUserRolesRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<StaffUserResponse>(
+    {
+      url: `/api/v1/users/${id}/roles`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateUserRolesRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateUserRolesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateUserRoles>>,
+    TError,
+    { id: string; data: BodyType<UpdateUserRolesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateUserRoles>>,
+  TError,
+  { id: string; data: BodyType<UpdateUserRolesRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateUserRoles'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateUserRoles>>,
+    { id: string; data: BodyType<UpdateUserRolesRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateUserRoles(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateUserRolesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateUserRoles>>
+>;
+export type UpdateUserRolesMutationBody = BodyType<UpdateUserRolesRequest>;
+export type UpdateUserRolesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera os perfis de um utilizador de staff
+ */
+export const useUpdateUserRoles = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateUserRoles>>,
+      TError,
+      { id: string; data: BodyType<UpdateUserRolesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateUserRoles>>,
+  TError,
+  { id: string; data: BodyType<UpdateUserRolesRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateUserRolesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão org-user:manage. LOCKED → ACTIVE; outro estado → 409 INVALID_STATE_TRANSITION.
+ * @summary Desbloqueia um utilizador de staff
+ */
+export const unlockUser = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<StaffUserResponse>(
+    { url: `/api/v1/users/${id}/unlock`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getUnlockUserMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unlockUser>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof unlockUser>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['unlockUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof unlockUser>>, { id: string }> = (
+    props,
+  ) => {
+    const { id } = props ?? {};
+
+    return unlockUser(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UnlockUserMutationResult = NonNullable<Awaited<ReturnType<typeof unlockUser>>>;
+
+export type UnlockUserMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Desbloqueia um utilizador de staff
+ */
+export const useUnlockUser = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof unlockUser>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof unlockUser>>, TError, { id: string }, TContext> => {
+  const mutationOptions = getUnlockUserMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

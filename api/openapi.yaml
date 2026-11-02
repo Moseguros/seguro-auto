@@ -193,6 +193,66 @@ paths:
       tags:
       - Identity
   /api/v1/admin/users:
+    get:
+      description: "Permissão org-user:read e âmbito da plataforma (senão 403 FORBIDDEN).\
+        \ Filtros status e q. Ordenação por createdAt, email, displayName ou lastLoginAt."
+      operationId: listPlatformUsers
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - LOCKED
+          - DISABLED
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseStaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista o staff da plataforma
+      tags:
+      - Identity
     post:
       description: Permissão org-user:manage e âmbito da plataforma (senão 403 FORBIDDEN).
         Só perfis sem organização (excepto CUSTOMER). Convites pendentes para o mesmo
@@ -340,6 +400,43 @@ paths:
           description: Server error (RFC 7807)
       security: []
       summary: Activa a conta com o primeiro código TOTP
+      tags:
+      - Identity
+  /api/v1/auth/login:
+    post:
+      description: "E-mail, palavra-passe e código TOTP. Qualquer um errado → 401\
+        \ INVALID_CREDENTIALS (sem dizer qual). À 5.ª falha seguida a conta bloqueia\
+        \ 15 minutos: 403 ACCOUNT_LOCKED com retryAfterSeconds e Retry-After. Credenciais\
+        \ certas numa conta desactivada → 403 ACCOUNT_DISABLED; numa organização suspensa\
+        \ → 403 ORGANIZATION_SUSPENDED. A sessão dura 12 h."
+      operationId: loginStaff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StaffLoginRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Login de staff
       tags:
       - Identity
   /api/v1/auth/logout:
@@ -500,6 +597,69 @@ paths:
           description: Server error (RFC 7807)
       security: []
       summary: Valida o código e entra
+      tags:
+      - Identity
+  /api/v1/auth/password/forgot:
+    post:
+      description: "Responde sempre 202, sem corpo. Se o e-mail for de uma conta de\
+        \ staff activa ou bloqueada, envia um link válido 30 minutos (no máximo 3\
+        \ e-mails por conta por hora); os pedidos anteriores por usar deixam de funcionar."
+      operationId: forgotPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+        required: true
+      responses:
+        "202":
+          description: Accepted
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Pede a recuperação da palavra-passe de staff
+      tags:
+      - Identity
+  /api/v1/auth/password/reset:
+    post:
+      description: "Com o token do link. Token desconhecido, expirado, usado ou substituí\
+        do → 400 RESET_TOKEN_INVALID; palavra-passe fraca → 400 PASSWORD_TOO_WEAK\
+        \ (campo newPassword). Desbloqueia a conta e termina todas as sessões; o TOTP\
+        \ não muda."
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Define a palavra-passe nova
       tags:
       - Identity
   /api/v1/auth/refresh:
@@ -1014,6 +1174,74 @@ paths:
       tags:
       - Identity
   /api/v1/organizations/{orgId}/users:
+    get:
+      description: "Permissão org-user:read. A plataforma vê qualquer organização;\
+        \ o staff de uma organização só a sua (outra → 404 ORGANIZATION_NOT_FOUND).\
+        \ Filtros status e q (parte do nome ou do e-mail). Ordenação por createdAt,\
+        \ email, displayName ou lastLoginAt."
+      operationId: listOrganizationUsers
+      parameters:
+      - in: path
+        name: orgId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - LOCKED
+          - DISABLED
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseStaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista o staff de uma organização
+      tags:
+      - Identity
     post:
       description: Permissão org-user:manage. A plataforma convida para qualquer organização;
         o staff de uma organização só para a sua (outra → 404 ORGANIZATION_NOT_FOUND).
@@ -1097,6 +1325,221 @@ paths:
                 $ref: "#/components/schemas/ProblemDetail"
           description: Server error (RFC 7807)
       summary: Perfis atribuíveis
+      tags:
+      - Identity
+  /api/v1/users/{id}:
+    get:
+      description: Permissão org-user:read. Fora do âmbito → 404 USER_NOT_FOUND.
+      operationId: getStaffUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/disable:
+    post:
+      description: Permissão org-user:manage. ACTIVE ou LOCKED → DISABLED e revoga
+        as sessões. O próprio → 400 CANNOT_MODIFY_SELF; último gestor activo → 400
+        LAST_MANAGER; outro estado → 409 INVALID_STATE_TRANSITION.
+      operationId: disableUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desactiva um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/enable:
+    post:
+      description: Permissão org-user:manage. DISABLED → ACTIVE; outro estado → 409
+        INVALID_STATE_TRANSITION.
+      operationId: enableUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Reactiva um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/reset-access:
+    post:
+      description: "Permissão org-user:manage. Para quem perdeu o telemóvel do TOTP\
+        \ ou não consegue entrar: a conta volta a PENDING_ACTIVATION sem palavra-passe\
+        \ nem TOTP, as sessões são revogadas e é enviado um convite novo com os perfis\
+        \ actuais. Só ACTIVE ou LOCKED (senão 409 INVALID_STATE_TRANSITION); o pró\
+        prio → 400 CANNOT_MODIFY_SELF."
+      operationId: resetUserAccess
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Repõe o acesso de um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/roles:
+    put:
+      description: Permissão org-user:manage. Vale no login ou na renovação seguinte
+        do token. O próprio → 400 CANNOT_MODIFY_SELF; perfil não permitido → 400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION;
+        retirar o último gestor activo → 400 LAST_MANAGER; conta por activar → 409
+        INVALID_STATE_TRANSITION.
+      operationId: updateUserRoles
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRolesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera os perfis de um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/unlock:
+    post:
+      description: Permissão org-user:manage. LOCKED → ACTIVE; outro estado → 409
+        INVALID_STATE_TRANSITION.
+      operationId: unlockUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desbloqueia um utilizador de staff
       tags:
       - Identity
 components:
@@ -1253,6 +1696,16 @@ components:
       required:
       - field
       - code
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: ana.machava@seguradora.co.mz
+          maxLength: 254
+          minLength: 0
+      required:
+      - email
     InsurerProfileRequest:
       type: object
       properties:
@@ -1942,6 +2395,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseStaffUserResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/StaffUserResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     ProblemDetail:
       type: object
       description: Erro RFC 7807 (application/problem+json)
@@ -2009,6 +2485,86 @@ components:
       required:
       - identifier
       - identifierType
+    ResetPasswordRequest:
+      type: object
+      properties:
+        newPassword:
+          type: string
+          format: password
+          description: "12 a 128 caracteres, sem a parte local do e-mail e fora das\
+            \ mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[], campo\
+            \ newPassword)"
+        token:
+          type: string
+          description: Token do link enviado por e-mail
+          maxLength: 128
+          minLength: 0
+      required:
+      - newPassword
+      - token
+    StaffLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: ana.machava@seguradora.co.mz
+          maxLength: 254
+          minLength: 0
+        password:
+          type: string
+          format: password
+          maxLength: 1024
+          minLength: 0
+        totpCode:
+          type: string
+          example: "123456"
+          maxLength: 16
+          minLength: 0
+      required:
+      - email
+      - password
+      - totpCode
+    StaffUserResponse:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        displayName:
+          type: string
+          description: Omitido se ainda não tiver nome
+        email:
+          type: string
+        id:
+          type: string
+          format: uuid
+        lastLoginAt:
+          type: string
+          format: date-time
+          description: Omitido se nunca entrou
+        roles:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          description: LOCKED só enquanto o bloqueio não passou
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - LOCKED
+          - DISABLED
+        version:
+          type: integer
+          format: int64
+          description: Para a alteração de perfis
+      required:
+      - createdAt
+      - email
+      - id
+      - roles
+      - status
+      - version
     SuspendOrganizationRequest:
       type: object
       properties:
@@ -2177,6 +2733,24 @@ components:
       - maxRequestsPerHour
       - resendAfterSeconds
       - validitySeconds
+      - version
+    UpdateUserRolesRequest:
+      type: object
+      properties:
+        roleCodes:
+          type: array
+          description: Perfis permitidos no tipo da organização (400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION)
+          items:
+            type: string
+            example: UNDERWRITER
+          maxItems: 20
+          minItems: 1
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - roleCodes
       - version
     VerifyOtpRequest:
       type: object
