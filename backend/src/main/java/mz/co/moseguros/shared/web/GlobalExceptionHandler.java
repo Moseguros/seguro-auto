@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;
+import mz.co.moseguros.shared.error.FieldErrorCodes;
 import mz.co.moseguros.shared.error.FieldValidationException;
 import mz.co.moseguros.shared.error.Problems;
 import mz.co.moseguros.shared.error.Problems.FieldError;
@@ -23,8 +24,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
@@ -77,6 +80,19 @@ public class GlobalExceptionHandler {
                         v.getMessage()))
                 .toList();
         return Problems.validation("Request validation failed", errors);
+    }
+
+    /** Parâmetro de caminho ou de query com um valor do tipo errado (ex.: UUID ou enum inválido). */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ProblemDetail handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return Problems.validation("Request validation failed",
+                List.of(new FieldError(ex.getName(), FieldErrorCodes.TYPE_MISMATCH, "Invalid value")));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ProblemDetail handleMissingParameter(MissingServletRequestParameterException ex) {
+        return Problems.validation("Request validation failed",
+                List.of(new FieldError(ex.getParameterName(), FieldErrorCodes.NOT_NULL, "Parameter is required")));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
