@@ -185,6 +185,59 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationNotBlank => 'Campo obrigatório.';
 
   @override
+  String get validationNotNull => 'Campo obrigatório.';
+
+  @override
+  String get errorConcurrentModification =>
+      'Outra pessoa alterou estes dados entretanto. Actualize e tente de novo.';
+
+  @override
+  String get errorOtpChannelChoiceDisabled =>
+      'Não é possível escolher o canal de envio do código.';
+
+  @override
+  String get errorOtpChannelNotAvailable =>
+      'Este canal não está disponível. Use outro canal ou entre com o outro identificador.';
+
+  @override
+  String get errorOtpRateLimited =>
+      'Pediu demasiados códigos. Tente mais tarde.';
+
+  @override
+  String get errorOtpResendTooSoon =>
+      'Aguarde um pouco antes de pedir um novo código.';
+
+  @override
+  String get errorOtpDeliveryFailed =>
+      'Não foi possível enviar o código. Tente de novo dentro de momentos.';
+
+  @override
+  String get errorOtpChallengeNotFound =>
+      'Pedido de código desconhecido. Peça um novo código.';
+
+  @override
+  String get errorOtpAlreadyUsed =>
+      'Este código já foi usado. Peça um novo código.';
+
+  @override
+  String get errorOtpSuperseded =>
+      'Pediu um código mais recente. Use o último código que recebeu.';
+
+  @override
+  String get errorOtpExpired => 'O código expirou. Peça um novo código.';
+
+  @override
+  String get errorOtpInvalid => 'Código errado. Verifique e tente de novo.';
+
+  @override
+  String get errorOtpAttemptsExceeded =>
+      'Demasiadas tentativas erradas. Peça um novo código.';
+
+  @override
+  String get errorAccountDisabled =>
+      'Esta conta está desactivada. Contacte o apoio ao cliente.';
+
+  @override
   String get provinceMaputoCity => 'Maputo Cidade';
 
   @override

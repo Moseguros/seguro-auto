@@ -57,6 +57,19 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'OUT_OF_RANGE' => l10n.errorOutOfRange,
   'REFRESH_TOKEN_INVALID' => l10n.errorRefreshTokenInvalid,
   'REFRESH_TOKEN_REUSED' => l10n.errorRefreshTokenReused,
+  'CONCURRENT_MODIFICATION' => l10n.errorConcurrentModification,
+  'OTP_CHANNEL_CHOICE_DISABLED' => l10n.errorOtpChannelChoiceDisabled,
+  'OTP_CHANNEL_NOT_AVAILABLE' => l10n.errorOtpChannelNotAvailable,
+  'OTP_RATE_LIMITED' => l10n.errorOtpRateLimited,
+  'OTP_RESEND_TOO_SOON' => l10n.errorOtpResendTooSoon,
+  'OTP_DELIVERY_FAILED' => l10n.errorOtpDeliveryFailed,
+  'OTP_CHALLENGE_NOT_FOUND' => l10n.errorOtpChallengeNotFound,
+  'OTP_ALREADY_USED' => l10n.errorOtpAlreadyUsed,
+  'OTP_SUPERSEDED' => l10n.errorOtpSuperseded,
+  'OTP_EXPIRED' => l10n.errorOtpExpired,
+  'OTP_INVALID' => l10n.errorOtpInvalid,
+  'OTP_ATTEMPTS_EXCEEDED' => l10n.errorOtpAttemptsExceeded,
+  'ACCOUNT_DISABLED' => l10n.errorAccountDisabled,
   _ => l10n.errorUnknown,
 };
 
@@ -75,5 +88,6 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'FALLBACK_ORDER_MISMATCH' => l10n.validationFallbackOrderMismatch,
   'OUT_OF_RANGE' => l10n.validationOutOfRange,
   'NOT_BLANK' => l10n.validationNotBlank,
+  'NOT_NULL' => l10n.validationNotNull,
   _ => l10n.errorUnknown,
 };

@@ -130,6 +130,19 @@ void main() {
         'OUT_OF_RANGE',
         'REFRESH_TOKEN_INVALID',
         'REFRESH_TOKEN_REUSED',
+        'CONCURRENT_MODIFICATION',
+        'OTP_CHANNEL_CHOICE_DISABLED',
+        'OTP_CHANNEL_NOT_AVAILABLE',
+        'OTP_RATE_LIMITED',
+        'OTP_RESEND_TOO_SOON',
+        'OTP_DELIVERY_FAILED',
+        'OTP_CHALLENGE_NOT_FOUND',
+        'OTP_ALREADY_USED',
+        'OTP_SUPERSEDED',
+        'OTP_EXPIRED',
+        'OTP_INVALID',
+        'OTP_ATTEMPTS_EXCEEDED',
+        'ACCOUNT_DISABLED',
       ];
       const fieldCodes = [
         'INVALID_CURRENCY',
@@ -145,6 +158,7 @@ void main() {
         'FALLBACK_ORDER_MISMATCH',
         'OUT_OF_RANGE',
         'NOT_BLANK',
+        'NOT_NULL',
       ];
       for (final locale in AppLocalizations.supportedLocales) {
         final l10n = await AppLocalizations.delegate.load(locale);

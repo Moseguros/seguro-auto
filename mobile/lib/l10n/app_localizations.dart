@@ -416,6 +416,90 @@ abstract class AppLocalizations {
   /// **'Campo obrigatório.'**
   String get validationNotBlank;
 
+  /// No description provided for @validationNotNull.
+  ///
+  /// In pt, this message translates to:
+  /// **'Campo obrigatório.'**
+  String get validationNotNull;
+
+  /// No description provided for @errorConcurrentModification.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outra pessoa alterou estes dados entretanto. Actualize e tente de novo.'**
+  String get errorConcurrentModification;
+
+  /// No description provided for @errorOtpChannelChoiceDisabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não é possível escolher o canal de envio do código.'**
+  String get errorOtpChannelChoiceDisabled;
+
+  /// No description provided for @errorOtpChannelNotAvailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este canal não está disponível. Use outro canal ou entre com o outro identificador.'**
+  String get errorOtpChannelNotAvailable;
+
+  /// No description provided for @errorOtpRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pediu demasiados códigos. Tente mais tarde.'**
+  String get errorOtpRateLimited;
+
+  /// No description provided for @errorOtpResendTooSoon.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguarde um pouco antes de pedir um novo código.'**
+  String get errorOtpResendTooSoon;
+
+  /// No description provided for @errorOtpDeliveryFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar o código. Tente de novo dentro de momentos.'**
+  String get errorOtpDeliveryFailed;
+
+  /// No description provided for @errorOtpChallengeNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedido de código desconhecido. Peça um novo código.'**
+  String get errorOtpChallengeNotFound;
+
+  /// No description provided for @errorOtpAlreadyUsed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este código já foi usado. Peça um novo código.'**
+  String get errorOtpAlreadyUsed;
+
+  /// No description provided for @errorOtpSuperseded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pediu um código mais recente. Use o último código que recebeu.'**
+  String get errorOtpSuperseded;
+
+  /// No description provided for @errorOtpExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O código expirou. Peça um novo código.'**
+  String get errorOtpExpired;
+
+  /// No description provided for @errorOtpInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Código errado. Verifique e tente de novo.'**
+  String get errorOtpInvalid;
+
+  /// No description provided for @errorOtpAttemptsExceeded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Demasiadas tentativas erradas. Peça um novo código.'**
+  String get errorOtpAttemptsExceeded;
+
+  /// No description provided for @errorAccountDisabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta conta está desactivada. Contacte o apoio ao cliente.'**
+  String get errorAccountDisabled;
+
   /// province.MAPUTO_CITY (Province no backend).
   ///
   /// In pt, this message translates to:
