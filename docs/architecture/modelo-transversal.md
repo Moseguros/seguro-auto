@@ -444,6 +444,7 @@ O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `paym
 | 6 | CAPTCHA | `CaptchaVerifier` com `TurnstileCaptchaVerifier` (Cloudflare Turnstile) e `AlwaysValidCaptchaVerifier` (local/testes). Decisão a confirmar pelo proprietário do produto |
 | 6 | Observabilidade | Micrometer + Prometheus (`/api/v1/prometheus`, rede interna), Grafana no compose `observability` |
 | 8 | Mapas | Web: Leaflet + OpenStreetMap; mobile: `flutter_map` + OpenStreetMap. Sem chave de API |
+| 5 | SIMO em mock | `MOCK_SIMO_V1` (S5-07, S5-08) e simulador `infra/mocks/simo-mock` (porta 8092) que entrega ficheiros por SFTP; permitido em `local`, `test`, `staging`; proibido em `prod` |
 | 12 | USSD | `UssdAggregatorPort` + simulador próprio em `infra/mocks/ussd-mock` |
 
 **Âmbito em listeners e jobs.** Os `@ApplicationModuleListener` e os jobs agendados correm sem utilizador autenticado (âmbito `NONE`, que não vê nada). Por isso as classes `…Listener` e `…Job` do pacote `application` usam `@RunAsSystem` (regra do S1-01). Têm de filtrar no código pela seguradora ou pelo cliente que vem no evento, e nunca devolvem dados a um utilizador.
@@ -508,12 +509,14 @@ IDs do plano, com uma tarefa nova (S5-12):
 | S5-04 | Adaptador M-Pesa (C2B, consulta, reversão) contra o simulador | S5-02, S5-03 |
 | S5-05 | Adaptadores e-Mola e cartão: interface + mock | S5-02 |
 | S5-06 | Infra: RabbitMQ, SFTP local, Vault, `payment-contracts` | S4 |
-| S5-07 | **Algoritmo SIMO de referências — BLOQUEADA** | S5-02 |
-| S5-08 | **Parser do ficheiro SIMO — BLOQUEADA** | S5-06 |
-| S5-09 | `payment-file-worker` (SFTP, agendamento, publicação) | S5-06 (parser fake até S5-08) |
-| S5-10 | Consumidor, reconciliação e excepções | S5-06, S5-02 (gerador fake até S5-07) |
+| S5-07 | Referências SIMO em mock: gerador `MOCK_SIMO_V1` e troca para o algoritmo real | S5-02 |
+| S5-08 | Ficheiro de liquidação SIMO em mock: parser `MOCK_SIMO_V1` e simulador `simo-mock` | S5-07, S5-09 |
+| S5-09 | `payment-file-worker` (SFTP, agendamento, publicação) | S5-06 |
+| S5-10 | Consumidor, reconciliação e excepções | S5-02, S5-06, S5-07 |
 | S5-11 | Ecrãs de pagamento do cliente (web e app) | S5-02, S5-04 |
 | S5-12 | Web seguradora e admin: configuração, pagamentos, excepções, ficheiros, estado do worker | S5-01, S5-10 |
+| S5-13 | **Algoritmo SIMO real de referências — BLOQUEADA** | S5-07 |
+| S5-14 | **Layout SIMO real do ficheiro de liquidação — BLOQUEADA** | S5-08 |
 
 ### Sprint 6 — Emissão, verificação, notificações, Release 1
 
@@ -620,7 +623,7 @@ As fichas registam-nas em "Questões". Quando uma decisão bloqueia a tarefa, a 
 | Encargos e impostos reais (selo, taxas) | S3-01 | não (configuráveis) |
 | Limiar do KYC simplificado e limites de aceitação automática | S4-05 | não (configuráveis) |
 | Validação jurídica da assinatura electrónica simples | S4-04 | não para desenvolvimento; sim para produção |
-| Algoritmo SIMO e layout do ficheiro | S5-07, S5-08 | **sim** |
+| Algoritmo SIMO e layout do ficheiro reais | S5-13, S5-14 | **sim** para produção; não para desenvolvimento e `staging` (mock `MOCK_SIMO_V1`, S5-07 e S5-08) |
 | Documentação e credenciais e-Mola e adquirente de cartões | S5-05 | não (mock) |
 | Fornecedor de CAPTCHA | S6-03 | não (porta + mock) |
 | Alojamento de staging e produção, cofre de segredos gerido | S6-08 | **sim** para o deploy; não para preparar os ficheiros |

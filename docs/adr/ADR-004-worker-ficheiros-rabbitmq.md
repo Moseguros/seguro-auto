@@ -31,7 +31,7 @@ Os pagamentos por entidade e referência (rede SIMO) são confirmados por fichei
 
 ## Pendente
 
-O algoritmo SIMO de geração de referências e o layout do ficheiro de pagamentos têm de ser fornecidos pelo proprietário do produto (tarefas S5-07 e S5-08).
+O algoritmo SIMO de geração de referências e o layout do ficheiro de pagamentos têm de ser fornecidos pelo proprietário do produto (tarefas S5-13 e S5-14, bloqueadas). Decisão de 02/11/2026: até lá, usa-se o mock `MOCK_SIMO_V1` (gerador com MOD 97, ficheiro de largura fixa) e o simulador `simo-mock`, que entrega os ficheiros por SFTP como faria o banco (tarefas S5-07 e S5-08). O mock é permitido em `local`, `test` e `staging` e proibido em `prod`.
 
 ## Adenda de 02/11/2026 — versão do RabbitMQ
 

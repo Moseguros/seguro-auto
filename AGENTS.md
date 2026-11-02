@@ -100,6 +100,6 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 5. Abra um pull request por tarefa com: o que foi feito, como testar, critérios de aceitação marcados, e o que ficou de fora.
 6. Nunca faça push para o `main`, nunca reescreva histórico partilhado, nunca altere migrações aplicadas nem contratos de outro módulo sem ficha explícita.
 7. Dúvida ou contradição → escreva na secção "Questões" da ficha e pare essa parte; não invente.
-8. **Tarefas bloqueadas:** S5-07 (algoritmo SIMO de referências) e S5-08 (layout do ficheiro de pagamentos SIMO). Quem lá chegar pára e pede ao proprietário do produto o algoritmo, o layout e exemplos. Não se inventa algoritmo nem layout.
+8. **SIMO (entidade e referência):** até haver o algoritmo e o layout oficiais, usa-se o mock `MOCK_SIMO_V1` (S5-07, S5-08), declaradamente inventado, permitido em `local`, `test` e `staging` e proibido em `prod`. **Tarefas bloqueadas:** S5-13 (algoritmo real) e S5-14 (layout real). Quem lá chegar pára e pede ao proprietário do produto o algoritmo, o layout e exemplos. Não se inventa o algoritmo nem o layout reais, e o mock nunca é apresentado como real.
 9. A API M-Pesa segue a documentação oficial da Vodacom Moçambique (`developer.mpesa.vm.co.mz`); o simulador em `infra/mocks/mpesa-mock` tem de se comportar como ela.
 10. O dinheiro vai sempre directamente para a conta da seguradora. A plataforma e os mediadores nunca recebem fundos.

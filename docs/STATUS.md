@@ -80,12 +80,14 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 | S5-04 Adaptador M-Pesa (C2B, consulta, reversão) contra o simulador | S5-02, S5-03 | pronta |
 | S5-05 Adaptadores e-Mola e cartão: interface + mock | S5-02 | pronta |
 | S5-06 Infra: RabbitMQ, SFTP local, Vault, `payment-contracts` | S4 | pronta |
-| S5-07 Algoritmo SIMO de referências | S5-02 | bloqueada — pedir ao proprietário do produto (algoritmo SIMO) |
-| S5-08 Parser do ficheiro SIMO | S5-06 | bloqueada — pedir ao proprietário do produto (layout do ficheiro SIMO) |
-| S5-09 `payment-file-worker` (SFTP, agendamento, publicação) | S5-06 (parser fake até S5-08) | pronta |
-| S5-10 Consumidor, reconciliação e excepções | S5-06, S5-02 (gerador fake até S5-07) | pronta |
+| S5-07 Referências SIMO em mock: gerador `MOCK_SIMO_V1` e troca para o algoritmo real | S5-02 | pronta |
+| S5-08 Ficheiro de liquidação SIMO em mock: parser `MOCK_SIMO_V1` e simulador `simo-mock` | S5-07, S5-09 | pronta |
+| S5-09 `payment-file-worker` (SFTP, agendamento, publicação) | S5-06 | pronta |
+| S5-10 Consumidor, reconciliação e excepções | S5-02, S5-06, S5-07 | pronta |
 | S5-11 Ecrãs de pagamento do cliente (web e app) | S5-02, S5-04 | pronta |
 | S5-12 Web seguradora e admin: configuração, pagamentos, excepções, ficheiros, estado do worker | S5-01, S5-10 | pronta |
+| S5-13 Algoritmo SIMO real de referências | S5-07 | bloqueada — pedir ao proprietário do produto (algoritmo SIMO, via banco da seguradora) |
+| S5-14 Layout SIMO real do ficheiro de liquidação | S5-08 | bloqueada — pedir ao proprietário do produto (layout do ficheiro, via banco da seguradora) |
 
 ### Sprint 6 — Emissão, verificação, notificações, Release 1
 
@@ -207,7 +209,7 @@ Cada sprint só começa depois de o anterior estar todo no `main`. As fichas dos
 - **MinIO:** a imagem `minio/minio` deixou de estar no Docker Hub. O armazenamento de ficheiros usa disco local em desenvolvimento e S3 em produção (ADR-005, S2-01). O e-mail de desenvolvimento usa o **Mailpit** (o MailHog deixou de ser mantido).
 - **A partir do S1-01** a aplicação liga-se à BD como `moseguros_app_user` (sem privilégios de dono) e o Flyway como dono; os testes precisam do `init-roles.sql`. Ver a adenda do ADR-002.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
-- **Bloqueadas:** S5-07 e S5-08 (algoritmo SIMO e layout do ficheiro de pagamentos) — pedir ao proprietário do produto antes de implementar.
+- **SIMO:** até haver o algoritmo e o layout oficiais, o pagamento por referência funciona com o mock `MOCK_SIMO_V1` e o simulador `simo-mock` (S5-07, S5-08), em `local`, `test` e `staging`; em `prod` é proibido. **Bloqueadas:** S5-13 e S5-14 (algoritmo e layout reais) — pedir ao proprietário do produto, que os obtém do banco da seguradora ao aderir ao serviço de cobrança.
 
 ## Fonte de verdade
 
