@@ -221,3 +221,13 @@ Future<ProviderContainer> pumpMoSeguros(
   await tester.pumpAndSettle();
   return container;
 }
+
+/// Erro de um pedido com resposta [status] e [body] (para widgets testados sem a API).
+DioException dioError(int status, Object? body) {
+  final request = RequestOptions(path: '/test');
+  return DioException.badResponse(
+    statusCode: status,
+    requestOptions: request,
+    response: Response(requestOptions: request, statusCode: status, data: body),
+  );
+}
