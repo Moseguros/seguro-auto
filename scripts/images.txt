@@ -1,0 +1,16 @@
+# Imagens Docker de que o projecto precisa para correr localmente.
+# Uma por linha; o que vem depois de "#" é comentário.
+# Actualizar esta lista quando mudar um Dockerfile, o infra/docker-compose.yml
+# ou a versão do Testcontainers no backend/pom.xml.
+#
+# Formato: <imagem>  <quando é precisa>
+#   sempre  → testes do backend (Testcontainers)
+#   infra   → docker compose (a partir do S0-07)
+
+postgres:16-alpine                        sempre   # BD (testes e compose)
+testcontainers/ryuk:0.12.0                sempre   # limpeza de contentores do Testcontainers 1.21.4
+axllent/mailpit:v1.33                     infra    # e-mail de desenvolvimento
+eclipse-temurin:17-jdk                    infra    # build do backend e do sms-mock
+eclipse-temurin:17-jre                    infra    # execução do backend e do sms-mock
+node:20-alpine                            infra    # build da web
+nginxinc/nginx-unprivileged:1.27-alpine   infra    # servidor da web

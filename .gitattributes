@@ -1,0 +1,21 @@
+# Fins de linha: LF em tudo, para os scripts e o Maven Wrapper funcionarem
+# dentro dos contentores Linux mesmo quando o repositório é clonado no Windows.
+* text=auto eol=lf
+
+# Ficheiros só para Windows ficam com CRLF.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Binários
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.jar binary
+*.keystore binary
+*.jks binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
