@@ -82,6 +82,13 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'INVITATION_NOT_ACCEPTED' => l10n.errorInvitationNotAccepted,
   'TOTP_INVALID' => l10n.errorTotpInvalid,
   'PASSWORD_TOO_WEAK' => l10n.errorPasswordTooWeak,
+  'INVALID_CREDENTIALS' => l10n.errorInvalidCredentials,
+  'ACCOUNT_LOCKED' => l10n.errorAccountLocked,
+  'ORGANIZATION_SUSPENDED' => l10n.errorOrganizationSuspended,
+  'RESET_TOKEN_INVALID' => l10n.errorResetTokenInvalid,
+  'USER_NOT_FOUND' => l10n.errorUserNotFound,
+  'CANNOT_MODIFY_SELF' => l10n.errorCannotModifySelf,
+  'LAST_MANAGER' => l10n.errorLastManager,
   _ => l10n.errorUnknown,
 };
 

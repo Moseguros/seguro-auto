@@ -280,6 +280,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'The password does not meet the security rules.';
 
   @override
+  String get errorInvalidCredentials =>
+      'Wrong e-mail, password or authentication code.';
+
+  @override
+  String get errorAccountLocked =>
+      'Too many failed attempts. The account is temporarily locked; please try again later.';
+
+  @override
+  String get errorOrganizationSuspended =>
+      'Your organization is suspended. Please contact the MoSeguros administration.';
+
+  @override
+  String get errorResetTokenInvalid =>
+      'This recovery link is no longer valid. Please request a new one.';
+
+  @override
+  String get errorUserNotFound => 'User not found.';
+
+  @override
+  String get errorCannotModifySelf => 'You cannot change your own account.';
+
+  @override
+  String get errorLastManager =>
+      'The organization must keep at least one active manager.';
+
+  @override
   String get validationNotAllowed => 'This field does not apply here.';
 
   @override

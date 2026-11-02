@@ -280,6 +280,32 @@ class AppLocalizationsPt extends AppLocalizations {
       'A palavra-passe não cumpre as regras de segurança.';
 
   @override
+  String get errorInvalidCredentials =>
+      'E-mail, palavra-passe ou código de autenticação errados.';
+
+  @override
+  String get errorAccountLocked =>
+      'Demasiadas tentativas erradas. A conta está bloqueada temporariamente; tente mais tarde.';
+
+  @override
+  String get errorOrganizationSuspended =>
+      'A sua organização está suspensa. Contacte a administração da MoSeguros.';
+
+  @override
+  String get errorResetTokenInvalid =>
+      'Este link de recuperação já não é válido. Peça um novo.';
+
+  @override
+  String get errorUserNotFound => 'Utilizador não encontrado.';
+
+  @override
+  String get errorCannotModifySelf => 'Não pode alterar a sua própria conta.';
+
+  @override
+  String get errorLastManager =>
+      'A organização tem de ficar com pelo menos um gestor activo.';
+
+  @override
   String get validationNotAllowed => 'Este campo não se aplica neste caso.';
 
   @override
