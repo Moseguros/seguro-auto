@@ -114,7 +114,7 @@ void main() {
       }
       expect(api.calls('POST', '/api/v1/auth/otp/request'), isEmpty);
 
-      api..on(
+      api.on(
         'POST',
         '$_contacts/verify',
         200,
