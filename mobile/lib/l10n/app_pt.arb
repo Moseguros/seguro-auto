@@ -4,11 +4,6 @@
   "@appName": {
     "description": "Nome comercial da aplicação (não se traduz)."
   },
-  "homeTagline": "Compare, compre e gira o seu seguro automóvel num só lugar.",
-  "@homeTagline": {
-    "description": "Frase do ecrã inicial (home.tagline na web)."
-  },
-  "systemStatusTitle": "Estado do sistema",
   "systemStatusLoading": "A verificar a API…",
   "systemStatusVersion": "Versão",
   "systemStatusCommit": "Commit",
@@ -124,5 +119,166 @@
   "provinceNiassa": "Niassa",
   "@provinceMaputoCity": {
     "description": "province.MAPUTO_CITY (Province no backend)."
-  }
+  },
+  "aboutTitle": "Sobre",
+  "@aboutTitle": {
+    "description": "Cartão com a versão da API, no fundo do perfil."
+  },
+  "loading": "A carregar…",
+  "cancel": "Cancelar",
+  "onboardingSkip": "Saltar",
+  "onboardingNext": "Seguinte",
+  "onboardingStart": "Começar",
+  "onboardingPage": "Página {current} de {total}",
+  "@onboardingPage": {
+    "description": "Indicador de página da apresentação (leitores de ecrã).",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboarding1Title": "Compare seguradoras",
+  "onboarding1Text": "Veja as propostas de várias seguradoras lado a lado e escolha a que lhe serve.",
+  "onboarding2Title": "Compre em minutos",
+  "onboarding2Text": "Simule, pague com M-Pesa ou por referência e receba a apólice no telemóvel.",
+  "onboarding3Title": "Tudo num só lugar",
+  "onboarding3Text": "Apólices, pagamentos e sinistros sempre consigo.",
+  "authLoginTitle": "Entrar na área do cliente",
+  "@authLoginTitle": {
+    "description": "auth.login.title na web."
+  },
+  "authLoginSubtitle": "Use o seu telemóvel ou e-mail. Enviamos-lhe um código para entrar, sem palavra-passe.",
+  "authIdentifierTypeLabel": "Entrar com",
+  "authIdentifierTypeMsisdn": "Telemóvel",
+  "authIdentifierTypeEmail": "E-mail",
+  "authMsisdnLabel": "Número de telemóvel",
+  "authMsisdnHelper": "9 dígitos, por exemplo 84 123 4567.",
+  "authEmailLabel": "E-mail",
+  "authChannelLabel": "Receber o código por",
+  "authSubmit": "Receber código",
+  "authRetryIn": "Tente de novo dentro de {seconds} s.",
+  "@authRetryIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authCodeSubtitle": "Escreva o código que recebeu.",
+  "authCodeInputLabel": "Código recebido",
+  "authCodeSentTo": "Enviámos um código por {channel} para {destination}.",
+  "@authCodeSentTo": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "authCodeChange": "Alterar",
+  "authCodeFallback": "Não conseguimos enviar por {requested}. Enviámos o código por {used}.",
+  "@authCodeFallback": {
+    "placeholders": {
+      "requested": {
+        "type": "String"
+      },
+      "used": {
+        "type": "String"
+      }
+    }
+  },
+  "authCodeWrongCode": "{count, plural, =1{Código errado. Resta 1 tentativa.} other{Código errado. Restam {count} tentativas.}}",
+  "@authCodeWrongCode": {
+    "description": "OTP_INVALID com attemptsRemaining.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authCodeResent": "Enviámos um código novo.",
+  "authCodeResend": "Reenviar código",
+  "authCodeResendIn": "Reenviar código ({seconds} s)",
+  "@authCodeResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "channelSms": "SMS",
+  "channelWhatsapp": "WhatsApp",
+  "channelEmail": "E-mail",
+  "logout": "Terminar sessão",
+  "logoutConfirmTitle": "Terminar sessão?",
+  "logoutConfirmText": "Para voltar a entrar vai precisar de um código novo.",
+  "homeGreeting": "Olá, {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingNoName": "Olá",
+  "homeIncompleteProfile": "Complete o seu perfil para poder comprar um seguro.",
+  "homeCompleteProfile": "Completar perfil",
+  "homeQuoteTitle": "Seguro automóvel",
+  "homeQuoteText": "Compare os preços das seguradoras para o seu veículo.",
+  "comingSoon": "Disponível em breve",
+  "profileOpen": "Perfil",
+  "profileTitle": "Perfil",
+  "profilePersonalData": "Dados pessoais",
+  "profileCompleteNotice": "Precisamos destes dados para emitir as suas apólices.",
+  "profileFieldFullName": "Nome completo",
+  "profileFieldBirthDate": "Data de nascimento",
+  "profileFieldIdDocType": "Tipo de documento",
+  "profileFieldIdDocNumber": "Número do documento",
+  "profileFieldNuit": "NUIT",
+  "profileFieldAddress": "Morada",
+  "profileFieldProvince": "Província",
+  "profileChoose": "Escolha…",
+  "profileChange": "Alterar",
+  "profileChangeDocument": "Alterar o número do documento",
+  "profileChangeNuit": "Alterar o NUIT",
+  "profileNuitHelper": "9 dígitos.",
+  "profileOptional": "Opcional.",
+  "profileSave": "Guardar",
+  "profileSaved": "Perfil guardado",
+  "idDocTypeBi": "Bilhete de Identidade",
+  "@idDocTypeBi": {
+    "description": "idDocType.BI na web."
+  },
+  "idDocTypePassport": "Passaporte",
+  "idDocTypeDire": "DIRE",
+  "contactsTitle": "Contactos",
+  "contactTypeMsisdn": "Telemóvel",
+  "contactTypeEmail": "E-mail",
+  "contactsVerified": "Verificado",
+  "contactsAddMsisdn": "Acrescentar telemóvel",
+  "contactsAddEmail": "Acrescentar e-mail",
+  "contactsChangeMsisdn": "Alterar telemóvel",
+  "contactsChangeEmail": "Alterar e-mail",
+  "contactsChangeShort": "Alterar",
+  "contactsRemoveMsisdn": "Remover telemóvel",
+  "contactsRemoveEmail": "Remover e-mail",
+  "contactsRemoveShort": "Remover",
+  "contactsSaved": "Contacto confirmado",
+  "contactsRemoved": "Contacto removido",
+  "contactsConfirmRemoveTitle": "Remover contacto?",
+  "contactsConfirmRemoveText": "Deixará de poder entrar e receber avisos em {value}.",
+  "@contactsConfirmRemoveText": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "contactsConfirmRemove": "Remover"
 }

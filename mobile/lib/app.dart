@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/env.dart';
 import 'core/router.dart';
 import 'core/theme.dart';
+import 'features/onboarding/onboarding_controller.dart';
 import 'l10n/app_localizations.dart';
 
 /// Arranque comum aos três flavors.
-void runMoSeguros(Env env) {
+Future<void> runMoSeguros(Env env) async {
   WidgetsFlutterBinding.ensureInitialized();
+  final preferences = await SharedPreferences.getInstance();
   runApp(
     ProviderScope(
-      overrides: [envProvider.overrideWithValue(env)],
+      overrides: [
+        envProvider.overrideWithValue(env),
+        sharedPreferencesProvider.overrideWithValue(preferences),
+      ],
       child: const MoSegurosApp(),
     ),
   );

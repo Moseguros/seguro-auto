@@ -1,36 +1,9 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
-
 import '../../l10n/app_localizations.dart';
+import '../errors/problem.dart';
 
 /// Código de erro a traduzir: o `code` do ProblemDetail (RFC 7807),
 /// `NETWORK_ERROR` sem resposta do servidor, ou `UNKNOWN` nos restantes casos.
-String apiErrorCode(Object error) {
-  if (error is DioException) {
-    final response = error.response;
-    if (response == null) return 'NETWORK_ERROR';
-    final code = _problemCode(response.data);
-    if (code != null && code.isNotEmpty) return code;
-  }
-  return 'UNKNOWN';
-}
-
-String? _problemCode(Object? data) {
-  Object? body = data;
-  if (body is String) {
-    try {
-      body = jsonDecode(body);
-    } on FormatException {
-      return null;
-    }
-  }
-  if (body is Map<String, dynamic>) {
-    final code = body['code'];
-    if (code is String) return code;
-  }
-  return null;
-}
+String apiErrorCode(Object error) => Problem.from(error).code;
 
 /// Mensagem traduzida para um código de erro de topo (`ErrorCodes`).
 String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {

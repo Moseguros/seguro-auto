@@ -1,72 +1,110 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:moseguros/app.dart';
-import 'package:moseguros/core/api/api_client.dart';
-import 'package:moseguros/core/config/env.dart';
-import 'package:moseguros_api/moseguros_api.dart';
+import 'package:moseguros/core/router.dart';
+import 'package:moseguros/core/widgets/cta_button.dart';
+import 'package:moseguros/features/home/home_screen.dart';
 
-class _MockApiClient extends Mock implements ApiClient {}
-
-class _MockMetaApi extends Mock implements MetaApi {}
-
-const _env = Env(apiBaseUrl: 'http://localhost:8080', name: 'test');
-final _request = RequestOptions(path: '/api/v1/meta/version');
+import 'support/mock_api.dart';
 
 void main() {
-  late _MockMetaApi meta;
+  late MockApi api;
 
   setUp(() {
-    meta = _MockMetaApi();
+    api = MockApi()
+      ..on('POST', '/api/v1/auth/refresh', 200, Fixtures.tokens())
+      ..on('GET', '/api/v1/me/profile', 200, Fixtures.profile())
+      ..on('GET', '/api/v1/me/contacts', 200, Fixtures.contacts())
+      ..on('GET', '/api/v1/meta/version', 200, {
+        'name': 'moseguros-backend',
+        'version': '1.2.3',
+        'commit': 'abc1234',
+      });
   });
 
-  Future<void> pumpApp(WidgetTester tester, {Locale? locale}) async {
-    // Ecrã de 360 px de largura (Definição de Pronto).
-    tester.view.physicalSize = const Size(360, 740);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
+  test('firstName', () {
+    expect(firstName('Ana Maria Machava'), 'Ana');
+    expect(firstName('  Zélia  '), 'Zélia');
+    expect(firstName(''), isNull);
+    expect(firstName(null), isNull);
+  });
 
-    final api = _MockApiClient();
-    when(() => api.meta).thenReturn(meta);
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          envProvider.overrideWithValue(_env),
-          apiClientProvider.overrideWithValue(api),
-        ],
-        child: MoSegurosApp(locale: locale),
-      ),
+  testWidgets('reabrir a app com sessão vai directo ao início', (tester) async {
+    api.on('GET', '/api/v1/me', 200, Fixtures.me());
+    await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
+
+    expect(api.calls('POST', '/api/v1/auth/refresh').single.data, {
+      'refreshToken': 'refresh-0',
+    });
+    expect(find.text('Olá, Ana'), findsOneWidget);
+    expect(find.byKey(const Key('incomplete-profile')), findsNothing);
+    // Um só botão laranja: "Simular seguro".
+    expect(find.byType(CtaButton), findsOneWidget);
+    expect(find.text('Simular seguro'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('"Simular seguro" mostra "Disponível em breve"', (tester) async {
+    api.on('GET', '/api/v1/me', 200, Fixtures.me());
+    await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
+
+    await tester.tap(find.text('Simular seguro'));
+    await tester.pump();
+    expect(find.text('Disponível em breve'), findsOneWidget);
+  });
+
+  testWidgets('perfil incompleto: cartão "Completar perfil" (em inglês)', (
+    tester,
+  ) async {
+    api.on(
+      'GET',
+      '/api/v1/me',
+      200,
+      Fixtures.me(displayName: null, profileComplete: false),
     );
-  }
-
-  testWidgets('mostra nome, frase e a versão da API (sucesso)', (tester) async {
-    when(() => meta.getVersion()).thenAnswer(
-      (_) async => Response(
-        requestOptions: _request,
-        statusCode: 200,
-        data: VersionResponse(
-          (b) => b
-            ..name = 'moseguros-backend'
-            ..version = '1.2.3'
-            ..commit = 'abc1234',
-        ),
-      ),
+    final container = await pumpMoSeguros(
+      tester,
+      api,
+      refreshToken: 'refresh-0',
+      locale: const Locale('en'),
     );
-
-    await pumpApp(tester, locale: const Locale('pt'));
-    expect(find.byKey(const Key('system-status-loading')), findsOneWidget);
-    expect(find.text('A verificar a API…'), findsOneWidget);
-
-    await tester.pumpAndSettle();
-
-    expect(find.text('MoSeguros'), findsWidgets);
+    // À entrada vai completar o perfil; volta ao início pela navegação.
     expect(
-      find.text('Compare, compre e gira o seu seguro automóvel num só lugar.'),
+      find.text('We need these details to issue your policies.'),
       findsOneWidget,
     );
-    expect(find.text('Estado do sistema'), findsOneWidget);
+    container.read(routerProvider).go('/');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Hello'), findsOneWidget);
+    expect(
+      find.text('Complete your profile to be able to buy insurance.'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Complete profile'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('We need these details to issue your policies.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('o ícone de perfil abre o perfil, com "Sobre" no fundo', (
+    tester,
+  ) async {
+    api.on('GET', '/api/v1/me', 200, Fixtures.me());
+    await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
+
+    await tester.tap(find.byKey(const Key('open-profile')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Perfil'), findsWidgets);
+    expect(find.text('Dados pessoais'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('api-commit')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Sobre'), findsOneWidget);
     expect(
       tester.widget<Text>(find.byKey(const Key('api-version'))).data,
       '1.2.3',
@@ -75,81 +113,45 @@ void main() {
       tester.widget<Text>(find.byKey(const Key('api-commit'))).data,
       'abc1234',
     );
-    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('mostra o erro e volta a tentar com sucesso', (tester) async {
-    var calls = 0;
-    when(() => meta.getVersion()).thenAnswer((_) async {
-      calls++;
-      if (calls == 1) {
-        throw DioException.connectionError(
-          requestOptions: _request,
-          reason: 'connection refused',
-        );
-      }
-      return Response(
-        requestOptions: _request,
-        statusCode: 200,
-        data: VersionResponse((b) => b..version = '1.2.3'),
+  testWidgets('"Sobre": erro com "Tentar de novo"', (tester) async {
+    api
+      ..on('GET', '/api/v1/me', 200, Fixtures.me())
+      ..on(
+        'GET',
+        '/api/v1/meta/version',
+        500,
+        MockApi.problem(500, 'INTERNAL_ERROR'),
       );
-    });
-
-    await pumpApp(tester, locale: const Locale('pt'));
+    await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
+    await tester.tap(find.byKey(const Key('open-profile')));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Tentar de novo'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
 
-    expect(find.byKey(const Key('system-status-error')), findsOneWidget);
     expect(
       find.textContaining('Não foi possível obter o estado da API.'),
       findsOneWidget,
     );
-    expect(find.textContaining('Sem ligação ao servidor.'), findsOneWidget);
+    expect(
+      find.textContaining('Erro interno do servidor. Tente mais tarde.'),
+      findsOneWidget,
+    );
 
+    api.on('GET', '/api/v1/meta/version', 200, {'version': '1.2.3'});
+    await tester.ensureVisible(find.text('Tentar de novo'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Tentar de novo'));
     await tester.pumpAndSettle();
 
-    expect(calls, 2);
     expect(find.byKey(const Key('system-status-error')), findsNothing);
-    expect(
-      tester.widget<Text>(find.byKey(const Key('api-version'))).data,
-      '1.2.3',
-    );
     expect(
       tester.widget<Text>(find.byKey(const Key('api-commit'))).data,
       'desconhecido',
     );
-  });
-
-  testWidgets('traduz o código do ProblemDetail (en)', (tester) async {
-    when(() => meta.getVersion()).thenThrow(
-      DioException.badResponse(
-        statusCode: 500,
-        requestOptions: _request,
-        response: Response(
-          requestOptions: _request,
-          statusCode: 500,
-          data: <String, dynamic>{
-            'type': 'about:blank',
-            'title': 'Internal Server Error',
-            'status': 500,
-            'code': 'INTERNAL_ERROR',
-          },
-        ),
-      ),
-    );
-
-    await pumpApp(tester, locale: const Locale('en'));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text('Compare, buy and manage your car insurance in one place.'),
-      findsOneWidget,
-    );
-    expect(
-      find.textContaining('Could not get the API status.'),
-      findsOneWidget,
-    );
-    expect(find.textContaining('Internal server error.'), findsOneWidget);
-    expect(find.text('Try again'), findsOneWidget);
   });
 }

@@ -3,8 +3,8 @@ import 'package:moseguros_api/moseguros_api.dart';
 
 import '../../core/api/api_client.dart';
 
-/// Estado do ecrã inicial: versão da API (`GET /api/v1/meta/version`).
-class HomeController extends AsyncNotifier<VersionResponse> {
+/// Versão da API (`GET /api/v1/meta/version`), no cartão "Sobre" do perfil.
+class VersionController extends AsyncNotifier<VersionResponse> {
   @override
   Future<VersionResponse> build() => _fetch();
 
@@ -20,9 +20,9 @@ class HomeController extends AsyncNotifier<VersionResponse> {
   }
 }
 
-final homeControllerProvider =
-    AsyncNotifierProvider<HomeController, VersionResponse>(
-      HomeController.new,
+final versionControllerProvider =
+    AsyncNotifierProvider<VersionController, VersionResponse>(
+      VersionController.new,
       // Sem novas tentativas automáticas: o utilizador decide com "Tentar de novo".
       retry: (_, _) => null,
     );

@@ -35,11 +35,24 @@ No iOS há os schemes `dev`, `staging` e `prod` com as configurações `Debug-<f
 ```bash
 flutter run --flavor dev -t lib/main_dev.dart
 flutter test integration_test/smoke_test.dart --flavor dev
+flutter test integration_test/login_flow_test.dart --flavor dev   # API simulada
 ```
+
+Os testes de integração também correm sem emulador, no anfitrião:
+`flutter test integration_test/login_flow_test.dart -d flutter-tester`.
+
+## Sessão do cliente (S1-09)
+
+- Primeira abertura: apresentação (`/onboarding`); a flag `onboarding_done` fica em `shared_preferences`.
+- Login por OTP (`/login`, `/login/code`); o refresh token fica em `flutter_secure_storage`
+  (chave `refresh_token`) e o token de acesso só em memória.
+- `AuthInterceptor`: `Accept-Language` em todos os pedidos, `Authorization` fora de
+  `/api/v1/auth/**`, e uma só renovação para vários 401 em simultâneo.
+- Testes de widget com a API simulada por `http_mock_adapter` (`test/support/mock_api.dart`).
 
 ## Estrutura
 
-- `lib/core/` — `Env`, `ApiClient` (Dio, timeout de 15 s), router, tema da marca, `CtaButton`.
+- `lib/core/` — `Env`, `ApiClient` (Dio, timeout de 15 s), sessão (`auth/`), `Problem`, router com redirecções, tema da marca, `CtaButton`.
 - `lib/features/<feature>/` — ecrãs e providers Riverpod de cada funcionalidade.
 - `lib/l10n/` — textos (`app_pt.arb` por defeito, `app_en.arb`).
 - `packages/moseguros_api/` — cliente gerado; **não editar à mão**.
