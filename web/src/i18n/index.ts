@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { configureLanguage } from '../api/http';
 import en from './locales/en.json';
 import ptMZ from './locales/pt-MZ.json';
 
@@ -47,5 +48,8 @@ void i18n.use(initReactI18next).init({
   supportedLngs: languages,
   interpolation: { escapeValue: false },
 });
+
+// Os pedidos à API levam `Accept-Language` com a língua actual.
+configureLanguage(() => i18n.language);
 
 export default i18n;
