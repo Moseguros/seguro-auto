@@ -141,9 +141,7 @@ test('login por telemóvel, completar o perfil e chegar ao início', async ({ pa
   expect(state.otpRequests).toEqual([
     { identifierType: 'MSISDN', identifier: '+258841234567', channel: 'WHATSAPP' },
   ]);
-  await expect(
-    page.getByText('Enviámos um código por WhatsApp para +258*****4567.'),
-  ).toBeVisible();
+  await expect(page.getByText('Enviámos um código por WhatsApp para +258*****4567.')).toBeVisible();
   await expect(page.getByRole('button', { name: /Reenviar código \(\d+ s\)/ })).toBeDisabled();
   await expectNoHorizontalScroll(page);
   await typeCode(page, '123456');
