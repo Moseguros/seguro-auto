@@ -154,7 +154,18 @@
     "OTP_EXPIRED": "The code has expired. Please request a new code.",
     "OTP_INVALID": "Wrong code. Please check it and try again.",
     "OTP_ATTEMPTS_EXCEEDED": "Too many wrong attempts. Please request a new code.",
-    "ACCOUNT_DISABLED": "This account is disabled. Please contact customer support."
+    "ACCOUNT_DISABLED": "This account is disabled. Please contact customer support.",
+    "ORGANIZATION_NOT_FOUND": "Organization not found.",
+    "ORGANIZATION_NOT_ACTIVE": "The organization is suspended.",
+    "NUIT_ALREADY_IN_USE": "There is already an organization with this NUIT.",
+    "SHORT_CODE_ALREADY_IN_USE": "This short code is already used by another insurer.",
+    "OMBUDSMAN_INVALID": "Choose an existing customer ombudsman.",
+    "ROLE_NOT_ALLOWED_FOR_ORGANIZATION": "One of the selected roles cannot be assigned in this organization.",
+    "EMAIL_ALREADY_IN_USE": "This e-mail address already belongs to another user.",
+    "INVITATION_INVALID": "This invitation is no longer valid. Ask the person who invited you for a new one.",
+    "INVITATION_NOT_ACCEPTED": "Set your password first.",
+    "TOTP_INVALID": "Wrong code. Check your authenticator app and try again.",
+    "PASSWORD_TOO_WEAK": "The password does not meet the security rules."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -170,7 +181,17 @@
     "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
     "OUT_OF_RANGE": "Value outside the allowed range.",
     "NOT_BLANK": "This field is required.",
-    "NOT_NULL": "This field is required."
+    "NOT_NULL": "This field is required.",
+    "NOT_ALLOWED": "This field does not apply here.",
+    "REQUIRED": "This field is required.",
+    "INVALID_SORT": "Unsupported sort order.",
+    "TOO_SHORT": "The password must have at least 12 characters.",
+    "TOO_LONG": "The password can have at most 128 characters.",
+    "CONTAINS_EMAIL": "The password must not contain your e-mail address.",
+    "TOO_COMMON": "This password is too common. Choose another one.",
+    "SIZE": "Length outside the allowed limits.",
+    "PATTERN": "Invalid format.",
+    "TYPE_MISMATCH": "Invalid value."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
