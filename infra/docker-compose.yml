@@ -40,6 +40,10 @@ services:
   sms-mock:
     build: mocks/sms-mock
     image: moseguros/sms-mock:local
+    environment:
+      # Recibos de entrega (2 s depois de cada envio) para o backend, com o mesmo segredo.
+      RECEIPT_CALLBACK_URL: http://backend:8080/api/v1/integrations/delivery-receipts
+      RECEIPT_SECRET: ${WEBHOOK_SECRET:-local-webhook-secret}
     ports:
       - "8090:8090"
     healthcheck:
@@ -60,6 +64,10 @@ services:
       DB_OWNER_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
       SPRING_MAIL_HOST: mailpit
       SPRING_MAIL_PORT: "1025"
+      # Canais de envio do OTP (S1-03): simuladores de SMS e WhatsApp; e-mail no Mailpit.
+      MOSEGUROS_NOTIFICATION_SMS_MOCK_URL: http://sms-mock:8090
+      MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL: http://sms-mock:8090
+      MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET: ${WEBHOOK_SECRET:-local-webhook-secret}
       JAVA_OPTS: -XX:MaxRAMPercentage=75
     ports:
       - "8080:8080"
