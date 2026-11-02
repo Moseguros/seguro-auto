@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import type { TFunction } from 'i18next';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useId, useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { listOrganizations } from '../../api/generated';
@@ -260,10 +260,11 @@ function Section({
   testId?: string;
   children: ReactNode;
 }) {
+  const id = useId();
   return (
-    <Card component="section" data-testid={testId}>
+    <Card component="section" aria-labelledby={id} data-testid={testId}>
       <CardContent>
-        <Typography variant="subtitle1" component="h2" sx={{ mb: 2 }}>
+        <Typography id={id} variant="subtitle1" component="h2" sx={{ mb: 2 }}>
           {title}
         </Typography>
         <Grid container spacing={2}>
