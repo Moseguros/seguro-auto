@@ -15,7 +15,7 @@ Actualizado em 02/11/2026.
 | S0-05 Web | em revisão | — |
 | S0-06 Mobile | em revisão | — |
 | S0-07 Infra local (`infra/docker-compose.yml`) | em revisão | — |
-| S0-08 CI | depende de S0-03 a S0-07 | — |
+| S0-08 CI (`.github/workflows`) | em revisão | — |
 | S0-09 Verificação do ambiente (`scripts/doctor.sh`) | em revisão | #5 |
 
 ### Sprint 1 — Identidade, organizações e perfis
