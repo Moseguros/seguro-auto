@@ -140,6 +140,42 @@ public class UserAccount extends BaseEntity {
         this.emailVerified = true;
     }
 
+    /**
+     * Staff que aceitou o convite: grava a palavra-passe (hash Argon2id) e um segredo TOTP novo.
+     * Pode repetir-se até à activação (cada chamada substitui os anteriores).
+     */
+    public void setCredentials(String displayName, String passwordHash, String totpSecret) {
+        if (!isStaff()) {
+            throw new IllegalStateException("Only staff accounts have a password and TOTP");
+        }
+        if (displayName != null && !displayName.isBlank()) {
+            this.displayName = displayName.trim();
+        }
+        this.passwordHash = Objects.requireNonNull(passwordHash, "passwordHash");
+        this.totpSecret = Objects.requireNonNull(totpSecret, "totpSecret");
+        this.lastTotpStep = null;
+    }
+
+    /**
+     * Activação de staff com o primeiro código TOTP certo: {@code ACTIVE}, e-mail verificado (o
+     * link do convite chegou-lhe) e o passo TOTP usado (não pode ser reutilizado).
+     */
+    public void activate(long totpStep) {
+        if (!hasCredentials()) {
+            throw new IllegalStateException("Staff account without credentials cannot be activated");
+        }
+        this.status = AccountStatus.ACTIVE;
+        this.emailVerified = true;
+        this.lastTotpStep = totpStep;
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
+    }
+
+    /** Staff com palavra-passe e segredo TOTP. */
+    public boolean hasCredentials() {
+        return isStaff() && passwordHash != null && totpSecret != null;
+    }
+
     /** Regista um login com sucesso. */
     public void recordLogin(Instant at) {
         this.lastLoginAt = at;

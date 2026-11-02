@@ -80,6 +80,31 @@ public class Invitation extends BaseEntity {
         return invitation;
     }
 
+    /** Estado calculado: revogado, aceite, expirado ou pendente (por esta ordem). */
+    public InvitationStatus status(Instant now) {
+        if (revokedAt != null) {
+            return InvitationStatus.REVOKED;
+        }
+        if (acceptedAt != null) {
+            return InvitationStatus.ACCEPTED;
+        }
+        if (!expiresAt.isAfter(now)) {
+            return InvitationStatus.EXPIRED;
+        }
+        return InvitationStatus.PENDING;
+    }
+
+    /** Ainda pode ser usado pelo convidado ({@code PENDING}). */
+    public boolean isUsable(Instant now) {
+        return status(now) == InvitationStatus.PENDING;
+    }
+
+    /** Reenvio: token novo (o anterior deixa de funcionar) e validade nova. */
+    public void renew(String tokenHash, Instant expiresAt) {
+        this.tokenHash = Objects.requireNonNull(tokenHash, "tokenHash");
+        this.expiresAt = Objects.requireNonNull(expiresAt, "expiresAt");
+    }
+
     public void linkUser(UUID userId) {
         this.userId = userId;
     }
@@ -94,8 +119,9 @@ public class Invitation extends BaseEntity {
         this.acceptedAt = at;
     }
 
-    public void registerFailedActivation() {
-        this.activationAttempts++;
+    /** Mais uma tentativa de activação com código errado; devolve o total. */
+    public int registerFailedActivation() {
+        return ++this.activationAttempts;
     }
 
     public String getEmail() {

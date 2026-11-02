@@ -98,6 +98,20 @@ moseguros:
     email:
       provider: smtp
       from: ${MOSEGUROS_NOTIFICATION_EMAIL_FROM:MoSeguros <nao-responder@moseguros.co.mz>}
+  # Endereço da web (links nos e-mails). Local: Vite em 5173; no compose: nginx em 3000.
+  web:
+    base-url: ${MOSEGUROS_WEB_BASE_URL:http://localhost:5173}
+  # Convites de staff (S1-04): link {web.base-url}/convite/{token}, válido 7 dias; 5 códigos TOTP
+  # errados revogam o convite.
+  invitation:
+    web-base-url: ${moseguros.web.base-url}
+    validity: P7D
+    max-activation-attempts: 5
+  # Primeiro administrador da plataforma (S1-04): com o e-mail definido, o arranque convida-o se
+  # ainda não houver nenhum PLATFORM_ADMIN activo nem um convite pendente para ele.
+  bootstrap:
+    platform-admin-email: ${MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL:}
+    platform-admin-name: ${MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_NAME:Administrador}
   # Cifra de colunas (AES-256-GCM): versão → chave de 32 bytes em Base64. Sem chave a
   # aplicação não arranca. Em staging/produção vem de MOSEGUROS_DATA_KEY_1 (cofre de
   # segredos no Sprint 5).
