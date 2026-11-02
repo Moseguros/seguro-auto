@@ -29,11 +29,13 @@ class Problem {
   /// Lê o erro de um pedido: `NETWORK_ERROR` sem resposta do servidor,
   /// `UNKNOWN` quando a resposta não é um ProblemDetail com `code`.
   factory Problem.from(Object error) {
-    if (error is! DioException)
+    if (error is! DioException) {
       return const Problem(status: 0, code: 'UNKNOWN');
+    }
     final response = error.response;
-    if (response == null)
+    if (response == null) {
       return const Problem(status: 0, code: 'NETWORK_ERROR');
+    }
 
     final body = _asMap(response.data);
     final code = body['code'];
