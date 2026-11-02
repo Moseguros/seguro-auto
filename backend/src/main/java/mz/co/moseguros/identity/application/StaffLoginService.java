@@ -10,6 +10,7 @@ import java.util.OptionalLong;
 import java.util.UUID;
 
 import mz.co.moseguros.identity.TokenPair;
+import mz.co.moseguros.identity.domain.AccountStatus;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.identity.domain.UserAccountRepository;
 import mz.co.moseguros.organization.OrganizationApi;
@@ -84,7 +85,9 @@ public class StaffLoginService {
     public TokenPair login(String email, String password, String totpCode, String deviceInfo) {
         Instant now = clock.instant();
         Optional<UserAccount> found = normalize(email).flatMap(accounts::findStaffByEmailForUpdate)
-                .filter(UserAccount::hasCredentials);
+                .filter(UserAccount::hasCredentials)
+                // convite aceite mas por activar: tem credenciais, mas não pode entrar (S1-05 §1.1)
+                .filter(account -> account.getStatus() != AccountStatus.PENDING_ACTIVATION);
         if (found.isEmpty()) {
             passwordEncoder.matches(password == null ? "" : password, dummyHash);
             log.info("Staff login refused: unknown or not activated account");

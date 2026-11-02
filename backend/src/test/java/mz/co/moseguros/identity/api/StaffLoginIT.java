@@ -231,6 +231,16 @@ class StaffLoginIT {
         login(pending.getEmail(), PASSWORD, "123456").then().statusCode(401)
                 .body("code", equalTo("INVALID_CREDENTIALS"));
 
+        // convite aceite (ou acesso reposto) mas ainda não activado: já tem palavra-passe e TOTP
+        String secret = totp.newSecret();
+        UserAccount accepted = fixtures.activeStaff("Aceite", insurer.getId(), PASSWORD, secret, "UNDERWRITER");
+        fixtures.setAccountStatus(accepted.getId(), "PENDING_ACTIVATION");
+        login(accepted.getEmail(), PASSWORD, code(secret)).then().statusCode(401)
+                .body("code", equalTo("INVALID_CREDENTIALS"));
+        login(accepted.getEmail(), PASSWORD + "x", code(secret)).then().statusCode(401)
+                .body("code", equalTo("INVALID_CREDENTIALS"));
+        assertThat(failedAttempts(accepted)).isZero();
+
         given().contentType(ContentType.JSON).body(Map.of("email", "a@b.co.mz"))
                 .post("/api/v1/auth/login").then().statusCode(400).body("code", equalTo("VALIDATION_ERROR"));
     }
