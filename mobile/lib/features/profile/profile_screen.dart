@@ -52,8 +52,11 @@ class ProfileScreen extends ConsumerWidget {
     final profile = ref.watch(profileControllerProvider);
     final controller = ref.read(profileControllerProvider.notifier);
 
-    final Widget form = switch (profile) {
-      AsyncData(:final value) => ProfileForm(
+    // Durante uma recarga (409) o formulário mantém-se com os dados anteriores.
+    final value = profile.value;
+    final Widget form;
+    if (value != null) {
+      form = ProfileForm(
         key: ValueKey(value.version),
         profile: value,
         onSave: controller.save,
@@ -66,18 +69,26 @@ class ProfileScreen extends ConsumerWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(SnackBar(content: Text(l10n.profileSaved)));
         },
-        onConflict: controller.reload,
-      ),
-      AsyncError(:final error) => MessageBanner(
-        Problem.from(error).message(l10n),
-      ),
-      _ => const Center(
+        onConflict: () {
+          // O formulário é recriado com a versão nova: o aviso fica numa SnackBar.
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(content: Text(l10n.errorConcurrentModification)),
+            );
+          controller.reload();
+        },
+      );
+    } else if (profile.hasError) {
+      form = MessageBanner(Problem.from(profile.error!).message(l10n));
+    } else {
+      form = const Center(
         child: Padding(
           padding: EdgeInsets.all(24),
           child: CircularProgressIndicator(),
         ),
-      ),
-    };
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.profileTitle)),

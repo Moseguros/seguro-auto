@@ -50,7 +50,7 @@ class ProfileForm extends StatefulWidget {
   final SaveProfile onSave;
   final ValueChanged<CustomerProfileResponse> onSaved;
 
-  /// 409 `CONCURRENT_MODIFICATION`: o pai recarrega o perfil.
+  /// 409 `CONCURRENT_MODIFICATION`: o pai avisa e recarrega o perfil.
   final VoidCallback onConflict;
 
   /// Hoje em `Africa/Maputo` (testes).
@@ -211,7 +211,7 @@ class _ProfileFormState extends State<ProfileForm> {
           for (final e in onFields) {
             _serverErrors[e.field] = e.code;
           }
-        } else {
+        } else if (problem.code != 'CONCURRENT_MODIFICATION') {
           _message = problem.message(l10n);
         }
       });
