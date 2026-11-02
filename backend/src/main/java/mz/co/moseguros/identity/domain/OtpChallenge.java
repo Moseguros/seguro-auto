@@ -3,6 +3,7 @@ package mz.co.moseguros.identity.domain;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -87,13 +88,24 @@ public class OtpChallenge extends BaseEntity {
     public static OtpChallenge issue(String identifier, IdentifierType identifierType, Channel channel,
                                      Purpose purpose, UUID userId, String codeHash, Instant expiresAt,
                                      OtpChallenge fallbackFrom) {
+        Objects.requireNonNull(codeHash, "codeHash");
+        return issue(identifier, identifierType, channel, purpose, userId, id -> codeHash, expiresAt, fallbackFrom);
+    }
+
+    /**
+     * Como o anterior, com o hash calculado a partir do id do próprio desafio (o HMAC do código
+     * inclui o {@code challengeId}).
+     */
+    public static OtpChallenge issue(String identifier, IdentifierType identifierType, Channel channel,
+                                     Purpose purpose, UUID userId, Function<UUID, String> codeHashForId,
+                                     Instant expiresAt, OtpChallenge fallbackFrom) {
         OtpChallenge challenge = new OtpChallenge();
         challenge.identifier = Objects.requireNonNull(identifier, "identifier");
         challenge.identifierType = Objects.requireNonNull(identifierType, "identifierType");
         challenge.channel = Objects.requireNonNull(channel, "channel");
         challenge.purpose = Objects.requireNonNull(purpose, "purpose");
         challenge.userId = userId;
-        challenge.codeHash = Objects.requireNonNull(codeHash, "codeHash");
+        challenge.codeHash = Objects.requireNonNull(codeHashForId.apply(challenge.getId()), "codeHash");
         challenge.expiresAt = Objects.requireNonNull(expiresAt, "expiresAt");
         challenge.deliveryStatus = DeliveryStatus.PENDING;
         if (fallbackFrom == null) {
@@ -126,6 +138,20 @@ public class OtpChallenge extends BaseEntity {
 
     public void consume(Instant at) {
         this.consumedAt = at;
+    }
+
+    public boolean isExpired(Instant now) {
+        return !expiresAt.isAfter(now);
+    }
+
+    /** Ainda pode ser validado: não consumido, não substituído e não expirado. */
+    public boolean isActive(Instant now) {
+        return consumedAt == null && supersededAt == null && !isExpired(now);
+    }
+
+    /** É uma alternativa de canal de outro desafio da mesma cadeia. */
+    public boolean isFallback() {
+        return fallbackFromChallengeId != null;
     }
 
     public String getIdentifier() {

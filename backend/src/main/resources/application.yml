@@ -29,6 +29,13 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+  # SMTP do e-mail (OTP): sem spring.mail.host (SPRING_MAIL_HOST) os envios por e-mail falham
+  # (FAILED) mas a aplicação arranca. Timeout de 5 s, como os outros canais.
+  mail:
+    properties:
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
 
 server:
   port: ${SERVER_PORT:8080}
@@ -70,6 +77,27 @@ moseguros:
       staff-refresh-ttl: PT12H          # absoluto: a sessão de staff acaba 12 h depois do login
       key-id: ${MOSEGUROS_JWT_KEY_ID:dev}
       private-key: ${MOSEGUROS_JWT_PRIVATE_KEY:}
+    # OTP do cliente (S1-03). Sem pepper (MOSEGUROS_OTP_PEPPER) só os perfis local e test
+    # arrancam. O debug-header (código no cabeçalho X-Debug-Otp) só se liga no perfil local e
+    # o arranque falha se estiver ligado com o perfil prod.
+    otp:
+      pepper: ${MOSEGUROS_OTP_PEPPER:}
+      debug-header: false
+  # Canais de envio (S1-03). Só há simuladores de SMS e WhatsApp (infra/mocks/sms-mock); os
+  # fornecedores reais entram numa ficha própria. Recibos de entrega exigem X-Webhook-Secret
+  # igual a webhook-secret (vazio = todos recusados).
+  notification:
+    webhook-secret: ${MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET:}
+    timeout: PT5S
+    sms:
+      provider: mock
+      mock-url: ${MOSEGUROS_NOTIFICATION_SMS_MOCK_URL:http://localhost:8090}
+    whatsapp:
+      provider: mock
+      mock-url: ${MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL:http://localhost:8090}
+    email:
+      provider: smtp
+      from: ${MOSEGUROS_NOTIFICATION_EMAIL_FROM:MoSeguros <nao-responder@moseguros.co.mz>}
   # Cifra de colunas (AES-256-GCM): versão → chave de 32 bytes em Base64. Sem chave a
   # aplicação não arranca. Em staging/produção vem de MOSEGUROS_DATA_KEY_1 (cofre de
   # segredos no Sprint 5).

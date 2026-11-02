@@ -124,6 +124,31 @@ public class UserAccount extends BaseEntity {
         return account;
     }
 
+    /** O telemóvel foi confirmado por um código OTP. */
+    public void markMsisdnVerified() {
+        if (msisdn == null) {
+            throw new IllegalStateException("Account has no msisdn");
+        }
+        this.msisdnVerified = true;
+    }
+
+    /** O e-mail foi confirmado por um código OTP. */
+    public void markEmailVerified() {
+        if (email == null) {
+            throw new IllegalStateException("Account has no email");
+        }
+        this.emailVerified = true;
+    }
+
+    /** Regista um login com sucesso. */
+    public void recordLogin(Instant at) {
+        this.lastLoginAt = at;
+    }
+
+    public boolean isDisabled() {
+        return status == AccountStatus.DISABLED;
+    }
+
     public boolean isCustomer() {
         return type == AccountType.CUSTOMER;
     }
