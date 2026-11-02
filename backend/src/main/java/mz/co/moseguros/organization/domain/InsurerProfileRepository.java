@@ -13,4 +13,6 @@ public interface InsurerProfileRepository extends JpaRepository<InsurerProfile, 
     Optional<InsurerProfile> findByOrganizationId(UUID organizationId);
 
     boolean existsByShortCode(String shortCode);
+
+    boolean existsByShortCodeAndOrganizationIdNot(String shortCode, UUID organizationId);
 }

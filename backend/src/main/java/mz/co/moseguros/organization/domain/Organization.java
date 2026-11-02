@@ -94,6 +94,30 @@ public class Organization extends BaseEntity {
         return org;
     }
 
+    /**
+     * Altera os dados da organização (o tipo não muda), com as mesmas regras de
+     * {@link #create}.
+     */
+    public void update(String legalName, String tradeName, Nuit nuit, String licenseNumber, String contactEmail,
+                       String contactPhone, String address, Province province) {
+        String license = blankToNull(licenseNumber);
+        if (type.requiresLicense() && license == null) {
+            throw DomainException.badRequest(ErrorCodes.LICENSE_NUMBER_REQUIRED,
+                    "License number is required for organizations of type " + type);
+        }
+        String legal = requireText(legalName, "legalName");
+        String email = Emails.normalize(contactEmail);
+        String phone = normalizePhone(contactPhone);
+        this.nuit = Objects.requireNonNull(nuit, "nuit");
+        this.licenseNumber = license;
+        this.legalName = legal;
+        this.tradeName = blankToNull(tradeName);
+        this.contactEmail = email;
+        this.contactPhone = phone;
+        this.address = blankToNull(address);
+        this.province = province;
+    }
+
     /** {@code ACTIVE → SUSPENDED}; repetir dá {@code INVALID_STATE_TRANSITION} (409). */
     public void suspend() {
         transition(OrganizationStatus.ACTIVE, OrganizationStatus.SUSPENDED);

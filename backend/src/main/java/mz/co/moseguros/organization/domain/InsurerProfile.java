@@ -60,6 +60,15 @@ public class InsurerProfile extends BaseEntity {
         return profile;
     }
 
+    /** Altera o código curto, o e-mail de reclamações e o provedor do cliente. */
+    public void update(String shortCode, String complaintsEmail, Organization ombudsman) {
+        String code = validShortCode(shortCode);
+        String email = Emails.normalize(complaintsEmail);
+        setOmbudsman(ombudsman);
+        this.shortCode = code;
+        this.complaintsEmail = email;
+    }
+
     public void setOmbudsman(Organization ombudsman) {
         if (ombudsman != null && ombudsman.getType() != OrganizationType.OMBUDSMAN) {
             throw new IllegalArgumentException("Ombudsman must be an OMBUDSMAN organization");
