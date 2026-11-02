@@ -17,7 +17,10 @@ import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/accept_invitation_request.dart';
 import 'package:moseguros_api/src/model/activate_invitation_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
+import 'package:moseguros_api/src/model/contact_response.dart';
+import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
+import 'package:moseguros_api/src/model/customer_profile_response.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
 import 'package:moseguros_api/src/model/forgot_password_request.dart';
@@ -51,12 +54,16 @@ import 'package:moseguros_api/src/model/request_otp_request.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
 import 'package:moseguros_api/src/model/staff_login_request.dart';
 import 'package:moseguros_api/src/model/staff_user_response.dart';
+import 'package:moseguros_api/src/model/start_contact_verification_request.dart';
 import 'package:moseguros_api/src/model/suspend_organization_request.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/totp_setup_response.dart';
+import 'package:moseguros_api/src/model/update_me_request.dart';
+import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
 import 'package:moseguros_api/src/model/update_otp_settings_request.dart';
 import 'package:moseguros_api/src/model/update_user_roles_request.dart';
+import 'package:moseguros_api/src/model/verify_contact_request.dart';
 import 'package:moseguros_api/src/model/verify_otp_request.dart';
 import 'package:moseguros_api/src/model/version_response.dart';
 
@@ -66,7 +73,10 @@ part 'serializers.g.dart';
   AcceptInvitationRequest,
   ActivateInvitationRequest,
   AssignableRolesResponse,
+  ContactResponse,
+  ContactsResponse,
   CreateOrganizationRequest,
+  CustomerProfileResponse,
   DeliveryReceiptRequest,
   FieldError,
   ForgotPasswordRequest,
@@ -100,12 +110,16 @@ part 'serializers.g.dart';
   ResetPasswordRequest,
   StaffLoginRequest,
   StaffUserResponse,
+  StartContactVerificationRequest,
   SuspendOrganizationRequest,
   TokenResponse,
   TotpSetupResponse,
+  UpdateMeRequest,
+  UpdateMyProfileRequest,
   UpdateOrganizationRequest,
   UpdateOtpSettingsRequest,
   UpdateUserRolesRequest,
+  VerifyContactRequest,
   VerifyOtpRequest,
   VersionResponse,
 ])

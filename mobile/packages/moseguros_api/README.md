@@ -74,6 +74,7 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**getInvitationByToken**](doc/IdentityApi.md#getinvitationbytoken) | **GET** /api/v1/auth/invitations/{token} | Consulta um convite pelo token
 [*IdentityApi*](doc/IdentityApi.md) | [**getJwks**](doc/IdentityApi.md#getjwks) | **GET** /.well-known/jwks.json | Chaves públicas dos tokens (JWKS)
 [*IdentityApi*](doc/IdentityApi.md) | [**getMe**](doc/IdentityApi.md#getme) | **GET** /api/v1/me | Utilizador autenticado
+[*IdentityApi*](doc/IdentityApi.md) | [**getMyProfile**](doc/IdentityApi.md#getmyprofile) | **GET** /api/v1/me/profile | Perfil do cliente
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpChallenge**](doc/IdentityApi.md#getotpchallenge) | **GET** /api/v1/auth/otp/challenges/{challengeId} | Estado do envio do código
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpOptions**](doc/IdentityApi.md#getotpoptions) | **GET** /api/v1/auth/otp/options | Opções do login por código
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpSettings**](doc/IdentityApi.md#getotpsettings) | **GET** /api/v1/admin/otp-settings | Definições do OTP
@@ -81,6 +82,7 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**inviteOrganizationUser**](doc/IdentityApi.md#inviteorganizationuser) | **POST** /api/v1/organizations/{orgId}/users | Convida staff de uma organização
 [*IdentityApi*](doc/IdentityApi.md) | [**invitePlatformUser**](doc/IdentityApi.md#inviteplatformuser) | **POST** /api/v1/admin/users | Convida staff da plataforma
 [*IdentityApi*](doc/IdentityApi.md) | [**listAssignableRoles**](doc/IdentityApi.md#listassignableroles) | **GET** /api/v1/roles | Perfis atribuíveis
+[*IdentityApi*](doc/IdentityApi.md) | [**listMyContacts**](doc/IdentityApi.md#listmycontacts) | **GET** /api/v1/me/contacts | Contactos do cliente
 [*IdentityApi*](doc/IdentityApi.md) | [**listOrganizationInvitations**](doc/IdentityApi.md#listorganizationinvitations) | **GET** /api/v1/organizations/{orgId}/invitations | Lista os convites de uma organização
 [*IdentityApi*](doc/IdentityApi.md) | [**listOrganizationUsers**](doc/IdentityApi.md#listorganizationusers) | **GET** /api/v1/organizations/{orgId}/users | Lista o staff de uma organização
 [*IdentityApi*](doc/IdentityApi.md) | [**listPlatformInvitations**](doc/IdentityApi.md#listplatforminvitations) | **GET** /api/v1/admin/invitations | Lista os convites da plataforma
@@ -88,15 +90,20 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**loginStaff**](doc/IdentityApi.md#loginstaff) | **POST** /api/v1/auth/login | Login de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**logoutSession**](doc/IdentityApi.md#logoutsession) | **POST** /api/v1/auth/logout | Termina a sessão
 [*IdentityApi*](doc/IdentityApi.md) | [**refreshToken**](doc/IdentityApi.md#refreshtoken) | **POST** /api/v1/auth/refresh | Renova a sessão
+[*IdentityApi*](doc/IdentityApi.md) | [**removeMyContact**](doc/IdentityApi.md#removemycontact) | **DELETE** /api/v1/me/contacts/{type} | Remove um contacto
 [*IdentityApi*](doc/IdentityApi.md) | [**requestOtp**](doc/IdentityApi.md#requestotp) | **POST** /api/v1/auth/otp/request | Pede um código
 [*IdentityApi*](doc/IdentityApi.md) | [**resendInvitation**](doc/IdentityApi.md#resendinvitation) | **POST** /api/v1/invitations/{id}/resend | Reenvia um convite
 [*IdentityApi*](doc/IdentityApi.md) | [**resetPassword**](doc/IdentityApi.md#resetpassword) | **POST** /api/v1/auth/password/reset | Define a palavra-passe nova
 [*IdentityApi*](doc/IdentityApi.md) | [**resetUserAccess**](doc/IdentityApi.md#resetuseraccess) | **POST** /api/v1/users/{id}/reset-access | Repõe o acesso de um utilizador de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**revokeInvitation**](doc/IdentityApi.md#revokeinvitation) | **POST** /api/v1/invitations/{id}/revoke | Revoga um convite
+[*IdentityApi*](doc/IdentityApi.md) | [**startContactVerification**](doc/IdentityApi.md#startcontactverification) | **POST** /api/v1/me/contacts | Envia um código para um contacto novo
 [*IdentityApi*](doc/IdentityApi.md) | [**testOtpDelivery**](doc/IdentityApi.md#testotpdelivery) | **POST** /api/v1/admin/otp-settings/test | Envia um código de teste
 [*IdentityApi*](doc/IdentityApi.md) | [**unlockUser**](doc/IdentityApi.md#unlockuser) | **POST** /api/v1/users/{id}/unlock | Desbloqueia um utilizador de staff
+[*IdentityApi*](doc/IdentityApi.md) | [**updateMe**](doc/IdentityApi.md#updateme) | **PUT** /api/v1/me | Altera as preferências da conta
+[*IdentityApi*](doc/IdentityApi.md) | [**updateMyProfile**](doc/IdentityApi.md#updatemyprofile) | **PUT** /api/v1/me/profile | Altera o perfil do cliente
 [*IdentityApi*](doc/IdentityApi.md) | [**updateOtpSettings**](doc/IdentityApi.md#updateotpsettings) | **PUT** /api/v1/admin/otp-settings | Altera as definições do OTP
 [*IdentityApi*](doc/IdentityApi.md) | [**updateUserRoles**](doc/IdentityApi.md#updateuserroles) | **PUT** /api/v1/users/{id}/roles | Altera os perfis de um utilizador de staff
+[*IdentityApi*](doc/IdentityApi.md) | [**verifyContact**](doc/IdentityApi.md#verifycontact) | **POST** /api/v1/me/contacts/verify | Confirma o código e grava o contacto
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyOtp**](doc/IdentityApi.md#verifyotp) | **POST** /api/v1/auth/otp/verify | Valida o código e entra
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
 [*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
@@ -113,7 +120,10 @@ Class | Method | HTTP request | Description
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
+ - [ContactResponse](doc/ContactResponse.md)
+ - [ContactsResponse](doc/ContactsResponse.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
+ - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
@@ -147,12 +157,16 @@ Class | Method | HTTP request | Description
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
+ - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
  - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
  - [TokenResponse](doc/TokenResponse.md)
  - [TotpSetupResponse](doc/TotpSetupResponse.md)
+ - [UpdateMeRequest](doc/UpdateMeRequest.md)
+ - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
+ - [VerifyContactRequest](doc/VerifyContactRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)
  - [VersionResponse](doc/VersionResponse.md)
 
