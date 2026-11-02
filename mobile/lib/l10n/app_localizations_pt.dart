@@ -104,4 +104,105 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get ctaRenew => 'Renovar seguro';
+
+  @override
+  String get errorInvalidEmail => 'Endereço de e-mail inválido.';
+
+  @override
+  String get errorInvalidPhone => 'Número de telefone inválido.';
+
+  @override
+  String get errorTenantRequired =>
+      'Erro interno do servidor. Tente mais tarde.';
+
+  @override
+  String get errorDecryptionFailed =>
+      'Erro interno do servidor. Tente mais tarde.';
+
+  @override
+  String get errorInvalidStateTransition =>
+      'Esta operação não é possível no estado actual.';
+
+  @override
+  String get errorLicenseNumberRequired =>
+      'O número de autorização da ASFPM é obrigatório para seguradoras, corretores e agentes.';
+
+  @override
+  String get errorChannelsEmpty => 'Escolha pelo menos um canal.';
+
+  @override
+  String get errorChannelsDuplicated => 'Cada canal só pode aparecer uma vez.';
+
+  @override
+  String get errorDefaultChannelNotEnabled =>
+      'O canal por defeito tem de estar activo.';
+
+  @override
+  String get errorFallbackOrderMismatch =>
+      'A ordem alternativa tem de ter exactamente os canais activos.';
+
+  @override
+  String get errorOutOfRange => 'Valor fora dos limites permitidos.';
+
+  @override
+  String get validationInvalidEmail =>
+      'E-mail inválido (ex.: nome@exemplo.co.mz).';
+
+  @override
+  String get validationInvalidPhone => 'Telefone inválido (9 a 15 dígitos).';
+
+  @override
+  String get validationLicenseNumberRequired =>
+      'Indique o número de autorização da ASFPM.';
+
+  @override
+  String get validationChannelsEmpty => 'Escolha pelo menos um canal.';
+
+  @override
+  String get validationChannelsDuplicated =>
+      'Cada canal só pode aparecer uma vez.';
+
+  @override
+  String get validationDefaultChannelNotEnabled =>
+      'O canal por defeito tem de estar activo.';
+
+  @override
+  String get validationFallbackOrderMismatch =>
+      'A ordem alternativa tem de ter exactamente os canais activos.';
+
+  @override
+  String get validationOutOfRange => 'Valor fora dos limites permitidos.';
+
+  @override
+  String get provinceMaputoCity => 'Maputo Cidade';
+
+  @override
+  String get provinceMaputo => 'Maputo Província';
+
+  @override
+  String get provinceGaza => 'Gaza';
+
+  @override
+  String get provinceInhambane => 'Inhambane';
+
+  @override
+  String get provinceSofala => 'Sofala';
+
+  @override
+  String get provinceManica => 'Manica';
+
+  @override
+  String get provinceTete => 'Tete';
+
+  @override
+  String get provinceZambezia => 'Zambézia';
+
+  @override
+  String get provinceNampula => 'Nampula';
+
+  @override
+  String get provinceCaboDelgado => 'Cabo Delgado';
+
+  @override
+  String get provinceNiassa => 'Niassa';
 }

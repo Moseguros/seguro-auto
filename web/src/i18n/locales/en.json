@@ -128,12 +128,44 @@
     "INVALID_CURRENCY": "Invalid currency.",
     "INVALID_MSISDN": "Invalid mobile number.",
     "INVALID_NUIT": "Invalid NUIT.",
-    "INVALID_PLATE": "Invalid number plate."
+    "INVALID_PLATE": "Invalid number plate.",
+    "INVALID_EMAIL": "Invalid e-mail address.",
+    "INVALID_PHONE": "Invalid phone number.",
+    "TENANT_REQUIRED": "Internal server error. Please try again later.",
+    "DECRYPTION_FAILED": "Internal server error. Please try again later.",
+    "INVALID_STATE_TRANSITION": "This operation is not possible in the current state.",
+    "LICENSE_NUMBER_REQUIRED": "The ASFPM licence number is required for insurers, brokers and agents.",
+    "CHANNELS_EMPTY": "Choose at least one channel.",
+    "CHANNELS_DUPLICATED": "Each channel can only appear once.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
+    "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
+    "OUT_OF_RANGE": "Value outside the allowed range."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
     "INVALID_MSISDN": "Invalid mobile number (e.g. +258 84 123 4567).",
     "INVALID_NUIT": "The NUIT has 9 digits.",
-    "INVALID_PLATE": "Invalid number plate."
+    "INVALID_PLATE": "Invalid number plate.",
+    "INVALID_EMAIL": "Invalid e-mail (e.g. name@example.co.mz).",
+    "INVALID_PHONE": "Invalid phone number (9 to 15 digits).",
+    "LICENSE_NUMBER_REQUIRED": "Enter the ASFPM licence number.",
+    "CHANNELS_EMPTY": "Choose at least one channel.",
+    "CHANNELS_DUPLICATED": "Each channel can only appear once.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
+    "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
+    "OUT_OF_RANGE": "Value outside the allowed range."
+  },
+  "province": {
+    "MAPUTO_CITY": "Maputo City",
+    "MAPUTO": "Maputo Province",
+    "GAZA": "Gaza",
+    "INHAMBANE": "Inhambane",
+    "SOFALA": "Sofala",
+    "MANICA": "Manica",
+    "TETE": "Tete",
+    "ZAMBEZIA": "Zambezia",
+    "NAMPULA": "Nampula",
+    "CABO_DELGADO": "Cabo Delgado",
+    "NIASSA": "Niassa"
   }
 }

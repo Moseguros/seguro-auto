@@ -7,6 +7,7 @@ import 'package:moseguros/app.dart';
 import 'package:moseguros/core/api/api_client.dart';
 import 'package:moseguros/core/api/api_error.dart';
 import 'package:moseguros/core/config/env.dart';
+import 'package:moseguros/core/l10n/province_name.dart';
 import 'package:moseguros/core/router.dart';
 import 'package:moseguros/core/theme.dart';
 import 'package:moseguros/core/widgets/cta_button.dart';
@@ -116,6 +117,31 @@ void main() {
         'INVALID_MSISDN',
         'INVALID_NUIT',
         'INVALID_PLATE',
+        'INVALID_EMAIL',
+        'INVALID_PHONE',
+        'TENANT_REQUIRED',
+        'DECRYPTION_FAILED',
+        'INVALID_STATE_TRANSITION',
+        'LICENSE_NUMBER_REQUIRED',
+        'CHANNELS_EMPTY',
+        'CHANNELS_DUPLICATED',
+        'DEFAULT_CHANNEL_NOT_ENABLED',
+        'FALLBACK_ORDER_MISMATCH',
+        'OUT_OF_RANGE',
+      ];
+      const fieldCodes = [
+        'INVALID_CURRENCY',
+        'INVALID_MSISDN',
+        'INVALID_NUIT',
+        'INVALID_PLATE',
+        'INVALID_EMAIL',
+        'INVALID_PHONE',
+        'LICENSE_NUMBER_REQUIRED',
+        'CHANNELS_EMPTY',
+        'CHANNELS_DUPLICATED',
+        'DEFAULT_CHANNEL_NOT_ENABLED',
+        'FALLBACK_ORDER_MISMATCH',
+        'OUT_OF_RANGE',
       ];
       for (final locale in AppLocalizations.supportedLocales) {
         final l10n = await AppLocalizations.delegate.load(locale);
@@ -126,7 +152,14 @@ void main() {
             reason: '$locale $code',
           );
         }
-        for (final code in codes.where((c) => c.startsWith('INVALID_'))) {
+        for (final code in provinceCodes) {
+          expect(
+            provinceName(l10n, code),
+            isNot(code),
+            reason: '$locale $code',
+          );
+        }
+        for (final code in fieldCodes) {
           expect(
             fieldErrorMessage(l10n, code),
             isNot(l10n.errorUnknown),

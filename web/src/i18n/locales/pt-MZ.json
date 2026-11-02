@@ -128,12 +128,44 @@
     "INVALID_CURRENCY": "Moeda inválida.",
     "INVALID_MSISDN": "Número de telemóvel inválido.",
     "INVALID_NUIT": "NUIT inválido.",
-    "INVALID_PLATE": "Matrícula inválida."
+    "INVALID_PLATE": "Matrícula inválida.",
+    "INVALID_EMAIL": "Endereço de e-mail inválido.",
+    "INVALID_PHONE": "Número de telefone inválido.",
+    "TENANT_REQUIRED": "Erro interno do servidor. Tente mais tarde.",
+    "DECRYPTION_FAILED": "Erro interno do servidor. Tente mais tarde.",
+    "INVALID_STATE_TRANSITION": "Esta operação não é possível no estado actual.",
+    "LICENSE_NUMBER_REQUIRED": "O número de autorização da ASFPM é obrigatório para seguradoras, corretores e agentes.",
+    "CHANNELS_EMPTY": "Escolha pelo menos um canal.",
+    "CHANNELS_DUPLICATED": "Cada canal só pode aparecer uma vez.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
+    "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
+    "OUT_OF_RANGE": "Valor fora dos limites permitidos."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
     "INVALID_MSISDN": "Número de telemóvel inválido (ex.: +258 84 123 4567).",
     "INVALID_NUIT": "O NUIT tem 9 dígitos.",
-    "INVALID_PLATE": "Matrícula inválida."
+    "INVALID_PLATE": "Matrícula inválida.",
+    "INVALID_EMAIL": "E-mail inválido (ex.: nome@exemplo.co.mz).",
+    "INVALID_PHONE": "Telefone inválido (9 a 15 dígitos).",
+    "LICENSE_NUMBER_REQUIRED": "Indique o número de autorização da ASFPM.",
+    "CHANNELS_EMPTY": "Escolha pelo menos um canal.",
+    "CHANNELS_DUPLICATED": "Cada canal só pode aparecer uma vez.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
+    "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
+    "OUT_OF_RANGE": "Valor fora dos limites permitidos."
+  },
+  "province": {
+    "MAPUTO_CITY": "Maputo Cidade",
+    "MAPUTO": "Maputo Província",
+    "GAZA": "Gaza",
+    "INHAMBANE": "Inhambane",
+    "SOFALA": "Sofala",
+    "MANICA": "Manica",
+    "TETE": "Tete",
+    "ZAMBEZIA": "Zambézia",
+    "NAMPULA": "Nampula",
+    "CABO_DELGADO": "Cabo Delgado",
+    "NIASSA": "Niassa"
   }
 }
