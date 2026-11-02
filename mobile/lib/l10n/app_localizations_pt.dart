@@ -238,6 +238,82 @@ class AppLocalizationsPt extends AppLocalizations {
       'Esta conta está desactivada. Contacte o apoio ao cliente.';
 
   @override
+  String get errorOrganizationNotFound => 'Organização não encontrada.';
+
+  @override
+  String get errorOrganizationNotActive => 'A organização está suspensa.';
+
+  @override
+  String get errorNuitAlreadyInUse =>
+      'Já existe uma organização com este NUIT.';
+
+  @override
+  String get errorShortCodeAlreadyInUse =>
+      'Este código curto já é usado por outra seguradora.';
+
+  @override
+  String get errorOmbudsmanInvalid =>
+      'Escolha um provedor do cliente existente.';
+
+  @override
+  String get errorRoleNotAllowedForOrganization =>
+      'Um dos perfis escolhidos não pode ser atribuído nesta organização.';
+
+  @override
+  String get errorEmailAlreadyInUse =>
+      'Este e-mail já pertence a outro utilizador.';
+
+  @override
+  String get errorInvitationInvalid =>
+      'Este convite já não é válido. Peça um novo convite a quem o convidou.';
+
+  @override
+  String get errorInvitationNotAccepted =>
+      'Defina primeiro a sua palavra-passe.';
+
+  @override
+  String get errorTotpInvalid =>
+      'Código errado. Verifique a aplicação de autenticação e tente de novo.';
+
+  @override
+  String get errorPasswordTooWeak =>
+      'A palavra-passe não cumpre as regras de segurança.';
+
+  @override
+  String get validationNotAllowed => 'Este campo não se aplica neste caso.';
+
+  @override
+  String get validationRequired => 'Campo obrigatório.';
+
+  @override
+  String get validationInvalidSort => 'Ordenação não suportada.';
+
+  @override
+  String get validationTooShort =>
+      'A palavra-passe tem de ter pelo menos 12 caracteres.';
+
+  @override
+  String get validationTooLong =>
+      'A palavra-passe pode ter no máximo 128 caracteres.';
+
+  @override
+  String get validationContainsEmail =>
+      'A palavra-passe não pode conter o seu e-mail.';
+
+  @override
+  String get validationTooCommon =>
+      'Esta palavra-passe é demasiado comum. Escolha outra.';
+
+  @override
+  String get validationSize => 'Comprimento fora dos limites permitidos.';
+
+  @override
+  String get validationPattern => 'Formato inválido.';
+
+  @override
+  String get validationTypeMismatch => 'Valor inválido.';
+
+  @override
   String get provinceMaputoCity => 'Maputo Cidade';
 
   @override

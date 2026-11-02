@@ -500,6 +500,132 @@ abstract class AppLocalizations {
   /// **'Esta conta está desactivada. Contacte o apoio ao cliente.'**
   String get errorAccountDisabled;
 
+  /// No description provided for @errorOrganizationNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Organização não encontrada.'**
+  String get errorOrganizationNotFound;
+
+  /// No description provided for @errorOrganizationNotActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'A organização está suspensa.'**
+  String get errorOrganizationNotActive;
+
+  /// No description provided for @errorNuitAlreadyInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe uma organização com este NUIT.'**
+  String get errorNuitAlreadyInUse;
+
+  /// No description provided for @errorShortCodeAlreadyInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este código curto já é usado por outra seguradora.'**
+  String get errorShortCodeAlreadyInUse;
+
+  /// No description provided for @errorOmbudsmanInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha um provedor do cliente existente.'**
+  String get errorOmbudsmanInvalid;
+
+  /// No description provided for @errorRoleNotAllowedForOrganization.
+  ///
+  /// In pt, this message translates to:
+  /// **'Um dos perfis escolhidos não pode ser atribuído nesta organização.'**
+  String get errorRoleNotAllowedForOrganization;
+
+  /// No description provided for @errorEmailAlreadyInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este e-mail já pertence a outro utilizador.'**
+  String get errorEmailAlreadyInUse;
+
+  /// No description provided for @errorInvitationInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este convite já não é válido. Peça um novo convite a quem o convidou.'**
+  String get errorInvitationInvalid;
+
+  /// No description provided for @errorInvitationNotAccepted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Defina primeiro a sua palavra-passe.'**
+  String get errorInvitationNotAccepted;
+
+  /// No description provided for @errorTotpInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Código errado. Verifique a aplicação de autenticação e tente de novo.'**
+  String get errorTotpInvalid;
+
+  /// No description provided for @errorPasswordTooWeak.
+  ///
+  /// In pt, this message translates to:
+  /// **'A palavra-passe não cumpre as regras de segurança.'**
+  String get errorPasswordTooWeak;
+
+  /// No description provided for @validationNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este campo não se aplica neste caso.'**
+  String get validationNotAllowed;
+
+  /// No description provided for @validationRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Campo obrigatório.'**
+  String get validationRequired;
+
+  /// No description provided for @validationInvalidSort.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ordenação não suportada.'**
+  String get validationInvalidSort;
+
+  /// No description provided for @validationTooShort.
+  ///
+  /// In pt, this message translates to:
+  /// **'A palavra-passe tem de ter pelo menos 12 caracteres.'**
+  String get validationTooShort;
+
+  /// No description provided for @validationTooLong.
+  ///
+  /// In pt, this message translates to:
+  /// **'A palavra-passe pode ter no máximo 128 caracteres.'**
+  String get validationTooLong;
+
+  /// No description provided for @validationContainsEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'A palavra-passe não pode conter o seu e-mail.'**
+  String get validationContainsEmail;
+
+  /// No description provided for @validationTooCommon.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta palavra-passe é demasiado comum. Escolha outra.'**
+  String get validationTooCommon;
+
+  /// No description provided for @validationSize.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comprimento fora dos limites permitidos.'**
+  String get validationSize;
+
+  /// No description provided for @validationPattern.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato inválido.'**
+  String get validationPattern;
+
+  /// No description provided for @validationTypeMismatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor inválido.'**
+  String get validationTypeMismatch;
+
   /// province.MAPUTO_CITY (Province no backend).
   ///
   /// In pt, this message translates to:
