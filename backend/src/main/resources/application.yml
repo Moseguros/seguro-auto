@@ -47,3 +47,17 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     enabled: true
+
+moseguros:
+  plates:
+    # Formatos de matrícula aceites, testados por ordem. O pattern aplica-se ao valor
+    # normalizado (maiúsculas, sem espaços nem hífens); o display-template usa {grupo}.
+    formats:
+      - code: STANDARD
+        label: Actual (ABC-123-MC)
+        pattern: '^(?<l>[A-Z]{3})(?<n>\d{3})(?<p>[A-Z]{2})$'
+        display-template: '{l}-{n}-{p}'
+      - code: LEGACY
+        label: Antigo (ABC-12-34)
+        pattern: '^(?<l>[A-Z]{3})(?<a>\d{2})(?<b>\d{2})$'
+        display-template: '{l}-{a}-{b}'
