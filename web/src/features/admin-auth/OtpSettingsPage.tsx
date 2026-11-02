@@ -162,7 +162,7 @@ function OtpSettingsEditor({
   return (
     <Stack component="form" spacing={3} onSubmit={submit} noValidate>
       {readOnly && <Alert severity="info">{t('otpSettings.readOnly')}</Alert>}
-      <Card variant="outlined">
+      <Card>
         <CardContent>
           <Stack spacing={3}>
             <FormControl component="fieldset" error={!!channelError} disabled={readOnly}>
@@ -174,6 +174,7 @@ function OtpSettingsEditor({
                     label={t(`channel.${channel}`)}
                     control={
                       <Switch
+                        inputProps={{ role: 'switch' }}
                         name={`channel-${channel}`}
                         checked={form.enabledChannels.includes(channel)}
                         onChange={(event) =>
@@ -218,6 +219,7 @@ function OtpSettingsEditor({
               label={t('otpSettings.customerCanChoose')}
               control={
                 <Switch
+                  inputProps={{ role: 'switch' }}
                   name="customerCanChoose"
                   checked={form.customerCanChoose}
                   onChange={(event) => update({ ...form, customerCanChoose: event.target.checked })}
@@ -253,7 +255,7 @@ function OtpSettingsEditor({
         </CardContent>
       </Card>
 
-      <Card variant="outlined">
+      <Card>
         <CardContent>
           <Typography variant="subtitle1" component="h2" sx={{ mb: 2 }}>
             {t('otpSettings.parameters')}

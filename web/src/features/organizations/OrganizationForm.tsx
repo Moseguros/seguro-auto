@@ -261,7 +261,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <Card variant="outlined" component="section" data-testid={testId}>
+    <Card component="section" data-testid={testId}>
       <CardContent>
         <Typography variant="subtitle1" component="h2" sx={{ mb: 2 }}>
           {title}
