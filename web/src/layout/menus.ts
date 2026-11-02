@@ -42,7 +42,13 @@ export const areas = [
 export type Area = (typeof areas)[number];
 
 /** O texto de cada item vem da chave i18n `menu.<área>.<key>`. */
-export type MenuItem = { key: string; path: string; icon: SvgIconComponent };
+export type MenuItem = {
+  key: string;
+  path: string;
+  icon: SvgIconComponent;
+  /** Sem esta permissão (`me.permissions`) o item não aparece. */
+  permission?: string;
+};
 
 export const menus: Record<Area, MenuItem[]> = {
   cliente: [
@@ -57,9 +63,14 @@ export const menus: Record<Area, MenuItem[]> = {
   ],
   admin: [
     { key: 'home', path: '/admin', icon: Dashboard },
-    { key: 'organizations', path: '/admin/organizacoes', icon: Business },
-    { key: 'users', path: '/admin/utilizadores', icon: Group },
-    { key: 'auth', path: '/admin/autenticacao', icon: Key },
+    {
+      key: 'organizations',
+      path: '/admin/organizacoes',
+      icon: Business,
+      permission: 'organization:read',
+    },
+    { key: 'users', path: '/admin/utilizadores', icon: Group, permission: 'org-user:read' },
+    { key: 'auth', path: '/admin/autenticacao', icon: Key, permission: 'otp-settings:read' },
     { key: 'references', path: '/admin/referencias', icon: ListAlt },
     { key: 'audit', path: '/admin/auditoria', icon: History },
   ],
@@ -73,7 +84,7 @@ export const menus: Record<Area, MenuItem[]> = {
     { key: 'claims', path: '/seguradora/sinistros', icon: CarCrash },
     { key: 'complaints', path: '/seguradora/reclamacoes', icon: ReportProblem },
     { key: 'reports', path: '/seguradora/relatorios', icon: BarChart },
-    { key: 'users', path: '/seguradora/utilizadores', icon: Group },
+    { key: 'users', path: '/seguradora/utilizadores', icon: Group, permission: 'org-user:read' },
     { key: 'settings', path: '/seguradora/configuracao', icon: Settings },
   ],
   mediador: [
@@ -82,40 +93,40 @@ export const menus: Record<Area, MenuItem[]> = {
     { key: 'quotes', path: '/mediador/cotacoes', icon: Calculate },
     { key: 'policies', path: '/mediador/apolices', icon: Description },
     { key: 'reports', path: '/mediador/relatorios', icon: BarChart },
-    { key: 'users', path: '/mediador/utilizadores', icon: Group },
+    { key: 'users', path: '/mediador/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
   perito: [
     { key: 'home', path: '/perito', icon: Dashboard },
     { key: 'assessments', path: '/perito/peritagens', icon: FactCheck },
-    { key: 'users', path: '/perito/utilizadores', icon: Group },
+    { key: 'users', path: '/perito/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
   oficina: [
     { key: 'home', path: '/oficina', icon: Dashboard },
     { key: 'repairs', path: '/oficina/reparacoes', icon: Build },
     { key: 'estimates', path: '/oficina/orcamentos', icon: RequestQuote },
-    { key: 'users', path: '/oficina/utilizadores', icon: Group },
+    { key: 'users', path: '/oficina/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
   assistencia: [
     { key: 'home', path: '/assistencia', icon: Dashboard },
     { key: 'requests', path: '/assistencia/pedidos', icon: LocalShipping },
-    { key: 'users', path: '/assistencia/utilizadores', icon: Group },
+    { key: 'users', path: '/assistencia/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
   provedor: [
     { key: 'home', path: '/provedor', icon: Dashboard },
     { key: 'cases', path: '/provedor/processos', icon: Gavel },
-    { key: 'users', path: '/provedor/utilizadores', icon: Group },
+    { key: 'users', path: '/provedor/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
   supervisao: [
     { key: 'home', path: '/supervisao', icon: Dashboard },
     { key: 'insurers', path: '/supervisao/seguradoras', icon: AccountBalance },
     { key: 'reports', path: '/supervisao/relatorios', icon: BarChart },
-    { key: 'users', path: '/supervisao/utilizadores', icon: Group },
+    { key: 'users', path: '/supervisao/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
   frota: [
     { key: 'home', path: '/frota', icon: Dashboard },
     { key: 'vehicles', path: '/frota/veiculos', icon: DirectionsCar },
     { key: 'policies', path: '/frota/apolices', icon: Description },
     { key: 'claims', path: '/frota/sinistros', icon: CarCrash },
-    { key: 'users', path: '/frota/utilizadores', icon: Group },
+    { key: 'users', path: '/frota/utilizadores', icon: Group, permission: 'org-user:read' },
   ],
 };

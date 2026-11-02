@@ -1,10 +1,20 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactElement } from 'react';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { AuthRoot } from './auth/AuthProvider';
+import { Permissions, RequirePermission, type Permission } from './auth/permissions';
 import { RequireAuth } from './auth/RequireAuth';
+import { OtpSettingsPage } from './features/admin-auth/OtpSettingsPage';
 import { CustomerLoginPage } from './features/customer-auth/CustomerLoginPage';
 import { CustomerHomePage } from './features/customer-profile/CustomerHomePage';
 import { ProfilePage } from './features/customer-profile/ProfilePage';
+import { OrganizationCreatePage } from './features/organizations/OrganizationCreatePage';
+import { OrganizationDetailPage } from './features/organizations/OrganizationDetailPage';
+import { OrganizationListPage } from './features/organizations/OrganizationListPage';
+import { ForgotPasswordPage } from './features/staff-auth/ForgotPasswordPage';
+import { InvitationPage } from './features/staff-auth/InvitationPage';
+import { ResetPasswordPage } from './features/staff-auth/ResetPasswordPage';
+import { StaffLoginPage } from './features/staff-auth/StaffLoginPage';
+import { UsersPage } from './features/users/UsersPage';
 import { AppLayout } from './layout/AppLayout';
 import { PublicLayout } from './layout/PublicLayout';
 import type { Area } from './layout/menus';
@@ -23,8 +33,10 @@ import { ProvedorPage } from './pages/areas/ProvedorPage';
 import { SeguradoraPage } from './pages/areas/SeguradoraPage';
 import { SupervisaoPage } from './pages/areas/SupervisaoPage';
 
-/** Áreas de staff, ainda sem conteúdo (a guarda de sessão do staff chega no S1-08). */
-const areaPages: Record<Exclude<Area, 'cliente'>, ComponentType> = {
+type StaffArea = Exclude<Area, 'cliente'>;
+
+/** Página inicial de cada área de staff (por agora vazias). */
+const areaPages: Record<StaffArea, ComponentType> = {
   admin: AdminPage,
   seguradora: SeguradoraPage,
   mediador: MediadorPage,
@@ -36,20 +48,59 @@ const areaPages: Record<Exclude<Area, 'cliente'>, ComponentType> = {
   frota: FrotaPage,
 };
 
-/** Cada área: `/<área>` e qualquer caminho abaixo dela mostram a página da área (por agora vazia). */
-const areaRoutes: RouteObject[] = (Object.keys(areaPages) as (keyof typeof areaPages)[]).map(
-  (area) => {
-    const Page = areaPages[area];
-    return {
-      path: `/${area}`,
-      element: <AppLayout area={area} />,
-      children: [
-        { index: true, element: <Page /> },
-        { path: '*', element: <Page /> },
-      ],
-    };
-  },
+const withPermission = (permission: Permission, element: ReactElement) => (
+  <RequirePermission permission={permission}>{element}</RequirePermission>
 );
+
+/** Páginas da administração da plataforma. */
+const adminRoutes: RouteObject[] = [
+  {
+    path: 'autenticacao',
+    element: withPermission(Permissions.otpSettingsRead, <OtpSettingsPage />),
+  },
+  {
+    path: 'organizacoes',
+    element: withPermission(Permissions.organizationRead, <OrganizationListPage />),
+  },
+  {
+    path: 'organizacoes/nova',
+    element: withPermission(Permissions.organizationManage, <OrganizationCreatePage />),
+  },
+  {
+    path: 'organizacoes/:id',
+    element: withPermission(Permissions.organizationRead, <OrganizationDetailPage />),
+  },
+  {
+    path: 'utilizadores',
+    element: withPermission(Permissions.orgUserRead, <UsersPage platform />),
+  },
+];
+
+/** Páginas comuns às áreas das organizações. */
+const organizationRoutes: RouteObject[] = [
+  { path: 'utilizadores', element: withPermission(Permissions.orgUserRead, <UsersPage />) },
+];
+
+/**
+ * Cada área de staff: só com sessão de staff da própria área. `/<área>` mostra a página da área
+ * e os caminhos ainda sem página mostram a página da área (por agora "Em construção").
+ */
+const areaRoutes: RouteObject[] = (Object.keys(areaPages) as StaffArea[]).map((area) => {
+  const Page = areaPages[area];
+  return {
+    path: `/${area}`,
+    element: (
+      <RequireAuth type="STAFF" area={area}>
+        <AppLayout area={area} />
+      </RequireAuth>
+    ),
+    children: [
+      { index: true, element: <Page /> },
+      ...(area === 'admin' ? adminRoutes : organizationRoutes),
+      { path: '*', element: <Page /> },
+    ],
+  };
+});
 
 /** Área do cliente: só com sessão de cliente. */
 const customerRoutes: RouteObject = {
@@ -75,6 +126,10 @@ export const routes: RouteObject[] = [
         children: [
           { path: '/', element: <HomePage /> },
           { path: '/cliente/entrar', element: <CustomerLoginPage /> },
+          { path: '/entrar', element: <StaffLoginPage /> },
+          { path: '/recuperar', element: <ForgotPasswordPage /> },
+          { path: '/recuperar/:token', element: <ResetPasswordPage /> },
+          { path: '/convite/:token', element: <InvitationPage /> },
           { path: '/sem-acesso', element: <NoAccessPage /> },
           { path: '/verificar', element: <VerificarPage /> },
           { path: '/v/:token', element: <VerificarPage /> },
