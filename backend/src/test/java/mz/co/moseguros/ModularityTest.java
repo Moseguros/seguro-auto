@@ -6,8 +6,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.modulith.core.ApplicationModule;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
@@ -25,15 +23,18 @@ class ModularityTest {
         modules.verify();
     }
 
-    /** S1-01: identity e organization ainda só dependem de shared. */
-    @ParameterizedTest
-    @ValueSource(strings = {"identity", "organization"})
-    void identityAndOrganizationDependOnlyOnShared(String name) {
+    /** S1-02: identity só usa shared e a API pública de organization; organization nunca usa identity. */
+    @Test
+    void identityDependsOnOrganizationButNotTheOtherWayAround() {
+        assertThat(dependenciesOf("identity")).contains("organization").isSubsetOf("shared", "organization");
+        assertThat(dependenciesOf("organization")).isSubsetOf("shared");
+    }
+
+    private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
-        Set<String> dependencies = module.getDependencies(modules).stream()
+        return module.getDependencies(modules).stream()
                 .map(d -> d.getTargetModule().getName())
                 .collect(Collectors.toSet());
-        assertThat(dependencies).isSubsetOf("shared");
     }
 
     @Test
