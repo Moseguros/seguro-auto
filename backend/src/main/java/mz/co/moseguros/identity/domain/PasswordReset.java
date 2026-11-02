@@ -44,6 +44,11 @@ public class PasswordReset extends BaseEntity {
         return reset;
     }
 
+    /** Por usar, não invalidado e dentro da validade. */
+    public boolean isUsable(Instant now) {
+        return usedAt == null && invalidatedAt == null && expiresAt.isAfter(now);
+    }
+
     public void markUsed(Instant at) {
         this.usedAt = at;
     }

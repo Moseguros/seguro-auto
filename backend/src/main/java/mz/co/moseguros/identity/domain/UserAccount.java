@@ -1,5 +1,6 @@
 package mz.co.moseguros.identity.domain;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +14,8 @@ import jakarta.persistence.Table;
 import mz.co.moseguros.shared.crypto.EncryptedStringConverter;
 import mz.co.moseguros.shared.domain.Emails;
 import mz.co.moseguros.shared.domain.Msisdn;
+import mz.co.moseguros.shared.error.DomainException;
+import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.persistence.BaseEntity;
 
 /**
@@ -179,6 +182,141 @@ public class UserAccount extends BaseEntity {
     /** Regista um login com sucesso. */
     public void recordLogin(Instant at) {
         this.lastLoginAt = at;
+    }
+
+    // --- login de staff e gestão (S1-05) ---
+
+    /** {@code LOCKED} com {@code locked_until} ainda por passar. */
+    public boolean isLockedAt(Instant now) {
+        return status == AccountStatus.LOCKED && lockedUntil != null && lockedUntil.isAfter(now);
+    }
+
+    /**
+     * Estado como é mostrado: {@code LOCKED} só enquanto {@code locked_until} não passou; depois
+     * disso a conta já é {@code ACTIVE} (o desbloqueio grava-se no login seguinte).
+     */
+    public AccountStatus effectiveStatus(Instant now) {
+        return status == AccountStatus.LOCKED && !isLockedAt(now) ? AccountStatus.ACTIVE : status;
+    }
+
+    /**
+     * Conta bloqueada cujo prazo já passou: volta a {@code ACTIVE} com as falhas a zero. Devolve
+     * {@code true} se mudou alguma coisa.
+     */
+    public boolean releaseExpiredLock(Instant now) {
+        if (status != AccountStatus.LOCKED || isLockedAt(now)) {
+            return false;
+        }
+        this.status = AccountStatus.ACTIVE;
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
+        return true;
+    }
+
+    /**
+     * Palavra-passe ou código TOTP errados: mais uma falha. Ao chegar a {@code maxAttempts}, uma
+     * conta {@code ACTIVE} fica {@code LOCKED} até {@code now + lockDuration}. Uma conta noutro
+     * estado (ex.: {@code DISABLED}) só conta a falha: nunca passa a {@code LOCKED}, para não voltar
+     * a {@code ACTIVE} quando o bloqueio expirar.
+     *
+     * @return {@code true} se a conta ficou bloqueada agora
+     */
+    public boolean registerFailedLogin(Instant now, int maxAttempts, Duration lockDuration) {
+        requireStaff();
+        this.failedAttempts++;
+        if (status == AccountStatus.ACTIVE && failedAttempts >= maxAttempts) {
+            this.status = AccountStatus.LOCKED;
+            this.lockedUntil = now.plus(lockDuration);
+            return true;
+        }
+        return false;
+    }
+
+    /** Login de staff com sucesso: falhas a zero, passo TOTP usado e data do login. */
+    public void recordSuccessfulLogin(long totpStep, Instant at) {
+        requireStaff();
+        if (status != AccountStatus.ACTIVE) {
+            throw new IllegalStateException("Only active accounts can sign in");
+        }
+        this.failedAttempts = 0;
+        this.lastTotpStep = totpStep;
+        this.lastLoginAt = at;
+    }
+
+    /**
+     * Palavra-passe nova pela recuperação: falhas a zero e, se estava {@code LOCKED}, volta a
+     * {@code ACTIVE}. O TOTP não muda.
+     */
+    public void resetPassword(String newPasswordHash) {
+        requireStaff();
+        if (status != AccountStatus.ACTIVE && status != AccountStatus.LOCKED) {
+            throw new IllegalStateException("Only active or locked accounts can reset the password");
+        }
+        this.passwordHash = Objects.requireNonNull(newPasswordHash, "newPasswordHash");
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
+        this.status = AccountStatus.ACTIVE;
+    }
+
+    /**
+     * Desactivação pelo gestor: {@code ACTIVE} ou {@code LOCKED} → {@code DISABLED}.
+     *
+     * @throws DomainException {@code INVALID_STATE_TRANSITION} (409) noutro estado
+     */
+    public void disable() {
+        requireStaff();
+        requireStatus(AccountStatus.ACTIVE, AccountStatus.LOCKED);
+        this.status = AccountStatus.DISABLED;
+        this.lockedUntil = null;
+    }
+
+    /** Reactivação: {@code DISABLED} → {@code ACTIVE}, com as falhas a zero. */
+    public void enable() {
+        requireStaff();
+        requireStatus(AccountStatus.DISABLED);
+        this.status = AccountStatus.ACTIVE;
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
+    }
+
+    /** Desbloqueio pelo gestor: {@code LOCKED} → {@code ACTIVE}, com as falhas a zero. */
+    public void unlock() {
+        requireStaff();
+        requireStatus(AccountStatus.LOCKED);
+        this.status = AccountStatus.ACTIVE;
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
+    }
+
+    /**
+     * Reposição de acesso: {@code ACTIVE} ou {@code LOCKED} → {@code PENDING_ACTIVATION}, sem
+     * palavra-passe nem segredo TOTP. O utilizador repete a activação com um convite novo.
+     */
+    public void resetAccess() {
+        requireStaff();
+        requireStatus(AccountStatus.ACTIVE, AccountStatus.LOCKED);
+        this.status = AccountStatus.PENDING_ACTIVATION;
+        this.passwordHash = null;
+        this.totpSecret = null;
+        this.lastTotpStep = null;
+        this.failedAttempts = 0;
+        this.lockedUntil = null;
+    }
+
+    private void requireStaff() {
+        if (!isStaff()) {
+            throw new IllegalStateException("Only staff accounts");
+        }
+    }
+
+    private void requireStatus(AccountStatus... allowed) {
+        for (AccountStatus candidate : allowed) {
+            if (status == candidate) {
+                return;
+            }
+        }
+        throw DomainException.of(ErrorCodes.INVALID_STATE_TRANSITION,
+                "Transition not allowed from status " + status);
     }
 
     public boolean isDisabled() {
