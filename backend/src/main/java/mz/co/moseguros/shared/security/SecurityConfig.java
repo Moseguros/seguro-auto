@@ -43,6 +43,7 @@ public class SecurityConfig {
         "/api/v1/health/**",
         "/api/v1/meta/**",
         "/api/v1/auth/**",
+        "/api/v1/integrations/delivery-receipts/**",
         "/.well-known/jwks.json",
         "/v3/api-docs/**",
         "/v3/api-docs.yaml",

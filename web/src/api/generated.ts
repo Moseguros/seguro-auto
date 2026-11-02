@@ -23,6 +23,31 @@ import type {
 
 import { http } from './http';
 import type { ErrorType, BodyType } from './http';
+export type DeliveryReceiptRequestStatus =
+  (typeof DeliveryReceiptRequestStatus)[keyof typeof DeliveryReceiptRequestStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const DeliveryReceiptRequestStatus = {
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED',
+} as const;
+
+export interface DeliveryReceiptRequest {
+  /**
+   * id devolvido pelo fornecedor no envio
+   * @minLength 0
+   * @maxLength 100
+   */
+  providerMessageId: string;
+  /**
+   * Motivo indicado pelo fornecedor (sem dados pessoais)
+   * @minLength 0
+   * @maxLength 150
+   */
+  reason?: string;
+  status: DeliveryReceiptRequestStatus;
+}
+
 /**
  * Erro de um campo do pedido
  */
@@ -138,6 +163,219 @@ export type Msisdn = string;
  */
 export type Nuit = string;
 
+export type OtpChallengeResponseChannel =
+  (typeof OtpChallengeResponseChannel)[keyof typeof OtpChallengeResponseChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpChallengeResponseChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type OtpChallengeResponseDeliveryStatus =
+  (typeof OtpChallengeResponseDeliveryStatus)[keyof typeof OtpChallengeResponseDeliveryStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpChallengeResponseDeliveryStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED',
+} as const;
+
+export interface OtpChallengeResponse {
+  channel: OtpChallengeResponseChannel;
+  deliveryStatus: OtpChallengeResponseDeliveryStatus;
+  expiresAt: string;
+  fallbackUsed: boolean;
+}
+
+/**
+ * Canais activos de cada tipo, pela ordem alternativa
+ */
+export type OtpOptionsResponseChannelsItem =
+  (typeof OtpOptionsResponseChannelsItem)[keyof typeof OtpOptionsResponseChannelsItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpOptionsResponseChannelsItem = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+/**
+ * Canais activos de cada tipo, pela ordem alternativa
+ */
+export type OtpOptionsResponseChannels = { [key: string]: OtpOptionsResponseChannelsItem[] };
+
+/**
+ * Canal por defeito de cada tipo
+ */
+export type OtpOptionsResponseDefaultChannels = { [key: string]: 'SMS' | 'WHATSAPP' | 'EMAIL' };
+
+export type OtpOptionsResponseIdentifierTypesItem =
+  (typeof OtpOptionsResponseIdentifierTypesItem)[keyof typeof OtpOptionsResponseIdentifierTypesItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpOptionsResponseIdentifierTypesItem = {
+  MSISDN: 'MSISDN',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface OtpOptionsResponse {
+  /** Canais activos de cada tipo, pela ordem alternativa */
+  channels: OtpOptionsResponseChannels;
+  codeLength: number;
+  customerCanChoose: boolean;
+  /** Canal por defeito de cada tipo */
+  defaultChannels: OtpOptionsResponseDefaultChannels;
+  identifierTypes: OtpOptionsResponseIdentifierTypesItem[];
+  resendAfterSeconds: number;
+}
+
+/**
+ * Canal efectivamente usado
+ */
+export type OtpRequestResponseChannel =
+  (typeof OtpRequestResponseChannel)[keyof typeof OtpRequestResponseChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpRequestResponseChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface OtpRequestResponse {
+  /** Usar na validação e na consulta do estado (não muda com a alternativa de canal) */
+  challengeId: string;
+  /** Canal efectivamente usado */
+  channel: OtpRequestResponseChannel;
+  expiresAt: string;
+  /** O canal mudou por falha do primeiro */
+  fallbackUsed: boolean;
+  resendAfterSeconds: number;
+}
+
+export type OtpSettingsResponseDefaultChannel =
+  (typeof OtpSettingsResponseDefaultChannel)[keyof typeof OtpSettingsResponseDefaultChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpSettingsResponseDefaultChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type OtpSettingsResponseEnabledChannelsItem =
+  (typeof OtpSettingsResponseEnabledChannelsItem)[keyof typeof OtpSettingsResponseEnabledChannelsItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpSettingsResponseEnabledChannelsItem = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+/**
+ * Ordem da alternativa automática
+ */
+export type OtpSettingsResponseFallbackOrderItem =
+  (typeof OtpSettingsResponseFallbackOrderItem)[keyof typeof OtpSettingsResponseFallbackOrderItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpSettingsResponseFallbackOrderItem = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface OtpSettingsResponse {
+  codeLength: number;
+  customerCanChoose: boolean;
+  defaultChannel: OtpSettingsResponseDefaultChannel;
+  enabledChannels: OtpSettingsResponseEnabledChannelsItem[];
+  /** Ordem da alternativa automática */
+  fallbackOrder: OtpSettingsResponseFallbackOrderItem[];
+  maxAttempts: number;
+  maxRequestsPerHour: number;
+  resendAfterSeconds: number;
+  updatedAt: string;
+  /** id do utilizador ou 'system' */
+  updatedBy: string;
+  validitySeconds: number;
+  /** Enviar no PUT seguinte */
+  version: number;
+}
+
+export type OtpTestRequestChannel =
+  (typeof OtpTestRequestChannel)[keyof typeof OtpTestRequestChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpTestRequestChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type OtpTestRequestIdentifierType =
+  (typeof OtpTestRequestIdentifierType)[keyof typeof OtpTestRequestIdentifierType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpTestRequestIdentifierType = {
+  MSISDN: 'MSISDN',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface OtpTestRequest {
+  channel: OtpTestRequestChannel;
+  identifier: string;
+  identifierType: OtpTestRequestIdentifierType;
+}
+
+export type OtpTestResponseChannel =
+  (typeof OtpTestResponseChannel)[keyof typeof OtpTestResponseChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpTestResponseChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+/**
+ * SENT ou FAILED
+ */
+export type OtpTestResponseDeliveryStatus =
+  (typeof OtpTestResponseDeliveryStatus)[keyof typeof OtpTestResponseDeliveryStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const OtpTestResponseDeliveryStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED',
+} as const;
+
+export interface OtpTestResponse {
+  channel: OtpTestResponseChannel;
+  /** SENT ou FAILED */
+  deliveryStatus: OtpTestResponseDeliveryStatus;
+  /** id da mensagem enviada */
+  messageId: string;
+}
+
+export interface OtpVerifyResponse {
+  /** JWT de acesso (Bearer), válido 15 minutos */
+  accessToken: string;
+  expiresIn: number;
+  /** A conta foi criada agora */
+  isNewUser: boolean;
+  /** Refresh token opaco */
+  refreshToken: string;
+}
+
 /**
  * Erro RFC 7807 (application/problem+json)
  */
@@ -158,6 +396,36 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
+/**
+ * Canal escolhido pelo cliente (só se customerCanChoose); sem ele usa-se o canal por defeito
+ */
+export type RequestOtpRequestChannel =
+  (typeof RequestOtpRequestChannel)[keyof typeof RequestOtpRequestChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RequestOtpRequestChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type RequestOtpRequestIdentifierType =
+  (typeof RequestOtpRequestIdentifierType)[keyof typeof RequestOtpRequestIdentifierType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RequestOtpRequestIdentifierType = {
+  MSISDN: 'MSISDN',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface RequestOtpRequest {
+  /** Canal escolhido pelo cliente (só se customerCanChoose); sem ele usa-se o canal por defeito */
+  channel?: RequestOtpRequestChannel;
+  /** Telemóvel (841234567, +258841234567) ou e-mail */
+  identifier: string;
+  identifierType: RequestOtpRequestIdentifierType;
+}
+
 export interface TokenResponse {
   /** JWT de acesso (Bearer), válido 15 minutos */
   accessToken: string;
@@ -165,6 +433,61 @@ export interface TokenResponse {
   expiresIn: number;
   /** Refresh token opaco; cada renovação devolve um novo */
   refreshToken: string;
+}
+
+export type UpdateOtpSettingsRequestDefaultChannel =
+  (typeof UpdateOtpSettingsRequestDefaultChannel)[keyof typeof UpdateOtpSettingsRequestDefaultChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateOtpSettingsRequestDefaultChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type UpdateOtpSettingsRequestEnabledChannelsItem =
+  (typeof UpdateOtpSettingsRequestEnabledChannelsItem)[keyof typeof UpdateOtpSettingsRequestEnabledChannelsItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateOtpSettingsRequestEnabledChannelsItem = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export type UpdateOtpSettingsRequestFallbackOrderItem =
+  (typeof UpdateOtpSettingsRequestFallbackOrderItem)[keyof typeof UpdateOtpSettingsRequestFallbackOrderItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateOtpSettingsRequestFallbackOrderItem = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface UpdateOtpSettingsRequest {
+  /** 4 a 8 */
+  codeLength: number;
+  customerCanChoose: boolean;
+  defaultChannel: UpdateOtpSettingsRequestDefaultChannel;
+  enabledChannels: UpdateOtpSettingsRequestEnabledChannelsItem[];
+  fallbackOrder: UpdateOtpSettingsRequestFallbackOrderItem[];
+  /** 1 a 10 */
+  maxAttempts: number;
+  /** 1 a 50 */
+  maxRequestsPerHour: number;
+  /** 15 a 600 */
+  resendAfterSeconds: number;
+  /** 60 a 1800 */
+  validitySeconds: number;
+  /** version lida no GET */
+  version: number;
+}
+
+export interface VerifyOtpRequest {
+  /** challengeId devolvido no pedido */
+  challengeId: string;
+  code: string;
 }
 
 export interface VersionResponse {
@@ -283,6 +606,290 @@ export function useGetJwks<
 }
 
 /**
+ * Permissão otp-settings:read.
+ * @summary Definições do OTP
+ */
+export const getOtpSettings = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<OtpSettingsResponse>(
+    { url: `/api/v1/admin/otp-settings`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetOtpSettingsQueryKey = () => {
+  return [`/api/v1/admin/otp-settings`] as const;
+};
+
+export const getGetOtpSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getOtpSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpSettings>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetOtpSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOtpSettings>>> = ({ signal }) =>
+    getOtpSettings(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getOtpSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetOtpSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof getOtpSettings>>>;
+export type GetOtpSettingsQueryError = ErrorType<ProblemDetail>;
+
+export function useGetOtpSettings<
+  TData = Awaited<ReturnType<typeof getOtpSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpSettings>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOtpSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getOtpSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOtpSettings<
+  TData = Awaited<ReturnType<typeof getOtpSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpSettings>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOtpSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getOtpSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOtpSettings<
+  TData = Awaited<ReturnType<typeof getOtpSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpSettings>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Definições do OTP
+ */
+
+export function useGetOtpSettings<
+  TData = Awaited<ReturnType<typeof getOtpSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpSettings>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetOtpSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão otp-settings:manage. Todos os campos são obrigatórios; version diferente da gravada → 409 CONCURRENT_MODIFICATION.
+ * @summary Altera as definições do OTP
+ */
+export const updateOtpSettings = (
+  updateOtpSettingsRequest: BodyType<UpdateOtpSettingsRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<OtpSettingsResponse>(
+    {
+      url: `/api/v1/admin/otp-settings`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateOtpSettingsRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateOtpSettingsMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateOtpSettings>>,
+    TError,
+    { data: BodyType<UpdateOtpSettingsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateOtpSettings>>,
+  TError,
+  { data: BodyType<UpdateOtpSettingsRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateOtpSettings'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateOtpSettings>>,
+    { data: BodyType<UpdateOtpSettingsRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateOtpSettings(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateOtpSettingsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateOtpSettings>>
+>;
+export type UpdateOtpSettingsMutationBody = BodyType<UpdateOtpSettingsRequest>;
+export type UpdateOtpSettingsMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera as definições do OTP
+ */
+export const useUpdateOtpSettings = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateOtpSettings>>,
+      TError,
+      { data: BodyType<UpdateOtpSettingsRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateOtpSettings>>,
+  TError,
+  { data: BodyType<UpdateOtpSettingsRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateOtpSettingsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão otp-settings:manage. Só pelo canal pedido, mesmo que esteja desactivado, e sem alternativa; o código não serve para entrar. Conta para o limite por hora.
+ * @summary Envia um código de teste
+ */
+export const testOtpDelivery = (
+  otpTestRequest: BodyType<OtpTestRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OtpTestResponse>(
+    {
+      url: `/api/v1/admin/otp-settings/test`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: otpTestRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getTestOtpDeliveryMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof testOtpDelivery>>,
+    TError,
+    { data: BodyType<OtpTestRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof testOtpDelivery>>,
+  TError,
+  { data: BodyType<OtpTestRequest> },
+  TContext
+> => {
+  const mutationKey = ['testOtpDelivery'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof testOtpDelivery>>,
+    { data: BodyType<OtpTestRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return testOtpDelivery(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TestOtpDeliveryMutationResult = NonNullable<
+  Awaited<ReturnType<typeof testOtpDelivery>>
+>;
+export type TestOtpDeliveryMutationBody = BodyType<OtpTestRequest>;
+export type TestOtpDeliveryMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia um código de teste
+ */
+export const useTestOtpDelivery = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof testOtpDelivery>>,
+      TError,
+      { data: BodyType<OtpTestRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof testOtpDelivery>>,
+  TError,
+  { data: BodyType<OtpTestRequest> },
+  TContext
+> => {
+  const mutationOptions = getTestOtpDeliveryMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Revoga a sessão do refresh token. Responde 204 mesmo que o token seja desconhecido.
  * @summary Termina a sessão
  */
@@ -369,6 +976,409 @@ export const useLogoutSession = <TError = ErrorType<ProblemDetail>, TContext = u
 };
 
 /**
+ * Canal e estado de entrega do código activo (muda se houver alternativa de canal). Desconhecido → 404 OTP_CHALLENGE_NOT_FOUND.
+ * @summary Estado do envio do código
+ */
+export const getOtpChallenge = (
+  challengeId: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OtpChallengeResponse>(
+    { url: `/api/v1/auth/otp/challenges/${challengeId}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetOtpChallengeQueryKey = (challengeId?: string) => {
+  return [`/api/v1/auth/otp/challenges/${challengeId}`] as const;
+};
+
+export const getGetOtpChallengeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getOtpChallenge>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  challengeId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpChallenge>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetOtpChallengeQueryKey(challengeId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOtpChallenge>>> = ({ signal }) =>
+    getOtpChallenge(challengeId, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!challengeId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getOtpChallenge>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetOtpChallengeQueryResult = NonNullable<Awaited<ReturnType<typeof getOtpChallenge>>>;
+export type GetOtpChallengeQueryError = ErrorType<ProblemDetail>;
+
+export function useGetOtpChallenge<
+  TData = Awaited<ReturnType<typeof getOtpChallenge>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  challengeId: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpChallenge>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOtpChallenge>>,
+          TError,
+          Awaited<ReturnType<typeof getOtpChallenge>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOtpChallenge<
+  TData = Awaited<ReturnType<typeof getOtpChallenge>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  challengeId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpChallenge>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOtpChallenge>>,
+          TError,
+          Awaited<ReturnType<typeof getOtpChallenge>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOtpChallenge<
+  TData = Awaited<ReturnType<typeof getOtpChallenge>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  challengeId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpChallenge>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Estado do envio do código
+ */
+
+export function useGetOtpChallenge<
+  TData = Awaited<ReturnType<typeof getOtpChallenge>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  challengeId: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpChallenge>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetOtpChallengeQueryOptions(challengeId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Tipos de identificador e canais activos, conforme as definições actuais.
+ * @summary Opções do login por código
+ */
+export const getOtpOptions = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<OtpOptionsResponse>(
+    { url: `/api/v1/auth/otp/options`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetOtpOptionsQueryKey = () => {
+  return [`/api/v1/auth/otp/options`] as const;
+};
+
+export const getGetOtpOptionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getOtpOptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpOptions>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetOtpOptionsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOtpOptions>>> = ({ signal }) =>
+    getOtpOptions(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getOtpOptions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetOtpOptionsQueryResult = NonNullable<Awaited<ReturnType<typeof getOtpOptions>>>;
+export type GetOtpOptionsQueryError = ErrorType<ProblemDetail>;
+
+export function useGetOtpOptions<
+  TData = Awaited<ReturnType<typeof getOtpOptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpOptions>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOtpOptions>>,
+          TError,
+          Awaited<ReturnType<typeof getOtpOptions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOtpOptions<
+  TData = Awaited<ReturnType<typeof getOtpOptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpOptions>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getOtpOptions>>,
+          TError,
+          Awaited<ReturnType<typeof getOtpOptions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOtpOptions<
+  TData = Awaited<ReturnType<typeof getOtpOptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpOptions>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Opções do login por código
+ */
+
+export function useGetOtpOptions<
+  TData = Awaited<ReturnType<typeof getOtpOptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOtpOptions>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetOtpOptionsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Envia um código pelo canal escolhido (ou o por defeito) e, se falhar, pelos outros canais compatíveis. A resposta é igual para identificadores novos e existentes.
+ * @summary Pede um código
+ */
+export const requestOtp = (
+  requestOtpRequest: BodyType<RequestOtpRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OtpRequestResponse>(
+    {
+      url: `/api/v1/auth/otp/request`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: requestOtpRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRequestOtpMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestOtp>>,
+    TError,
+    { data: BodyType<RequestOtpRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof requestOtp>>,
+  TError,
+  { data: BodyType<RequestOtpRequest> },
+  TContext
+> => {
+  const mutationKey = ['requestOtp'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof requestOtp>>,
+    { data: BodyType<RequestOtpRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return requestOtp(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RequestOtpMutationResult = NonNullable<Awaited<ReturnType<typeof requestOtp>>>;
+export type RequestOtpMutationBody = BodyType<RequestOtpRequest>;
+export type RequestOtpMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pede um código
+ */
+export const useRequestOtp = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof requestOtp>>,
+      TError,
+      { data: BodyType<RequestOtpRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof requestOtp>>,
+  TError,
+  { data: BodyType<RequestOtpRequest> },
+  TContext
+> => {
+  const mutationOptions = getRequestOtpMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Abre a sessão (e cria a conta de cliente, se ainda não existir).
+ * @summary Valida o código e entra
+ */
+export const verifyOtp = (
+  verifyOtpRequest: BodyType<VerifyOtpRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<OtpVerifyResponse>(
+    {
+      url: `/api/v1/auth/otp/verify`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: verifyOtpRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getVerifyOtpMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyOtp>>,
+    TError,
+    { data: BodyType<VerifyOtpRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof verifyOtp>>,
+  TError,
+  { data: BodyType<VerifyOtpRequest> },
+  TContext
+> => {
+  const mutationKey = ['verifyOtp'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof verifyOtp>>,
+    { data: BodyType<VerifyOtpRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return verifyOtp(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type VerifyOtpMutationResult = NonNullable<Awaited<ReturnType<typeof verifyOtp>>>;
+export type VerifyOtpMutationBody = BodyType<VerifyOtpRequest>;
+export type VerifyOtpMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Valida o código e entra
+ */
+export const useVerifyOtp = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof verifyOtp>>,
+      TError,
+      { data: BodyType<VerifyOtpRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof verifyOtp>>,
+  TError,
+  { data: BodyType<VerifyOtpRequest> },
+  TContext
+> => {
+  const mutationOptions = getVerifyOtpMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Troca o refresh token por um par novo (rotação). Um token já usado revoga a sessão inteira (401 REFRESH_TOKEN_REUSED); outro token recusado dá 401 REFRESH_TOKEN_INVALID.
  * @summary Renova a sessão
  */
@@ -450,6 +1460,95 @@ export const useRefreshToken = <TError = ErrorType<ProblemDetail>, TContext = un
   TContext
 > => {
   const mutationOptions = getRefreshTokenMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED; fornecedor desconhecido → 404 NOT_FOUND; mensagem desconhecida → 204 (ignorado). Uma falha de um código OTP faz o backend tentar o canal seguinte.
+ * @summary Recibo de entrega de um fornecedor
+ */
+export const receiveDeliveryReceipt = (
+  provider: string,
+  deliveryReceiptRequest: BodyType<DeliveryReceiptRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>(
+    {
+      url: `/api/v1/integrations/delivery-receipts/${provider}`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: deliveryReceiptRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getReceiveDeliveryReceiptMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof receiveDeliveryReceipt>>,
+    TError,
+    { provider: string; data: BodyType<DeliveryReceiptRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof receiveDeliveryReceipt>>,
+  TError,
+  { provider: string; data: BodyType<DeliveryReceiptRequest> },
+  TContext
+> => {
+  const mutationKey = ['receiveDeliveryReceipt'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof receiveDeliveryReceipt>>,
+    { provider: string; data: BodyType<DeliveryReceiptRequest> }
+  > = (props) => {
+    const { provider, data } = props ?? {};
+
+    return receiveDeliveryReceipt(provider, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ReceiveDeliveryReceiptMutationResult = NonNullable<
+  Awaited<ReturnType<typeof receiveDeliveryReceipt>>
+>;
+export type ReceiveDeliveryReceiptMutationBody = BodyType<DeliveryReceiptRequest>;
+export type ReceiveDeliveryReceiptMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Recibo de entrega de um fornecedor
+ */
+export const useReceiveDeliveryReceipt = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof receiveDeliveryReceipt>>,
+      TError,
+      { provider: string; data: BodyType<DeliveryReceiptRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof receiveDeliveryReceipt>>,
+  TError,
+  { provider: string; data: BodyType<DeliveryReceiptRequest> },
+  TContext
+> => {
+  const mutationOptions = getReceiveDeliveryReceiptMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

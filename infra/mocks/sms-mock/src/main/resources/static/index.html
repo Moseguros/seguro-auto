@@ -3,30 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SMS mock - MoSeguros</title>
+  <title>SMS e WhatsApp mock - MoSeguros</title>
   <style>
     body { margin: 0; font-family: system-ui, sans-serif; background: #E8EFF6; color: #142D4E; }
-    header { background: #142D4E; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    header { background: #142D4E; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     h1 { font-size: 18px; margin: 0; }
     button { background: transparent; color: #fff; border: 1px solid #fff; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
     main { padding: 16px; max-width: 960px; margin: 0 auto; }
+    .modes { background: #fff; border-radius: 6px; padding: 12px; margin-bottom: 12px; display: grid; gap: 8px; }
+    .mode-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .mode-row strong { min-width: 90px; }
+    .mode-row button { color: #142D4E; border-color: #142D4E; }
+    .mode-row button.active { background: #142D4E; color: #fff; }
+    .hint { font-size: 13px; color: #4a5f7a; margin: 0; }
     .empty { color: #4a5f7a; }
     article { background: #fff; border-radius: 6px; padding: 12px; margin-bottom: 8px; }
     .meta { font-size: 13px; color: #4a5f7a; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
     .to { font-weight: 600; color: #142D4E; }
+    .channel { font-size: 12px; font-weight: 600; border-radius: 4px; padding: 2px 6px; background: #E8EFF6; }
     article p { margin: 8px 0 0; white-space: pre-wrap; word-break: break-word; }
   </style>
 </head>
 <body>
   <header>
-    <h1>SMS enviados (<span id="count">0</span>)</h1>
+    <h1>Mensagens enviadas (<span id="count">0</span>)</h1>
     <button id="clear" type="button">Limpar</button>
   </header>
-  <main id="list"><p class="empty">A carregar...</p></main>
+  <main>
+    <section class="modes" aria-label="Modos dos canais">
+      <div class="mode-row" data-channel="sms"><strong>SMS</strong></div>
+      <div class="mode-row" data-channel="whatsapp"><strong>WhatsApp</strong></div>
+      <p class="hint">OK: aceita e envia recibo DELIVERED 2 s depois. FAIL: responde 503. FAIL_RECEIPT: aceita e envia recibo FAILED 2 s depois.</p>
+    </section>
+    <div id="list"><p class="empty">A carregar...</p></div>
+  </main>
   <script>
-    // Lista actualizada a cada 3 s a partir de GET /sms (mais recente primeiro).
+    // Lista actualizada a cada 3 s a partir de GET /sms (SMS e WhatsApp, mais recente primeiro).
     const list = document.getElementById('list');
     const count = document.getElementById('count');
+    const MODES = ['OK', 'FAIL', 'FAIL_RECEIPT'];
 
     function render(messages) {
       count.textContent = messages.length;
@@ -34,7 +49,7 @@
       if (messages.length === 0) {
         const empty = document.createElement('p');
         empty.className = 'empty';
-        empty.textContent = 'Nenhum SMS recebido.';
+        empty.textContent = 'Nenhuma mensagem recebida.';
         list.append(empty);
         return;
       }
@@ -42,18 +57,45 @@
         const item = document.createElement('article');
         const meta = document.createElement('div');
         meta.className = 'meta';
+        const channel = document.createElement('span');
+        channel.className = 'channel';
+        channel.textContent = m.channel === 'WHATSAPP' ? 'WhatsApp' : 'SMS';
         const to = document.createElement('span');
         to.className = 'to';
         to.textContent = m.to;
         const at = document.createElement('time');
         at.dateTime = m.receivedAt;
         at.textContent = new Date(m.receivedAt).toLocaleString('pt-MZ', { timeZone: 'Africa/Maputo' });
-        meta.append(to, at);
+        meta.append(channel, to, at);
         const text = document.createElement('p');
         text.textContent = m.text;
         item.append(meta, text);
         list.append(item);
       }
+    }
+
+    function renderModes(config) {
+      for (const row of document.querySelectorAll('.mode-row')) {
+        const channel = row.dataset.channel;
+        row.querySelectorAll('button').forEach((b) => b.remove());
+        for (const mode of MODES) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = mode;
+          button.className = config[channel] === mode ? 'active' : '';
+          button.addEventListener('click', () => setMode(channel, mode));
+          row.append(button);
+        }
+      }
+    }
+
+    async function setMode(channel, mode) {
+      const response = await fetch('config', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ [channel]: mode }),
+      });
+      if (response.ok) renderModes(await response.json());
     }
 
     async function refresh() {
@@ -65,13 +107,24 @@
       }
     }
 
+    async function loadModes() {
+      try {
+        const response = await fetch('config', { cache: 'no-store' });
+        if (response.ok) renderModes(await response.json());
+      } catch (e) {
+        // Tenta de novo no próximo ciclo.
+      }
+    }
+
     document.getElementById('clear').addEventListener('click', async () => {
       await fetch('sms', { method: 'DELETE' });
       refresh();
     });
 
+    loadModes();
     refresh();
     setInterval(refresh, 3000);
+    setInterval(loadModes, 3000);
   </script>
 </body>
 </html>

@@ -87,6 +87,12 @@
       <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
     </dependency>
 
+    <!-- E-mail (SMTP; localmente o Mailpit) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
     <!-- Módulos -->
     <dependency>
       <groupId>org.springframework.modulith</groupId>

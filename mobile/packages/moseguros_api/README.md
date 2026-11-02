@@ -66,13 +66,22 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 [*IdentityApi*](doc/IdentityApi.md) | [**getJwks**](doc/IdentityApi.md#getjwks) | **GET** /.well-known/jwks.json | Chaves públicas dos tokens (JWKS)
 [*IdentityApi*](doc/IdentityApi.md) | [**getMe**](doc/IdentityApi.md#getme) | **GET** /api/v1/me | Utilizador autenticado
+[*IdentityApi*](doc/IdentityApi.md) | [**getOtpChallenge**](doc/IdentityApi.md#getotpchallenge) | **GET** /api/v1/auth/otp/challenges/{challengeId} | Estado do envio do código
+[*IdentityApi*](doc/IdentityApi.md) | [**getOtpOptions**](doc/IdentityApi.md#getotpoptions) | **GET** /api/v1/auth/otp/options | Opções do login por código
+[*IdentityApi*](doc/IdentityApi.md) | [**getOtpSettings**](doc/IdentityApi.md#getotpsettings) | **GET** /api/v1/admin/otp-settings | Definições do OTP
 [*IdentityApi*](doc/IdentityApi.md) | [**logoutSession**](doc/IdentityApi.md#logoutsession) | **POST** /api/v1/auth/logout | Termina a sessão
 [*IdentityApi*](doc/IdentityApi.md) | [**refreshToken**](doc/IdentityApi.md#refreshtoken) | **POST** /api/v1/auth/refresh | Renova a sessão
+[*IdentityApi*](doc/IdentityApi.md) | [**requestOtp**](doc/IdentityApi.md#requestotp) | **POST** /api/v1/auth/otp/request | Pede um código
+[*IdentityApi*](doc/IdentityApi.md) | [**testOtpDelivery**](doc/IdentityApi.md#testotpdelivery) | **POST** /api/v1/admin/otp-settings/test | Envia um código de teste
+[*IdentityApi*](doc/IdentityApi.md) | [**updateOtpSettings**](doc/IdentityApi.md#updateotpsettings) | **PUT** /api/v1/admin/otp-settings | Altera as definições do OTP
+[*IdentityApi*](doc/IdentityApi.md) | [**verifyOtp**](doc/IdentityApi.md#verifyotp) | **POST** /api/v1/auth/otp/verify | Valida o código e entra
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
+[*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
 
 
 ## Documentation For Models
 
+ - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [FieldError](doc/FieldError.md)
  - [Jwk](doc/Jwk.md)
  - [JwksResponse](doc/JwksResponse.md)
@@ -80,9 +89,19 @@ Class | Method | HTTP request | Description
  - [MeOrganization](doc/MeOrganization.md)
  - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
+ - [OtpChallengeResponse](doc/OtpChallengeResponse.md)
+ - [OtpOptionsResponse](doc/OtpOptionsResponse.md)
+ - [OtpRequestResponse](doc/OtpRequestResponse.md)
+ - [OtpSettingsResponse](doc/OtpSettingsResponse.md)
+ - [OtpTestRequest](doc/OtpTestRequest.md)
+ - [OtpTestResponse](doc/OtpTestResponse.md)
+ - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
+ - [RequestOtpRequest](doc/RequestOtpRequest.md)
  - [TokenResponse](doc/TokenResponse.md)
+ - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
+ - [VerifyOtpRequest](doc/VerifyOtpRequest.md)
  - [VersionResponse](doc/VersionResponse.md)
 
 

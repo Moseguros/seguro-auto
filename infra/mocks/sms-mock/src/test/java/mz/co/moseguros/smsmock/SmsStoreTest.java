@@ -31,6 +31,17 @@ class SmsStoreTest {
     }
 
     @Test
+    void whatsAppMessagesShowTheTemplateAndParams() {
+        SmsStore store = new SmsStore();
+        SmsMessage message = store.addWhatsApp("+258841234567", "moseguros_otp", java.util.Map.of("code", "012345"));
+
+        assertThat(message.channel()).isEqualTo("WHATSAPP");
+        assertThat(message.text()).isEqualTo("moseguros_otp {code=012345}");
+        assertThat(store.list()).containsExactly(message);
+        assertThat(store.add("+258841234567", "x").channel()).isEqualTo("SMS");
+    }
+
+    @Test
     void clearRemovesEverything() {
         SmsStore store = new SmsStore();
         store.add("+258841234567", "teste");

@@ -23,11 +23,16 @@ class ModularityTest {
         modules.verify();
     }
 
-    /** S1-02: identity só usa shared e a API pública de organization; organization nunca usa identity. */
+    /**
+     * S1-02 e S1-03: identity só usa shared e as APIs públicas de organization e notification;
+     * organization e notification nunca usam identity.
+     */
     @Test
-    void identityDependsOnOrganizationButNotTheOtherWayAround() {
-        assertThat(dependenciesOf("identity")).contains("organization").isSubsetOf("shared", "organization");
+    void identityDependsOnOrganizationAndNotificationOnly() {
+        assertThat(dependenciesOf("identity")).contains("organization", "notification")
+                .isSubsetOf("shared", "organization", "notification");
         assertThat(dependenciesOf("organization")).isSubsetOf("shared");
+        assertThat(dependenciesOf("notification")).isSubsetOf("shared");
     }
 
     private Set<String> dependenciesOf(String name) {

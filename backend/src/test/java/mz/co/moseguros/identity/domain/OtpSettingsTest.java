@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 
 import mz.co.moseguros.shared.domain.Channel;
-import mz.co.moseguros.shared.error.DomainException;
+import mz.co.moseguros.shared.error.FieldValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -83,8 +83,9 @@ class OtpSettingsTest {
     }
 
     private static void assertCode(Runnable action, String code) {
-        assertThatThrownBy(action::run).isInstanceOfSatisfying(DomainException.class, e -> {
-            assertThat(e.getCode()).isEqualTo(code);
+        assertThatThrownBy(action::run).isInstanceOfSatisfying(FieldValidationException.class, e -> {
+            assertThat(e.getCode()).isEqualTo("VALIDATION_ERROR");
+            assertThat(e.getFieldCode()).isEqualTo(code);
             assertThat(e.getHttpStatus()).isEqualTo(400);
         });
     }

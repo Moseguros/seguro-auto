@@ -7,3 +7,15 @@ moseguros:
   crypto:
     data-keys:
       1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento
+  security:
+    otp:
+      pepper: test-otp-pepper-only-for-tests
+  # Os testes de integração usam canais falsos (FakeOtpDeliveryChannels, perfil test).
+  notification:
+    webhook-secret: test-webhook-secret
+    sms:
+      provider: fake
+    whatsapp:
+      provider: fake
+    email:
+      provider: fake
