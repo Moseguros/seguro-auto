@@ -55,7 +55,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 - **Docker Hub com limite de pedidos (429):** se acontecer, puxar `mirror.gcr.io/library/postgres:16-alpine` e etiquetar como `postgres:16-alpine`; o código continua a usar a imagem oficial.
 - **Spring Modulith JPA** precisa da tabela `event_publication` (migração `V202610311100`). Novas migrações têm carimbo posterior.
 - O NUIT valida só 9 dígitos (sem dígito de controlo). Os formatos de matrícula são configuráveis (S0-03).
-- **MinIO:** a imagem `minio/minio` deixou de estar no Docker Hub. O armazenamento S3 local escolhe-se no Sprint 3. O e-mail de desenvolvimento usa o **Mailpit** (o MailHog deixou de ser mantido).
+- **MinIO:** a imagem `minio/minio` deixou de estar no Docker Hub. O armazenamento de ficheiros usa disco local em desenvolvimento e S3 em produção (ADR-005, S2-01). O e-mail de desenvolvimento usa o **Mailpit** (o MailHog deixou de ser mantido).
 - **A partir do S1-01** a aplicação liga-se à BD como `moseguros_app_user` (sem privilégios de dono) e o Flyway como dono; os testes precisam do `init-roles.sql`. Ver a adenda do ADR-002.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
 - **Bloqueadas:** S5-07 e S5-08 (algoritmo SIMO e layout do ficheiro de pagamentos) — pedir ao proprietário do produto antes de implementar.
