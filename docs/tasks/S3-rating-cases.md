@@ -161,22 +161,22 @@ A semântica (variáveis, ordem das linhas, arredondamentos) está no S3-01, sec
 
 ## 4. Coberturas dos produtos — `products.json`
 
-Capital da RC obrigatória = `MTPL_MIN_CAPITAL` (3 000 000 MT, valor inicial do S2-02). As franquias são de demonstração.
+Produtos de teste (não são os dados de demonstração; esses estão no S3-01 §14). Campos com os nomes do `CoverageView` do S2-04, valores em centavos. Capital da RC obrigatória = `MTPL_MIN_CAPITAL` (3 000 000 MT, valor inicial do S2-02). As franquias são as do produto `AUTO-COMPLETO` dos dados de demonstração do S2-04 e não entram no cálculo do prémio.
 
 ```json
 [
   { "code": "DEMO-RC", "type": "MTPL_ONLY", "coverages": [
-    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capitalOptions": [300000000], "deductibleType": "NONE", "deductibleValue": null },
-    { "code": "VTPL", "mandatory": false, "requiresCodes": [], "capitalType": "OPTIONS", "capitalOptions": [500000000, 1000000000], "deductibleType": "NONE", "deductibleValue": null } ] },
+    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capital": 300000000, "capitalOptions": null, "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null },
+    { "code": "VTPL", "mandatory": false, "requiresCodes": [], "capitalType": "OPTIONS", "capital": null, "capitalOptions": [500000000, 1000000000], "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null } ] },
   { "code": "DEMO-AUTO", "type": "COMPREHENSIVE", "coverages": [
-    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capitalOptions": [300000000], "deductibleType": "NONE", "deductibleValue": null },
-    { "code": "VTPL", "mandatory": false, "requiresCodes": [], "capitalType": "OPTIONS", "capitalOptions": [500000000, 1000000000], "deductibleType": "NONE", "deductibleValue": null },
-    { "code": "OD_COLLISION", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capitalOptions": [], "deductibleType": "PERCENT", "deductibleValue": "10" },
-    { "code": "OD_FIRE", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capitalOptions": [], "deductibleType": "NONE", "deductibleValue": null },
-    { "code": "OD_NATURE", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capitalOptions": [], "deductibleType": "PERCENT", "deductibleValue": "10" },
-    { "code": "OD_THEFT", "mandatory": false, "requiresCodes": ["OD_COLLISION", "OD_FIRE", "OD_NATURE"], "capitalType": "VEHICLE_VALUE", "capitalOptions": [], "deductibleType": "PERCENT", "deductibleValue": "20" } ] },
+    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capital": 300000000, "capitalOptions": null, "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null },
+    { "code": "VTPL", "mandatory": false, "requiresCodes": [], "capitalType": "OPTIONS", "capital": null, "capitalOptions": [500000000, 1000000000], "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null },
+    { "code": "OD_COLLISION", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "10", "deductibleMinAmount": 2500000 },
+    { "code": "OD_FIRE", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "10", "deductibleMinAmount": 2500000 },
+    { "code": "OD_NATURE", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "10", "deductibleMinAmount": 2500000 },
+    { "code": "OD_THEFT", "mandatory": false, "requiresCodes": ["OD_COLLISION", "OD_FIRE", "OD_NATURE"], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "20", "deductibleMinAmount": 5000000 } ] },
   { "code": "DEMO-TEMP", "type": "TEMPORARY", "coverages": [
-    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capitalOptions": [300000000], "deductibleType": "NONE", "deductibleValue": null } ] }
+    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capital": 300000000, "capitalOptions": null, "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null } ] }
 ]
 ```
 
@@ -234,3 +234,18 @@ O que cada caso prova:
     "expected": {"status": "OFFERED", "coverages": [{"code": "MTPL", "exactPremium": "19500.0000", "premiumAmount": 19500}], "commercialPremiumAmount": 19500, "charges": [{"code": "DEMO_STAMP", "amount": 488}, {"code": "DEMO_FEE", "amount": 5000}], "subtotalAmount": 24988, "roundingAdjustmentAmount": 12, "totalAmount": 25000} }
 ]
 ```
+
+## 7. Complemento só para os dados de demonstração
+
+O produto `AUTO-COMPLETO` dos dados de demonstração do S2-04 tem mais três coberturas do que o `DEMO-AUTO` dos testes. Para a tarifa dele passar a validação do S3-01 (§7.1: todas as coberturas da versão têm tarifa), o `R__dev_seed_s3.sql` acrescenta estas três entradas no fim das `coverages` de `tariff-dp.json`. Não são usadas em nenhum caso de referência.
+
+```json
+[
+  { "coverageCode": "OD_GLASS", "base": { "type": "RATE_OF_VEHICLE_VALUE", "rows": [ { "when": {}, "value": "0.0010" } ] } },
+  { "coverageCode": "OCCUPANTS", "base": { "type": "AMOUNT", "rows": [
+    { "label": "Até 5 lugares", "when": { "seats": { "lt": 6 } }, "value": 150000 },
+    { "when": {}, "value": 250000 } ] } },
+  { "coverageCode": "ASSISTANCE", "base": { "type": "AMOUNT", "rows": [ { "when": {}, "value": 120000 } ] } }
+]
+```
+
