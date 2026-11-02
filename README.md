@@ -16,6 +16,20 @@ Plataforma de seguro automóvel para Moçambique: os motoristas cotam, compram, 
 
 As pastas são criadas ao longo do Sprint 0.
 
+## Preparar a máquina
+
+Verifique se tem tudo o que é preciso (Git, Docker e imagens, JDK 17, Node, pnpm, Flutter, Android SDK, portas livres):
+
+```bash
+./scripts/doctor.sh            # Linux, macOS ou Git Bash no Windows
+./scripts/doctor.sh --fix      # e descarregar as imagens Docker em falta
+./scripts/doctor.sh --full     # e correr os testes do backend
+```
+
+No PowerShell: `powershell -ExecutionPolicy Bypass -File scripts\doctor.ps1 [-Fix] [-Full]`. No Claude Code: `/verificar-ambiente`.
+
+O script diz o que falta e como instalar. Ferramentas de partes que ainda não existem (por exemplo, o Flutter antes de haver `mobile/`) aparecem como aviso, não como falta.
+
 ## Como contribuir
 
 - Leia o [`AGENTS.md`](AGENTS.md): as convenções valem para pessoas e agentes de IA.

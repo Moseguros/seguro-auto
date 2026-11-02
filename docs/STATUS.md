@@ -9,13 +9,14 @@ Actualizado em 01/11/2026.
 | Tarefa | Estado | PR |
 | --- | --- | --- |
 | S0-01 Fichas e ADRs | concluída (merged) | #1 |
-| S0-02 Esqueleto do backend | em revisão | #2 |
+| S0-02 Esqueleto do backend | concluída (merged) | #2 |
 | S0-03 Tipos partilhados e auditoria | pronta — começar depois do merge do #2 | — |
 | S0-04 Contrato OpenAPI | pronta — depois do S0-03 (usa os value objects) | — |
 | S0-05 Web | depende de S0-04 | — |
 | S0-06 Mobile | depende de S0-04 | — |
 | S0-07 Infra local | depende de S0-02 e S0-05 | — |
 | S0-08 CI | depende de S0-03 a S0-07 | — |
+| S0-09 Verificação do ambiente (`scripts/doctor.sh`) | em revisão | #5 |
 
 ### Sprint 1 — Identidade, organizações e perfis
 
@@ -43,7 +44,9 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 
 ## Requisitos do ambiente
 
-- JDK 17 (Temurin), Docker em execução (Testcontainers), Node 20 + pnpm 9, Flutter estável (versão fixada em `mobile/pubspec.yaml` a partir do S0-06).
+- Verificar tudo de uma vez: `./scripts/doctor.sh` (ou `/verificar-ambiente` no Claude Code).
+
+- JDK 17 (Temurin), Docker em execução (Testcontainers), Node 22 LTS + pnpm 9, Flutter estável (versão fixada em `mobile/pubspec.yaml` a partir do S0-06).
 - Backend: `cd backend && ./mvnw -B verify`.
 
 ## Notas e armadilhas conhecidas

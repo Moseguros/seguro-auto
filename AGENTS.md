@@ -19,7 +19,7 @@ Este ficheiro é incluído no contexto de todas as tarefas. Se uma ficha de tare
 | Backend | Java 17 (Temurin), Spring Boot 3.3.x, Maven, Spring Modulith, PostgreSQL 16, Flyway |
 | Worker de ficheiros | Java 17, Spring Boot, Spring Integration SFTP, Spring AMQP |
 | Mensageria | RabbitMQ 3.13 (worker ↔ backend); eventos internos com Spring Modulith + outbox |
-| Web | React 18, TypeScript 5 (strict), Vite, MUI, TanStack Query, React Router, i18next, orval; Node 20 LTS, pnpm |
+| Web | React 18, TypeScript 5 (strict), Vite, MUI, TanStack Query, React Router, i18next, orval; Node 22 LTS, pnpm 9 |
 | Mobile | Flutter estável ≥ 3.24, Riverpod, go_router, Dio, drift |
 | Infra | Docker, docker-compose, GitHub Actions |
 
