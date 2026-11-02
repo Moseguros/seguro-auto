@@ -4,11 +4,13 @@ import java.time.Clock;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-/** Guarda em memória as últimas {@value #CAPACITY} mensagens, a mais recente primeiro. */
+/** Guarda em memória as últimas {@value #CAPACITY} mensagens (SMS e WhatsApp), a mais recente primeiro. */
 @Component
 public class SmsStore {
 
@@ -25,8 +27,23 @@ public class SmsStore {
         this.clock = clock;
     }
 
-    public synchronized SmsMessage add(String to, String text) {
-        SmsMessage message = new SmsMessage(UUID.randomUUID().toString(), to, text, clock.instant());
+    /** SMS recebido. */
+    public SmsMessage add(String to, String text) {
+        return store(new SmsMessage(UUID.randomUUID().toString(), "SMS", to, text, null, null, clock.instant()));
+    }
+
+    /** Mensagem de WhatsApp com modelo; o texto mostra o modelo e os parâmetros. */
+    public SmsMessage addWhatsApp(String to, String template, Map<String, String> params) {
+        Map<String, String> copy = params == null ? Map.of() : Map.copyOf(params);
+        String text = template + " " + copy.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining(", ", "{", "}"));
+        return store(new SmsMessage(UUID.randomUUID().toString(), "WHATSAPP", to, text, template, copy,
+                clock.instant()));
+    }
+
+    private synchronized SmsMessage store(SmsMessage message) {
         messages.addFirst(message);
         while (messages.size() > CAPACITY) {
             messages.removeLast();

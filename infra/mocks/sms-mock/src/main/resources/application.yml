@@ -17,3 +17,9 @@ management:
   endpoint:
     health:
       show-details: never
+
+# Recibos de entrega para o backend (S1-03). Sem RECEIPT_CALLBACK_URL não se enviam recibos.
+mock:
+  receipt-callback-url: ${RECEIPT_CALLBACK_URL:}
+  receipt-secret: ${RECEIPT_SECRET:}
+  receipt-delay: PT2S
