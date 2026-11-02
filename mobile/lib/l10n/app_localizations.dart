@@ -283,6 +283,186 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Renovar seguro'**
   String get ctaRenew;
+
+  /// No description provided for @errorInvalidEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Endereço de e-mail inválido.'**
+  String get errorInvalidEmail;
+
+  /// No description provided for @errorInvalidPhone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de telefone inválido.'**
+  String get errorInvalidPhone;
+
+  /// No description provided for @errorTenantRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro interno do servidor. Tente mais tarde.'**
+  String get errorTenantRequired;
+
+  /// No description provided for @errorDecryptionFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro interno do servidor. Tente mais tarde.'**
+  String get errorDecryptionFailed;
+
+  /// No description provided for @errorInvalidStateTransition.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta operação não é possível no estado actual.'**
+  String get errorInvalidStateTransition;
+
+  /// No description provided for @errorLicenseNumberRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O número de autorização da ASFPM é obrigatório para seguradoras, corretores e agentes.'**
+  String get errorLicenseNumberRequired;
+
+  /// No description provided for @errorChannelsEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha pelo menos um canal.'**
+  String get errorChannelsEmpty;
+
+  /// No description provided for @errorChannelsDuplicated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada canal só pode aparecer uma vez.'**
+  String get errorChannelsDuplicated;
+
+  /// No description provided for @errorDefaultChannelNotEnabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'O canal por defeito tem de estar activo.'**
+  String get errorDefaultChannelNotEnabled;
+
+  /// No description provided for @errorFallbackOrderMismatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'A ordem alternativa tem de ter exactamente os canais activos.'**
+  String get errorFallbackOrderMismatch;
+
+  /// No description provided for @errorOutOfRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor fora dos limites permitidos.'**
+  String get errorOutOfRange;
+
+  /// No description provided for @validationInvalidEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail inválido (ex.: nome@exemplo.co.mz).'**
+  String get validationInvalidEmail;
+
+  /// No description provided for @validationInvalidPhone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Telefone inválido (9 a 15 dígitos).'**
+  String get validationInvalidPhone;
+
+  /// No description provided for @validationLicenseNumberRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indique o número de autorização da ASFPM.'**
+  String get validationLicenseNumberRequired;
+
+  /// No description provided for @validationChannelsEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha pelo menos um canal.'**
+  String get validationChannelsEmpty;
+
+  /// No description provided for @validationChannelsDuplicated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada canal só pode aparecer uma vez.'**
+  String get validationChannelsDuplicated;
+
+  /// No description provided for @validationDefaultChannelNotEnabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'O canal por defeito tem de estar activo.'**
+  String get validationDefaultChannelNotEnabled;
+
+  /// No description provided for @validationFallbackOrderMismatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'A ordem alternativa tem de ter exactamente os canais activos.'**
+  String get validationFallbackOrderMismatch;
+
+  /// No description provided for @validationOutOfRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor fora dos limites permitidos.'**
+  String get validationOutOfRange;
+
+  /// province.MAPUTO_CITY (Province no backend).
+  ///
+  /// In pt, this message translates to:
+  /// **'Maputo Cidade'**
+  String get provinceMaputoCity;
+
+  /// No description provided for @provinceMaputo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Maputo Província'**
+  String get provinceMaputo;
+
+  /// No description provided for @provinceGaza.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gaza'**
+  String get provinceGaza;
+
+  /// No description provided for @provinceInhambane.
+  ///
+  /// In pt, this message translates to:
+  /// **'Inhambane'**
+  String get provinceInhambane;
+
+  /// No description provided for @provinceSofala.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sofala'**
+  String get provinceSofala;
+
+  /// No description provided for @provinceManica.
+  ///
+  /// In pt, this message translates to:
+  /// **'Manica'**
+  String get provinceManica;
+
+  /// No description provided for @provinceTete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tete'**
+  String get provinceTete;
+
+  /// No description provided for @provinceZambezia.
+  ///
+  /// In pt, this message translates to:
+  /// **'Zambézia'**
+  String get provinceZambezia;
+
+  /// No description provided for @provinceNampula.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nampula'**
+  String get provinceNampula;
+
+  /// No description provided for @provinceCaboDelgado.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cabo Delgado'**
+  String get provinceCaboDelgado;
+
+  /// No description provided for @provinceNiassa.
+  ///
+  /// In pt, this message translates to:
+  /// **'Niassa'**
+  String get provinceNiassa;
 }
 
 class _AppLocalizationsDelegate

@@ -7,3 +7,8 @@ logging:
 springdoc:
   swagger-ui:
     enabled: true
+
+moseguros:
+  crypto:
+    data-keys:
+      1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento

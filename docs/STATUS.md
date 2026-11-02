@@ -22,7 +22,7 @@ Actualizado em 02/11/2026.
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S1-01 Tabelas de identidade e organizações, RLS e cifra | S0-03, S0-04 | pronta |
+| S1-01 Tabelas de identidade e organizações, RLS e cifra | S0-03, S0-04 | em revisão |
 | S1-02 Tokens JWT, sessões e permissões | S1-01 | pronta |
 | S1-03 OTP do cliente e canais de envio | S1-02 | pronta |
 | S1-04 Organizações, convites e activação de staff | S1-03 | pronta |

@@ -28,7 +28,7 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | --- | --- | --- |
 | `web` | <http://localhost:3000> | nginx sem root: build da web e proxy de `/api/` para o backend |
 | `backend` | <http://localhost:8080/api/v1/meta/version> | perfil `local`; Swagger UI em <http://localhost:8080/swagger-ui.html>; health em `/api/v1/health` |
-| `postgres` | `localhost:5432` | BD, utilizador e palavra-passe `moseguros` (ver `.env.example`); dados no volume `pgdata` |
+| `postgres` | `localhost:5432` | BD, utilizador e palavra-passe `moseguros` (dono; ver `.env.example`); a aplicação usa `moseguros_app_user` (ver "Base de dados — papéis"); dados no volume `pgdata` |
 | `mailpit` | <http://localhost:8025> (web), `localhost:1025` (SMTP) | caixa de correio de teste: todo o e-mail enviado fica aqui |
 | `sms-mock` | <http://localhost:8090> | lista dos SMS recebidos, actualizada a cada 3 s |
 
@@ -42,6 +42,26 @@ curl -X DELETE localhost:8090/sms              # limpa
 ```
 
 As mensagens ficam só em memória: perdem-se quando o contentor reinicia.
+
+## Base de dados — papéis
+
+A partir do S1-01 a aplicação **não** se liga à base de dados como dona das tabelas (ADR-002 e a adenda de 01/11/2026):
+
+| Papel | Para quê | Local (`docker compose`) |
+| --- | --- | --- |
+| dono (`POSTGRES_USER` do `.env`, por defeito `moseguros`) | corre as migrações Flyway; dono de todas as tabelas | `DB_OWNER_USERNAME` / `DB_OWNER_PASSWORD` do backend |
+| `moseguros_app` (sem login) | recebe os privilégios (`select`, `insert`, `update`; `delete` só em `identity.user_role` e `public.event_publication`) | criado por `postgres/init/01-roles.sql` |
+| `moseguros_app_user` (login, membro de `moseguros_app`) | a aplicação; sem `SUPERUSER`, sem `BYPASSRLS` e sem ser dona de nenhuma tabela, para que o Row Level Security se aplique a ela | `DB_USERNAME=moseguros_app_user`, `DB_PASSWORD=moseguros_app` |
+
+O Postgres só corre os scripts de `postgres/init` (`/docker-entrypoint-initdb.d`) quando o volume está **vazio**. Quem já tinha o volume `pgdata` de antes do S1-01 apaga-o uma vez:
+
+```bash
+docker compose down -v && docker compose up -d --build
+```
+
+Sem isto o backend não arranca (`password authentication failed for user "moseguros_app_user"`).
+
+**Staging e produção:** os papéis são criados pela equipa de operações antes do primeiro deploy, com o mesmo conteúdo de `postgres/init/01-roles.sql` (a palavra-passe de `moseguros_app_user` vem do cofre de segredos, não a do ficheiro). O dono das tabelas não precisa de ser superutilizador: basta ser dono da base de dados. O backend recebe `DB_URL`, `DB_USERNAME`/`DB_PASSWORD` (`moseguros_app_user`), `DB_OWNER_USERNAME`/`DB_OWNER_PASSWORD` (dono, só para o Flyway) e `MOSEGUROS_DATA_KEY_1` (chave de cifra das colunas, 32 bytes em Base64; sem ela a aplicação não arranca).
 
 ## Comandos úteis
 

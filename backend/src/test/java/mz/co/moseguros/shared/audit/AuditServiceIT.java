@@ -30,6 +30,7 @@ import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
  * {@link AuditService} contra um Postgres real com a migração aplicada e
@@ -69,6 +70,9 @@ class AuditServiceIT {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    PostgreSQLContainer<?> postgres;
 
     @AfterEach
     void cleanUp() {
@@ -169,12 +173,14 @@ class AuditServiceIT {
 
     @Test
     void migrationCreatesEveryModuleSchema() {
-        List<String> schemas = jdbc.queryForList(
+        // Como dono: o utilizador da aplicação só vê os schemas a que tem acesso.
+        JdbcTemplate owner = TestcontainersConfiguration.ownerJdbc(postgres);
+        List<String> schemas = owner.queryForList(
                 "select schema_name from information_schema.schemata", String.class);
         assertThat(schemas).contains("audit", "identity", "organization", "vehicle", "catalog", "rating",
                 "proposal", "payment", "policy", "document", "notification", "verification", "claim",
                 "complaint", "assistance", "reporting", "fraud", "integration");
-        assertThat(jdbc.queryForObject(
+        assertThat(owner.queryForObject(
                 "select count(*) from public.flyway_schema_history where version = '202610311200' and success",
                 Integer.class)).isEqualTo(1);
     }
