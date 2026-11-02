@@ -1,0 +1,60 @@
+package mz.co.moseguros;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
+
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+
+/** Swagger UI ligado no perfil {@code local} e desligado em {@code prod}. */
+class SwaggerUiIT {
+
+    @Nested
+    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    @Import(TestcontainersConfiguration.class)
+    @ActiveProfiles({"test", "local"})
+    class Local {
+
+        @LocalServerPort
+        int port;
+
+        @BeforeEach
+        void setUp() {
+            RestAssured.port = port;
+        }
+
+        @Test
+        void swaggerUiIsAvailable() {
+            given().redirects().follow(true).get("/swagger-ui.html")
+                    .then().statusCode(200)
+                    .body(containsString("Swagger UI"));
+        }
+    }
+
+    @Nested
+    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    @Import(TestcontainersConfiguration.class)
+    @ActiveProfiles({"test", "prod"})
+    class Prod {
+
+        @LocalServerPort
+        int port;
+
+        @BeforeEach
+        void setUp() {
+            RestAssured.port = port;
+        }
+
+        @Test
+        void swaggerUiIsDisabled() {
+            given().redirects().follow(false).get("/swagger-ui.html")
+                    .then().statusCode(404);
+        }
+    }
+}
