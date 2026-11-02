@@ -30,7 +30,34 @@ test('/ mostra a versão da API', async ({ page }) => {
   await expectNoHorizontalScroll(page);
 });
 
-test('/seguradora mostra o menu da área', async ({ page }) => {
+test('/seguradora mostra o menu da área (com sessão de staff)', async ({ page }) => {
+  // Sessão de staff de uma seguradora: o refresh token guardado é renovado ao arrancar.
+  await page.addInitScript(() => sessionStorage.setItem('moseguros.staff.rt', 'refresh-smoke'));
+  const json = (body: unknown) => ({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(body),
+  });
+  await page.route('**/api/v1/auth/refresh', (route) =>
+    route.fulfill(
+      json({ accessToken: 'access-smoke', refreshToken: 'refresh-smoke', expiresIn: 900 }),
+    ),
+  );
+  await page.route('**/api/v1/me', (route) =>
+    route.fulfill(
+      json({
+        id: '0192f0c4-0000-7000-8000-000000000002',
+        type: 'STAFF',
+        roles: ['UNDERWRITER'],
+        permissions: [],
+        preferredLanguage: 'pt',
+        emailVerified: true,
+        msisdnVerified: false,
+        displayName: 'Subscritor',
+        organization: { id: 'o1', displayName: 'Índico Seguros', type: 'INSURER' },
+      }),
+    ),
+  );
   await page.goto('/seguradora');
   await expect(page.getByRole('heading', { name: 'Em construção' })).toBeVisible();
   // A 360 px o menu é uma gaveta.
