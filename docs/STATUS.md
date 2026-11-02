@@ -24,7 +24,7 @@ Actualizado em 02/11/2026.
 | --- | --- | --- |
 | S1-01 Tabelas de identidade e organizações, RLS e cifra | S0-03, S0-04 | em revisão |
 | S1-02 Tokens JWT, sessões e permissões | S1-01 | em revisão |
-| S1-03 OTP do cliente e canais de envio | S1-02 | pronta |
+| S1-03 OTP do cliente e canais de envio | S1-02 | em revisão |
 | S1-04 Organizações, convites e activação de staff | S1-03 | pronta |
 | S1-05 Login de staff e gestão de utilizadores | S1-04 | pronta |
 | S1-06 Perfil e contactos do cliente | S1-03 | pronta — pode correr em paralelo com S1-04 |
@@ -59,6 +59,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 - **A partir do S1-01** a aplicação liga-se à BD como `moseguros_app_user` (sem privilégios de dono) e o Flyway como dono; os testes precisam do `init-roles.sql`. Ver a adenda do ADR-002.
 - **Chave dos JWT (S1-02):** fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_JWT_PRIVATE_KEY` (PEM PKCS#8, RSA 2048) e `MOSEGUROS_JWT_KEY_ID`. Em `local`/`test` gera um par no arranque: os tokens deixam de valer quando o backend reinicia.
 - **Códigos de erro (S1-02):** `api/error-codes.json` é gerado a partir de `ErrorCodes`/`FieldErrorCodes` (`./mvnw test -Dtest=ErrorCodesExportTest -Derror-codes.export=true`) e verificado pelo `scripts/check-openapi.sh`.
+- **OTP (S1-03):** fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_OTP_PEPPER` (segredo do HMAC dos códigos); `MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET` (recibos de entrega) vazio recusa todos os recibos. No perfil `local` o código vem no cabeçalho `X-Debug-Otp` (proibido em `prod`). Teste manual com o `sms-mock` em `infra/README.md`.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
 - **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
 - **Bloqueadas:** S5-07 e S5-08 (algoritmo SIMO e layout do ficheiro de pagamentos) — pedir ao proprietário do produto antes de implementar.
