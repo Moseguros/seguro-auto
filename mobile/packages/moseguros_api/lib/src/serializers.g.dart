@@ -10,6 +10,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AcceptInvitationRequest.serializer)
       ..add(ActivateInvitationRequest.serializer)
       ..add(AssignableRolesResponse.serializer)
+      ..add(BrokerVehicleRequest.serializer)
+      ..add(BrokerVehicleRequestProvinceOfCirculationEnum.serializer)
       ..add(CatalogInsurerResponse.serializer)
       ..add(CatalogProductResponse.serializer)
       ..add(CatalogProductResponseStatusEnum.serializer)
@@ -30,6 +32,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CoverageResponseCodeEnum.serializer)
       ..add(CoverageResponseDeductibleTypeEnum.serializer)
       ..add(CoverageResponseRequiresCodesEnum.serializer)
+      ..add(CreateBrokerQuoteRequest.serializer)
+      ..add(CreateBrokerQuoteRequestProductTypeEnum.serializer)
       ..add(CreateDriverRequest.serializer)
       ..add(CreateOrganizationRequest.serializer)
       ..add(CreateOrganizationRequestProvinceEnum.serializer)
@@ -37,6 +41,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CreatePlateFormatRequest.serializer)
       ..add(CreateProductRequest.serializer)
       ..add(CreateProductRequestTypeEnum.serializer)
+      ..add(CreateQuoteRequest.serializer)
+      ..add(CreateQuoteRequestProductTypeEnum.serializer)
       ..add(CreateReferenceValueRequest.serializer)
       ..add(CreateVehicleRequest.serializer)
       ..add(CreateVehicleRequestProvinceOfCirculationEnum.serializer)
@@ -99,6 +105,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
       ..add(PageResponseProductSummaryResponse.serializer)
+      ..add(PageResponseQuoteRequestSummaryResponse.serializer)
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
       ..add(PageResponseVehicleResponse.serializer)
@@ -131,13 +138,37 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PublicReferenceValueResponse.serializer)
       ..add(PublicReferenceValuesResponse.serializer)
       ..add(PublishProductVersionRequest.serializer)
+      ..add(QuoteChargeResponse.serializer)
+      ..add(QuoteCoverageResponse.serializer)
+      ..add(QuoteCoverageResponseCodeEnum.serializer)
+      ..add(QuoteDeductible.serializer)
+      ..add(QuoteDeductibleTypeEnum.serializer)
+      ..add(QuoteInsurer.serializer)
+      ..add(QuoteProduct.serializer)
+      ..add(QuoteProductTypeEnum.serializer)
+      ..add(QuoteRequestResponse.serializer)
+      ..add(QuoteRequestResponseOriginEnum.serializer)
+      ..add(QuoteRequestResponseProductTypeEnum.serializer)
+      ..add(QuoteRequestSummaryResponse.serializer)
+      ..add(QuoteRequestSummaryResponseOriginEnum.serializer)
+      ..add(QuoteRequestSummaryResponseProductTypeEnum.serializer)
+      ..add(QuoteResponse.serializer)
+      ..add(QuoteResponseStatusEnum.serializer)
+      ..add(QuoteSummaryVehicle.serializer)
+      ..add(QuotedDriver.serializer)
+      ..add(QuotedVehicle.serializer)
+      ..add(QuotedVehicleProvinceOfCirculationEnum.serializer)
       ..add(RatingCoverage.serializer)
       ..add(RatingCoverageCapitalTypeEnum.serializer)
       ..add(RatingCoverageCodeEnum.serializer)
+      ..add(RatingIntegrationResponse.serializer)
+      ..add(RatingIntegrationResponseRatingModeEnum.serializer)
       ..add(RatingRuleError.serializer)
       ..add(RatingRulesResponse.serializer)
       ..add(RatingRulesResponseProductTypeEnum.serializer)
       ..add(RatingRulesValidationResponse.serializer)
+      ..add(RatingSimulationResponse.serializer)
+      ..add(RatingSimulationResponseStatusEnum.serializer)
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
@@ -147,8 +178,16 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
+      ..add(RequestedCoverageRequest.serializer)
+      ..add(RequestedCoverageRequestCodeEnum.serializer)
+      ..add(RequestedCoverageResponse.serializer)
+      ..add(RequestedCoverageResponseCodeEnum.serializer)
       ..add(ResetPasswordRequest.serializer)
+      ..add(RiskDriverRequest.serializer)
       ..add(RuleError.serializer)
+      ..add(SimulateRatingRequest.serializer)
+      ..add(SimulationVehicleRequest.serializer)
+      ..add(SimulationVehicleRequestProvinceOfCirculationEnum.serializer)
       ..add(StaffLoginRequest.serializer)
       ..add(StaffUserResponse.serializer)
       ..add(StaffUserResponseStatusEnum.serializer)
@@ -160,6 +199,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(TestPlateFormatResponse.serializer)
       ..add(TokenResponse.serializer)
       ..add(TotpSetupResponse.serializer)
+      ..add(UnavailableReason.serializer)
       ..add(UpdateDriverRequest.serializer)
       ..add(UpdateInsurerRatingSettingsRequest.serializer)
       ..add(UpdateMeRequest.serializer)
@@ -178,6 +218,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateProductRequest.serializer)
       ..add(UpdateProductRequestTypeEnum.serializer)
       ..add(UpdateProductVersionRequest.serializer)
+      ..add(UpdateRatingIntegrationRequest.serializer)
+      ..add(UpdateRatingIntegrationRequestRatingModeEnum.serializer)
       ..add(UpdateRatingRulesRequest.serializer)
       ..add(UpdateReferenceValueRequest.serializer)
       ..add(UpdateUserRolesRequest.serializer)
@@ -204,6 +246,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Charge)]),
           () => ListBuilder<Charge>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Charge)]),
+          () => ListBuilder<Charge>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(RequestedCoverageRequest)]),
+          () => ListBuilder<RequestedCoverageRequest>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(ContactResponse)]),
           () => ListBuilder<ContactResponse>())
@@ -312,6 +361,31 @@ Serializers _$serializers = (Serializers().toBuilder()
               BuiltList, const [const FullType(PublicReferenceValueResponse)]),
           () => ListBuilder<PublicReferenceValueResponse>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(QuoteChargeResponse)]),
+          () => ListBuilder<QuoteChargeResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(QuoteCoverageResponse)]),
+          () => ListBuilder<QuoteCoverageResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
+            const FullType.nullable(JsonObject)
+          ]),
+          () => MapBuilder<String, JsonObject?>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(QuoteRequestSummaryResponse)]),
+          () => ListBuilder<QuoteRequestSummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(QuoteResponse)]),
+          () => ListBuilder<QuoteResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(RequestedCoverageResponse)]),
+          () => ListBuilder<RequestedCoverageResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(RatingCoverage)]),
           () => ListBuilder<RatingCoverage>())
       ..addBuilderFactory(
@@ -322,11 +396,25 @@ Serializers _$serializers = (Serializers().toBuilder()
               BuiltList, const [const FullType(ReferenceValueResponse)]),
           () => ListBuilder<ReferenceValueResponse>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(RequestedCoverageRequest)]),
+          () => ListBuilder<RequestedCoverageRequest>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(RequestedCoverageRequest)]),
+          () => ListBuilder<RequestedCoverageRequest>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(RuleError)]),
           () => ListBuilder<RuleError>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(StaffUserResponse)]),
           () => ListBuilder<StaffUserResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
@@ -408,7 +496,19 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList,
               const [const FullType(OtpOptionsResponseIdentifierTypesEnum)]),
-          () => ListBuilder<OtpOptionsResponseIdentifierTypesEnum>()))
+          () => ListBuilder<OtpOptionsResponseIdentifierTypesEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
+            const FullType.nullable(JsonObject)
+          ]),
+          () => MapBuilder<String, JsonObject?>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
+            const FullType.nullable(JsonObject)
+          ]),
+          () => MapBuilder<String, JsonObject?>()))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

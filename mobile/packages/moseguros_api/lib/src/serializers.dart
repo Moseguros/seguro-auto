@@ -17,6 +17,7 @@ import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/accept_invitation_request.dart';
 import 'package:moseguros_api/src/model/activate_invitation_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
+import 'package:moseguros_api/src/model/broker_vehicle_request.dart';
 import 'package:moseguros_api/src/model/catalog_insurer_response.dart';
 import 'package:moseguros_api/src/model/catalog_product_response.dart';
 import 'package:moseguros_api/src/model/charge.dart';
@@ -25,10 +26,12 @@ import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/coverage_request.dart';
 import 'package:moseguros_api/src/model/coverage_response.dart';
+import 'package:moseguros_api/src/model/create_broker_quote_request.dart';
 import 'package:moseguros_api/src/model/create_driver_request.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
 import 'package:moseguros_api/src/model/create_plate_format_request.dart';
 import 'package:moseguros_api/src/model/create_product_request.dart';
+import 'package:moseguros_api/src/model/create_quote_request.dart';
 import 'package:moseguros_api/src/model/create_reference_value_request.dart';
 import 'package:moseguros_api/src/model/create_vehicle_request.dart';
 import 'package:moseguros_api/src/model/customer_profile_response.dart';
@@ -64,6 +67,7 @@ import 'package:moseguros_api/src/model/page_response_driver_response.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_quote_request_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
 import 'package:moseguros_api/src/model/page_response_vehicle_response.dart';
@@ -85,18 +89,36 @@ import 'package:moseguros_api/src/model/public_platform_settings_response.dart';
 import 'package:moseguros_api/src/model/public_reference_value_response.dart';
 import 'package:moseguros_api/src/model/public_reference_values_response.dart';
 import 'package:moseguros_api/src/model/publish_product_version_request.dart';
+import 'package:moseguros_api/src/model/quote_charge_response.dart';
+import 'package:moseguros_api/src/model/quote_coverage_response.dart';
+import 'package:moseguros_api/src/model/quote_deductible.dart';
+import 'package:moseguros_api/src/model/quote_insurer.dart';
+import 'package:moseguros_api/src/model/quote_product.dart';
+import 'package:moseguros_api/src/model/quote_request_response.dart';
+import 'package:moseguros_api/src/model/quote_request_summary_response.dart';
+import 'package:moseguros_api/src/model/quote_response.dart';
+import 'package:moseguros_api/src/model/quote_summary_vehicle.dart';
+import 'package:moseguros_api/src/model/quoted_driver.dart';
+import 'package:moseguros_api/src/model/quoted_vehicle.dart';
 import 'package:moseguros_api/src/model/rating_coverage.dart';
+import 'package:moseguros_api/src/model/rating_integration_response.dart';
 import 'package:moseguros_api/src/model/rating_rule_error.dart';
 import 'package:moseguros_api/src/model/rating_rules_response.dart';
 import 'package:moseguros_api/src/model/rating_rules_validation_response.dart';
+import 'package:moseguros_api/src/model/rating_simulation_response.dart';
 import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
 import 'package:moseguros_api/src/model/registration_doc_response.dart';
 import 'package:moseguros_api/src/model/registry_lookup_response.dart';
 import 'package:moseguros_api/src/model/replace_coverages_request.dart';
 import 'package:moseguros_api/src/model/request_otp_request.dart';
+import 'package:moseguros_api/src/model/requested_coverage_request.dart';
+import 'package:moseguros_api/src/model/requested_coverage_response.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
+import 'package:moseguros_api/src/model/risk_driver_request.dart';
 import 'package:moseguros_api/src/model/rule_error.dart';
+import 'package:moseguros_api/src/model/simulate_rating_request.dart';
+import 'package:moseguros_api/src/model/simulation_vehicle_request.dart';
 import 'package:moseguros_api/src/model/staff_login_request.dart';
 import 'package:moseguros_api/src/model/staff_user_response.dart';
 import 'package:moseguros_api/src/model/start_contact_verification_request.dart';
@@ -105,6 +127,7 @@ import 'package:moseguros_api/src/model/test_plate_format_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_response.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/totp_setup_response.dart';
+import 'package:moseguros_api/src/model/unavailable_reason.dart';
 import 'package:moseguros_api/src/model/update_driver_request.dart';
 import 'package:moseguros_api/src/model/update_insurer_rating_settings_request.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
@@ -115,6 +138,7 @@ import 'package:moseguros_api/src/model/update_plate_format_request.dart';
 import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
 import 'package:moseguros_api/src/model/update_product_request.dart';
 import 'package:moseguros_api/src/model/update_product_version_request.dart';
+import 'package:moseguros_api/src/model/update_rating_integration_request.dart';
 import 'package:moseguros_api/src/model/update_rating_rules_request.dart';
 import 'package:moseguros_api/src/model/update_reference_value_request.dart';
 import 'package:moseguros_api/src/model/update_user_roles_request.dart';
@@ -136,6 +160,7 @@ part 'serializers.g.dart';
   AcceptInvitationRequest,
   ActivateInvitationRequest,
   AssignableRolesResponse,
+  BrokerVehicleRequest,
   CatalogInsurerResponse,
   CatalogProductResponse,
   Charge,
@@ -144,10 +169,12 @@ part 'serializers.g.dart';
   ContactsResponse,
   CoverageRequest,
   CoverageResponse,
+  CreateBrokerQuoteRequest,
   CreateDriverRequest,
   CreateOrganizationRequest,
   CreatePlateFormatRequest,
   CreateProductRequest,
+  CreateQuoteRequest,
   CreateReferenceValueRequest,
   CreateVehicleRequest,
   CustomerProfileResponse,
@@ -183,6 +210,7 @@ part 'serializers.g.dart';
   PageResponseInvitationResponse,
   PageResponseOrganizationSummaryResponse,
   PageResponseProductSummaryResponse,
+  PageResponseQuoteRequestSummaryResponse,
   PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
   PageResponseVehicleResponse,
@@ -204,18 +232,36 @@ part 'serializers.g.dart';
   PublicReferenceValueResponse,
   PublicReferenceValuesResponse,
   PublishProductVersionRequest,
+  QuoteChargeResponse,
+  QuoteCoverageResponse,
+  QuoteDeductible,
+  QuoteInsurer,
+  QuoteProduct,
+  QuoteRequestResponse,
+  QuoteRequestSummaryResponse,
+  QuoteResponse,
+  QuoteSummaryVehicle,
+  QuotedDriver,
+  QuotedVehicle,
   RatingCoverage,
+  RatingIntegrationResponse,
   RatingRuleError,
   RatingRulesResponse,
   RatingRulesValidationResponse,
+  RatingSimulationResponse,
   ReferenceValueResponse,
   RefreshTokenRequest,
   RegistrationDocResponse,
   RegistryLookupResponse,
   ReplaceCoveragesRequest,
   RequestOtpRequest,
+  RequestedCoverageRequest,
+  RequestedCoverageResponse,
   ResetPasswordRequest,
+  RiskDriverRequest,
   RuleError,
+  SimulateRatingRequest,
+  SimulationVehicleRequest,
   StaffLoginRequest,
   StaffUserResponse,
   StartContactVerificationRequest,
@@ -224,6 +270,7 @@ part 'serializers.g.dart';
   TestPlateFormatResponse,
   TokenResponse,
   TotpSetupResponse,
+  UnavailableReason,
   UpdateDriverRequest,
   UpdateInsurerRatingSettingsRequest,
   UpdateMeRequest,
@@ -234,6 +281,7 @@ part 'serializers.g.dart';
   UpdatePlatformSettingRequest,
   UpdateProductRequest,
   UpdateProductVersionRequest,
+  UpdateRatingIntegrationRequest,
   UpdateRatingRulesRequest,
   UpdateReferenceValueRequest,
   UpdateUserRolesRequest,
