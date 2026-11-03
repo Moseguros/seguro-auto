@@ -86,6 +86,39 @@ export interface CatalogProductResponse {
   versionNo: number;
 }
 
+export type ChargeType = (typeof ChargeType)[keyof typeof ChargeType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ChargeType = {
+  PERCENT: 'PERCENT',
+  FIXED: 'FIXED',
+} as const;
+
+/**
+ * Encargo (imposto ou taxa) que a seguradora acrescenta ao prémio comercial
+ */
+export interface Charge {
+  /** @pattern ^[A-Z][A-Z0-9_]{1,29}$ */
+  code: string;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  labelEn: string;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  labelPt: string;
+  type: ChargeType;
+  value: ChargeValue;
+}
+
+/**
+ * PERCENT: percentagem em texto ("2.5" = 2,5 %); FIXED: centavos (inteiro)
+ */
+export type ChargeValue = string | number;
+
 export type ContactResponseType = (typeof ContactResponseType)[keyof typeof ContactResponseType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -599,6 +632,21 @@ export interface InsurerProfileResponse {
   complaintsEmail: string;
   ombudsmanOrganizationId?: string;
   shortCode: string;
+}
+
+export type InsurerRatingSettingsResponseRatingMode =
+  (typeof InsurerRatingSettingsResponseRatingMode)[keyof typeof InsurerRatingSettingsResponseRatingMode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerRatingSettingsResponseRatingMode = {
+  INTERNAL: 'INTERNAL',
+  EXTERNAL: 'EXTERNAL',
+} as const;
+
+export interface InsurerRatingSettingsResponse {
+  charges: Charge[];
+  ratingMode: InsurerRatingSettingsResponseRatingMode;
+  version: number;
 }
 
 export interface InvitationDetailsResponse {
@@ -1415,6 +1463,84 @@ export interface PublishProductVersionRequest {
   version: number;
 }
 
+export type RatingCoverageCapitalType =
+  (typeof RatingCoverageCapitalType)[keyof typeof RatingCoverageCapitalType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingCoverageCapitalType = {
+  FIXED: 'FIXED',
+  VEHICLE_VALUE: 'VEHICLE_VALUE',
+  OPTIONS: 'OPTIONS',
+  PER_PERSON: 'PER_PERSON',
+} as const;
+
+export type RatingCoverageCode = (typeof RatingCoverageCode)[keyof typeof RatingCoverageCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingCoverageCode = {
+  MTPL: 'MTPL',
+  VTPL: 'VTPL',
+  OD_COLLISION: 'OD_COLLISION',
+  OD_GLASS: 'OD_GLASS',
+  OD_FIRE: 'OD_FIRE',
+  OD_NATURE: 'OD_NATURE',
+  OD_THEFT: 'OD_THEFT',
+  OCCUPANTS: 'OCCUPANTS',
+  ASSISTANCE: 'ASSISTANCE',
+  LEGAL: 'LEGAL',
+  SRCC: 'SRCC',
+  CROSS_BORDER: 'CROSS_BORDER',
+} as const;
+
+export interface RatingCoverage {
+  capital?: Money;
+  /** @nullable */
+  capitalOptions?: Money[] | null;
+  capitalType: RatingCoverageCapitalType;
+  code: RatingCoverageCode;
+  mandatory: boolean;
+}
+
+export interface RatingRuleError {
+  code: string;
+  field: string;
+  message?: string;
+}
+
+/**
+ * Tarifa interna no formato rating-v1 (backend/src/main/resources/schemas/rating-v1.json): schemaVersion, durationFactors e coverages (base e factores). Decimais em texto, dinheiro em centavos.
+ */
+export interface RatingRules {
+  [key: string]: unknown;
+}
+
+export type RatingRulesResponseProductType =
+  (typeof RatingRulesResponseProductType)[keyof typeof RatingRulesResponseProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingRulesResponseProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface RatingRulesResponse {
+  configured: boolean;
+  coverages: RatingCoverage[];
+  editable: boolean;
+  productType: RatingRulesResponseProductType;
+  productVersionId: string;
+  rating?: RatingRules;
+  version: number;
+}
+
+export interface RatingRulesValidationResponse {
+  errors: RatingRuleError[];
+  valid: boolean;
+}
+
 export type ReferenceValueResponseDomain =
   (typeof ReferenceValueResponseDomain)[keyof typeof ReferenceValueResponseDomain];
 
@@ -1654,6 +1780,12 @@ export interface UpdateDriverRequest {
   version: number;
 }
 
+export interface UpdateInsurerRatingSettingsRequest {
+  /** @maxItems 10 */
+  charges: Charge[];
+  version: number;
+}
+
 /**
  * @pattern pt|en
  */
@@ -1883,6 +2015,11 @@ export interface UpdateProductVersionRequest {
   version: number;
 }
 
+export interface UpdateRatingRulesRequest {
+  rating: RatingRules;
+  version: number;
+}
+
 export interface UpdateReferenceValueRequest {
   /**
    * @minLength 0
@@ -1955,6 +2092,10 @@ export interface UpdateVehicleRequest {
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
   year: number;
+}
+
+export interface ValidateRatingRulesRequest {
+  rating: RatingRules;
 }
 
 export type VehicleCategory = (typeof VehicleCategory)[keyof typeof VehicleCategory];
@@ -6729,6 +6870,303 @@ export const usePublishProductVersion = <TError = ErrorType<ProblemDetail>, TCon
 };
 
 /**
+ * Permissão rating:manage ou product:read. rating é null quando a versão ainda não tem tarifa; coverages são as coberturas da versão; editable = versão DRAFT.
+ * @summary Consulta a tarifa de uma versão de produto
+ */
+export const getRatingRules = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<RatingRulesResponse>(
+    { url: `/api/v1/insurer/product-versions/${id}/rating`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetRatingRulesQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/product-versions/${id}/rating`] as const;
+};
+
+export const getGetRatingRulesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRatingRulesQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRatingRules>>> = ({ signal }) =>
+    getRatingRules(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRatingRules>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetRatingRulesQueryResult = NonNullable<Awaited<ReturnType<typeof getRatingRules>>>;
+export type GetRatingRulesQueryError = ErrorType<ProblemDetail>;
+
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRatingRules>>,
+          TError,
+          Awaited<ReturnType<typeof getRatingRules>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRatingRules>>,
+          TError,
+          Awaited<ReturnType<typeof getRatingRules>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta a tarifa de uma versão de produto
+ */
+
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetRatingRulesQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão rating:manage. Só versões DRAFT (senão 409 PRODUCT_VERSION_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION. Validada por rating-v1.json e pelas regras do S3-01 §7: 400 VALIDATION_ERROR com errors[].field = ponteiro JSON dentro de rating. Mais de 256 KB → 400 RATING_RULES_TOO_LARGE.
+ * @summary Grava a tarifa de uma versão em preparação
+ */
+export const updateRatingRules = (
+  id: string,
+  updateRatingRulesRequest: BodyType<UpdateRatingRulesRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<RatingRulesResponse>(
+    {
+      url: `/api/v1/insurer/product-versions/${id}/rating`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateRatingRulesRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateRatingRulesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateRatingRules>>,
+    TError,
+    { id: string; data: BodyType<UpdateRatingRulesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<UpdateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateRatingRules'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateRatingRules>>,
+    { id: string; data: BodyType<UpdateRatingRulesRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateRatingRules(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateRatingRulesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateRatingRules>>
+>;
+export type UpdateRatingRulesMutationBody = BodyType<UpdateRatingRulesRequest>;
+export type UpdateRatingRulesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Grava a tarifa de uma versão em preparação
+ */
+export const useUpdateRatingRules = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateRatingRules>>,
+      TError,
+      { id: string; data: BodyType<UpdateRatingRulesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<UpdateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateRatingRulesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão rating:manage. As mesmas validações de updateRatingRules, em qualquer estado da versão; todos os erros em errors[] (field = ponteiro JSON dentro de rating). Não grava.
+ * @summary Valida uma tarifa sem a gravar
+ */
+export const validateRatingRules = (
+  id: string,
+  validateRatingRulesRequest: BodyType<ValidateRatingRulesRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<RatingRulesValidationResponse>(
+    {
+      url: `/api/v1/insurer/product-versions/${id}/rating/validate`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: validateRatingRulesRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getValidateRatingRulesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof validateRatingRules>>,
+    TError,
+    { id: string; data: BodyType<ValidateRatingRulesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof validateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<ValidateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationKey = ['validateRatingRules'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof validateRatingRules>>,
+    { id: string; data: BodyType<ValidateRatingRulesRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return validateRatingRules(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ValidateRatingRulesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof validateRatingRules>>
+>;
+export type ValidateRatingRulesMutationBody = BodyType<ValidateRatingRulesRequest>;
+export type ValidateRatingRulesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Valida uma tarifa sem a gravar
+ */
+export const useValidateRatingRules = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof validateRatingRules>>,
+      TError,
+      { id: string; data: BodyType<ValidateRatingRulesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof validateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<ValidateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationOptions = getValidateRatingRulesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão product:read. As mesmas regras da publicação, sem gravar; todas as falhas em errors[].
  * @summary Verifica as regras de publicação
  */
@@ -7401,6 +7839,221 @@ export const useCreateProductVersion = <TError = ErrorType<ProblemDetail>, TCont
   TContext
 > => {
   const mutationOptions = getCreateProductVersionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão rating:manage ou product:read, staff de uma seguradora (outro âmbito → 403 FORBIDDEN). Encargos pela ordem em que se calculam.
+ * @summary Consulta as definições de tarifação
+ */
+export const getInsurerRatingSettings = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerRatingSettingsResponse>(
+    { url: `/api/v1/insurer/rating-settings`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerRatingSettingsQueryKey = () => {
+  return [`/api/v1/insurer/rating-settings`] as const;
+};
+
+export const getGetInsurerRatingSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerRatingSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerRatingSettings>>> = ({
+    signal,
+  }) => getInsurerRatingSettings(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerRatingSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInsurerRatingSettings>>
+>;
+export type GetInsurerRatingSettingsQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta as definições de tarifação
+ */
+
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerRatingSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão rating:manage. charges validado por charges-v1.json (SCHEMA_VIOLATION) e pelas regras DUPLICATE_CHARGE e VALUE_OUT_OF_RANGE (PERCENT acima de 100): 400 VALIDATION_ERROR com errors[].field = ponteiro JSON dentro de charges. version diferente → 409 CONCURRENT_MODIFICATION. O modo de tarifação não se altera aqui.
+ * @summary Altera os encargos da seguradora
+ */
+export const updateInsurerRatingSettings = (
+  updateInsurerRatingSettingsRequest: BodyType<UpdateInsurerRatingSettingsRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<InsurerRatingSettingsResponse>(
+    {
+      url: `/api/v1/insurer/rating-settings`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateInsurerRatingSettingsRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateInsurerRatingSettingsMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+    TError,
+    { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+  TError,
+  { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateInsurerRatingSettings'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+    { data: BodyType<UpdateInsurerRatingSettingsRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateInsurerRatingSettings(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateInsurerRatingSettingsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateInsurerRatingSettings>>
+>;
+export type UpdateInsurerRatingSettingsMutationBody = BodyType<UpdateInsurerRatingSettingsRequest>;
+export type UpdateInsurerRatingSettingsMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera os encargos da seguradora
+ */
+export const useUpdateInsurerRatingSettings = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+      TError,
+      { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+  TError,
+  { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateInsurerRatingSettingsMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
