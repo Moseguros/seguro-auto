@@ -7,6 +7,7 @@ moseguros:
   crypto:
     data-keys:
       1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento
+    blind-index-key: D41q5YP5RK464nQaKvEc7FkNnoZGgydbxcv0pcPbr+0= # chave só para desenvolvimento
   security:
     otp:
       pepper: test-otp-pepper-only-for-tests

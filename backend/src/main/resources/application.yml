@@ -135,6 +135,9 @@ moseguros:
     current-key-version: 1
     data-keys:
       1: ${MOSEGUROS_DATA_KEY_1:}
+    # Índice cego (BlindIndex, S2-03): HMAC-SHA256 de 32 bytes em Base64, diferente das chaves de
+    # cifra. Sem ela a aplicação não arranca (MOSEGUROS_BLIND_INDEX_KEY; local/test têm uma fixa).
+    blind-index-key: ${MOSEGUROS_BLIND_INDEX_KEY:}
   # Armazenamento de ficheiros (ADR-005, S2-01): filesystem ou s3, sem valor por defeito (sem ele
   # a aplicação não arranca). Cada perfil define-o; staging e prod usam S3 (MOSEGUROS_S3_*).
   files:
@@ -144,3 +147,8 @@ moseguros:
     enabled: true
   # Os formatos de matrícula estão na tabela catalog.plate_format (S2-02), editável em
   # /admin/referencias sem novo deploy.
+  # Registo automóvel (INATRO, S2-03 §5): só existe o simulador (mock) até haver acesso. Com o mock
+  # em staging ou prod o arranque regista um WARN.
+  vehicle:
+    registry:
+      provider: mock
