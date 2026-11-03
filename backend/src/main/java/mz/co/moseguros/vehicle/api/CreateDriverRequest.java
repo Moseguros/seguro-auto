@@ -3,7 +3,6 @@ package mz.co.moseguros.vehicle.api;
 import java.time.LocalDate;
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import mz.co.moseguros.vehicle.domain.DriverRules.DriverData;
 
@@ -25,9 +24,8 @@ public record CreateDriverRequest(
                 description = "5–20 letras, dígitos, / ou - (espaços ignorados). Nunca é devolvido.",
                 example = "MAP-1234567")
         String licenceNumber,
-        @ArraySchema(schema = @Schema(description = "Código activo em LICENCE_CATEGORY", example = "B"),
-                minItems = 1, maxItems = 12, uniqueItems = true,
-                arraySchema = @Schema(requiredMode = Schema.RequiredMode.REQUIRED))
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                description = "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos")
         List<String> licenceCategories,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Entre o nascimento e hoje",
                 example = "2010-03-01")
