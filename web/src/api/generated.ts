@@ -1138,6 +1138,13 @@ export const ListPlatformUsersStatus = {
   DISABLED: 'DISABLED',
 } as const;
 
+export type DownloadFileParams = {
+  /**
+   * true → Content-Disposition attachment (guardar); false → inline (mostrar)
+   */
+  download?: boolean;
+};
+
 export type ListOrganizationsParams = {
   type?: ListOrganizationsType;
   status?: ListOrganizationsStatus;
@@ -3112,6 +3119,133 @@ export const useRefreshToken = <TError = ErrorType<ProblemDetail>, TContext = un
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Público ou autenticado: sem token o pedido é anónimo; com token inválido ou expirado dá 401. O módulo dono do ficheiro decide quem o lê; sem autorização, ficheiro inexistente ou já limpo → 404 FILE_NOT_FOUND (nunca 403). Content-Type é o tipo real do ficheiro (image/jpeg, image/png, image/heic ou application/pdf); download=true pede Content-Disposition attachment em vez de inline.
+ * @summary Descarrega um ficheiro
+ */
+export const downloadFile = (
+  id: string,
+  params?: DownloadFileParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<Blob>(
+    { url: `/api/v1/files/${id}`, method: 'GET', params, responseType: 'blob', signal },
+    options,
+  );
+};
+
+export const getDownloadFileQueryKey = (id?: string, params?: DownloadFileParams) => {
+  return [`/api/v1/files/${id}`, ...(params ? [params] : [])] as const;
+};
+
+export const getDownloadFileQueryOptions = <
+  TData = Awaited<ReturnType<typeof downloadFile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  params?: DownloadFileParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getDownloadFileQueryKey(id, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadFile>>> = ({ signal }) =>
+    downloadFile(id, params, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof downloadFile>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type DownloadFileQueryResult = NonNullable<Awaited<ReturnType<typeof downloadFile>>>;
+export type DownloadFileQueryError = ErrorType<ProblemDetail>;
+
+export function useDownloadFile<
+  TData = Awaited<ReturnType<typeof downloadFile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  params: undefined | DownloadFileParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadFile>>,
+          TError,
+          Awaited<ReturnType<typeof downloadFile>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useDownloadFile<
+  TData = Awaited<ReturnType<typeof downloadFile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  params?: DownloadFileParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadFile>>,
+          TError,
+          Awaited<ReturnType<typeof downloadFile>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useDownloadFile<
+  TData = Awaited<ReturnType<typeof downloadFile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  params?: DownloadFileParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Descarrega um ficheiro
+ */
+
+export function useDownloadFile<
+  TData = Awaited<ReturnType<typeof downloadFile>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  params?: DownloadFileParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadFile>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getDownloadFileQueryOptions(id, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED; fornecedor desconhecido → 404 NOT_FOUND; mensagem desconhecida → 204 (ignorado). Uma falha de um código OTP faz o backend tentar o canal seguinte.

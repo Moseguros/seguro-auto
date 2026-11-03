@@ -175,7 +175,12 @@
     "LAST_MANAGER": "The organization must keep at least one active manager.",
     "CONTACT_ALREADY_IN_USE": "This contact already belongs to another account.",
     "CONTACT_ALREADY_VERIFIED": "This contact is already confirmed on your account.",
-    "LAST_CONTACT": "The account must keep at least one confirmed contact."
+    "LAST_CONTACT": "The account must keep at least one confirmed contact.",
+    "FILE_NOT_FOUND": "The file does not exist or you do not have access to it.",
+    "FILE_EMPTY": "The file is empty.",
+    "FILE_TOO_LARGE": "The file is larger than 10 MB.",
+    "FILE_TYPE_NOT_ALLOWED": "File type not accepted. Use JPEG, PNG, HEIC or PDF.",
+    "FILE_STORAGE_ERROR": "The file could not be read. Please try again later."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",

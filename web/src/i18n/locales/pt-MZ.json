@@ -175,7 +175,12 @@
     "LAST_MANAGER": "A organização tem de ficar com pelo menos um gestor activo.",
     "CONTACT_ALREADY_IN_USE": "Este contacto já está associado a outra conta.",
     "CONTACT_ALREADY_VERIFIED": "Este contacto já está confirmado na sua conta.",
-    "LAST_CONTACT": "A conta tem de ficar com pelo menos um contacto confirmado."
+    "LAST_CONTACT": "A conta tem de ficar com pelo menos um contacto confirmado.",
+    "FILE_NOT_FOUND": "O ficheiro não existe ou não tem acesso a ele.",
+    "FILE_EMPTY": "O ficheiro está vazio.",
+    "FILE_TOO_LARGE": "O ficheiro tem mais de 10 MB.",
+    "FILE_TYPE_NOT_ALLOWED": "Tipo de ficheiro não aceite. Use JPEG, PNG, HEIC ou PDF.",
+    "FILE_STORAGE_ERROR": "Não foi possível ler o ficheiro. Tente mais tarde."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
