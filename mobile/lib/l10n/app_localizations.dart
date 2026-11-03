@@ -614,6 +614,36 @@ abstract class AppLocalizations {
   /// **'A conta tem de ficar com pelo menos um contacto confirmado.'**
   String get errorLastContact;
 
+  /// No description provided for @errorFileNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'O ficheiro não existe ou não tem acesso a ele.'**
+  String get errorFileNotFound;
+
+  /// No description provided for @errorFileEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'O ficheiro está vazio.'**
+  String get errorFileEmpty;
+
+  /// No description provided for @errorFileTooLarge.
+  ///
+  /// In pt, this message translates to:
+  /// **'O ficheiro tem mais de 10 MB.'**
+  String get errorFileTooLarge;
+
+  /// No description provided for @errorFileTypeNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de ficheiro não aceite. Use JPEG, PNG, HEIC ou PDF.'**
+  String get errorFileTypeNotAllowed;
+
+  /// No description provided for @errorFileStorageError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível ler o ficheiro. Tente mais tarde.'**
+  String get errorFileStorageError;
+
   /// No description provided for @validationNotAllowed.
   ///
   /// In pt, this message translates to:

@@ -10,6 +10,7 @@ export 'package:moseguros_api/src/auth/oauth.dart';
 export 'package:moseguros_api/src/serializers.dart';
 export 'package:moseguros_api/src/model/date.dart';
 
+export 'package:moseguros_api/src/api/document_api.dart';
 export 'package:moseguros_api/src/api/identity_api.dart';
 export 'package:moseguros_api/src/api/meta_api.dart';
 export 'package:moseguros_api/src/api/notification_api.dart';

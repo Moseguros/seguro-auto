@@ -4,6 +4,7 @@ README.md
 analysis_options.yaml
 lib/moseguros_api.dart
 lib/src/api.dart
+lib/src/api/document_api.dart
 lib/src/api/identity_api.dart
 lib/src/api/meta_api.dart
 lib/src/api/notification_api.dart

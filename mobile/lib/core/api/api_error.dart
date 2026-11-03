@@ -65,6 +65,11 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'CONTACT_ALREADY_IN_USE' => l10n.errorContactAlreadyInUse,
   'CONTACT_ALREADY_VERIFIED' => l10n.errorContactAlreadyVerified,
   'LAST_CONTACT' => l10n.errorLastContact,
+  'FILE_NOT_FOUND' => l10n.errorFileNotFound,
+  'FILE_EMPTY' => l10n.errorFileEmpty,
+  'FILE_TOO_LARGE' => l10n.errorFileTooLarge,
+  'FILE_TYPE_NOT_ALLOWED' => l10n.errorFileTypeNotAllowed,
+  'FILE_STORAGE_ERROR' => l10n.errorFileStorageError,
   _ => l10n.errorUnknown,
 };
 

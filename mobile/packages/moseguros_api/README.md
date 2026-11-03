@@ -47,15 +47,15 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:moseguros_api/moseguros_api.dart';
 
 
-final api = MosegurosApi().getIdentityApi();
-final String token = token_example; // String | 
-final AcceptInvitationRequest acceptInvitationRequest = ; // AcceptInvitationRequest | 
+final api = MosegurosApi().getDocumentApi();
+final String id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // String | 
+final bool download = true; // bool | true → Content-Disposition attachment (guardar); false → inline (mostrar)
 
 try {
-    final response = await api.acceptInvitation(token, acceptInvitationRequest);
+    final response = await api.downloadFile(id, download);
     print(response);
 } catch on DioException (e) {
-    print("Exception when calling IdentityApi->acceptInvitation: $e\n");
+    print("Exception when calling DocumentApi->downloadFile: $e\n");
 }
 
 ```
@@ -66,6 +66,7 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*DocumentApi*](doc/DocumentApi.md) | [**downloadFile**](doc/DocumentApi.md#downloadfile) | **GET** /api/v1/files/{id} | Descarrega um ficheiro
 [*IdentityApi*](doc/IdentityApi.md) | [**acceptInvitation**](doc/IdentityApi.md#acceptinvitation) | **POST** /api/v1/auth/invitations/{token}/accept | Define a palavra-passe e o TOTP
 [*IdentityApi*](doc/IdentityApi.md) | [**activateInvitation**](doc/IdentityApi.md#activateinvitation) | **POST** /api/v1/auth/invitations/{token}/activate | Activa a conta com o primeiro código TOTP
 [*IdentityApi*](doc/IdentityApi.md) | [**disableUser**](doc/IdentityApi.md#disableuser) | **POST** /api/v1/users/{id}/disable | Desactiva um utilizador de staff

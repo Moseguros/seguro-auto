@@ -311,6 +311,24 @@ class AppLocalizationsPt extends AppLocalizations {
       'A conta tem de ficar com pelo menos um contacto confirmado.';
 
   @override
+  String get errorFileNotFound =>
+      'O ficheiro não existe ou não tem acesso a ele.';
+
+  @override
+  String get errorFileEmpty => 'O ficheiro está vazio.';
+
+  @override
+  String get errorFileTooLarge => 'O ficheiro tem mais de 10 MB.';
+
+  @override
+  String get errorFileTypeNotAllowed =>
+      'Tipo de ficheiro não aceite. Use JPEG, PNG, HEIC ou PDF.';
+
+  @override
+  String get errorFileStorageError =>
+      'Não foi possível ler o ficheiro. Tente mais tarde.';
+
+  @override
   String get validationNotAllowed => 'Este campo não se aplica neste caso.';
 
   @override

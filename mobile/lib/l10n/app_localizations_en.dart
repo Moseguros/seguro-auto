@@ -311,6 +311,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'The account must keep at least one confirmed contact.';
 
   @override
+  String get errorFileNotFound =>
+      'The file does not exist or you do not have access to it.';
+
+  @override
+  String get errorFileEmpty => 'The file is empty.';
+
+  @override
+  String get errorFileTooLarge => 'The file is larger than 10 MB.';
+
+  @override
+  String get errorFileTypeNotAllowed =>
+      'File type not accepted. Use JPEG, PNG, HEIC or PDF.';
+
+  @override
+  String get errorFileStorageError =>
+      'The file could not be read. Please try again later.';
+
+  @override
   String get validationNotAllowed => 'This field does not apply here.';
 
   @override
