@@ -1,6 +1,6 @@
 # Estado do projecto
 
-Actualizado em 02/11/2026.
+Actualizado em 03/11/2026.
 
 ## Onde estamos
 
@@ -33,6 +33,18 @@ Actualizado em 02/11/2026.
 | S1-09 Mobile: apresentação, login e perfil | S0-06, S1-06 | concluída (no `main` pelo PR de integração) |
 
 O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
+
+### Sprint 2 — Veículos, condutores e catálogo
+
+| Tarefa | Depende de | Estado |
+| --- | --- | --- |
+| S2-01 Módulo `document`: ficheiros, `FileStorage`, `FileAccessPolicy`, download | S1 | em revisão (branch `task/S2-01-modulo-document`) |
+| S2-02 Tabelas de referência, configuração da plataforma e formatos de matrícula na BD | S2-01 | pronta |
+| S2-03 Veículos e condutores do cliente | S2-02 | pronta |
+| S2-04 Catálogo: produtos, versões, coberturas, documentos, publicação | S2-02 | pronta |
+| S2-05 Web seguradora: editor de produtos; web admin: tabelas de referência | S2-04 | pronta |
+| S2-06 Web cliente: veículos e condutores | S2-03 | pronta |
+| S2-07 Mobile: veículos e condutores (câmara do livrete) | S2-03 | pronta |
 
 ### Sprint 2 — Veículos, condutores e catálogo
 
@@ -215,6 +227,10 @@ Cada sprint só começa depois de o anterior estar todo no `main`. As fichas dos
 - **Sessão da app (S1-09):** refresh token em `flutter_secure_storage` (`refresh_token`), token de acesso só em memória, flag da apresentação `onboarding_done` em `shared_preferences`. O `AuthInterceptor` (Dio) segue as regras da web. O cliente Dart gerado não regista `InnerEnum` (canais de `getOtpOptions`): a app acrescenta-o em `lib/core/api/api_serializers.dart`. Testes de widget com `http_mock_adapter`; os de integração correm também com `-d flutter-tester`.
 - **Sessão da web (S1-07):** o token de acesso fica só em memória; o refresh token do cliente em `localStorage` (`moseguros.customer.rt`) e o do staff em `sessionStorage` (`moseguros.staff.rt`). Os interceptores de `web/src/api/http.ts` nunca mandam `Authorization` para `/api/v1/auth/**` e renovam uma única vez para vários 401 simultâneos. As áreas de staff exigem sessão de staff da própria área (S1-08); itens de menu e páginas sem a permissão (`me.permissions`) não aparecem ou vão para `/sem-acesso`.
 - **Perfil e contactos do cliente (S1-06):** `/me/profile` e `/me/contacts` exigem `self:profile` (staff → 403). O documento e o NUIT só saem mascarados (resposta e auditoria). Os códigos de confirmação de contacto (`VERIFY_CONTACT`) contam para os limites de OTP do identificador.
+- **Ficheiros (S2-01):** `moseguros.files.storage` (`filesystem` ou `s3`) não tem valor por defeito: sem ele o backend não arranca. Local em `backend/var/files` (`MOSEGUROS_FILES_DIR`), testes em `${java.io.tmpdir}/moseguros-test-files`, compose no volume `files`; staging/prod em S3 (`MOSEGUROS_S3_BUCKET`, `MOSEGUROS_S3_REGION`, opcionais `MOSEGUROS_S3_ENDPOINT` e `MOSEGUROS_S3_PATH_STYLE`; credenciais pela cadeia do AWS SDK). Cada `ownerType` precisa de uma `FileAccessPolicy` (bean no módulo dono); sem autorização o download dá 404. O `S3FileStorageIT` usa a imagem `adobe/s3mock:3.12.0`.
+- **Flyway out-of-order (S2-01):** `spring.flyway.out-of-order: true` em todos os perfis: uma migração que chega ao `main` depois de outra com carimbo maior é aplicada na mesma.
+- **Dados de demonstração (S2-01):** só no perfil `local` (`db/dev/R__dev_seed_s2.sql`): Seguradora Demo, Corretora Demo, convites `dev-convite-gestor-demo`/`dev-convite-corretor-demo` e o cliente `+258840000001`. Ver `infra/README.md`.
+- **Jobs (S2-01):** `@Scheduled` só com `moseguros.jobs.enabled=true` (defeito; `false` nos testes). Sem ShedLock até ao S6: uma só instância.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
 - **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
 - **SIMO:** até haver o algoritmo e o layout oficiais, o pagamento por referência funciona com o mock `MOCK_SIMO_V1` e o simulador `simo-mock` (S5-07, S5-08), em `local`, `test` e `staging`; em `prod` é proibido. **Bloqueadas:** S5-13 e S5-14 (algoritmo e layout reais) — pedir ao proprietário do produto, que os obtém do banco da seguradora ao aderir ao serviço de cobrança.
