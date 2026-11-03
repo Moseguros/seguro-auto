@@ -46,6 +46,8 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 | S2-06 Web cliente: veículos e condutores | S2-03 | em revisão (branch `task/S2-06-web-cliente-veiculos`) |
 | S2-07 Mobile: veículos e condutores (câmara do livrete) | S2-03 | em revisão (branch `task/S2-07-mobile-veiculos`) |
 
+As sete tarefas juntas, com os conflitos resolvidos e os ficheiros gerados regenerados, estão no branch local de verificação `task/S2-integracao` (S2-05 + S2-06 + S2-07).
+
 ### Sprint 3 — Motor tarifário e cotações
 
 | Tarefa | Depende de | Estado |
