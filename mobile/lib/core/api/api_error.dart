@@ -137,5 +137,7 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'HABITUAL_DRIVER_REQUIRED' => l10n.validationHabitualDriverRequired,
   'MULTIPLE_HABITUAL_DRIVERS' => l10n.validationMultipleHabitualDrivers,
   'DUPLICATED' => l10n.validationDuplicated,
+  // Só nos ecrãs (MoneyField); a API não o devolve.
+  'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,
 };

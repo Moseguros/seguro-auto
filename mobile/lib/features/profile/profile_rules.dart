@@ -2,6 +2,8 @@
 /// (`profileSchema.ts`). Os erros são códigos `validation*`.
 library;
 
+export '../../core/format/dates.dart' show todayInMaputo;
+
 const idDocTypes = ['BI', 'PASSPORT', 'DIRE'];
 
 const minAge = 18;
@@ -29,12 +31,6 @@ bool isValidName(String value) {
   }
   final words = name.split(' ');
   return words.length >= 2 && words.every(_letterPattern.hasMatch);
-}
-
-/// Data de hoje em `Africa/Maputo` (UTC+2, sem hora de Verão).
-DateTime todayInMaputo([DateTime? now]) {
-  final maputo = (now ?? DateTime.now()).toUtc().add(const Duration(hours: 2));
-  return DateTime(maputo.year, maputo.month, maputo.day);
 }
 
 /// Data de nascimento mais recente aceite: hoje − 18 anos.
