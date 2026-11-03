@@ -329,6 +329,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'The file could not be read. Please try again later.';
 
   @override
+  String get errorReferenceDomainUnknown =>
+      'This reference list does not exist.';
+
+  @override
+  String get errorReferenceValueNotFound =>
+      'The value does not exist in this list.';
+
+  @override
+  String get errorReferenceCodeAlreadyExists =>
+      'A value with this code already exists in this list.';
+
+  @override
+  String get errorPlatformSettingNotFound => 'This setting does not exist.';
+
+  @override
+  String get errorPlateFormatNotFound => 'The plate format does not exist.';
+
+  @override
+  String get errorPlateFormatCodeAlreadyExists =>
+      'A plate format with this code already exists.';
+
+  @override
+  String get errorLastActivePlateFormat =>
+      'At least one plate format must stay active.';
+
+  @override
   String get validationNotAllowed => 'This field does not apply here.';
 
   @override
@@ -375,6 +401,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get validationInvalidDocumentNumber =>
       'Invalid document number (5 to 20 upper-case letters or digits).';
+
+  @override
+  String get validationInvalidCode =>
+      'Use only upper-case letters, digits and _.';
+
+  @override
+  String get validationParentNotFound => 'The make does not exist.';
+
+  @override
+  String get validationInvalidValue => 'Invalid value for this setting.';
+
+  @override
+  String get validationInvalidPattern => 'The regular expression is not valid.';
+
+  @override
+  String get validationPatternNotAnchored =>
+      'The expression must start with ^ and end with \$.';
+
+  @override
+  String get validationPatternWithoutGroups =>
+      'The expression needs at least one named group.';
+
+  @override
+  String get validationTemplateGroupUnknown =>
+      'The template uses a group that is not in the expression.';
+
+  @override
+  String get validationExampleDoesNotMatch =>
+      'The example does not match the format.';
 
   @override
   String get provinceMaputoCity => 'Maputo City';

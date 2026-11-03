@@ -644,6 +644,48 @@ abstract class AppLocalizations {
   /// **'Não foi possível ler o ficheiro. Tente mais tarde.'**
   String get errorFileStorageError;
 
+  /// No description provided for @errorReferenceDomainUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta lista de referência não existe.'**
+  String get errorReferenceDomainUnknown;
+
+  /// No description provided for @errorReferenceValueNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'O valor não existe nesta lista.'**
+  String get errorReferenceValueNotFound;
+
+  /// No description provided for @errorReferenceCodeAlreadyExists.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe um valor com este código nesta lista.'**
+  String get errorReferenceCodeAlreadyExists;
+
+  /// No description provided for @errorPlatformSettingNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este parâmetro não existe.'**
+  String get errorPlatformSettingNotFound;
+
+  /// No description provided for @errorPlateFormatNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'O formato de matrícula não existe.'**
+  String get errorPlateFormatNotFound;
+
+  /// No description provided for @errorPlateFormatCodeAlreadyExists.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe um formato de matrícula com este código.'**
+  String get errorPlateFormatCodeAlreadyExists;
+
+  /// No description provided for @errorLastActivePlateFormat.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tem de ficar pelo menos um formato de matrícula activo.'**
+  String get errorLastActivePlateFormat;
+
   /// No description provided for @validationNotAllowed.
   ///
   /// In pt, this message translates to:
@@ -727,6 +769,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).'**
   String get validationInvalidDocumentNumber;
+
+  /// No description provided for @validationInvalidCode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Use só maiúsculas, algarismos e _.'**
+  String get validationInvalidCode;
+
+  /// No description provided for @validationParentNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'A marca indicada não existe.'**
+  String get validationParentNotFound;
+
+  /// No description provided for @validationInvalidValue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor inválido para este parâmetro.'**
+  String get validationInvalidValue;
+
+  /// No description provided for @validationInvalidPattern.
+  ///
+  /// In pt, this message translates to:
+  /// **'A expressão regular não é válida.'**
+  String get validationInvalidPattern;
+
+  /// No description provided for @validationPatternNotAnchored.
+  ///
+  /// In pt, this message translates to:
+  /// **'A expressão tem de começar por ^ e acabar em \$.'**
+  String get validationPatternNotAnchored;
+
+  /// No description provided for @validationPatternWithoutGroups.
+  ///
+  /// In pt, this message translates to:
+  /// **'A expressão precisa de pelo menos um grupo com nome.'**
+  String get validationPatternWithoutGroups;
+
+  /// No description provided for @validationTemplateGroupUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'O modelo usa um grupo que não existe na expressão.'**
+  String get validationTemplateGroupUnknown;
+
+  /// No description provided for @validationExampleDoesNotMatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'O exemplo não corresponde ao formato.'**
+  String get validationExampleDoesNotMatch;
 
   /// province.MAPUTO_CITY (Province no backend).
   ///

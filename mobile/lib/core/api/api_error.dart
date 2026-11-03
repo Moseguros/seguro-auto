@@ -70,6 +70,13 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'FILE_TOO_LARGE' => l10n.errorFileTooLarge,
   'FILE_TYPE_NOT_ALLOWED' => l10n.errorFileTypeNotAllowed,
   'FILE_STORAGE_ERROR' => l10n.errorFileStorageError,
+  'REFERENCE_DOMAIN_UNKNOWN' => l10n.errorReferenceDomainUnknown,
+  'REFERENCE_VALUE_NOT_FOUND' => l10n.errorReferenceValueNotFound,
+  'REFERENCE_CODE_ALREADY_EXISTS' => l10n.errorReferenceCodeAlreadyExists,
+  'PLATFORM_SETTING_NOT_FOUND' => l10n.errorPlatformSettingNotFound,
+  'PLATE_FORMAT_NOT_FOUND' => l10n.errorPlateFormatNotFound,
+  'PLATE_FORMAT_CODE_ALREADY_EXISTS' => l10n.errorPlateFormatCodeAlreadyExists,
+  'LAST_ACTIVE_PLATE_FORMAT' => l10n.errorLastActivePlateFormat,
   _ => l10n.errorUnknown,
 };
 
@@ -103,5 +110,13 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'UNDERAGE' => l10n.validationUnderage,
   'INVALID_DATE' => l10n.validationInvalidDate,
   'INVALID_DOCUMENT_NUMBER' => l10n.validationInvalidDocumentNumber,
+  'INVALID_CODE' => l10n.validationInvalidCode,
+  'PARENT_NOT_FOUND' => l10n.validationParentNotFound,
+  'INVALID_VALUE' => l10n.validationInvalidValue,
+  'INVALID_PATTERN' => l10n.validationInvalidPattern,
+  'PATTERN_NOT_ANCHORED' => l10n.validationPatternNotAnchored,
+  'PATTERN_WITHOUT_GROUPS' => l10n.validationPatternWithoutGroups,
+  'TEMPLATE_GROUP_UNKNOWN' => l10n.validationTemplateGroupUnknown,
+  'EXAMPLE_DOES_NOT_MATCH' => l10n.validationExampleDoesNotMatch,
   _ => l10n.errorUnknown,
 };

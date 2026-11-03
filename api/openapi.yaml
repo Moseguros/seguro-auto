@@ -11,6 +11,9 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
+- description: "Catálogo: tabelas de referência, parâmetros da plataforma e formatos\
+    \ de matrícula"
+  name: Catalog
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
 - description: Envio de mensagens e recibos de entrega
@@ -194,6 +197,522 @@ paths:
       summary: Envia um código de teste
       tags:
       - Identity
+  /api/v1/admin/plate-formats:
+    get:
+      description: "Permissão reference:manage. Todos, incluindo os inactivos, por\
+        \ sortOrder."
+      operationId: listPlateFormats
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlateFormatsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os formatos de matrícula (administração)
+      tags:
+      - Catalog
+    post:
+      description: Permissão reference:manage. Passa a ser aceite nos pedidos sem
+        reiniciar. Código repetido → 409 PLATE_FORMAT_CODE_ALREADY_EXISTS.
+      operationId: createPlateFormat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePlateFormatRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlateFormatResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Cria um formato de matrícula
+      tags:
+      - Catalog
+  /api/v1/admin/plate-formats/test:
+    post:
+      description: Permissão reference:manage. Não grava. As regras de pattern e displayTemplate
+        aplicam-se (VALIDATION_ERROR).
+      operationId: testPlateFormat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestPlateFormatRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestPlateFormatResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Experimenta um padrão com um valor
+      tags:
+      - Catalog
+  /api/v1/admin/plate-formats/{id}:
+    put:
+      description: Permissão reference:manage. O código não muda; version diferente
+        → 409 CONCURRENT_MODIFICATION; id desconhecido → 404 PLATE_FORMAT_NOT_FOUND.
+      operationId: updatePlateFormat
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePlateFormatRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlateFormatResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera um formato de matrícula
+      tags:
+      - Catalog
+  /api/v1/admin/plate-formats/{id}/activate:
+    post:
+      description: Permissão reference:manage. Já activo → 409 INVALID_STATE_TRANSITION.
+      operationId: activatePlateFormat
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlateFormatResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Activa um formato de matrícula
+      tags:
+      - Catalog
+  /api/v1/admin/plate-formats/{id}/deactivate:
+    post:
+      description: Permissão reference:manage. Deixa de ser aceite em pedidos novos;
+        as matrículas gravadas não mudam. Já inactivo → 409 INVALID_STATE_TRANSITION;
+        último activo → 409 LAST_ACTIVE_PLATE_FORMAT.
+      operationId: deactivatePlateFormat
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlateFormatResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desactiva um formato de matrícula
+      tags:
+      - Catalog
+  /api/v1/admin/platform-settings:
+    get:
+      description: Permissão reference:manage. Inclui versão e autor da última alteração.
+      operationId: listPlatformSettings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os parâmetros da plataforma (administração)
+      tags:
+      - Catalog
+  /api/v1/admin/platform-settings/{key}:
+    put:
+      description: Permissão reference:manage. Só o valor muda (as chaves entram por
+        migração). Valor inválido para o tipo → VALIDATION_ERROR com INVALID_VALUE
+        em value; chave desconhecida → 404 PLATFORM_SETTING_NOT_FOUND; version diferente
+        → 409 CONCURRENT_MODIFICATION.
+      operationId: updatePlatformSetting
+      parameters:
+      - in: path
+        name: key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePlatformSettingRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSettingResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera o valor de um parâmetro
+      tags:
+      - Catalog
+  /api/v1/admin/reference-domains/{domain}/values:
+    get:
+      description: "Permissão reference:manage. Inclui os inactivos. q procura no\
+        \ código e nos rótulos (sem diferenciar maiúsculas). Ordenação por sortOrder\
+        \ (defeito, asc), labelPt ou createdAt."
+      operationId: listAdminReferenceValues
+      parameters:
+      - in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+      - in: query
+        name: active
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: parentCode
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "sortOrder, labelPt ou createdAt, com ,asc ou ,desc"
+        example: "sortOrder,asc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseReferenceValueResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os valores de um domínio (administração)
+      tags:
+      - Catalog
+    post:
+      description: "Permissão reference:manage. code ^[A-Z0-9_]{1,40}$ (INVALID_CODE);\
+        \ parentCode obrigatório em VEHICLE_MODEL (REQUIRED, PARENT_NOT_FOUND) e proibido\
+        \ nos outros (NOT_ALLOWED); código repetido no domínio → 409 REFERENCE_CODE_ALREADY_EXISTS."
+      operationId: createReferenceValue
+      parameters:
+      - in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReferenceValueRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferenceValueResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Cria um valor de referência
+      tags:
+      - Catalog
+  /api/v1/admin/reference-domains/{domain}/values/{id}:
+    put:
+      description: Permissão reference:manage. O código e a marca não mudam; version
+        diferente da gravada → 409 CONCURRENT_MODIFICATION.
+      operationId: updateReferenceValue
+      parameters:
+      - in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReferenceValueRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferenceValueResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera um valor de referência
+      tags:
+      - Catalog
+  /api/v1/admin/reference-domains/{domain}/values/{id}/activate:
+    post:
+      description: Permissão reference:manage. Já activo → 409 INVALID_STATE_TRANSITION.
+      operationId: activateReferenceValue
+      parameters:
+      - in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferenceValueResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Activa um valor de referência
+      tags:
+      - Catalog
+  /api/v1/admin/reference-domains/{domain}/values/{id}/deactivate:
+    post:
+      description: Permissão reference:manage. Sai das listas públicas; os registos
+        que já o usam não mudam. Já inactivo → 409 INVALID_STATE_TRANSITION.
+      operationId: deactivateReferenceValue
+      parameters:
+      - in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferenceValueResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desactiva um valor de referência
+      tags:
+      - Catalog
   /api/v1/admin/users:
     get:
       description: "Permissão org-user:read e âmbito da plataforma (senão 403 FORBIDDEN).\
@@ -1547,6 +2066,105 @@ paths:
       summary: Convida staff de uma organização
       tags:
       - Identity
+  /api/v1/plate-formats:
+    get:
+      description: "Público. Só os activos, pela ordem de teste, com rótulo e exemplo\
+        \ (sem o padrão)."
+      operationId: listActivePlateFormats
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicPlateFormatsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os formatos de matrícula aceites
+      tags:
+      - Catalog
+  /api/v1/platform-settings:
+    get:
+      description: "Público: nunca há segredos nesta tabela. MONEY em centavos, como\
+        \ texto."
+      operationId: listPublicPlatformSettings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicPlatformSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os parâmetros da plataforma
+      tags:
+      - Catalog
+  /api/v1/reference-domains/{domain}/values:
+    get:
+      description: "Público. Lista completa, não paginada, por sortOrder e labelPt.\
+        \ Em VEHICLE_MODEL exclui os modelos de marcas inactivas; parentCode filtra\
+        \ pela marca. Domínio desconhecido → 404 REFERENCE_DOMAIN_UNKNOWN."
+      operationId: listReferenceValues
+      parameters:
+      - in: path
+        name: domain
+        required: true
+        schema:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+      - description: Só os valores com este pai (código da marca)
+        example: TOYOTA
+        in: query
+        name: parentCode
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicReferenceValuesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os valores activos de um domínio
+      tags:
+      - Catalog
   /api/v1/roles:
     get:
       description: "Permissão org-user:read. Indicar organizationId ou scope=PLATFORM\
@@ -1947,6 +2565,73 @@ components:
       - legalName
       - nuit
       - type
+    CreatePlateFormatRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: "^[A-Z0-9_]{2,20}$; não muda depois de criado"
+          example: STANDARD
+        displayTemplate:
+          type: string
+          description: "Grupos do padrão como {nome}, letras, dígitos, espaço e -"
+          example: "{l}-{n}-{p}"
+          maxLength: 100
+          minLength: 0
+        example:
+          type: string
+          description: Valor já formatado que o formato aceita
+          example: ABC-123-MC
+          maxLength: 20
+          minLength: 0
+        label:
+          type: string
+          description: 2–80 caracteres
+          example: Actual (ABC-123-MC)
+        pattern:
+          type: string
+          description: "Expressão regular Java (≤ 200), com ^ e $ e pelo menos um\
+            \ grupo nomeado; aplica-se ao valor normalizado (maiúsculas, sem espaç\
+            os nem hífens)"
+          example: "^(?<l>[A-Z]{3})(?<n>\\d{3})(?<p>[A-Z]{2})$"
+        sortOrder:
+          type: integer
+          format: int32
+          description: "0–999: ordem de teste"
+          example: 10
+      required:
+      - code
+      - displayTemplate
+      - example
+      - label
+      - pattern
+      - sortOrder
+    CreateReferenceValueRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: "^[A-Z0-9_]{1,40}$; não muda depois de criado"
+          example: TOYOTA_HILUX
+        labelEn:
+          type: string
+          maxLength: 120
+          minLength: 0
+        labelPt:
+          type: string
+          example: Hilux
+          maxLength: 120
+          minLength: 0
+        parentCode:
+          type: string
+          example: TOYOTA
+        sortOrder:
+          type: integer
+          format: int32
+          example: 100
+      required:
+      - code
+      - labelPt
     CustomerProfileResponse:
       type: object
       properties:
@@ -2736,6 +3421,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseReferenceValueResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReferenceValueResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseStaffUserResponse:
       type: object
       properties:
@@ -2759,6 +3467,96 @@ components:
       - page
       - size
       - totalElements
+    PlateFormatResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+        code:
+          type: string
+          example: STANDARD
+        displayTemplate:
+          type: string
+          example: "{l}-{n}-{p}"
+        example:
+          type: string
+          example: ABC-123-MC
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+          example: Actual (ABC-123-MC)
+        pattern:
+          type: string
+          example: "^(?<l>[A-Z]{3})(?<n>\\d{3})(?<p>[A-Z]{2})$"
+        sortOrder:
+          type: integer
+          format: int32
+          example: 10
+        version:
+          type: integer
+          format: int64
+      required:
+      - active
+      - code
+      - displayTemplate
+      - example
+      - id
+      - label
+      - pattern
+      - sortOrder
+      - version
+    PlateFormatsResponse:
+      type: object
+      properties:
+        formats:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlateFormatResponse"
+      required:
+      - formats
+    PlatformSettingResponse:
+      type: object
+      properties:
+        key:
+          type: string
+          example: MTPL_MIN_CAPITAL
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+          example: system
+        value:
+          type: string
+          example: "300000000"
+        valueType:
+          type: string
+          enum:
+          - MONEY
+          - INTEGER
+          - BOOLEAN
+          - STRING
+        version:
+          type: integer
+          format: int64
+      required:
+      - key
+      - updatedAt
+      - updatedBy
+      - value
+      - valueType
+      - version
+    PlatformSettingsResponse:
+      type: object
+      properties:
+        settings:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatformSettingResponse"
+      required:
+      - settings
     ProblemDetail:
       type: object
       description: Erro RFC 7807 (application/problem+json)
@@ -2794,6 +3592,130 @@ components:
       - title
       - status
       - code
+    PublicPlateFormatResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: STANDARD
+        example:
+          type: string
+          example: ABC-123-MC
+        label:
+          type: string
+          example: Actual (ABC-123-MC)
+      required:
+      - code
+      - example
+      - label
+    PublicPlateFormatsResponse:
+      type: object
+      properties:
+        formats:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicPlateFormatResponse"
+      required:
+      - formats
+    PublicPlatformSettingResponse:
+      type: object
+      properties:
+        key:
+          type: string
+          example: MTPL_MIN_CAPITAL
+        value:
+          type: string
+          example: "300000000"
+        valueType:
+          type: string
+          enum:
+          - MONEY
+          - INTEGER
+          - BOOLEAN
+          - STRING
+      required:
+      - key
+      - value
+      - valueType
+    PublicPlatformSettingsResponse:
+      type: object
+      properties:
+        settings:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicPlatformSettingResponse"
+      required:
+      - settings
+    PublicReferenceValueResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: TOYOTA_HILUX
+        labelEn:
+          type: string
+        labelPt:
+          type: string
+          example: Hilux
+        parentCode:
+          type: string
+          example: TOYOTA
+      required:
+      - code
+      - labelPt
+    PublicReferenceValuesResponse:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicReferenceValueResponse"
+      required:
+      - values
+    ReferenceValueResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+        code:
+          type: string
+          example: TOYOTA_HILUX
+        domain:
+          type: string
+          enum:
+          - VEHICLE_MAKE
+          - VEHICLE_MODEL
+          - LICENCE_CATEGORY
+        id:
+          type: string
+          format: uuid
+        labelEn:
+          type: string
+        labelPt:
+          type: string
+          example: Hilux
+        parentCode:
+          type: string
+          example: TOYOTA
+        sortOrder:
+          type: integer
+          format: int32
+          example: 100
+        updatedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int64
+      required:
+      - active
+      - code
+      - domain
+      - id
+      - labelPt
+      - sortOrder
+      - updatedAt
+      - version
     RefreshTokenRequest:
       type: object
       properties:
@@ -2939,6 +3861,37 @@ components:
           minLength: 0
       required:
       - reason
+    TestPlateFormatRequest:
+      type: object
+      properties:
+        displayTemplate:
+          type: string
+          example: "{l}-{n}"
+          maxLength: 100
+          minLength: 0
+        pattern:
+          type: string
+          example: "^(?<l>[A-Z]{2})(?<n>\\d{4})$"
+        value:
+          type: string
+          description: Valor como o utilizador o escreveria
+          example: ab 1234
+          maxLength: 100
+          minLength: 0
+      required:
+      - displayTemplate
+      - pattern
+      - value
+    TestPlateFormatResponse:
+      type: object
+      properties:
+        formatted:
+          type: string
+          example: AB-1234
+        matches:
+          type: boolean
+      required:
+      - matches
     TokenResponse:
       type: object
       properties:
@@ -3173,6 +4126,76 @@ components:
       - maxRequestsPerHour
       - resendAfterSeconds
       - validitySeconds
+      - version
+    UpdatePlateFormatRequest:
+      type: object
+      properties:
+        displayTemplate:
+          type: string
+          example: "{l}-{n}-{p}"
+          maxLength: 100
+          minLength: 0
+        example:
+          type: string
+          example: ABC-123-MC
+          maxLength: 20
+          minLength: 0
+        label:
+          type: string
+          example: Actual (ABC-123-MC)
+        pattern:
+          type: string
+          example: "^(?<l>[A-Z]{3})(?<n>\\d{3})(?<p>[A-Z]{2})$"
+        sortOrder:
+          type: integer
+          format: int32
+          example: 10
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - displayTemplate
+      - example
+      - label
+      - pattern
+      - sortOrder
+      - version
+    UpdatePlatformSettingRequest:
+      type: object
+      properties:
+        value:
+          type: string
+          example: "300000000"
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - value
+      - version
+    UpdateReferenceValueRequest:
+      type: object
+      properties:
+        labelEn:
+          type: string
+          maxLength: 120
+          minLength: 0
+        labelPt:
+          type: string
+          example: Hilux
+          maxLength: 120
+          minLength: 0
+        sortOrder:
+          type: integer
+          format: int32
+          example: 100
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - labelPt
       - version
     UpdateUserRolesRequest:
       type: object

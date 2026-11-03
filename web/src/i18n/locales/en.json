@@ -180,7 +180,14 @@
     "FILE_EMPTY": "The file is empty.",
     "FILE_TOO_LARGE": "The file is larger than 10 MB.",
     "FILE_TYPE_NOT_ALLOWED": "File type not accepted. Use JPEG, PNG, HEIC or PDF.",
-    "FILE_STORAGE_ERROR": "The file could not be read. Please try again later."
+    "FILE_STORAGE_ERROR": "The file could not be read. Please try again later.",
+    "REFERENCE_DOMAIN_UNKNOWN": "This reference list does not exist.",
+    "REFERENCE_VALUE_NOT_FOUND": "The value does not exist in this list.",
+    "REFERENCE_CODE_ALREADY_EXISTS": "A value with this code already exists in this list.",
+    "PLATFORM_SETTING_NOT_FOUND": "This setting does not exist.",
+    "PLATE_FORMAT_NOT_FOUND": "The plate format does not exist.",
+    "PLATE_FORMAT_CODE_ALREADY_EXISTS": "A plate format with this code already exists.",
+    "LAST_ACTIVE_PLATE_FORMAT": "At least one plate format must stay active."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -210,7 +217,15 @@
     "INVALID_NAME": "Enter your full name (at least two words, only letters, spaces, ' and -).",
     "UNDERAGE": "You must be at least 18 years old.",
     "INVALID_DATE": "Invalid date.",
-    "INVALID_DOCUMENT_NUMBER": "Invalid document number (5 to 20 upper-case letters or digits)."
+    "INVALID_DOCUMENT_NUMBER": "Invalid document number (5 to 20 upper-case letters or digits).",
+    "INVALID_CODE": "Use only upper-case letters, digits and _.",
+    "PARENT_NOT_FOUND": "The make does not exist.",
+    "INVALID_VALUE": "Invalid value for this setting.",
+    "INVALID_PATTERN": "The regular expression is not valid.",
+    "PATTERN_NOT_ANCHORED": "The expression must start with ^ and end with $.",
+    "PATTERN_WITHOUT_GROUPS": "The expression needs at least one named group.",
+    "TEMPLATE_GROUP_UNKNOWN": "The template uses a group that is not in the expression.",
+    "EXAMPLE_DOES_NOT_MATCH": "The example does not match the format."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

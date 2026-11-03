@@ -180,7 +180,14 @@
     "FILE_EMPTY": "O ficheiro está vazio.",
     "FILE_TOO_LARGE": "O ficheiro tem mais de 10 MB.",
     "FILE_TYPE_NOT_ALLOWED": "Tipo de ficheiro não aceite. Use JPEG, PNG, HEIC ou PDF.",
-    "FILE_STORAGE_ERROR": "Não foi possível ler o ficheiro. Tente mais tarde."
+    "FILE_STORAGE_ERROR": "Não foi possível ler o ficheiro. Tente mais tarde.",
+    "REFERENCE_DOMAIN_UNKNOWN": "Esta lista de referência não existe.",
+    "REFERENCE_VALUE_NOT_FOUND": "O valor não existe nesta lista.",
+    "REFERENCE_CODE_ALREADY_EXISTS": "Já existe um valor com este código nesta lista.",
+    "PLATFORM_SETTING_NOT_FOUND": "Este parâmetro não existe.",
+    "PLATE_FORMAT_NOT_FOUND": "O formato de matrícula não existe.",
+    "PLATE_FORMAT_CODE_ALREADY_EXISTS": "Já existe um formato de matrícula com este código.",
+    "LAST_ACTIVE_PLATE_FORMAT": "Tem de ficar pelo menos um formato de matrícula activo."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -210,7 +217,15 @@
     "INVALID_NAME": "Indique o nome completo (pelo menos duas palavras, só letras, espaços, ' e -).",
     "UNDERAGE": "Tem de ter pelo menos 18 anos.",
     "INVALID_DATE": "Data inválida.",
-    "INVALID_DOCUMENT_NUMBER": "Número de documento inválido (5 a 20 letras maiúsculas ou dígitos)."
+    "INVALID_DOCUMENT_NUMBER": "Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).",
+    "INVALID_CODE": "Use só maiúsculas, algarismos e _.",
+    "PARENT_NOT_FOUND": "A marca indicada não existe.",
+    "INVALID_VALUE": "Valor inválido para este parâmetro.",
+    "INVALID_PATTERN": "A expressão regular não é válida.",
+    "PATTERN_NOT_ANCHORED": "A expressão tem de começar por ^ e acabar em $.",
+    "PATTERN_WITHOUT_GROUPS": "A expressão precisa de pelo menos um grupo com nome.",
+    "TEMPLATE_GROUP_UNKNOWN": "O modelo usa um grupo que não existe na expressão.",
+    "EXAMPLE_DOES_NOT_MATCH": "O exemplo não corresponde ao formato."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",

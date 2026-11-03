@@ -329,6 +329,31 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível ler o ficheiro. Tente mais tarde.';
 
   @override
+  String get errorReferenceDomainUnknown =>
+      'Esta lista de referência não existe.';
+
+  @override
+  String get errorReferenceValueNotFound => 'O valor não existe nesta lista.';
+
+  @override
+  String get errorReferenceCodeAlreadyExists =>
+      'Já existe um valor com este código nesta lista.';
+
+  @override
+  String get errorPlatformSettingNotFound => 'Este parâmetro não existe.';
+
+  @override
+  String get errorPlateFormatNotFound => 'O formato de matrícula não existe.';
+
+  @override
+  String get errorPlateFormatCodeAlreadyExists =>
+      'Já existe um formato de matrícula com este código.';
+
+  @override
+  String get errorLastActivePlateFormat =>
+      'Tem de ficar pelo menos um formato de matrícula activo.';
+
+  @override
   String get validationNotAllowed => 'Este campo não se aplica neste caso.';
 
   @override
@@ -375,6 +400,34 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get validationInvalidDocumentNumber =>
       'Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).';
+
+  @override
+  String get validationInvalidCode => 'Use só maiúsculas, algarismos e _.';
+
+  @override
+  String get validationParentNotFound => 'A marca indicada não existe.';
+
+  @override
+  String get validationInvalidValue => 'Valor inválido para este parâmetro.';
+
+  @override
+  String get validationInvalidPattern => 'A expressão regular não é válida.';
+
+  @override
+  String get validationPatternNotAnchored =>
+      'A expressão tem de começar por ^ e acabar em \$.';
+
+  @override
+  String get validationPatternWithoutGroups =>
+      'A expressão precisa de pelo menos um grupo com nome.';
+
+  @override
+  String get validationTemplateGroupUnknown =>
+      'O modelo usa um grupo que não existe na expressão.';
+
+  @override
+  String get validationExampleDoesNotMatch =>
+      'O exemplo não corresponde ao formato.';
 
   @override
   String get provinceMaputoCity => 'Maputo Cidade';
