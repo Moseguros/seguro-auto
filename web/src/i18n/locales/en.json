@@ -187,7 +187,18 @@
     "PLATFORM_SETTING_NOT_FOUND": "This setting does not exist.",
     "PLATE_FORMAT_NOT_FOUND": "The plate format does not exist.",
     "PLATE_FORMAT_CODE_ALREADY_EXISTS": "A plate format with this code already exists.",
-    "LAST_ACTIVE_PLATE_FORMAT": "At least one plate format must stay active."
+    "LAST_ACTIVE_PLATE_FORMAT": "At least one plate format must stay active.",
+    "VEHICLE_NOT_FOUND": "Vehicle not found.",
+    "VEHICLE_ALREADY_REGISTERED": "You already have a vehicle with this plate.",
+    "VEHICLE_LIMIT_REACHED": "You have reached the maximum of 20 vehicles.",
+    "VEHICLE_REMOVAL_BLOCKED": "This vehicle has a policy in force and cannot be removed.",
+    "VEHICLE_REGISTRY_NOT_FOUND": "We could not find this plate in the registry. Fill in the registration document details.",
+    "VEHICLE_REGISTRY_UNAVAILABLE": "The vehicle registry is not available. Fill in the registration document details.",
+    "DRIVER_NOT_FOUND": "Driver not found.",
+    "DRIVER_ALREADY_REGISTERED": "You already have a driver with this licence.",
+    "DRIVER_LIMIT_REACHED": "You have reached the maximum of 10 drivers.",
+    "OWNER_DRIVER_ALREADY_EXISTS": "You are already registered as a driver.",
+    "DRIVER_IS_HABITUAL": "This driver is the habitual driver of a vehicle. Choose another habitual driver first."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -225,7 +236,15 @@
     "PATTERN_NOT_ANCHORED": "The expression must start with ^ and end with $.",
     "PATTERN_WITHOUT_GROUPS": "The expression needs at least one named group.",
     "TEMPLATE_GROUP_UNKNOWN": "The template uses a group that is not in the expression.",
-    "EXAMPLE_DOES_NOT_MATCH": "The example does not match the format."
+    "EXAMPLE_DOES_NOT_MATCH": "The example does not match the format.",
+    "INVALID_CHASSIS": "Invalid chassis number.",
+    "INVALID_YEAR": "Invalid year.",
+    "INVALID_LICENCE_NUMBER": "Invalid driving licence number.",
+    "LICENCE_CATEGORY_UNKNOWN": "Unknown licence category.",
+    "LICENCE_ISSUE_DATE_INVALID": "The issue date must be after the birth date and not after today.",
+    "HABITUAL_DRIVER_REQUIRED": "Choose the habitual driver.",
+    "MULTIPLE_HABITUAL_DRIVERS": "There can only be one habitual driver.",
+    "DUPLICATED": "Repeated value."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
