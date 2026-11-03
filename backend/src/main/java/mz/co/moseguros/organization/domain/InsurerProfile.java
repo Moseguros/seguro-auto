@@ -4,14 +4,21 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import mz.co.moseguros.organization.OrganizationType;
+import mz.co.moseguros.organization.RatingMode;
 import mz.co.moseguros.shared.domain.Emails;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.persistence.BaseEntity;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Dados próprios de uma seguradora ({@code organization.insurer_profile}); uma linha por
@@ -38,6 +45,24 @@ public class InsurerProfile extends BaseEntity {
 
     @Column(name = "ombudsman_org_id")
     private UUID ombudsmanOrgId;
+
+    /** Tarifação interna ou externa (S3-01 §2); muda só pela plataforma (S3-02). */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rating_mode", nullable = false, length = 10)
+    private RatingMode ratingMode = RatingMode.INTERNAL;
+
+    /** Serviço de tarifação externo (S3-02); só leitura nesta fase. */
+    @Column(name = "rating_endpoint_url", length = 500)
+    private String ratingEndpointUrl;
+
+    /** Referência do segredo no cofre (S3-02), nunca o segredo; só leitura nesta fase. */
+    @Column(name = "rating_secret_ref", length = 200)
+    private String ratingSecretRef;
+
+    /** Encargos ({@code schemas/charges-v1.json}), pela ordem em que se calculam. */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "charges", nullable = false, columnDefinition = "jsonb")
+    private JsonNode charges = JsonNodeFactory.instance.arrayNode();
 
     protected InsurerProfile() {
     }
@@ -74,6 +99,17 @@ public class InsurerProfile extends BaseEntity {
         this.logoFileId = fileIdOrNull;
     }
 
+    /**
+     * Substitui os encargos. {@code charges} já foi validado ({@link InsurerCharges#validate});
+     * aqui só se confirma que é uma lista.
+     */
+    public void replaceCharges(JsonNode newCharges) {
+        if (newCharges == null || !newCharges.isArray()) {
+            throw new IllegalArgumentException("charges must be a JSON array");
+        }
+        this.charges = newCharges.deepCopy();
+    }
+
     public void setOmbudsman(Organization ombudsman) {
         if (ombudsman != null && ombudsman.getType() != OrganizationType.OMBUDSMAN) {
             throw new IllegalArgumentException("Ombudsman must be an OMBUDSMAN organization");
@@ -107,5 +143,22 @@ public class InsurerProfile extends BaseEntity {
 
     public UUID getOmbudsmanOrgId() {
         return ombudsmanOrgId;
+    }
+
+    public RatingMode getRatingMode() {
+        return ratingMode;
+    }
+
+    public String getRatingEndpointUrl() {
+        return ratingEndpointUrl;
+    }
+
+    public String getRatingSecretRef() {
+        return ratingSecretRef;
+    }
+
+    /** Cópia da lista de encargos (JSON de {@code charges-v1.json}). */
+    public JsonNode getCharges() {
+        return charges.deepCopy();
     }
 }
