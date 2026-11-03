@@ -71,3 +71,18 @@ select a.id, 'CUSTOMER', now(), 'dev-seed'
   from identity.user_account a
  where a.id = '01930000-0000-7000-8000-000000000006'
 on conflict do nothing;
+
+-- S2-03 ---------------------------------------------------------------------------------------
+
+-- Veículo do cliente de teste: AAA-100-MC com os dados do registo simulado (MockVehicleRegistry).
+-- Sem livrete nem condutores (o número da carta é cifrado e não se gera em SQL).
+insert into vehicle.vehicle
+  (id, created_at, created_by, updated_at, updated_by, owner_user_id, plate, plate_format_code,
+   chassis_number, make, model, year, engine_cc, category, seats, usage, province_of_circulation,
+   commercial_value_amount, has_tracker, inatro_verified_at)
+select '01930000-0000-7000-8000-000000000101', now(), 'dev-seed', now(), 'dev-seed', a.id,
+       'AAA-100-MC', 'STANDARD', 'JTDBR32E720012345', 'Toyota', 'Corolla', 2018, 1598,
+       'LIGHT_PASSENGER', 5, 'PRIVATE', 'MAPUTO_CITY', 85000000, false, now()
+  from identity.user_account a
+ where a.id = '01930000-0000-7000-8000-000000000006'
+on conflict do nothing;
