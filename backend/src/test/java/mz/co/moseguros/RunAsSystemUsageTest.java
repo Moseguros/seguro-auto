@@ -48,6 +48,20 @@ class RunAsSystemUsageTest {
         RUN_AS_SYSTEM_OWNERS.check(MAIN_CLASSES);
     }
 
+    /** S2-01: o download e a limpeza de órfãos do document correm em SYSTEM, em classes permitidas. */
+    @Test
+    void documentSystemLookupsAndOrphanCleanupJobAreAllowed() {
+        JavaClasses document = new ClassFileImporter().importClasses(
+                mz.co.moseguros.document.application.DocumentSystemLookups.class,
+                mz.co.moseguros.document.application.OrphanFileCleanupJob.class);
+        RUN_AS_SYSTEM_OWNERS.check(document);
+        org.assertj.core.api.Assertions.assertThat(document.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .contains("DocumentSystemLookups.find", "OrphanFileCleanupJob.purgeOrphans");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

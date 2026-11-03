@@ -35,6 +35,12 @@ class ModularityTest {
         assertThat(dependenciesOf("notification")).isSubsetOf("shared");
     }
 
+    /** S2-01: document só depende de shared (os módulos donos dependem dele, nunca o contrário). */
+    @Test
+    void documentDependsOnSharedOnly() {
+        assertThat(dependenciesOf("document")).isSubsetOf("shared");
+    }
+
     private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
         return module.getDependencies(modules).stream()
