@@ -74,9 +74,9 @@ integration   → rating, proposal, payment, policy, verification, identity, veh
 
 ### 1.2 Eventos de domínio
 
-Publicados com `ApplicationEventPublisher` + outbox do Spring Modulith (`event_publication`). Ouvidos com `@ApplicationModuleListener` (assíncrono, depois do commit, transacção própria).
+Publicados com `ApplicationEventPublisher` + outbox do Spring Modulith (`event_publication`). Ouvidos com `@ApplicationModuleListener` (depois do commit, transacção própria). O código do S1 **não tem `@EnableAsync`**, por isso o ouvinte corre na thread de quem publicou, logo a seguir ao commit, e não em paralelo; quem precisar de trabalho em segundo plano usa um executor próprio (S5-04, S6-04). Os ouvintes não podem depender de correr noutra thread nem do `TenantContext` de quem publicou (usam `@RunAsSystem`, §7).
 
-Records imutáveis no pacote raiz do módulo que publica, com `UUID eventId`, `Instant occurredAt` e os ids necessários; nunca entidades JPA.
+Records imutáveis no pacote raiz do módulo que publica, com `UUID eventId`, `Instant occurredAt` e os ids necessários; nunca entidades JPA. Os eventos do S1 (`OtpDeliveryFailed`, `OrganizationSuspended`, `OrganizationReactivated`) não têm `eventId`/`occurredAt`; a regra aplica-se aos novos.
 
 | Evento | Publicado por | Sprint | Ouvido por |
 | --- | --- | --- | --- |
@@ -139,7 +139,8 @@ or (s = 'CUSTOMER' and <coluna do cliente> = u)
 | 4 | identity | `identity.kyc_check` (S4-01) |
 | 4 | proposal | `proposal.proposal`, `proposal.declaration`, `proposal.suitability_answer` (S4-02; `ck_proposal_status` e `ck_proposal_channel` com nome fixo); `proposal.inspection`, `proposal.inspection_photo` (S4-03); `proposal.signature` (S4-04) |
 | 4 | proposal | `proposal.proposal` ganha `sign_request_file_id`, `sign_request_hash`, `sign_request_challenge_id`, `sign_request_revision`, `sign_request_assisted_by_user_id`, `current_signature_id` (S4-04); `underwriting_result`, `acceptance_mode`, `review_started_at`, `sla_alert_at`, `sla_due_at`, `sla_alerted_at`, `decided_by`, `decided_at`, `rejection_reason_code`, `decision_reason`, `info_request_message`, `info_request_items`, `info_requested_at` (S4-05); `policyholder_source` (`PROFILE`/`BROKER`, S4-06) |
-| 4 | shared | `shared.business_sequence` (numeração, S4-02) |
+| 4 | shared | `shared.business_sequence` (numeração, S4-02). O schema `shared` **não existe** no S0/S1: a migração do S4-02 cria-o (`create schema if not exists`, como o S5-02) |
+| 1–12 | notification | `notification.outbound_message` (S1-03). O `purpose` tem a constraint `outbound_message_purpose_check` e o enum `OutboundMessage.Purpose`: S1 `OTP`, `INVITATION`, `PASSWORD_RESET`; `KYC` (S4-01), `SIGN_OTP` (S4-04, reutilizado no S8-02), `PROPOSAL` (S4-05), `PAYMENT` (S5-02), `NOTIFICATION_TEST` (S6-04), `COMPLAINT` (S10-01), `ASSISTANCE` (S10-04), `ACCOUNT_DELETION` (S12-10). Cada valor novo entra por uma migração `…__notification_purpose_<x>.sql` que faz `drop constraint` e a recria com **todos** os valores desta lista até ao seu sprint (tarefas paralelas incluem os valores umas das outras) |
 | 5 | payment | `payment.insurer_payment_method` (S5-01); `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.payment_exception` (S5-02); `payment.inbound_message`, `payment.file_import` (S5-10) |
 | 5 | shared | `shared.idempotency_record` (idempotência de todos os módulos, `IdempotencyService`, S5-02) |
 | 5 | proposal | `proposal.proposal` ganha `paid_at`, `payment_intent_id` e `ck_proposal_paid`; `ck_proposal_status` recriada (S5-02, D4) |
@@ -227,6 +228,7 @@ Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por j
 
 | Método | Ficha | Notas |
 | --- | --- | --- |
+| `TokenPair issueTokens(UserAccount account, String deviceInfo)` | S1-02 | usado também nos testes (`SecurityTestConfiguration.IdentityFixtures`) |
 | `UUID findOrCreateCustomerByMsisdn(Msisdn)` | S3-02 | `SYSTEM` (D2); usado no S4-06, S8 e S12 |
 | `Optional<CustomerView> customer(UUID userId)` | S4-01 | `SYSTEM`; `CustomerView` com `idDocNumber` e `nuit` em claro, nunca serializado |
 | `KycStatus kycStatus(UUID userId)` | S4-01 | `SYSTEM` |
@@ -297,7 +299,7 @@ Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por j
 
 | Método | Ficha | Notas |
 | --- | --- | --- |
-| `findSummary(UUID)` | S1 | |
+| `Optional<OrganizationSummary> findSummary(UUID)` | S1-04 | `OrganizationSummary(id, type, status, displayName)`. Âmbito de quem chama: em `ORG` só vê a própria organização; vazio em `CUSTOMER` e `NONE`. Para o nome da seguradora visto por clientes, polícia ou público usa-se `insurerProfile` (S3-01) |
 | `Map<UUID, OrganizationSummary> findSummaries(Set<UUID>)` | S2-04 | |
 | `Optional<UUID> insurerLogoFileId(UUID insurerId)`, `void setInsurerLogo(UUID insurerId, UUID fileIdOrNull)` | S2-04 | |
 | `Optional<InsurerProfileView> insurerProfile(UUID insurerId)` | S3-01 | `SYSTEM`; o S9-04 acrescenta `indemnityDualApprovalAmount` ao `InsurerProfileView` |
@@ -319,7 +321,8 @@ Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por j
 
 | Método | Ficha | Notas |
 | --- | --- | --- |
-| `sendOtp`, `sendEmail` | S1 | |
+| `DeliveryResult sendOtp(Channel channel, String destination, String code, int validityMinutes, String language, UUID correlationId)` | S1-03 | |
+| `DeliveryResult sendEmail(String to, String templateKey, Object[] args, String language, String purpose, UUID correlationId)` | S1-04 | chaves `<templateKey>.subject`/`.body`; `purpose` tem de estar em `OutboundMessage.Purpose` (§2) |
 | `DeliveryResult sendSignOtp(Channel channel, String destination, String code, int validityMinutes, SignOtpText text, String language, UUID correlationId)` | S4-04 | síncrono, nunca lança |
 | `DeliveryResult sendSms(String toE164, String templateKey, Object[] args, String language, String purpose, UUID correlationId)` | S5-02 | só para números escritos pelo utilizador e links do mediador (S6-04 §9) |
 | `UUID notify(UUID userId, String templateCode, Map<String,Object> params, NotificationCategory category)` | S6-04 | `REQUIRED`; envio depois do *commit* |
@@ -352,6 +355,8 @@ Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por j
 | `EX` extracto de comissões | `EX-2027-000123` | 11 |
 
 ## 5. Permissões
+
+Já semeadas no S1 (`V202611020930`): `otp-settings:read`, `otp-settings:manage`, `organization:read`, `organization:manage` (PLATFORM_ADMIN); `org-user:read`, `org-user:manage` (PLATFORM_ADMIN, INSURER_ADMIN, ORG_ADMIN); `self:profile` (CUSTOMER). Na web, cada permissão verificada entra também no objecto `Permissions` de `web/src/auth/permissions.tsx`.
 
 Cada sprint acrescenta permissões numa migração `…__identity_seed_permissions_s{n}.sql` (insere em `identity.role_permission`; nunca edita migrações anteriores). Nomes `recurso:acção`.
 
@@ -422,7 +427,7 @@ As migrações de cada sprint usam carimbos dentro do intervalo do sprint, e cad
 | 11 | `20270415HHmm` |
 | 12 | `20270501HHmm` |
 
-**Ordem de chegada ao `main`.** As tarefas correm em paralelo, por isso uma migração pode chegar depois de outra com carimbo maior. O Flyway corre com `spring.flyway.out-of-order: true` em todos os perfis (S0-03), e aplica-a na mesma. Cada migração tem de funcionar sozinha sobre o estado das tarefas de que a sua tarefa depende ("Depende de"), e nunca sobre o de uma tarefa paralela.
+**Ordem de chegada ao `main`.** As tarefas correm em paralelo, por isso uma migração pode chegar depois de outra com carimbo maior. O Flyway corre com `spring.flyway.out-of-order: true` em todos os perfis e aplica-a na mesma. O S0-03 previa-o mas não chegou ao código: é o S2-01 que o acrescenta (com o `FlywayOutOfOrderIT`). Cada migração tem de funcionar sozinha sobre o estado das tarefas de que a sua tarefa depende ("Depende de"), e nunca sobre o de uma tarefa paralela.
 
 O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `payment_worker`, começando em `V202701150000`.
 
@@ -439,7 +444,9 @@ O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `paym
 | 5 | Idempotência | `shared.idempotency_record` + `IdempotencyService` (S5-02): mesma `Idempotency-Key` + mesmo corpo → mesma resposta durante 24 h; mesma chave com corpo diferente → 422 `IDEMPOTENCY_KEY_REUSED`; sem chave onde é obrigatória → 400 `IDEMPOTENCY_KEY_REQUIRED` |
 | 5 | Build | Reactor Maven na raiz (`pom.xml` agregador: `payment-contracts`, `backend`, `payment-file-worker`), introduzido no S5-06 |
 | 6 | Modelos de mensagem | `messages/notifications_{pt,en}.properties` com sobreposição opcional em `notification.template` (`AGENTS.md` §4). Nenhuma migração insere modelos |
-| 6 | Jobs | `@Scheduled` + ShedLock (`net.javacrumbs.shedlock`, JDBC, tabela `shared.shedlock`). Cron em `Africa/Maputo`. Cada job é idempotente e regista início, fim e contagens em log estruturado |
+| 2 | Upload no nginx | `web/nginx.conf` ganha `client_max_body_size 12m` (D28; previsto no S0-07, acrescentado no S2-01) |
+| 4 | IP do cliente | `shared.web.ClientIpResolver` + `moseguros.web.trusted-proxies` (D15): `X-Forwarded-For` só vindo de um proxy de confiança. Previsto no S0-03 mas não implementado (o `AuditService` aceita hoje qualquer `X-Forwarded-For`). Criado no S4-04, a primeira ficha que o usa; o `AuditService` passa a usá-lo. S6-03, S11-06 e S12-06 reutilizam-no |
+| 6 | Jobs | `SchedulingConfig` em `shared.scheduling` (S2-01); o S6-01 acrescenta-lhe o ShedLock. `@Scheduled` + ShedLock (`net.javacrumbs.shedlock`, JDBC, tabela `shared.shedlock`). Cron em `Africa/Maputo`. Cada job é idempotente e regista início, fim e contagens em log estruturado |
 | 6 | Push | `PushSender` com `FcmPushSender` (Firebase Admin SDK) e `MockPushSender` |
 | 6 | CAPTCHA | `CaptchaVerifier` com `TurnstileCaptchaVerifier` (Cloudflare Turnstile) e `AlwaysValidCaptchaVerifier` (local/testes). Decisão a confirmar pelo proprietário do produto |
 | 6 | Observabilidade | Micrometer + Prometheus (`/api/v1/prometheus`, rede interna), Grafana no compose `observability` |
@@ -448,6 +455,23 @@ O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `paym
 | 12 | USSD | `UssdAggregatorPort` + simulador próprio em `infra/mocks/ussd-mock` |
 
 **Âmbito em listeners e jobs.** Os `@ApplicationModuleListener` e os jobs agendados correm sem utilizador autenticado (âmbito `NONE`, que não vê nada). Por isso as classes `…Listener` e `…Job` do pacote `application` usam `@RunAsSystem` (regra do S1-01). Têm de filtrar no código pela seguradora ou pelo cliente que vem no evento, e nunca devolvem dados a um utilizador.
+
+**Staff sem seguradora.** O staff de organizações que não são seguradoras (mediador, provedor, regulador…) tem âmbito `ORG` com `insurerId = null`. `TenantContext.insurerId()` lança `TENANT_REQUIRED`; onde pode faltar, usa-se `TenantContext.current().insurerId()`.
+
+### 7.1 Convenções da web e da app (código do S1)
+
+- **Web:**
+  - datas com `formatDate`/`formatDateTime` de `web/src/i18n/format.ts` (não se cria outro `dates.ts` para formatar);
+  - dinheiro com `web/src/format/money.ts` (S2-05, recebe `Money`);
+  - ficheiros protegidos com `web/src/files/useFileBlob.ts` (S2-05);
+  - guardas `withPermission`/`RequirePermission` (`web/src/auth/permissions.tsx`), sem permissão → `/sem-acesso`; os itens de `menus.ts` levam `permission:`;
+  - o `organizationRoutes` do `router.tsx` é partilhado por todas as áreas de organização: páginas de uma só área precisam de uma lista própria.
+- **App:**
+  - cliente `dart-dio` gerado em `mobile/packages/moseguros_api`; tipos que o gerador não regista (ex.: `InnerEnum`) vão para `lib/core/api/api_serializers.dart`. Evitar enums dentro de mapas (`additionalProperties`) nos DTOs;
+  - ficheiros com `core/files/file_download.dart`/`file_viewer.dart` e câmara em `core/camera/` (S2-07);
+  - o destino pedido no login (`?from=`) e o `intent-filter` `moseguros` entram no S4-09; o S6-07 reutiliza-os.
+- **Códigos de erro:** cada código novo leva a tradução na web (`errors.<CODE>`/`validation.<CODE>`, verificado por `web/src/i18n/errorCodes.test.ts`) e na app (chave ARB e caso no `switch` de `apiErrorMessage`/`fieldErrorMessage` em `mobile/lib/core/api/api_error.dart`, verificado por `mobile/test/error_codes_test.dart`). As traduções não têm parâmetros: tempos de espera saem de `retryAfterSeconds`.
+- **`scripts/images.txt`:** a coluna "quando" só distingue `infra`; qualquer outro valor torna a imagem obrigatória no `doctor.sh`.
 
 **Dados de demonstração.** A partir do S2, `backend/src/main/resources/db/dev/` tem migrações `R__dev_seed_s{n}.sql` (repetíveis), aplicadas só no perfil `local` (`spring.flyway.locations: classpath:db/migration,classpath:db/dev`). Cada sprint acrescenta o seu ficheiro, com dados para testar à mão:
 - seguradora "Seguradora Demo" (`DEMO`) e o seu gestor;

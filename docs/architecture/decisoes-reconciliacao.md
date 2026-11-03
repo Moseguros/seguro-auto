@@ -84,3 +84,5 @@ O comando `cd backend && ./mvnw -B verify` continua a funcionar, com `-am` se fo
 **D32. Peritos internos.** Uma seguradora não tem peritos como staff próprio. Os peritos são sempre organizações `ASSESSOR`. Fica em "Questões".
 
 **D33.** `ORGANIZATION_SUSPENDED` (403) é o código do login, como no S1-05.
+
+**D34. Revisão contra o código do S0/S1 (03/11/2026).** As fichas S2–S12 foram revistas contra o código do S0/S1 (PR #22). O que estava especificado mas não chegou ao código é criado pela primeira ficha que precisa dele: `spring.flyway.out-of-order` e `client_max_body_size 12m` no S2-01; o schema `shared` no S4-02; o `ClientIpResolver` no S4-04. Cada finalidade nova de `notification.outbound_message` traz a sua migração (modelo §2). `findSummary` corre no âmbito de quem chama; para clientes, polícia e público usa-se `insurerProfile`. Convenções da web e da app no modelo §7.1.

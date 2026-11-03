@@ -162,7 +162,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 | S11-02 Comissões: cálculo, extractos mensais, estorno | S11-01 | pronta |
 | S11-03 Antifraude: motor de regras, 7 regras, alertas | S10 | pronta |
 | S11-04 Painéis da seguradora (vistas materializadas) | S10 | pronta |
-| S11-05 Exportações ASFPM configuráveis e área `/supervisao` (API) | S11-04 | pronta |
+| S11-05 Exportações ASFPM configuráveis e área `/supervisao` (API) | S11-02, S11-04 | pronta |
 | S11-06 Auditoria: só-de-inserção, leituras sensíveis, pesquisa e exportação (API) | S10 | pronta |
 | S11-07 Web: mediador, antifraude, painéis, supervisão, auditoria | S11-01 a S11-06 | pronta |
 | S11-08 Web cliente e mobile: mediador associado à apólice | S11-01 | pronta |
