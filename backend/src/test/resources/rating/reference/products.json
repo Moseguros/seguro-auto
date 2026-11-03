@@ -1,0 +1,14 @@
+[
+  { "code": "DEMO-RC", "type": "MTPL_ONLY", "coverages": [
+    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capital": 300000000, "capitalOptions": null, "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null },
+    { "code": "VTPL", "mandatory": false, "requiresCodes": [], "capitalType": "OPTIONS", "capital": null, "capitalOptions": [500000000, 1000000000], "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null } ] },
+  { "code": "DEMO-AUTO", "type": "COMPREHENSIVE", "coverages": [
+    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capital": 300000000, "capitalOptions": null, "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null },
+    { "code": "VTPL", "mandatory": false, "requiresCodes": [], "capitalType": "OPTIONS", "capital": null, "capitalOptions": [500000000, 1000000000], "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null },
+    { "code": "OD_COLLISION", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "10", "deductibleMinAmount": 2500000 },
+    { "code": "OD_FIRE", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "10", "deductibleMinAmount": 2500000 },
+    { "code": "OD_NATURE", "mandatory": false, "requiresCodes": [], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "10", "deductibleMinAmount": 2500000 },
+    { "code": "OD_THEFT", "mandatory": false, "requiresCodes": ["OD_COLLISION", "OD_FIRE", "OD_NATURE"], "capitalType": "VEHICLE_VALUE", "capital": null, "capitalOptions": null, "deductibleType": "PERCENT", "deductibleAmount": null, "deductiblePercent": "20", "deductibleMinAmount": 5000000 } ] },
+  { "code": "DEMO-TEMP", "type": "TEMPORARY", "coverages": [
+    { "code": "MTPL", "mandatory": true, "requiresCodes": [], "capitalType": "FIXED", "capital": 300000000, "capitalOptions": null, "deductibleType": "NONE", "deductibleAmount": null, "deductiblePercent": null, "deductibleMinAmount": null } ] }
+]

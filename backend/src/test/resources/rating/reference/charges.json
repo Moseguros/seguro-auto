@@ -1,0 +1,4 @@
+[
+  { "code": "DEMO_STAMP", "labelPt": "Imposto de selo (provisório)", "labelEn": "Stamp duty (provisional)", "type": "PERCENT", "value": "2.5" },
+  { "code": "DEMO_FEE", "labelPt": "Taxa fixa (provisória)", "labelEn": "Fixed fee (provisional)", "type": "FIXED", "value": 5000 }
+]
