@@ -112,7 +112,8 @@ public class RatingRulesService {
         return new RatingRulesDetails(version, ratingOf(version));
     }
 
-    static JsonNode ratingOf(ProductVersionView version) {
+    /** {@code rules.rating} da versão; {@code null} sem tarifa. */
+    public static JsonNode ratingOf(ProductVersionView version) {
         JsonNode rules = version.rules();
         JsonNode rating = rules == null ? null : rules.get(RATING);
         return rating == null || rating.isNull() ? null : rating;

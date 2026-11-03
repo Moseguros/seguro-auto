@@ -59,28 +59,28 @@ class ModularityTest {
     }
 
     /**
-     * S2-03: vehicle só usa document e shared (o vehicle → identity do grafo ainda não é usado), e
-     * nenhum módulo depende de vehicle nesta fase.
+     * S2-03: vehicle só usa document e shared (o vehicle → identity do grafo ainda não é usado). Desde
+     * o S3-02 só o rating depende de vehicle (snapshots do veículo e do condutor nas cotações).
      */
     @Test
-    void vehicleDependsOnDocumentAndSharedAndNobodyDependsOnVehicle() {
+    void vehicleDependsOnDocumentAndSharedAndOnlyRatingDependsOnVehicle() {
         assertThat(dependenciesOf("vehicle")).contains("document").isSubsetOf("shared", "document");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("vehicle"))
                 .filter(m -> dependenciesOf(m.getName()).contains("vehicle"))
                 .map(ApplicationModule::getName))
-                .isEmpty();
+                .containsOnly("rating");
     }
 
     /**
-     * S3-01: rating depende de catalog e organization (modelo transversal §1:
-     * {@code rating → catalog, vehicle, organization, identity, notification}; o vehicle entra na
-     * S3-02) e nenhum módulo depende de rating nesta fase.
+     * S3-01 e S3-02: rating só usa catalog, vehicle, organization e identity (modelo transversal §1:
+     * {@code rating → catalog, vehicle, organization, identity, notification}; o notification entra
+     * no S6) e nenhum módulo depende de rating nesta fase.
      */
     @Test
-    void ratingDependsOnCatalogAndOrganizationAndNobodyDependsOnRating() {
-        assertThat(dependenciesOf("rating")).contains("catalog", "organization")
-                .isSubsetOf("shared", "catalog", "organization");
+    void ratingDependsOnCatalogVehicleOrganizationAndIdentityAndNobodyDependsOnRating() {
+        assertThat(dependenciesOf("rating")).contains("catalog", "vehicle", "organization", "identity")
+                .isSubsetOf("shared", "catalog", "vehicle", "organization", "identity");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("rating"))
                 .filter(m -> dependenciesOf(m.getName()).contains("rating"))

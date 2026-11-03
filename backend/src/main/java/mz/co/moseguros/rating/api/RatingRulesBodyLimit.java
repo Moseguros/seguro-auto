@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 
 /**
- * Limite do corpo dos pedidos com uma tarifa (S3-01 §5): mais de 262 144 bytes → 400
+ * Limite do corpo dos pedidos com uma tarifa (S3-01 §5; também o simulador, S3-02 §12): mais de 262 144 bytes → 400
  * {@code RATING_RULES_TOO_LARGE}, verificado pelo {@code Content-Length} (antes de ler) e pelo
  * número de bytes lidos (pedidos sem {@code Content-Length}).
  */
-@ControllerAdvice(assignableTypes = RatingRulesController.class)
+@ControllerAdvice(assignableTypes = {RatingRulesController.class, RatingSimulationController.class})
 class RatingRulesBodyLimit extends RequestBodyAdviceAdapter {
 
     @Override
