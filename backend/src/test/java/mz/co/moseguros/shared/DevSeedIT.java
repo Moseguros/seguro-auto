@@ -88,6 +88,11 @@ class DevSeedIT {
                 .isEqualTo(sha256Hex("dev-convite-gestor-demo"));
         assertThat(owner.queryForObject("select short_code from organization.insurer_profile where id = ?::uuid",
                 String.class, id(2))).isEqualTo("DEMO");
+        // S2-03: veículo AAA-100-MC do cliente de teste, verificado pelo registo simulado
+        assertThat(owner.queryForList("""
+                select plate || '/' || owner_user_id || '/' || (inatro_verified_at is not null) as v
+                  from vehicle.vehicle where id = '01930000-0000-7000-8000-000000000101'""", String.class))
+                .containsExactly("AAA-100-MC/" + id(6) + "/true");
     }
 
     private static String id(int n) {
