@@ -1,0 +1,63 @@
+{
+  "name": "moseguros-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings 0 && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "api:generate": "orval --config orval.config.ts && prettier --write src/api/generated.ts"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^6.5.0",
+    "@mui/x-data-grid": "^7",
+    "@tanstack/react-query": "^5.105.1",
+    "axios": "^1.21.0",
+    "i18next": "^23.16.8",
+    "qrcode.react": "^4.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-hook-form": "^7.91.0",
+    "react-i18next": "^15.7.4",
+    "react-router-dom": "^6.30.6",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.64.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.10.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14",
+    "@types/node": "^22",
+    "@types/react": "^18.3",
+    "@types/react-dom": "^18.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^15.15.0",
+    "jsdom": "^25.0.1",
+    "orval": "^7.21.0",
+    "prettier": "^3.9.10",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.1",
+    "vite": "^5.4.21",
+    "vitest": "^2.1.9"
+  }
+}

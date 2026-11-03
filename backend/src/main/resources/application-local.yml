@@ -2,3 +2,26 @@
 logging:
   level:
     mz.co.moseguros: DEBUG
+
+# Swagger UI em /swagger-ui.html
+springdoc:
+  swagger-ui:
+    enabled: true
+
+moseguros:
+  crypto:
+    data-keys:
+      1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento
+  security:
+    otp:
+      pepper: ${MOSEGUROS_OTP_PEPPER:local-otp-pepper-only-for-development}
+      # Só aqui: devolve o código no cabeçalho X-Debug-Otp (nunca com o perfil prod).
+      debug-header: true
+  notification:
+    webhook-secret: ${MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET:local-webhook-secret}
+
+# SMTP do Mailpit (docker compose); no compose vem de SPRING_MAIL_HOST/SPRING_MAIL_PORT.
+spring:
+  mail:
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:1025}

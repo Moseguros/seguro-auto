@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: sms-mock
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8090}
+
+# Só o health fica exposto (/actuator/health), usado pelo healthcheck do compose.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+# Recibos de entrega para o backend (S1-03). Sem RECEIPT_CALLBACK_URL não se enviam recibos.
+mock:
+  receipt-callback-url: ${RECEIPT_CALLBACK_URL:}
+  receipt-secret: ${RECEIPT_SECRET:}
+  receipt-delay: PT2S

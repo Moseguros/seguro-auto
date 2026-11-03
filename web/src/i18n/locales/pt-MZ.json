@@ -1,0 +1,629 @@
+{
+  "app": {
+    "name": "MoSeguros"
+  },
+  "language": {
+    "label": "Língua",
+    "pt-MZ": "Português",
+    "en": "English"
+  },
+  "nav": {
+    "openMenu": "Abrir menu"
+  },
+  "areas": {
+    "cliente": "Área do cliente",
+    "admin": "Administração",
+    "seguradora": "Seguradora",
+    "mediador": "Mediador",
+    "perito": "Perito",
+    "oficina": "Oficina",
+    "assistencia": "Assistência",
+    "provedor": "Provedor do cliente",
+    "supervisao": "Supervisão",
+    "frota": "Frota"
+  },
+  "menu": {
+    "cliente": {
+      "home": "Início",
+      "quote": "Simular seguro",
+      "policies": "As minhas apólices",
+      "vehicles": "Veículos",
+      "payments": "Pagamentos",
+      "claims": "Sinistros",
+      "complaints": "Reclamações",
+      "profile": "Perfil"
+    },
+    "admin": {
+      "home": "Painel",
+      "organizations": "Organizações",
+      "users": "Utilizadores",
+      "auth": "Autenticação",
+      "references": "Tabelas de referência",
+      "audit": "Auditoria"
+    },
+    "seguradora": {
+      "home": "Painel",
+      "products": "Produtos",
+      "tariffs": "Tarifas",
+      "proposals": "Propostas",
+      "policies": "Apólices",
+      "payments": "Pagamentos",
+      "claims": "Sinistros",
+      "complaints": "Reclamações",
+      "reports": "Relatórios",
+      "users": "Utilizadores",
+      "settings": "Configuração"
+    },
+    "mediador": {
+      "home": "Painel",
+      "customers": "Clientes",
+      "quotes": "Cotações",
+      "policies": "Apólices",
+      "reports": "Relatórios",
+      "users": "Utilizadores"
+    },
+    "perito": {
+      "home": "Painel",
+      "assessments": "Peritagens",
+      "users": "Utilizadores"
+    },
+    "oficina": {
+      "home": "Painel",
+      "repairs": "Reparações",
+      "estimates": "Orçamentos",
+      "users": "Utilizadores"
+    },
+    "assistencia": {
+      "home": "Painel",
+      "requests": "Pedidos",
+      "users": "Utilizadores"
+    },
+    "provedor": {
+      "home": "Painel",
+      "cases": "Processos",
+      "users": "Utilizadores"
+    },
+    "supervisao": {
+      "home": "Painel",
+      "insurers": "Seguradoras",
+      "reports": "Relatórios",
+      "users": "Utilizadores"
+    },
+    "frota": {
+      "home": "Painel",
+      "vehicles": "Veículos",
+      "policies": "Apólices",
+      "claims": "Sinistros",
+      "users": "Utilizadores"
+    }
+  },
+  "home": {
+    "tagline": "Compare, compre e gira o seu seguro automóvel num só lugar."
+  },
+  "systemStatus": {
+    "title": "Estado do sistema",
+    "loading": "A verificar a API…",
+    "version": "Versão",
+    "commit": "Commit",
+    "unknown": "desconhecido",
+    "error": "Não foi possível obter o estado da API."
+  },
+  "underConstruction": {
+    "title": "Em construção",
+    "description": "Esta página ainda está a ser preparada."
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "O endereço que procura não existe.",
+    "backHome": "Voltar ao início"
+  },
+  "errors": {
+    "NETWORK_ERROR": "Sem ligação ao servidor. Verifique a sua ligação à Internet.",
+    "UNKNOWN": "Ocorreu um erro inesperado.",
+    "VALIDATION_ERROR": "Os dados enviados não são válidos.",
+    "NOT_FOUND": "O recurso pedido não existe.",
+    "UNAUTHORIZED": "Precisa de iniciar sessão.",
+    "FORBIDDEN": "Não tem permissão para esta operação.",
+    "INTERNAL_ERROR": "Erro interno do servidor. Tente mais tarde.",
+    "INVALID_CURRENCY": "Moeda inválida.",
+    "INVALID_MSISDN": "Número de telemóvel inválido.",
+    "INVALID_NUIT": "NUIT inválido.",
+    "INVALID_PLATE": "Matrícula inválida.",
+    "INVALID_EMAIL": "Endereço de e-mail inválido.",
+    "INVALID_PHONE": "Número de telefone inválido.",
+    "TENANT_REQUIRED": "Erro interno do servidor. Tente mais tarde.",
+    "DECRYPTION_FAILED": "Erro interno do servidor. Tente mais tarde.",
+    "INVALID_STATE_TRANSITION": "Esta operação não é possível no estado actual.",
+    "LICENSE_NUMBER_REQUIRED": "O número de autorização da ASFPM é obrigatório para seguradoras, corretores e agentes.",
+    "CHANNELS_EMPTY": "Escolha pelo menos um canal.",
+    "CHANNELS_DUPLICATED": "Cada canal só pode aparecer uma vez.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
+    "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
+    "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
+    "REFRESH_TOKEN_INVALID": "A sua sessão terminou. Entre novamente.",
+    "REFRESH_TOKEN_REUSED": "Por segurança, a sua sessão foi terminada. Entre novamente.",
+    "CONCURRENT_MODIFICATION": "Outra pessoa alterou estes dados entretanto. Actualize a página e tente de novo.",
+    "OTP_CHANNEL_CHOICE_DISABLED": "Não é possível escolher o canal de envio do código.",
+    "OTP_CHANNEL_NOT_AVAILABLE": "Este canal não está disponível. Use outro canal ou entre com o outro identificador.",
+    "OTP_RATE_LIMITED": "Pediu demasiados códigos. Tente mais tarde.",
+    "OTP_RESEND_TOO_SOON": "Aguarde um pouco antes de pedir um novo código.",
+    "OTP_DELIVERY_FAILED": "Não foi possível enviar o código. Tente de novo dentro de momentos.",
+    "OTP_CHALLENGE_NOT_FOUND": "Pedido de código desconhecido. Peça um novo código.",
+    "OTP_ALREADY_USED": "Este código já foi usado. Peça um novo código.",
+    "OTP_SUPERSEDED": "Pediu um código mais recente. Use o último código que recebeu.",
+    "OTP_EXPIRED": "O código expirou. Peça um novo código.",
+    "OTP_INVALID": "Código errado. Verifique e tente de novo.",
+    "OTP_ATTEMPTS_EXCEEDED": "Demasiadas tentativas erradas. Peça um novo código.",
+    "ACCOUNT_DISABLED": "Esta conta está desactivada. Contacte o apoio ao cliente.",
+    "ORGANIZATION_NOT_FOUND": "Organização não encontrada.",
+    "ORGANIZATION_NOT_ACTIVE": "A organização está suspensa.",
+    "NUIT_ALREADY_IN_USE": "Já existe uma organização com este NUIT.",
+    "SHORT_CODE_ALREADY_IN_USE": "Este código curto já é usado por outra seguradora.",
+    "OMBUDSMAN_INVALID": "Escolha um provedor do cliente existente.",
+    "ROLE_NOT_ALLOWED_FOR_ORGANIZATION": "Um dos perfis escolhidos não pode ser atribuído nesta organização.",
+    "EMAIL_ALREADY_IN_USE": "Este e-mail já pertence a outro utilizador.",
+    "INVITATION_INVALID": "Este convite já não é válido. Peça um novo convite a quem o convidou.",
+    "INVITATION_NOT_ACCEPTED": "Defina primeiro a sua palavra-passe.",
+    "TOTP_INVALID": "Código errado. Verifique a aplicação de autenticação e tente de novo.",
+    "PASSWORD_TOO_WEAK": "A palavra-passe não cumpre as regras de segurança.",
+    "INVALID_CREDENTIALS": "E-mail, palavra-passe ou código de autenticação errados.",
+    "ACCOUNT_LOCKED": "Demasiadas tentativas erradas. A conta está bloqueada temporariamente; tente mais tarde.",
+    "ORGANIZATION_SUSPENDED": "A sua organização está suspensa. Contacte a administração da MoSeguros.",
+    "RESET_TOKEN_INVALID": "Este link de recuperação já não é válido. Peça um novo.",
+    "USER_NOT_FOUND": "Utilizador não encontrado.",
+    "CANNOT_MODIFY_SELF": "Não pode alterar a sua própria conta.",
+    "LAST_MANAGER": "A organização tem de ficar com pelo menos um gestor activo.",
+    "CONTACT_ALREADY_IN_USE": "Este contacto já está associado a outra conta.",
+    "CONTACT_ALREADY_VERIFIED": "Este contacto já está confirmado na sua conta.",
+    "LAST_CONTACT": "A conta tem de ficar com pelo menos um contacto confirmado."
+  },
+  "validation": {
+    "INVALID_CURRENCY": "Moeda inválida.",
+    "INVALID_MSISDN": "Número de telemóvel inválido (ex.: +258 84 123 4567).",
+    "INVALID_NUIT": "O NUIT tem 9 dígitos.",
+    "INVALID_PLATE": "Matrícula inválida.",
+    "INVALID_EMAIL": "E-mail inválido (ex.: nome@exemplo.co.mz).",
+    "INVALID_PHONE": "Telefone inválido (9 a 15 dígitos).",
+    "LICENSE_NUMBER_REQUIRED": "Indique o número de autorização da ASFPM.",
+    "CHANNELS_EMPTY": "Escolha pelo menos um canal.",
+    "CHANNELS_DUPLICATED": "Cada canal só pode aparecer uma vez.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "O canal por defeito tem de estar activo.",
+    "FALLBACK_ORDER_MISMATCH": "A ordem alternativa tem de ter exactamente os canais activos.",
+    "OUT_OF_RANGE": "Valor fora dos limites permitidos.",
+    "NOT_BLANK": "Campo obrigatório.",
+    "NOT_NULL": "Campo obrigatório.",
+    "NOT_ALLOWED": "Este campo não se aplica neste caso.",
+    "REQUIRED": "Campo obrigatório.",
+    "INVALID_SORT": "Ordenação não suportada.",
+    "TOO_SHORT": "A palavra-passe tem de ter pelo menos 12 caracteres.",
+    "TOO_LONG": "A palavra-passe pode ter no máximo 128 caracteres.",
+    "CONTAINS_EMAIL": "A palavra-passe não pode conter o seu e-mail.",
+    "TOO_COMMON": "Esta palavra-passe é demasiado comum. Escolha outra.",
+    "SIZE": "Comprimento fora dos limites permitidos.",
+    "PATTERN": "Formato inválido.",
+    "TYPE_MISMATCH": "Valor inválido.",
+    "INVALID_NAME": "Indique o nome completo (pelo menos duas palavras, só letras, espaços, ' e -).",
+    "UNDERAGE": "Tem de ter pelo menos 18 anos.",
+    "INVALID_DATE": "Data inválida.",
+    "INVALID_DOCUMENT_NUMBER": "Número de documento inválido (5 a 20 letras maiúsculas ou dígitos)."
+  },
+  "province": {
+    "MAPUTO_CITY": "Maputo Cidade",
+    "MAPUTO": "Maputo Província",
+    "GAZA": "Gaza",
+    "INHAMBANE": "Inhambane",
+    "SOFALA": "Sofala",
+    "MANICA": "Manica",
+    "TETE": "Tete",
+    "ZAMBEZIA": "Zambézia",
+    "NAMPULA": "Nampula",
+    "CABO_DELGADO": "Cabo Delgado",
+    "NIASSA": "Niassa"
+  },
+  "auth": {
+    "loading": "A carregar…",
+    "retry": "Tentar de novo",
+    "retryIn": "Tente de novo dentro de {{seconds}} s.",
+    "login": {
+      "title": "Entrar na área do cliente",
+      "subtitle": "Use o seu telemóvel ou e-mail. Enviamos-lhe um código para entrar, sem palavra-passe."
+    },
+    "identifier": {
+      "typeLabel": "Entrar com",
+      "type": {
+        "MSISDN": "Telemóvel",
+        "EMAIL": "E-mail"
+      },
+      "msisdnLabel": "Número de telemóvel",
+      "msisdnHelper": "9 dígitos, por exemplo 84 123 4567.",
+      "emailLabel": "E-mail",
+      "channelLabel": "Receber o código por",
+      "submit": "Receber código"
+    },
+    "code": {
+      "subtitle": "Escreva o código que recebeu.",
+      "inputLabel": "Código recebido",
+      "digitLabel": "Dígito {{position}} de {{total}}",
+      "sentTo": "Enviámos um código por {{channel}} para {{destination}}.",
+      "change": "Alterar",
+      "fallback": "Não conseguimos enviar por {{requested}}. Enviámos o código por {{used}}.",
+      "wrongCode_one": "Código errado. Resta {{count}} tentativa.",
+      "wrongCode_other": "Código errado. Restam {{count}} tentativas.",
+      "resent": "Enviámos um código novo.",
+      "resend": "Reenviar código",
+      "resendIn": "Reenviar código ({{seconds}} s)"
+    },
+    "noAccess": {
+      "title": "Não tem acesso a esta área",
+      "description": "A sua sessão não permite abrir esta página.",
+      "goToArea": "Ir para a minha área",
+      "goHome": "Ir para o início"
+    },
+    "userMenu": {
+      "open": "Menu da conta",
+      "account": "A minha conta",
+      "logout": "Terminar sessão"
+    }
+  },
+  "customer": {
+    "home": {
+      "greeting": "Olá, {{name}}",
+      "greetingNoName": "Olá",
+      "incompleteProfile": "Complete o seu perfil para poder comprar um seguro.",
+      "completeProfile": "Completar perfil",
+      "quoteTitle": "Seguro automóvel",
+      "quoteText": "Compare os preços das seguradoras para o seu veículo.",
+      "quote": "Simular seguro"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalData": "Dados pessoais",
+    "completeNotice": "Precisamos destes dados para emitir as suas apólices.",
+    "fields": {
+      "fullName": "Nome completo",
+      "birthDate": "Data de nascimento",
+      "idDocType": "Tipo de documento",
+      "idDocNumber": "Número do documento",
+      "nuit": "NUIT",
+      "address": "Morada",
+      "province": "Província"
+    },
+    "choose": "Escolha…",
+    "change": "Alterar",
+    "changeDocument": "Alterar o número do documento",
+    "changeNuit": "Alterar o NUIT",
+    "nuitHelper": "9 dígitos.",
+    "optional": "Opcional.",
+    "save": "Guardar",
+    "saved": "Perfil guardado"
+  },
+  "contacts": {
+    "title": "Contactos",
+    "type": {
+      "MSISDN": "Telemóvel",
+      "EMAIL": "E-mail"
+    },
+    "verified": "Verificado",
+    "add": {
+      "MSISDN": "Acrescentar telemóvel",
+      "EMAIL": "Acrescentar e-mail"
+    },
+    "change": {
+      "MSISDN": "Alterar telemóvel",
+      "EMAIL": "Alterar e-mail"
+    },
+    "changeShort": "Alterar",
+    "remove": {
+      "MSISDN": "Remover telemóvel",
+      "EMAIL": "Remover e-mail"
+    },
+    "removeShort": "Remover",
+    "cancel": "Cancelar",
+    "saved": "Contacto confirmado",
+    "removed": "Contacto removido",
+    "confirmRemove": {
+      "title": "Remover contacto?",
+      "text": "Deixará de poder entrar e receber avisos em {{value}}.",
+      "confirm": "Remover"
+    },
+    "dialog": {
+      "add": {
+        "MSISDN": "Acrescentar telemóvel",
+        "EMAIL": "Acrescentar e-mail"
+      },
+      "change": {
+        "MSISDN": "Alterar telemóvel",
+        "EMAIL": "Alterar e-mail"
+      }
+    }
+  },
+  "idDocType": {
+    "BI": "Bilhete de Identidade",
+    "PASSPORT": "Passaporte",
+    "DIRE": "DIRE"
+  },
+  "channel": {
+    "SMS": "SMS",
+    "WHATSAPP": "WhatsApp",
+    "EMAIL": "E-mail"
+  },
+  "staffAuth": {
+    "login": {
+      "title": "Entrar na MoSeguros",
+      "subtitle": "Área de seguradoras, mediadores e parceiros.",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "totp": "Código da aplicação de autenticação",
+      "totpHelper": "6 dígitos.",
+      "submit": "Entrar",
+      "forgot": "Esqueci-me da palavra-passe",
+      "invalidCredentials": "E-mail, palavra-passe ou código errados.",
+      "locked_one": "Conta bloqueada. Tente de novo dentro de {{count}} minuto.",
+      "locked_other": "Conta bloqueada. Tente de novo dentro de {{count}} minutos.",
+      "customer": "É cliente? Entre aqui"
+    },
+    "password": {
+      "show": "Mostrar a palavra-passe",
+      "hide": "Ocultar a palavra-passe",
+      "rulesTitle": "A palavra-passe tem de:",
+      "rules": {
+        "minLength": "Ter pelo menos 12 caracteres",
+        "noEmail": "Não conter o seu e-mail",
+        "notCommon": "Não ser uma palavra-passe comum"
+      },
+      "ruleMet": "cumprida",
+      "ruleNotMet": "por cumprir",
+      "new": "Nova palavra-passe",
+      "confirm": "Confirmar a palavra-passe",
+      "mismatch": "As palavras-passe não coincidem."
+    },
+    "forgot": {
+      "title": "Recuperar a palavra-passe",
+      "subtitle": "Indique o e-mail da sua conta. Enviamos um link para definir uma palavra-passe nova.",
+      "submit": "Enviar link",
+      "sent": "Se o e-mail estiver registado, vai receber um link nos próximos minutos.",
+      "backToLogin": "Voltar à entrada"
+    },
+    "reset": {
+      "title": "Definir nova palavra-passe",
+      "submit": "Guardar palavra-passe",
+      "done": "Palavra-passe alterada",
+      "doneText": "Já pode entrar com a nova palavra-passe.",
+      "goToLogin": "Entrar",
+      "invalid": "Este link já não é válido",
+      "requestNew": "Pedir um novo link"
+    },
+    "invitation": {
+      "title": "Activar a conta",
+      "invalid": "Este convite já não é válido. Peça um novo ao gestor da sua organização.",
+      "step1": "Palavra-passe",
+      "step2": "Aplicação de autenticação",
+      "name": "Nome",
+      "email": "E-mail",
+      "organization": "Organização",
+      "platform": "MoSeguros (plataforma)",
+      "continue": "Continuar"
+    },
+    "totp": {
+      "instructions": "Abra a aplicação de autenticação e leia o código QR.",
+      "qrLabel": "Código QR para a aplicação de autenticação",
+      "manual": "Se não conseguir ler o código, escreva este segredo:",
+      "copy": "Copiar o segredo",
+      "copied": "Segredo copiado",
+      "code": "Código de 6 dígitos",
+      "activate": "Activar a conta",
+      "invalid": "Código errado. Confirme a hora do telemóvel."
+    }
+  },
+  "otpSettings": {
+    "title": "Autenticação dos clientes",
+    "subtitle": "Como os clientes recebem o código para entrar.",
+    "channels": "Canais activos",
+    "defaultChannel": "Canal por defeito",
+    "customerCanChoose": "O cliente pode escolher o canal",
+    "fallback": "Ordem de alternativa",
+    "fallbackHelp": "Se o envio falhar, tenta-se o canal seguinte. Arraste ou use os botões para mudar a ordem.",
+    "fallbackNote": "Não há alternativa entre telemóvel e e-mail.",
+    "moveUp": "Subir {{channel}}",
+    "moveDown": "Descer {{channel}}",
+    "drag": "Arrastar {{channel}}",
+    "parameters": "Parâmetros do código",
+    "codeLength": "Tamanho do código",
+    "validityMinutes": "Validade (minutos)",
+    "maxAttempts": "Tentativas",
+    "resendAfterSeconds": "Reenvio (segundos)",
+    "maxRequestsPerHour": "Pedidos por hora",
+    "range": "Entre {{min}} e {{max}}.",
+    "save": "Guardar",
+    "saved": "Configuração guardada",
+    "conflict": "Outra pessoa alterou esta configuração",
+    "reload": "Recarregar",
+    "readOnly": "Só pode consultar esta configuração.",
+    "test": {
+      "open": "Enviar código de teste",
+      "title": "Enviar código de teste",
+      "identifierType": "Tipo de identificador",
+      "identifier": "Identificador",
+      "channel": "Canal",
+      "inactive": "{{channel}} (inactivo)",
+      "send": "Enviar",
+      "close": "Fechar",
+      "result": "Resultado: {{status}} ({{channel}})."
+    }
+  },
+  "deliveryStatus": {
+    "PENDING": "Pendente",
+    "SENT": "Enviado",
+    "DELIVERED": "Entregue",
+    "FAILED": "Falhou"
+  },
+  "organizations": {
+    "title": "Organizações",
+    "new": "Nova organização",
+    "filters": {
+      "type": "Tipo",
+      "status": "Estado",
+      "search": "Pesquisar",
+      "all": "Todos"
+    },
+    "columns": {
+      "name": "Nome",
+      "type": "Tipo",
+      "nuit": "NUIT",
+      "status": "Estado",
+      "createdAt": "Criada em"
+    },
+    "sections": {
+      "data": "Dados",
+      "insurer": "Perfil da seguradora",
+      "manager": "Primeiro gestor"
+    },
+    "fields": {
+      "type": "Tipo",
+      "legalName": "Nome legal",
+      "tradeName": "Nome comercial",
+      "nuit": "NUIT",
+      "licenseNumber": "N.º de autorização ASFPM",
+      "contactEmail": "E-mail de contacto",
+      "contactPhone": "Telefone de contacto",
+      "address": "Morada",
+      "province": "Província",
+      "shortCode": "Código curto",
+      "complaintsEmail": "E-mail de reclamações",
+      "ombudsman": "Provedor do cliente",
+      "managerName": "Nome",
+      "managerEmail": "E-mail"
+    },
+    "shortCodeHelper": "2 a 10 maiúsculas ou dígitos.",
+    "optional": "Opcional.",
+    "none": "Nenhum",
+    "choose": "Escolha…",
+    "create": "Criar organização",
+    "save": "Guardar",
+    "saved": "Dados guardados",
+    "tabs": {
+      "data": "Dados",
+      "users": "Utilizadores"
+    },
+    "noManager": "Esta organização ainda não tem gestor activo.",
+    "inviteFailed": "A organização foi criada, mas o convite ao gestor falhou. Corrija os dados e envie de novo.",
+    "suspend": "Suspender",
+    "reactivate": "Reactivar",
+    "suspendDialog": {
+      "title": "Suspender a organização",
+      "text": "Os utilizadores da organização deixam de poder entrar até ela ser reactivada.",
+      "reason": "Motivo",
+      "confirm": "Suspender",
+      "cancel": "Cancelar"
+    },
+    "reactivateDialog": {
+      "title": "Reactivar a organização?",
+      "text": "Os utilizadores da organização voltam a poder entrar.",
+      "confirm": "Reactivar",
+      "cancel": "Cancelar"
+    },
+    "suspended": "Organização suspensa",
+    "reactivated": "Organização reactivada"
+  },
+  "users": {
+    "title": "Utilizadores",
+    "invite": "Convidar utilizador",
+    "invitations": "Convites",
+    "columns": {
+      "name": "Nome",
+      "email": "E-mail",
+      "roles": "Perfis",
+      "status": "Estado",
+      "lastLogin": "Último acesso",
+      "expiresAt": "Expira em",
+      "actions": "Acções"
+    },
+    "noUsers": "Ainda não há utilizadores.",
+    "noInvitations": "Não há convites.",
+    "never": "Nunca",
+    "you": "(você)",
+    "actions": {
+      "open": "Acções para {{name}}",
+      "roles": "Alterar perfis",
+      "disable": "Desactivar",
+      "enable": "Activar",
+      "unlock": "Desbloquear",
+      "resetAccess": "Repor acesso",
+      "resend": "Reenviar",
+      "revoke": "Revogar"
+    },
+    "resetConfirm": {
+      "title": "Repor o acesso?",
+      "text": "A pessoa recebe um novo convite e terá de configurar de novo a palavra-passe e o código.",
+      "confirm": "Repor acesso",
+      "cancel": "Cancelar"
+    },
+    "done": {
+      "roles": "Perfis alterados",
+      "disable": "Utilizador desactivado",
+      "enable": "Utilizador activado",
+      "unlock": "Utilizador desbloqueado",
+      "resetAccess": "Enviámos um novo convite",
+      "resend": "Convite reenviado",
+      "revoke": "Convite revogado",
+      "invite": "Convite enviado"
+    },
+    "inviteDialog": {
+      "title": "Convidar utilizador",
+      "fullName": "Nome",
+      "email": "E-mail",
+      "roles": "Perfis",
+      "send": "Enviar convite",
+      "cancel": "Cancelar"
+    },
+    "rolesDialog": {
+      "title": "Alterar perfis de {{name}}",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    }
+  },
+  "role": {
+    "PLATFORM_ADMIN": "Administrador da plataforma",
+    "INSURER_ADMIN": "Gestor da seguradora",
+    "ORG_ADMIN": "Gestor da organização",
+    "PRODUCT_MANAGER": "Gestor de produto",
+    "UNDERWRITER": "Subscritor",
+    "CLAIMS_HANDLER": "Gestor de sinistros",
+    "COMPLAINTS_OFFICER": "Gestor de reclamações",
+    "FINANCE": "Financeiro",
+    "BROKER": "Corretor",
+    "AGENT": "Agente de seguros",
+    "ASSESSOR": "Perito",
+    "WORKSHOP": "Oficina",
+    "ASSISTANCE_PROVIDER": "Prestador de assistência",
+    "OMBUDSMAN": "Provedor do cliente",
+    "REGULATOR_VIEWER": "Supervisor (ASFPM)",
+    "POLICE_OFFICER": "Agente da polícia",
+    "FLEET_MANAGER": "Gestor de frota",
+    "CUSTOMER": "Cliente"
+  },
+  "orgType": {
+    "INSURER": "Seguradora",
+    "BROKER": "Corretora",
+    "AGENT": "Agente de seguros",
+    "WORKSHOP": "Oficina",
+    "ASSESSOR": "Peritagem",
+    "ASSISTANCE": "Assistência",
+    "OMBUDSMAN": "Provedor do cliente",
+    "REGULATOR": "Regulador",
+    "POLICE": "Polícia",
+    "CORPORATE_CLIENT": "Cliente empresarial"
+  },
+  "status": {
+    "ACTIVE": "Activo",
+    "PENDING_ACTIVATION": "Por activar",
+    "LOCKED": "Bloqueado",
+    "DISABLED": "Desactivado",
+    "SUSPENDED": "Suspenso",
+    "PENDING": "Pendente",
+    "EXPIRED": "Expirado",
+    "REVOKED": "Revogado",
+    "ACCEPTED": "Aceite"
+  }
+}

@@ -1,0 +1,3188 @@
+openapi: 3.0.1
+info:
+  description: "API REST da plataforma MoSeguros. Erros em RFC 7807 (application/problem+json)\
+    \ com `code` e `errors[]`."
+  title: MoSeguros API
+  version: 0.1.0-SNAPSHOT
+servers:
+- url: /
+security:
+- bearerAuth: []
+tags:
+- description: Informação técnica da aplicação
+  name: Meta
+- description: Envio de mensagens e recibos de entrega
+  name: Notification
+- description: "Organizações: seguradoras, mediadores, oficinas e outras"
+  name: Organization
+- description: "Identidade, sessões e utilizador autenticado"
+  name: Identity
+paths:
+  /.well-known/jwks.json:
+    get:
+      operationId: getJwks
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwksResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Chaves públicas dos tokens (JWKS)
+      tags:
+      - Identity
+  /api/v1/admin/invitations:
+    get:
+      description: "Permissão org-user:read e âmbito da plataforma. Ordenação por\
+        \ createdAt, expiresAt ou email."
+      operationId: listPlatformInvitations
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - ACCEPTED
+          - EXPIRED
+          - REVOKED
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInvitationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os convites da plataforma
+      tags:
+      - Identity
+  /api/v1/admin/otp-settings:
+    get:
+      description: Permissão otp-settings:read.
+      operationId: getOtpSettings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Definições do OTP
+      tags:
+      - Identity
+    put:
+      description: Permissão otp-settings:manage. Todos os campos são obrigatórios;
+        version diferente da gravada → 409 CONCURRENT_MODIFICATION.
+      operationId: updateOtpSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOtpSettingsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as definições do OTP
+      tags:
+      - Identity
+  /api/v1/admin/otp-settings/test:
+    post:
+      description: "Permissão otp-settings:manage. Só pelo canal pedido, mesmo que\
+        \ esteja desactivado, e sem alternativa; o código não serve para entrar. Conta\
+        \ para o limite por hora."
+      operationId: testOtpDelivery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtpTestRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpTestResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia um código de teste
+      tags:
+      - Identity
+  /api/v1/admin/users:
+    get:
+      description: "Permissão org-user:read e âmbito da plataforma (senão 403 FORBIDDEN).\
+        \ Filtros status e q. Ordenação por createdAt, email, displayName ou lastLoginAt."
+      operationId: listPlatformUsers
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - LOCKED
+          - DISABLED
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseStaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista o staff da plataforma
+      tags:
+      - Identity
+    post:
+      description: Permissão org-user:manage e âmbito da plataforma (senão 403 FORBIDDEN).
+        Só perfis sem organização (excepto CUSTOMER). Convites pendentes para o mesmo
+        e-mail são substituídos.
+      operationId: invitePlatformUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteUserRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationResponse"
+          description: Created
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Convida staff da plataforma
+      tags:
+      - Identity
+  /api/v1/auth/invitations/{token}:
+    get:
+      description: "Token desconhecido, convite expirado, revogado ou já aceite →\
+        \ 404 INVITATION_INVALID."
+      operationId: getInvitationByToken
+      parameters:
+      - in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationDetailsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Consulta um convite pelo token
+      tags:
+      - Identity
+  /api/v1/auth/invitations/{token}/accept:
+    post:
+      description: "Aplica a política de palavras-passe (400 PASSWORD_TOO_WEAK) e\
+        \ devolve um segredo TOTP novo. Pode repetir-se até à activação: cada chamada\
+        \ substitui a palavra-passe e o segredo."
+      operationId: acceptInvitation
+      parameters:
+      - in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptInvitationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TotpSetupResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Define a palavra-passe e o TOTP
+      tags:
+      - Identity
+  /api/v1/auth/invitations/{token}/activate:
+    post:
+      description: Sem accept antes → 400 INVITATION_NOT_ACCEPTED. Código errado →
+        400 TOTP_INVALID; ao 5.º o convite é revogado (404 INVITATION_INVALID). Certo
+        → conta activa e sessão iniciada.
+      operationId: activateInvitation
+      parameters:
+      - in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActivateInvitationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Activa a conta com o primeiro código TOTP
+      tags:
+      - Identity
+  /api/v1/auth/login:
+    post:
+      description: "E-mail, palavra-passe e código TOTP. Qualquer um errado → 401\
+        \ INVALID_CREDENTIALS (sem dizer qual). À 5.ª falha seguida a conta bloqueia\
+        \ 15 minutos: 403 ACCOUNT_LOCKED com retryAfterSeconds e Retry-After. Credenciais\
+        \ certas numa conta desactivada → 403 ACCOUNT_DISABLED; numa organização suspensa\
+        \ → 403 ORGANIZATION_SUSPENDED. A sessão dura 12 h."
+      operationId: loginStaff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StaffLoginRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Login de staff
+      tags:
+      - Identity
+  /api/v1/auth/logout:
+    post:
+      description: Revoga a sessão do refresh token. Responde 204 mesmo que o token
+        seja desconhecido.
+      operationId: logoutSession
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutRequest"
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Termina a sessão
+      tags:
+      - Identity
+  /api/v1/auth/otp/challenges/{challengeId}:
+    get:
+      description: Canal e estado de entrega do código activo (muda se houver alternativa
+        de canal). Desconhecido → 404 OTP_CHALLENGE_NOT_FOUND.
+      operationId: getOtpChallenge
+      parameters:
+      - in: path
+        name: challengeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpChallengeResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Estado do envio do código
+      tags:
+      - Identity
+  /api/v1/auth/otp/options:
+    get:
+      description: "Tipos de identificador e canais activos, conforme as definiçõ\
+        es actuais."
+      operationId: getOtpOptions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpOptionsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Opções do login por código
+      tags:
+      - Identity
+  /api/v1/auth/otp/request:
+    post:
+      description: "Envia um código pelo canal escolhido (ou o por defeito) e, se\
+        \ falhar, pelos outros canais compatíveis. A resposta é igual para identificadores\
+        \ novos e existentes."
+      operationId: requestOtp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestOtpRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpRequestResponse"
+          description: Código enviado
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Pede um código
+      tags:
+      - Identity
+  /api/v1/auth/otp/verify:
+    post:
+      description: "Abre a sessão (e cria a conta de cliente, se ainda não existir)."
+      operationId: verifyOtp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyOtpRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpVerifyResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Valida o código e entra
+      tags:
+      - Identity
+  /api/v1/auth/password/forgot:
+    post:
+      description: "Responde sempre 202, sem corpo. Se o e-mail for de uma conta de\
+        \ staff activa ou bloqueada, envia um link válido 30 minutos (no máximo 3\
+        \ e-mails por conta por hora); os pedidos anteriores por usar deixam de funcionar."
+      operationId: forgotPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+        required: true
+      responses:
+        "202":
+          description: Accepted
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Pede a recuperação da palavra-passe de staff
+      tags:
+      - Identity
+  /api/v1/auth/password/reset:
+    post:
+      description: "Com o token do link. Token desconhecido, expirado, usado ou substituí\
+        do → 400 RESET_TOKEN_INVALID; palavra-passe fraca → 400 PASSWORD_TOO_WEAK\
+        \ (campo newPassword). Desbloqueia a conta e termina todas as sessões; o TOTP\
+        \ não muda."
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Define a palavra-passe nova
+      tags:
+      - Identity
+  /api/v1/auth/refresh:
+    post:
+      description: Troca o refresh token por um par novo (rotação). Um token já usado
+        revoga a sessão inteira (401 REFRESH_TOKEN_REUSED); outro token recusado dá
+        401 REFRESH_TOKEN_INVALID.
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Renova a sessão
+      tags:
+      - Identity
+  /api/v1/integrations/delivery-receipts/{provider}:
+    post:
+      description: Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED;
+        fornecedor desconhecido → 404 NOT_FOUND; mensagem desconhecida → 204 (ignorado).
+        Uma falha de um código OTP faz o backend tentar o canal seguinte.
+      operationId: receiveDeliveryReceipt
+      parameters:
+      - description: "Valor da coluna provider (mock-sms, mock-whatsapp)"
+        example: mock-sms
+        in: path
+        name: provider
+        required: true
+        schema:
+          type: string
+      - description: Segredo partilhado com o fornecedor
+        in: header
+        name: X-Webhook-Secret
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryReceiptRequest"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Recibo de entrega de um fornecedor
+      tags:
+      - Notification
+  /api/v1/invitations/{id}/resend:
+    post:
+      description: "Permissão org-user:manage. Gera um token novo (o anterior deixa\
+        \ de funcionar) válido por 7 dias. Só PENDING ou EXPIRED, senão 409 INVALID_STATE_TRANSITION."
+      operationId: resendInvitation
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Reenvia um convite
+      tags:
+      - Identity
+  /api/v1/invitations/{id}/revoke:
+    post:
+      description: "Permissão org-user:manage. Só PENDING ou EXPIRED, senão 409 INVALID_STATE_TRANSITION."
+      operationId: revokeInvitation
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Revoga um convite
+      tags:
+      - Identity
+  /api/v1/me:
+    get:
+      operationId: getMe
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Utilizador autenticado
+      tags:
+      - Identity
+    put:
+      description: "Língua preferida e, só para staff, o nome (para clientes o nome\
+        \ está no perfil e displayName é ignorado)."
+      operationId: updateMe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMeRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as preferências da conta
+      tags:
+      - Identity
+  /api/v1/me/contacts:
+    get:
+      operationId: listMyContacts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Contactos do cliente
+      tags:
+      - Identity
+    post:
+      description: "Acrescenta ou troca o telemóvel ou o e-mail: envia um código com\
+        \ as regras de canal, alternativa e limites do login. Para reenviar, chama-se\
+        \ de novo. Contacto de outra conta → 409 CONTACT_ALREADY_IN_USE; igual ao\
+        \ actual e verificado → 409 CONTACT_ALREADY_VERIFIED."
+      operationId: startContactVerification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartContactVerificationRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OtpRequestResponse"
+          description: Código enviado
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia um código para um contacto novo
+      tags:
+      - Identity
+  /api/v1/me/contacts/verify:
+    post:
+      description: "Mesmas validações do verifyOtp. O contacto substitui o anterior\
+        \ do mesmo tipo, verificado. Desafio de outra finalidade ou de outro cliente\
+        \ → 404 OTP_CHALLENGE_NOT_FOUND."
+      operationId: verifyContact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyContactRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Confirma o código e grava o contacto
+      tags:
+      - Identity
+  /api/v1/me/contacts/{type}:
+    delete:
+      description: A conta não pode ficar sem nenhum contacto verificado → 400 LAST_CONTACT.
+      operationId: removeMyContact
+      parameters:
+      - in: path
+        name: type
+        required: true
+        schema:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+      responses:
+        "204":
+          description: Removido (ou já não existia)
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Remove um contacto
+      tags:
+      - Identity
+  /api/v1/me/profile:
+    get:
+      description: O documento e o NUIT vêm mascarados; os campos por preencher são
+        omitidos.
+      operationId: getMyProfile
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfileResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Perfil do cliente
+      tags:
+      - Identity
+    put:
+      description: "Erros de validação → 400 VALIDATION_ERROR com errors[]; version\
+        \ antiga → 409 CONCURRENT_MODIFICATION."
+      operationId: updateMyProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMyProfileRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerProfileResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera o perfil do cliente
+      tags:
+      - Identity
+  /api/v1/meta/version:
+    get:
+      operationId: getVersion
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Versão da API
+      tags:
+      - Meta
+  /api/v1/organizations:
+    get:
+      description: Permissão organization:read. q procura na denominação e no nome
+        comercial (sem diferenciar maiúsculas) ou no NUIT exacto. Ordenação por createdAt
+        ou legalName.
+      operationId: listOrganizations
+      parameters:
+      - in: query
+        name: type
+        required: false
+        schema:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - SUSPENDED
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt ou legalName, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseOrganizationSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as organizações
+      tags:
+      - Organization
+    post:
+      description: Permissão organization:manage. O primeiro gestor é convidado a
+        seguir com inviteOrganizationUser. insurerProfile é obrigatório em INSURER
+        e proibido nos outros tipos.
+      operationId: createOrganization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrganizationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Cria uma organização
+      tags:
+      - Organization
+  /api/v1/organizations/{id}:
+    get:
+      description: Permissão organization:read. Não existe → 404 ORGANIZATION_NOT_FOUND.
+      operationId: getOrganization
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma organização
+      tags:
+      - Organization
+    put:
+      description: Permissão organization:manage. O tipo não muda; version diferente
+        da gravada → 409 CONCURRENT_MODIFICATION.
+      operationId: updateOrganization
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrganizationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera uma organização
+      tags:
+      - Organization
+  /api/v1/organizations/{id}/reactivate:
+    post:
+      description: Permissão organization:manage. Já activa → 409 INVALID_STATE_TRANSITION.
+      operationId: reactivateOrganization
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Reactiva uma organização suspensa
+      tags:
+      - Organization
+  /api/v1/organizations/{id}/suspend:
+    post:
+      description: Permissão organization:manage. Revoga as sessões dos utilizadores
+        da organização. Já suspensa → 409 INVALID_STATE_TRANSITION.
+      operationId: suspendOrganization
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SuspendOrganizationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Suspende uma organização
+      tags:
+      - Organization
+  /api/v1/organizations/{orgId}/invitations:
+    get:
+      description: "Permissão org-user:read. Ordenação por createdAt, expiresAt ou\
+        \ email."
+      operationId: listOrganizationInvitations
+      parameters:
+      - in: path
+        name: orgId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING
+          - ACCEPTED
+          - EXPIRED
+          - REVOKED
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInvitationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os convites de uma organização
+      tags:
+      - Identity
+  /api/v1/organizations/{orgId}/users:
+    get:
+      description: "Permissão org-user:read. A plataforma vê qualquer organização;\
+        \ o staff de uma organização só a sua (outra → 404 ORGANIZATION_NOT_FOUND).\
+        \ Filtros status e q (parte do nome ou do e-mail). Ordenação por createdAt,\
+        \ email, displayName ou lastLoginAt."
+      operationId: listOrganizationUsers
+      parameters:
+      - in: path
+        name: orgId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - LOCKED
+          - DISABLED
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseStaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista o staff de uma organização
+      tags:
+      - Identity
+    post:
+      description: Permissão org-user:manage. A plataforma convida para qualquer organização;
+        o staff de uma organização só para a sua (outra → 404 ORGANIZATION_NOT_FOUND).
+        Organização suspensa → 409 ORGANIZATION_NOT_ACTIVE. E-mail de outra conta
+        de staff → 409 EMAIL_ALREADY_IN_USE.
+      operationId: inviteOrganizationUser
+      parameters:
+      - in: path
+        name: orgId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteUserRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationResponse"
+          description: Created
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Convida staff de uma organização
+      tags:
+      - Identity
+  /api/v1/roles:
+    get:
+      description: "Permissão org-user:read. Indicar organizationId ou scope=PLATFORM\
+        \ (um dos dois), com as regras de âmbito dos convites. Devolve também os perfis\
+        \ de gestor e os do primeiro gestor."
+      operationId: listAssignableRoles
+      parameters:
+      - description: Organização (ou scope=PLATFORM)
+        in: query
+        name: organizationId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - description: PLATFORM (ou organizationId)
+        in: query
+        name: scope
+        required: false
+        schema:
+          type: string
+          enum:
+          - PLATFORM
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssignableRolesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Perfis atribuíveis
+      tags:
+      - Identity
+  /api/v1/users/{id}:
+    get:
+      description: Permissão org-user:read. Fora do âmbito → 404 USER_NOT_FOUND.
+      operationId: getStaffUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/disable:
+    post:
+      description: Permissão org-user:manage. ACTIVE ou LOCKED → DISABLED e revoga
+        as sessões. O próprio → 400 CANNOT_MODIFY_SELF; último gestor activo → 400
+        LAST_MANAGER; outro estado → 409 INVALID_STATE_TRANSITION.
+      operationId: disableUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desactiva um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/enable:
+    post:
+      description: Permissão org-user:manage. DISABLED → ACTIVE; outro estado → 409
+        INVALID_STATE_TRANSITION.
+      operationId: enableUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Reactiva um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/reset-access:
+    post:
+      description: "Permissão org-user:manage. Para quem perdeu o telemóvel do TOTP\
+        \ ou não consegue entrar: a conta volta a PENDING_ACTIVATION sem palavra-passe\
+        \ nem TOTP, as sessões são revogadas e é enviado um convite novo com os perfis\
+        \ actuais. Só ACTIVE ou LOCKED (senão 409 INVALID_STATE_TRANSITION); o pró\
+        prio → 400 CANNOT_MODIFY_SELF."
+      operationId: resetUserAccess
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Repõe o acesso de um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/roles:
+    put:
+      description: Permissão org-user:manage. Vale no login ou na renovação seguinte
+        do token. O próprio → 400 CANNOT_MODIFY_SELF; perfil não permitido → 400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION;
+        retirar o último gestor activo → 400 LAST_MANAGER; conta por activar → 409
+        INVALID_STATE_TRANSITION.
+      operationId: updateUserRoles
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRolesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera os perfis de um utilizador de staff
+      tags:
+      - Identity
+  /api/v1/users/{id}/unlock:
+    post:
+      description: Permissão org-user:manage. LOCKED → ACTIVE; outro estado → 409
+        INVALID_STATE_TRANSITION.
+      operationId: unlockUser
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffUserResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desbloqueia um utilizador de staff
+      tags:
+      - Identity
+components:
+  schemas:
+    AcceptInvitationRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          format: password
+          description: "12 a 128 caracteres, sem a parte local do e-mail e fora das\
+            \ mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[])"
+      required:
+      - password
+    ActivateInvitationRequest:
+      type: object
+      properties:
+        totpCode:
+          type: string
+          example: "123456"
+      required:
+      - totpCode
+    AssignableRolesResponse:
+      type: object
+      properties:
+        managerInviteRoles:
+          type: array
+          description: Perfis a dar ao primeiro gestor no ecrã de criação de organização
+          items:
+            type: string
+            description: Perfis a dar ao primeiro gestor no ecrã de criação de organização
+        managerRoles:
+          type: array
+          description: "Perfis que fazem de alguém gestor (INSURER_ADMIN, ORG_ADMIN\
+            \ ou PLATFORM_ADMIN)"
+          items:
+            type: string
+            description: "Perfis que fazem de alguém gestor (INSURER_ADMIN, ORG_ADMIN\
+              \ ou PLATFORM_ADMIN)"
+        roles:
+          type: array
+          description: Perfis atribuíveis
+          items:
+            type: string
+            description: Perfis atribuíveis
+      required:
+      - managerInviteRoles
+      - managerRoles
+      - roles
+    ContactResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+        value:
+          type: string
+          description: Telemóvel em E.164 ou e-mail
+          example: "+258841234567"
+        verified:
+          type: boolean
+      required:
+      - type
+      - value
+      - verified
+    ContactsResponse:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactResponse"
+      required:
+      - contacts
+    CreateOrganizationRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          maxLength: 300
+          minLength: 0
+        contactEmail:
+          type: string
+          example: geral@seguradora.co.mz
+        contactPhone:
+          type: string
+          description: "Só dígitos, com + opcional, sem espaços"
+          example: "+258211234567"
+          pattern: "^\\+?[0-9]{9,15}$"
+        insurerProfile:
+          $ref: "#/components/schemas/InsurerProfileRequest"
+        legalName:
+          type: string
+          example: "Seguradora Exemplo, SA"
+          maxLength: 200
+          minLength: 2
+        licenseNumber:
+          type: string
+          description: "Número de autorização da ASFPM; obrigatório para INSURER,\
+            \ BROKER e AGENT (400 LICENSE_NUMBER_REQUIRED)"
+          maxLength: 40
+          minLength: 0
+        nuit:
+          $ref: "#/components/schemas/Nuit"
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        tradeName:
+          type: string
+          example: Seguradora Exemplo
+          maxLength: 120
+          minLength: 0
+        type:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+      required:
+      - contactEmail
+      - legalName
+      - nuit
+      - type
+    CustomerProfileResponse:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "Av. Julius Nyerere, 1234"
+        birthDate:
+          type: string
+          format: date
+          example: 1990-05-14
+        complete:
+          type: boolean
+          description: "Tem nome, data de nascimento, documento, NUIT e província"
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+        idDocNumberMasked:
+          type: string
+          description: Todos os caracteres menos os últimos 4 trocados por *
+          example: '*********345A'
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        nuitMasked:
+          type: string
+          example: '*****6789'
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        version:
+          type: integer
+          format: int64
+          description: Enviar na alteração
+      required:
+      - complete
+      - version
+    DeliveryReceiptRequest:
+      type: object
+      properties:
+        providerMessageId:
+          type: string
+          description: id devolvido pelo fornecedor no envio
+          maxLength: 100
+          minLength: 0
+        reason:
+          type: string
+          description: Motivo indicado pelo fornecedor (sem dados pessoais)
+          example: mock
+          maxLength: 150
+          minLength: 0
+        status:
+          type: string
+          enum:
+          - DELIVERED
+          - FAILED
+      required:
+      - providerMessageId
+      - status
+    FieldError:
+      type: object
+      description: Erro de um campo do pedido
+      properties:
+        code:
+          type: string
+          description: Código do erro do campo
+          example: INVALID_PLATE
+        field:
+          type: string
+          description: Caminho JSON do campo
+          example: vehicle.plate
+        message:
+          type: string
+          description: Mensagem técnica (não para o utilizador)
+      required:
+      - field
+      - code
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: ana.machava@seguradora.co.mz
+          maxLength: 254
+          minLength: 0
+      required:
+      - email
+    InsurerProfileRequest:
+      type: object
+      properties:
+        complaintsEmail:
+          type: string
+          example: reclamacoes@seguradora.co.mz
+        ombudsmanOrganizationId:
+          type: string
+          format: uuid
+          description: "Provedor do cliente: organização existente do tipo OMBUDSMAN\
+            \ (400 OMBUDSMAN_INVALID)"
+        shortCode:
+          type: string
+          description: "Código curto único: 2 a 10 maiúsculas ou dígitos (409 SHORT_CODE_ALREADY_IN_USE)"
+          example: SEGMZ
+          pattern: "^[A-Z0-9]{2,10}$"
+      required:
+      - complaintsEmail
+      - shortCode
+    InsurerProfileResponse:
+      type: object
+      description: Só nas seguradoras
+      properties:
+        complaintsEmail:
+          type: string
+        ombudsmanOrganizationId:
+          type: string
+          format: uuid
+        shortCode:
+          type: string
+      required:
+      - complaintsEmail
+      - shortCode
+    InvitationDetailsResponse:
+      type: object
+      properties:
+        email:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        fullName:
+          type: string
+        organization:
+          $ref: "#/components/schemas/InvitationOrganization"
+      required:
+      - email
+      - expiresAt
+      - fullName
+    InvitationOrganization:
+      type: object
+      description: Omitida nos convites da plataforma
+      properties:
+        displayName:
+          type: string
+        type:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+      required:
+      - displayName
+      - type
+    InvitationResponse:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        email:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        fullName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        organizationId:
+          type: string
+          format: uuid
+          description: Omitido nos convites da plataforma
+        roleCodes:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum:
+          - PENDING
+          - ACCEPTED
+          - EXPIRED
+          - REVOKED
+      required:
+      - createdAt
+      - email
+      - expiresAt
+      - fullName
+      - id
+      - roleCodes
+      - status
+    InviteUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: ana.machava@seguradora.co.mz
+        fullName:
+          type: string
+          example: Ana Machava
+          maxLength: 120
+          minLength: 2
+        roleCodes:
+          type: array
+          description: Perfis permitidos no tipo da organização (400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION)
+          items:
+            type: string
+            example: INSURER_ADMIN
+          maxItems: 20
+          minItems: 1
+      required:
+      - email
+      - fullName
+      - roleCodes
+    Jwk:
+      type: object
+      properties:
+        alg:
+          type: string
+          example: RS256
+        e:
+          type: string
+          description: Expoente (Base64 URL)
+          example: AQAB
+        kid:
+          type: string
+          example: dev
+        kty:
+          type: string
+          example: RSA
+        "n":
+          type: string
+          description: Módulo (Base64 URL)
+        use:
+          type: string
+          example: sig
+      required:
+      - alg
+      - e
+      - kid
+      - kty
+      - "n"
+      - use
+    JwksResponse:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: "#/components/schemas/Jwk"
+      required:
+      - keys
+    LogoutRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: Refresh token da sessão a terminar
+    Matricula:
+      type: string
+      description: Matrícula formatada; os formatos aceites são configuráveis
+      example: ABC-123-MC
+      pattern: "^[A-Z0-9]+(-[A-Z0-9]+)*$"
+    MeOrganization:
+      type: object
+      description: Organização do staff; omitida para clientes e staff da plataforma
+      properties:
+        displayName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+      required:
+      - displayName
+      - id
+      - type
+    MeResponse:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: "Staff: nome da conta; cliente: nome completo do perfil"
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        msisdn:
+          $ref: "#/components/schemas/Msisdn"
+        msisdnVerified:
+          type: boolean
+        organization:
+          $ref: "#/components/schemas/MeOrganization"
+        permissions:
+          type: array
+          items:
+            type: string
+        preferredLanguage:
+          type: string
+          example: pt
+        profileComplete:
+          type: boolean
+          description: "Só clientes: o perfil tem todos os dados obrigatórios"
+        roles:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+          enum:
+          - CUSTOMER
+          - STAFF
+      required:
+      - emailVerified
+      - id
+      - msisdnVerified
+      - permissions
+      - preferredLanguage
+      - roles
+      - type
+    Money:
+      type: object
+      description: Valor monetário em centavos
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 299900
+        currency:
+          type: string
+          enum:
+          - MZN
+          example: MZN
+      required:
+      - amount
+      - currency
+    Msisdn:
+      type: string
+      description: Telemóvel moçambicano em E.164
+      example: "+258841234567"
+      pattern: "^\\+2588[2-7]\\d{7}$"
+    Nuit:
+      type: string
+      description: "NUIT: 9 dígitos"
+      example: "123456789"
+      pattern: "^\\d{9}$"
+    OrganizationResponse:
+      type: object
+      properties:
+        address:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        displayName:
+          type: string
+          description: "tradeName, se existir, senão legalName"
+        id:
+          type: string
+          format: uuid
+        insurerProfile:
+          $ref: "#/components/schemas/InsurerProfileResponse"
+        legalName:
+          type: string
+        licenseNumber:
+          type: string
+        nuit:
+          $ref: "#/components/schemas/Nuit"
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - SUSPENDED
+        tradeName:
+          type: string
+        type:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+        updatedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int64
+      required:
+      - contactEmail
+      - createdAt
+      - displayName
+      - id
+      - legalName
+      - nuit
+      - status
+      - type
+      - updatedAt
+      - version
+    OrganizationSummaryResponse:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        displayName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        nuit:
+          $ref: "#/components/schemas/Nuit"
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - SUSPENDED
+        type:
+          type: string
+          enum:
+          - INSURER
+          - BROKER
+          - AGENT
+          - WORKSHOP
+          - ASSESSOR
+          - ASSISTANCE
+          - OMBUDSMAN
+          - REGULATOR
+          - POLICE
+          - CORPORATE_CLIENT
+      required:
+      - createdAt
+      - displayName
+      - id
+      - nuit
+      - status
+      - type
+    OtpChallengeResponse:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        deliveryStatus:
+          type: string
+          enum:
+          - PENDING
+          - SENT
+          - DELIVERED
+          - FAILED
+        expiresAt:
+          type: string
+          format: date-time
+        fallbackUsed:
+          type: boolean
+      required:
+      - channel
+      - deliveryStatus
+      - expiresAt
+      - fallbackUsed
+    OtpOptionsResponse:
+      type: object
+      properties:
+        channels:
+          type: object
+          additionalProperties:
+            type: array
+            description: "Canais activos de cada tipo, pela ordem alternativa"
+            items:
+              type: string
+              description: "Canais activos de cada tipo, pela ordem alternativa"
+              enum:
+              - SMS
+              - WHATSAPP
+              - EMAIL
+          description: "Canais activos de cada tipo, pela ordem alternativa"
+        codeLength:
+          type: integer
+          format: int32
+          example: 6
+        customerCanChoose:
+          type: boolean
+        defaultChannels:
+          type: object
+          additionalProperties:
+            type: string
+            description: Canal por defeito de cada tipo
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+          description: Canal por defeito de cada tipo
+        identifierTypes:
+          type: array
+          items:
+            type: string
+            enum:
+            - MSISDN
+            - EMAIL
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+      required:
+      - channels
+      - codeLength
+      - customerCanChoose
+      - defaultChannels
+      - identifierTypes
+      - resendAfterSeconds
+    OtpRequestResponse:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: Usar na validação e na consulta do estado (não muda com a alternativa
+            de canal)
+        channel:
+          type: string
+          description: Canal efectivamente usado
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        expiresAt:
+          type: string
+          format: date-time
+        fallbackUsed:
+          type: boolean
+          description: O canal mudou por falha do primeiro
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+      required:
+      - challengeId
+      - channel
+      - expiresAt
+      - fallbackUsed
+      - resendAfterSeconds
+    OtpSettingsResponse:
+      type: object
+      properties:
+        codeLength:
+          type: integer
+          format: int32
+          example: 6
+        customerCanChoose:
+          type: boolean
+        defaultChannel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        enabledChannels:
+          type: array
+          items:
+            type: string
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+        fallbackOrder:
+          type: array
+          description: Ordem da alternativa automática
+          items:
+            type: string
+            description: Ordem da alternativa automática
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+        maxAttempts:
+          type: integer
+          format: int32
+          example: 3
+        maxRequestsPerHour:
+          type: integer
+          format: int32
+          example: 5
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+          description: id do utilizador ou 'system'
+        validitySeconds:
+          type: integer
+          format: int32
+          example: 300
+        version:
+          type: integer
+          format: int64
+          description: Enviar no PUT seguinte
+      required:
+      - codeLength
+      - customerCanChoose
+      - defaultChannel
+      - enabledChannels
+      - fallbackOrder
+      - maxAttempts
+      - maxRequestsPerHour
+      - resendAfterSeconds
+      - updatedAt
+      - updatedBy
+      - validitySeconds
+      - version
+    OtpTestRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          example: WHATSAPP
+        identifier:
+          type: string
+          example: "841234567"
+        identifierType:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+          example: MSISDN
+      required:
+      - channel
+      - identifier
+      - identifierType
+    OtpTestResponse:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        deliveryStatus:
+          type: string
+          description: SENT ou FAILED
+          enum:
+          - PENDING
+          - SENT
+          - DELIVERED
+          - FAILED
+        messageId:
+          type: string
+          format: uuid
+          description: id da mensagem enviada
+      required:
+      - channel
+      - deliveryStatus
+      - messageId
+    OtpVerifyResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: "JWT de acesso (Bearer), válido 15 minutos"
+        expiresIn:
+          type: integer
+          format: int64
+          example: 900
+        isNewUser:
+          type: boolean
+          description: A conta foi criada agora
+        refreshToken:
+          type: string
+          description: Refresh token opaco
+      required:
+      - accessToken
+      - expiresIn
+      - isNewUser
+      - refreshToken
+    PageResponseInvitationResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InvitationResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseOrganizationSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrganizationSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseStaffUserResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/StaffUserResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    ProblemDetail:
+      type: object
+      description: Erro RFC 7807 (application/problem+json)
+      properties:
+        code:
+          type: string
+          description: Código do erro (ErrorCodes)
+          example: VALIDATION_ERROR
+        detail:
+          type: string
+          example: Request validation failed
+        errors:
+          type: array
+          description: "Erros por campo, quando o pedido é inválido"
+          items:
+            $ref: "#/components/schemas/FieldError"
+        instance:
+          type: string
+          format: uri
+        status:
+          type: integer
+          format: int32
+          example: 400
+        title:
+          type: string
+          example: Bad Request
+        type:
+          type: string
+          format: uri
+          example: https://moseguros.co.mz/problems/validation-error
+      required:
+      - type
+      - title
+      - status
+      - code
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: Refresh token recebido no login ou na última renovação
+      required:
+      - refreshToken
+    RequestOtpRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Canal escolhido pelo cliente (só se customerCanChoose); sem
+            ele usa-se o canal por defeito
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        identifier:
+          type: string
+          description: "Telemóvel (841234567, +258841234567) ou e-mail"
+          example: "841234567"
+        identifierType:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+          example: MSISDN
+      required:
+      - identifier
+      - identifierType
+    ResetPasswordRequest:
+      type: object
+      properties:
+        newPassword:
+          type: string
+          format: password
+          description: "12 a 128 caracteres, sem a parte local do e-mail e fora das\
+            \ mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[], campo\
+            \ newPassword)"
+        token:
+          type: string
+          description: Token do link enviado por e-mail
+          maxLength: 128
+          minLength: 0
+      required:
+      - newPassword
+      - token
+    StaffLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: ana.machava@seguradora.co.mz
+          maxLength: 254
+          minLength: 0
+        password:
+          type: string
+          format: password
+          maxLength: 1024
+          minLength: 0
+        totpCode:
+          type: string
+          example: "123456"
+          maxLength: 16
+          minLength: 0
+      required:
+      - email
+      - password
+      - totpCode
+    StaffUserResponse:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        displayName:
+          type: string
+          description: Omitido se ainda não tiver nome
+        email:
+          type: string
+        id:
+          type: string
+          format: uuid
+        lastLoginAt:
+          type: string
+          format: date-time
+          description: Omitido se nunca entrou
+        roles:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          description: LOCKED só enquanto o bloqueio não passou
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - LOCKED
+          - DISABLED
+        version:
+          type: integer
+          format: int64
+          description: Para a alteração de perfis
+      required:
+      - createdAt
+      - email
+      - id
+      - roles
+      - status
+      - version
+    StartContactVerificationRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Canal escolhido pelo cliente (só se customerCanChoose); sem
+            ele usa-se o canal por defeito
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        type:
+          type: string
+          enum:
+          - MSISDN
+          - EMAIL
+          example: EMAIL
+        value:
+          type: string
+          description: "Telemóvel (841234567, +258841234567) ou e-mail"
+          example: ana@exemplo.co.mz
+      required:
+      - type
+      - value
+    SuspendOrganizationRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 0
+      required:
+      - reason
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: "JWT de acesso (Bearer), válido 15 minutos"
+        expiresIn:
+          type: integer
+          format: int64
+          description: "Validade do token de acesso, em segundos"
+          example: 900
+        refreshToken:
+          type: string
+          description: Refresh token opaco; cada renovação devolve um novo
+      required:
+      - accessToken
+      - expiresIn
+      - refreshToken
+    TotpSetupResponse:
+      type: object
+      properties:
+        otpauthUri:
+          type: string
+          description: URI para o QR code
+          example: otpauth://totp/MoSeguros:ana@seguradora.co.mz?secret=JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP&issuer=MoSeguros&algorithm=SHA1&digits=6&period=30
+        totpSecret:
+          type: string
+          description: Segredo em Base32 (entrada manual)
+      required:
+      - otpauthUri
+      - totpSecret
+    UpdateMeRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: "Só staff, 2–120 caracteres; omitido mantém o actual. Ignorado\
+            \ para clientes (o nome está no perfil)."
+          example: Bruno Staff
+        preferredLanguage:
+          type: string
+          enum:
+          - pt
+          - en
+          example: pt
+          pattern: pt|en
+      required:
+      - preferredLanguage
+    UpdateMyProfileRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "Av. Julius Nyerere, 1234"
+          maxLength: 300
+        birthDate:
+          type: string
+          format: date
+          description: "Pelo menos 18 anos, no máximo 120"
+          example: 1990-05-14
+        fullName:
+          type: string
+          description: "Letras, espaços, apóstrofo e hífen; pelo menos duas palavras"
+          example: Ana Maria Mussa
+          maxLength: 120
+          minLength: 2
+        idDocNumber:
+          type: string
+          description: "Maiúsculas e dígitos, 5–20 (espaços ignorados). Obrigatório\
+            \ se ainda não existir ou se idDocType mudar; omitido mantém o actual."
+          example: 110100123345A
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        nuit:
+          type: string
+          description: 9 dígitos. Obrigatório se ainda não existir; omitido mantém
+            o actual.
+          example: "123456789"
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - birthDate
+      - fullName
+      - idDocType
+      - province
+      - version
+    UpdateOrganizationRequest:
+      type: object
+      properties:
+        address:
+          type: string
+          maxLength: 300
+          minLength: 0
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+          pattern: "^\\+?[0-9]{9,15}$"
+        insurerProfile:
+          $ref: "#/components/schemas/InsurerProfileRequest"
+        legalName:
+          type: string
+          maxLength: 200
+          minLength: 2
+        licenseNumber:
+          type: string
+          maxLength: 40
+          minLength: 0
+        nuit:
+          $ref: "#/components/schemas/Nuit"
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        tradeName:
+          type: string
+          maxLength: 120
+          minLength: 0
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - contactEmail
+      - legalName
+      - nuit
+      - version
+    UpdateOtpSettingsRequest:
+      type: object
+      properties:
+        codeLength:
+          type: integer
+          format: int32
+          description: 4 a 8
+          example: 6
+        customerCanChoose:
+          type: boolean
+        defaultChannel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          example: SMS
+        enabledChannels:
+          type: array
+          example:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          items:
+            type: string
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+            example: "[\"SMS\",\"WHATSAPP\",\"EMAIL\"]"
+        fallbackOrder:
+          type: array
+          example:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+          items:
+            type: string
+            enum:
+            - SMS
+            - WHATSAPP
+            - EMAIL
+            example: "[\"SMS\",\"WHATSAPP\",\"EMAIL\"]"
+        maxAttempts:
+          type: integer
+          format: int32
+          description: 1 a 10
+          example: 3
+        maxRequestsPerHour:
+          type: integer
+          format: int32
+          description: 1 a 50
+          example: 5
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          description: 15 a 600
+          example: 60
+        validitySeconds:
+          type: integer
+          format: int32
+          description: 60 a 1800
+          example: 300
+        version:
+          type: integer
+          format: int64
+          description: version lida no GET
+      required:
+      - codeLength
+      - customerCanChoose
+      - defaultChannel
+      - enabledChannels
+      - fallbackOrder
+      - maxAttempts
+      - maxRequestsPerHour
+      - resendAfterSeconds
+      - validitySeconds
+      - version
+    UpdateUserRolesRequest:
+      type: object
+      properties:
+        roleCodes:
+          type: array
+          description: Perfis permitidos no tipo da organização (400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION)
+          items:
+            type: string
+            example: UNDERWRITER
+          maxItems: 20
+          minItems: 1
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - roleCodes
+      - version
+    VerifyContactRequest:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: challengeId devolvido no pedido
+        code:
+          type: string
+          example: "123456"
+      required:
+      - challengeId
+      - code
+    VerifyOtpRequest:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: challengeId devolvido no pedido
+        code:
+          type: string
+          example: "123456"
+      required:
+      - challengeId
+      - code
+    VersionResponse:
+      type: object
+      properties:
+        builtAt:
+          type: string
+          format: date-time
+        commit:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

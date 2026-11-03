@@ -1,0 +1,284 @@
+{
+  "@@locale": "pt",
+  "appName": "MoSeguros",
+  "@appName": {
+    "description": "Nome comercial da aplicação (não se traduz)."
+  },
+  "systemStatusLoading": "A verificar a API…",
+  "systemStatusVersion": "Versão",
+  "systemStatusCommit": "Commit",
+  "systemStatusUnknown": "desconhecido",
+  "systemStatusError": "Não foi possível obter o estado da API.",
+  "retry": "Tentar de novo",
+  "notFoundTitle": "Página não encontrada",
+  "notFoundDescription": "O endereço que procura não existe.",
+  "backHome": "Voltar ao início",
+  "errorNetworkError": "Sem ligação ao servidor. Verifique a sua ligação à Internet.",
+  "@errorNetworkError": {
+    "description": "errors.NETWORK_ERROR"
+  },
+  "errorUnknown": "Ocorreu um erro inesperado.",
+  "errorValidationError": "Os dados enviados não são válidos.",
+  "errorNotFound": "O recurso pedido não existe.",
+  "errorUnauthorized": "Precisa de iniciar sessão.",
+  "errorForbidden": "Não tem permissão para esta operação.",
+  "errorInternalError": "Erro interno do servidor. Tente mais tarde.",
+  "errorInvalidCurrency": "Moeda inválida.",
+  "errorInvalidMsisdn": "Número de telemóvel inválido.",
+  "errorInvalidNuit": "NUIT inválido.",
+  "errorInvalidPlate": "Matrícula inválida.",
+  "validationInvalidCurrency": "Moeda inválida.",
+  "validationInvalidMsisdn": "Número de telemóvel inválido (ex.: +258 84 123 4567).",
+  "validationInvalidNuit": "O NUIT tem 9 dígitos.",
+  "validationInvalidPlate": "Matrícula inválida.",
+  "ctaQuote": "Simular seguro",
+  "ctaCompare": "Comparar propostas",
+  "ctaBuy": "Adquirir apólice",
+  "ctaRenew": "Renovar seguro",
+  "errorInvalidEmail": "Endereço de e-mail inválido.",
+  "errorInvalidPhone": "Número de telefone inválido.",
+  "errorTenantRequired": "Erro interno do servidor. Tente mais tarde.",
+  "errorDecryptionFailed": "Erro interno do servidor. Tente mais tarde.",
+  "errorInvalidStateTransition": "Esta operação não é possível no estado actual.",
+  "errorLicenseNumberRequired": "O número de autorização da ASFPM é obrigatório para seguradoras, corretores e agentes.",
+  "errorChannelsEmpty": "Escolha pelo menos um canal.",
+  "errorChannelsDuplicated": "Cada canal só pode aparecer uma vez.",
+  "errorDefaultChannelNotEnabled": "O canal por defeito tem de estar activo.",
+  "errorFallbackOrderMismatch": "A ordem alternativa tem de ter exactamente os canais activos.",
+  "errorOutOfRange": "Valor fora dos limites permitidos.",
+  "validationInvalidEmail": "E-mail inválido (ex.: nome@exemplo.co.mz).",
+  "validationInvalidPhone": "Telefone inválido (9 a 15 dígitos).",
+  "validationLicenseNumberRequired": "Indique o número de autorização da ASFPM.",
+  "validationChannelsEmpty": "Escolha pelo menos um canal.",
+  "validationChannelsDuplicated": "Cada canal só pode aparecer uma vez.",
+  "validationDefaultChannelNotEnabled": "O canal por defeito tem de estar activo.",
+  "validationFallbackOrderMismatch": "A ordem alternativa tem de ter exactamente os canais activos.",
+  "validationOutOfRange": "Valor fora dos limites permitidos.",
+  "errorRefreshTokenInvalid": "A sua sessão terminou. Entre novamente.",
+  "errorRefreshTokenReused": "Por segurança, a sua sessão foi terminada. Entre novamente.",
+  "validationNotBlank": "Campo obrigatório.",
+  "validationNotNull": "Campo obrigatório.",
+  "errorConcurrentModification": "Outra pessoa alterou estes dados entretanto. Actualize e tente de novo.",
+  "errorOtpChannelChoiceDisabled": "Não é possível escolher o canal de envio do código.",
+  "errorOtpChannelNotAvailable": "Este canal não está disponível. Use outro canal ou entre com o outro identificador.",
+  "errorOtpRateLimited": "Pediu demasiados códigos. Tente mais tarde.",
+  "errorOtpResendTooSoon": "Aguarde um pouco antes de pedir um novo código.",
+  "errorOtpDeliveryFailed": "Não foi possível enviar o código. Tente de novo dentro de momentos.",
+  "errorOtpChallengeNotFound": "Pedido de código desconhecido. Peça um novo código.",
+  "errorOtpAlreadyUsed": "Este código já foi usado. Peça um novo código.",
+  "errorOtpSuperseded": "Pediu um código mais recente. Use o último código que recebeu.",
+  "errorOtpExpired": "O código expirou. Peça um novo código.",
+  "errorOtpInvalid": "Código errado. Verifique e tente de novo.",
+  "errorOtpAttemptsExceeded": "Demasiadas tentativas erradas. Peça um novo código.",
+  "errorAccountDisabled": "Esta conta está desactivada. Contacte o apoio ao cliente.",
+  "errorOrganizationNotFound": "Organização não encontrada.",
+  "errorOrganizationNotActive": "A organização está suspensa.",
+  "errorNuitAlreadyInUse": "Já existe uma organização com este NUIT.",
+  "errorShortCodeAlreadyInUse": "Este código curto já é usado por outra seguradora.",
+  "errorOmbudsmanInvalid": "Escolha um provedor do cliente existente.",
+  "errorRoleNotAllowedForOrganization": "Um dos perfis escolhidos não pode ser atribuído nesta organização.",
+  "errorEmailAlreadyInUse": "Este e-mail já pertence a outro utilizador.",
+  "errorInvitationInvalid": "Este convite já não é válido. Peça um novo convite a quem o convidou.",
+  "errorInvitationNotAccepted": "Defina primeiro a sua palavra-passe.",
+  "errorTotpInvalid": "Código errado. Verifique a aplicação de autenticação e tente de novo.",
+  "errorPasswordTooWeak": "A palavra-passe não cumpre as regras de segurança.",
+  "errorInvalidCredentials": "E-mail, palavra-passe ou código de autenticação errados.",
+  "errorAccountLocked": "Demasiadas tentativas erradas. A conta está bloqueada temporariamente; tente mais tarde.",
+  "errorOrganizationSuspended": "A sua organização está suspensa. Contacte a administração da MoSeguros.",
+  "errorResetTokenInvalid": "Este link de recuperação já não é válido. Peça um novo.",
+  "errorUserNotFound": "Utilizador não encontrado.",
+  "errorCannotModifySelf": "Não pode alterar a sua própria conta.",
+  "errorLastManager": "A organização tem de ficar com pelo menos um gestor activo.",
+  "errorContactAlreadyInUse": "Este contacto já está associado a outra conta.",
+  "errorContactAlreadyVerified": "Este contacto já está confirmado na sua conta.",
+  "errorLastContact": "A conta tem de ficar com pelo menos um contacto confirmado.",
+  "validationNotAllowed": "Este campo não se aplica neste caso.",
+  "validationRequired": "Campo obrigatório.",
+  "validationInvalidSort": "Ordenação não suportada.",
+  "validationTooShort": "A palavra-passe tem de ter pelo menos 12 caracteres.",
+  "validationTooLong": "A palavra-passe pode ter no máximo 128 caracteres.",
+  "validationContainsEmail": "A palavra-passe não pode conter o seu e-mail.",
+  "validationTooCommon": "Esta palavra-passe é demasiado comum. Escolha outra.",
+  "validationSize": "Comprimento fora dos limites permitidos.",
+  "validationPattern": "Formato inválido.",
+  "validationTypeMismatch": "Valor inválido.",
+  "validationInvalidName": "Indique o nome completo (pelo menos duas palavras, só letras, espaços, ' e -).",
+  "validationUnderage": "Tem de ter pelo menos 18 anos.",
+  "validationInvalidDate": "Data inválida.",
+  "validationInvalidDocumentNumber": "Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).",
+  "provinceMaputoCity": "Maputo Cidade",
+  "provinceMaputo": "Maputo Província",
+  "provinceGaza": "Gaza",
+  "provinceInhambane": "Inhambane",
+  "provinceSofala": "Sofala",
+  "provinceManica": "Manica",
+  "provinceTete": "Tete",
+  "provinceZambezia": "Zambézia",
+  "provinceNampula": "Nampula",
+  "provinceCaboDelgado": "Cabo Delgado",
+  "provinceNiassa": "Niassa",
+  "@provinceMaputoCity": {
+    "description": "province.MAPUTO_CITY (Province no backend)."
+  },
+  "aboutTitle": "Sobre",
+  "@aboutTitle": {
+    "description": "Cartão com a versão da API, no fundo do perfil."
+  },
+  "loading": "A carregar…",
+  "cancel": "Cancelar",
+  "onboardingSkip": "Saltar",
+  "onboardingNext": "Seguinte",
+  "onboardingStart": "Começar",
+  "onboardingPage": "Página {current} de {total}",
+  "@onboardingPage": {
+    "description": "Indicador de página da apresentação (leitores de ecrã).",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboarding1Title": "Compare seguradoras",
+  "onboarding1Text": "Veja as propostas de várias seguradoras lado a lado e escolha a que lhe serve.",
+  "onboarding2Title": "Compre em minutos",
+  "onboarding2Text": "Simule, pague com M-Pesa ou por referência e receba a apólice no telemóvel.",
+  "onboarding3Title": "Tudo num só lugar",
+  "onboarding3Text": "Apólices, pagamentos e sinistros sempre consigo.",
+  "authLoginTitle": "Entrar na área do cliente",
+  "@authLoginTitle": {
+    "description": "auth.login.title na web."
+  },
+  "authLoginSubtitle": "Use o seu telemóvel ou e-mail. Enviamos-lhe um código para entrar, sem palavra-passe.",
+  "authIdentifierTypeLabel": "Entrar com",
+  "authIdentifierTypeMsisdn": "Telemóvel",
+  "authIdentifierTypeEmail": "E-mail",
+  "authMsisdnLabel": "Número de telemóvel",
+  "authMsisdnHelper": "9 dígitos, por exemplo 84 123 4567.",
+  "authEmailLabel": "E-mail",
+  "authChannelLabel": "Receber o código por",
+  "authSubmit": "Receber código",
+  "authRetryIn": "Tente de novo dentro de {seconds} s.",
+  "@authRetryIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authCodeSubtitle": "Escreva o código que recebeu.",
+  "authCodeInputLabel": "Código recebido",
+  "authCodeSentTo": "Enviámos um código por {channel} para {destination}.",
+  "@authCodeSentTo": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "authCodeChange": "Alterar",
+  "authCodeFallback": "Não conseguimos enviar por {requested}. Enviámos o código por {used}.",
+  "@authCodeFallback": {
+    "placeholders": {
+      "requested": {
+        "type": "String"
+      },
+      "used": {
+        "type": "String"
+      }
+    }
+  },
+  "authCodeWrongCode": "{count, plural, =1{Código errado. Resta 1 tentativa.} other{Código errado. Restam {count} tentativas.}}",
+  "@authCodeWrongCode": {
+    "description": "OTP_INVALID com attemptsRemaining.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authCodeResent": "Enviámos um código novo.",
+  "authCodeResend": "Reenviar código",
+  "authCodeResendIn": "Reenviar código ({seconds} s)",
+  "@authCodeResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "channelSms": "SMS",
+  "channelWhatsapp": "WhatsApp",
+  "channelEmail": "E-mail",
+  "logout": "Terminar sessão",
+  "logoutConfirmTitle": "Terminar sessão?",
+  "logoutConfirmText": "Para voltar a entrar vai precisar de um código novo.",
+  "homeGreeting": "Olá, {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingNoName": "Olá",
+  "homeIncompleteProfile": "Complete o seu perfil para poder comprar um seguro.",
+  "homeCompleteProfile": "Completar perfil",
+  "homeQuoteTitle": "Seguro automóvel",
+  "homeQuoteText": "Compare os preços das seguradoras para o seu veículo.",
+  "comingSoon": "Disponível em breve",
+  "profileOpen": "Perfil",
+  "profileTitle": "Perfil",
+  "profilePersonalData": "Dados pessoais",
+  "profileCompleteNotice": "Precisamos destes dados para emitir as suas apólices.",
+  "profileFieldFullName": "Nome completo",
+  "profileFieldBirthDate": "Data de nascimento",
+  "profileFieldIdDocType": "Tipo de documento",
+  "profileFieldIdDocNumber": "Número do documento",
+  "profileFieldNuit": "NUIT",
+  "profileFieldAddress": "Morada",
+  "profileFieldProvince": "Província",
+  "profileChoose": "Escolha…",
+  "profileChange": "Alterar",
+  "profileChangeDocument": "Alterar o número do documento",
+  "profileChangeNuit": "Alterar o NUIT",
+  "profileNuitHelper": "9 dígitos.",
+  "profileOptional": "Opcional.",
+  "profileSave": "Guardar",
+  "profileSaved": "Perfil guardado",
+  "idDocTypeBi": "Bilhete de Identidade",
+  "@idDocTypeBi": {
+    "description": "idDocType.BI na web."
+  },
+  "idDocTypePassport": "Passaporte",
+  "idDocTypeDire": "DIRE",
+  "contactsTitle": "Contactos",
+  "contactTypeMsisdn": "Telemóvel",
+  "contactTypeEmail": "E-mail",
+  "contactsVerified": "Verificado",
+  "contactsAddMsisdn": "Acrescentar telemóvel",
+  "contactsAddEmail": "Acrescentar e-mail",
+  "contactsChangeMsisdn": "Alterar telemóvel",
+  "contactsChangeEmail": "Alterar e-mail",
+  "contactsChangeShort": "Alterar",
+  "contactsRemoveMsisdn": "Remover telemóvel",
+  "contactsRemoveEmail": "Remover e-mail",
+  "contactsRemoveShort": "Remover",
+  "contactsSaved": "Contacto confirmado",
+  "contactsRemoved": "Contacto removido",
+  "contactsConfirmRemoveTitle": "Remover contacto?",
+  "contactsConfirmRemoveText": "Deixará de poder entrar e receber avisos em {value}.",
+  "@contactsConfirmRemoveText": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "contactsConfirmRemove": "Remover"
+}

@@ -1,0 +1,47 @@
+name: contract
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - "api/**"
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "api/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # Gera api/openapi.yaml a partir do backend e falha se for diferente do versionado
+      # (contrato desactualizado ou editado à mão).
+      - name: Contrato actualizado
+        run: ./scripts/check-openapi.sh
+
+      - name: Log da geração
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-openapi-log
+          path: backend/target/check-openapi.log
+          if-no-files-found: ignore
+
+      - name: Lint do contrato
+        run: npx --yes @redocly/cli@2.72.1 lint api/openapi.yaml

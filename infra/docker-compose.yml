@@ -1,0 +1,98 @@
+# Ambiente local da MoSeguros. Ver infra/README.md.
+# Imagens com versão fixada e listadas em scripts/images.txt (actualizar no mesmo PR).
+# Credenciais do .env (cópia do .env.example); os valores por defeito permitem correr sem .env.
+
+name: moseguros
+
+x-healthcheck: &healthcheck-timing
+  interval: 10s
+  timeout: 5s
+  retries: 12
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-moseguros}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      POSTGRES_DB: ${POSTGRES_DB:-moseguros}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Papéis da aplicação (ADR-002); só corre com o volume vazio (ver README).
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:v1.33
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # interface web
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  sms-mock:
+    build: mocks/sms-mock
+    image: moseguros/sms-mock:local
+    environment:
+      # Recibos de entrega (2 s depois de cada envio) para o backend, com o mesmo segredo.
+      RECEIPT_CALLBACK_URL: http://backend:8080/api/v1/integrations/delivery-receipts
+      RECEIPT_SECRET: ${WEBHOOK_SECRET:-local-webhook-secret}
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8090/actuator/health"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  backend:
+    build: ../backend
+    image: moseguros/backend:local
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-moseguros}
+      # A aplicação liga-se sem privilégios de dono (o RLS aplica-se a ela); o Flyway usa o dono.
+      DB_USERNAME: moseguros_app_user
+      DB_PASSWORD: moseguros_app
+      DB_OWNER_USERNAME: ${POSTGRES_USER:-moseguros}
+      DB_OWNER_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: "1025"
+      # Canais de envio do OTP (S1-03): simuladores de SMS e WhatsApp; e-mail no Mailpit.
+      MOSEGUROS_NOTIFICATION_SMS_MOCK_URL: http://sms-mock:8090
+      MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL: http://sms-mock:8090
+      MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET: ${WEBHOOK_SECRET:-local-webhook-secret}
+      # Convites de staff (S1-04): links para a web do compose e convite do primeiro
+      # administrador da plataforma (o e-mail aparece no Mailpit, http://localhost:8025).
+      MOSEGUROS_WEB_BASE_URL: http://localhost:3000
+      MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL: admin@moseguros.local
+      JAVA_OPTS: -XX:MaxRAMPercentage=75
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Healthcheck: o HEALTHCHECK do backend/Dockerfile (GET /api/v1/health).
+    restart: unless-stopped
+
+  web:
+    build: ../web
+    image: moseguros/web:local
+    ports:
+      - "3000:8080" # nginx sem root escuta na 8080 dentro do contentor
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:8080/"]
+      <<: *healthcheck-timing
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

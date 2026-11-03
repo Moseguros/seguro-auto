@@ -10,27 +10,27 @@ Actualizado em 02/11/2026.
 | --- | --- | --- |
 | S0-01 Fichas e ADRs | concluída (merged) | #1 |
 | S0-02 Esqueleto do backend | concluída (merged) | #2 |
-| S0-03 Tipos partilhados e auditoria | em revisão (branch `task/S0-03-shared-e-auditoria`) | — |
-| S0-04 Contrato OpenAPI | pronta — depois do S0-03 (usa os value objects) | — |
-| S0-05 Web | depende de S0-04 | — |
-| S0-06 Mobile | depende de S0-04 | — |
-| S0-07 Infra local | depende de S0-02 e S0-05 | — |
-| S0-08 CI | depende de S0-03 a S0-07 | — |
-| S0-09 Verificação do ambiente (`scripts/doctor.sh`) | em revisão | #5 |
+| S0-03 Tipos partilhados e auditoria | concluída (no `main` pelo PR de integração) | #7–#12 |
+| S0-04 Contrato OpenAPI | concluída (no `main` pelo PR de integração) | #7–#12 |
+| S0-05 Web | concluída (no `main` pelo PR de integração) | #7–#12 |
+| S0-06 Mobile | concluída (no `main` pelo PR de integração) | #7–#12 |
+| S0-07 Infra local (`infra/docker-compose.yml`) | concluída (no `main` pelo PR de integração) | #7–#12 |
+| S0-08 CI (`.github/workflows`) | concluída (no `main` pelo PR de integração) | #7–#12 |
+| S0-09 Verificação do ambiente (`scripts/doctor.sh`) | concluída (merged) | #5 |
 
 ### Sprint 1 — Identidade, organizações e perfis
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S1-01 Tabelas de identidade e organizações, RLS e cifra | S0-03, S0-04 | pronta |
-| S1-02 Tokens JWT, sessões e permissões | S1-01 | pronta |
-| S1-03 OTP do cliente e canais de envio | S1-02 | pronta |
-| S1-04 Organizações, convites e activação de staff | S1-03 | pronta |
-| S1-05 Login de staff e gestão de utilizadores | S1-04 | pronta |
-| S1-06 Perfil e contactos do cliente | S1-03 | pronta — pode correr em paralelo com S1-04 |
-| S1-07 Web: sessão e área do cliente | S0-05, S1-06 | pronta |
-| S1-08 Web: staff, organizações e utilizadores | S1-07, S1-05 | pronta |
-| S1-09 Mobile: apresentação, login e perfil | S0-06, S1-06 | pronta — pode correr em paralelo com S1-07 |
+| S1-01 Tabelas de identidade e organizações, RLS e cifra | S0-03, S0-04 | concluída (no `main` pelo PR de integração) |
+| S1-02 Tokens JWT, sessões e permissões | S1-01 | concluída (no `main` pelo PR de integração) |
+| S1-03 OTP do cliente e canais de envio | S1-02 | concluída (no `main` pelo PR de integração) |
+| S1-04 Organizações, convites e activação de staff | S1-03 | concluída (no `main` pelo PR de integração) |
+| S1-05 Login de staff e gestão de utilizadores | S1-04 | concluída (no `main` pelo PR de integração) |
+| S1-06 Perfil e contactos do cliente | S1-03 | concluída (no `main` pelo PR de integração) |
+| S1-07 Web: sessão e área do cliente | S0-05, S1-06 | concluída (no `main` pelo PR de integração) |
+| S1-08 Web: staff, organizações e utilizadores | S1-07, S1-05 | concluída (no `main` pelo PR de integração) |
+| S1-09 Mobile: apresentação, login e perfil | S0-06, S1-06 | concluída (no `main` pelo PR de integração) |
 
 O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 
@@ -162,7 +162,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 | S11-02 Comissões: cálculo, extractos mensais, estorno | S11-01 | pronta |
 | S11-03 Antifraude: motor de regras, 7 regras, alertas | S10 | pronta |
 | S11-04 Painéis da seguradora (vistas materializadas) | S10 | pronta |
-| S11-05 Exportações ASFPM configuráveis e área `/supervisao` (API) | S11-04 | pronta |
+| S11-05 Exportações ASFPM configuráveis e área `/supervisao` (API) | S11-02, S11-04 | pronta |
 | S11-06 Auditoria: só-de-inserção, leituras sensíveis, pesquisa e exportação (API) | S10 | pronta |
 | S11-07 Web: mediador, antifraude, painéis, supervisão, auditoria | S11-01 a S11-06 | pronta |
 | S11-08 Web cliente e mobile: mediador associado à apólice | S11-01 | pronta |
@@ -208,7 +208,15 @@ Cada sprint só começa depois de o anterior estar todo no `main`. As fichas dos
 - O NUIT valida só 9 dígitos (sem dígito de controlo). Os formatos de matrícula são configuráveis (S0-03).
 - **MinIO:** a imagem `minio/minio` deixou de estar no Docker Hub. O armazenamento de ficheiros usa disco local em desenvolvimento e S3 em produção (ADR-005, S2-01). O e-mail de desenvolvimento usa o **Mailpit** (o MailHog deixou de ser mantido).
 - **A partir do S1-01** a aplicação liga-se à BD como `moseguros_app_user` (sem privilégios de dono) e o Flyway como dono; os testes precisam do `init-roles.sql`. Ver a adenda do ADR-002.
+- **Chave dos JWT (S1-02):** fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_JWT_PRIVATE_KEY` (PEM PKCS#8, RSA 2048) e `MOSEGUROS_JWT_KEY_ID`. Em `local`/`test` gera um par no arranque: os tokens deixam de valer quando o backend reinicia.
+- **Códigos de erro (S1-02):** `api/error-codes.json` é gerado a partir de `ErrorCodes`/`FieldErrorCodes` (`./mvnw test -Dtest=ErrorCodesExportTest -Derror-codes.export=true`) e verificado pelo `scripts/check-openapi.sh`.
+- **OTP (S1-03):** fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_OTP_PEPPER` (segredo do HMAC dos códigos); `MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET` (recibos de entrega) vazio recusa todos os recibos. No perfil `local` o código vem no cabeçalho `X-Debug-Otp` (proibido em `prod`). Teste manual com o `sms-mock` em `infra/README.md`.
+- **Primeiro administrador (S1-04):** com `MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL` definido, o arranque convida esse e-mail para `PLATFORM_ADMIN` se ainda não houver nenhum activo nem um convite pendente. No compose é `admin@moseguros.local`: o e-mail com o link aparece no Mailpit (`http://localhost:8025`). Os links usam `MOSEGUROS_WEB_BASE_URL` (5173 local, 3000 no compose); a activação é o ecrã `/convite/{token}` (S1-08).
+- **Sessão da app (S1-09):** refresh token em `flutter_secure_storage` (`refresh_token`), token de acesso só em memória, flag da apresentação `onboarding_done` em `shared_preferences`. O `AuthInterceptor` (Dio) segue as regras da web. O cliente Dart gerado não regista `InnerEnum` (canais de `getOtpOptions`): a app acrescenta-o em `lib/core/api/api_serializers.dart`. Testes de widget com `http_mock_adapter`; os de integração correm também com `-d flutter-tester`.
+- **Sessão da web (S1-07):** o token de acesso fica só em memória; o refresh token do cliente em `localStorage` (`moseguros.customer.rt`) e o do staff em `sessionStorage` (`moseguros.staff.rt`). Os interceptores de `web/src/api/http.ts` nunca mandam `Authorization` para `/api/v1/auth/**` e renovam uma única vez para vários 401 simultâneos. As áreas de staff exigem sessão de staff da própria área (S1-08); itens de menu e páginas sem a permissão (`me.permissions`) não aparecem ou vão para `/sem-acesso`.
+- **Perfil e contactos do cliente (S1-06):** `/me/profile` e `/me/contacts` exigem `self:profile` (staff → 403). O documento e o NUIT só saem mascarados (resposta e auditoria). Os códigos de confirmação de contacto (`VERIFY_CONTACT`) contam para os limites de OTP do identificador.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
+- **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
 - **SIMO:** até haver o algoritmo e o layout oficiais, o pagamento por referência funciona com o mock `MOCK_SIMO_V1` e o simulador `simo-mock` (S5-07, S5-08), em `local`, `test` e `staging`; em `prod` é proibido. **Bloqueadas:** S5-13 e S5-14 (algoritmo e layout reais) — pedir ao proprietário do produto, que os obtém do banco da seguradora ao aderir ao serviço de cobrança.
 
 ## Fonte de verdade

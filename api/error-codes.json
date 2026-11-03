@@ -1,0 +1,237 @@
+{
+  "errors" : [
+    {
+      "code" : "ACCOUNT_DISABLED",
+      "status" : 403
+    },
+    {
+      "code" : "ACCOUNT_LOCKED",
+      "status" : 403
+    },
+    {
+      "code" : "CANNOT_MODIFY_SELF",
+      "status" : 400
+    },
+    {
+      "code" : "CONCURRENT_MODIFICATION",
+      "status" : 409
+    },
+    {
+      "code" : "CONTACT_ALREADY_IN_USE",
+      "status" : 409
+    },
+    {
+      "code" : "CONTACT_ALREADY_VERIFIED",
+      "status" : 409
+    },
+    {
+      "code" : "DECRYPTION_FAILED",
+      "status" : 500
+    },
+    {
+      "code" : "EMAIL_ALREADY_IN_USE",
+      "status" : 409
+    },
+    {
+      "code" : "FORBIDDEN",
+      "status" : 403
+    },
+    {
+      "code" : "INTERNAL_ERROR",
+      "status" : 500
+    },
+    {
+      "code" : "INVALID_CREDENTIALS",
+      "status" : 401
+    },
+    {
+      "code" : "INVALID_CURRENCY",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_EMAIL",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_MSISDN",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_NUIT",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_PHONE",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_PLATE",
+      "status" : 400
+    },
+    {
+      "code" : "INVALID_STATE_TRANSITION",
+      "status" : 409
+    },
+    {
+      "code" : "INVITATION_INVALID",
+      "status" : 404
+    },
+    {
+      "code" : "INVITATION_NOT_ACCEPTED",
+      "status" : 400
+    },
+    {
+      "code" : "LAST_CONTACT",
+      "status" : 400
+    },
+    {
+      "code" : "LAST_MANAGER",
+      "status" : 400
+    },
+    {
+      "code" : "LICENSE_NUMBER_REQUIRED",
+      "status" : 400
+    },
+    {
+      "code" : "NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "NUIT_ALREADY_IN_USE",
+      "status" : 409
+    },
+    {
+      "code" : "OMBUDSMAN_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "ORGANIZATION_NOT_ACTIVE",
+      "status" : 409
+    },
+    {
+      "code" : "ORGANIZATION_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "ORGANIZATION_SUSPENDED",
+      "status" : 403
+    },
+    {
+      "code" : "OTP_ALREADY_USED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_ATTEMPTS_EXCEEDED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_CHALLENGE_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "OTP_CHANNEL_CHOICE_DISABLED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_CHANNEL_NOT_AVAILABLE",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_DELIVERY_FAILED",
+      "status" : 502
+    },
+    {
+      "code" : "OTP_EXPIRED",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "OTP_RATE_LIMITED",
+      "status" : 429
+    },
+    {
+      "code" : "OTP_RESEND_TOO_SOON",
+      "status" : 429
+    },
+    {
+      "code" : "OTP_SUPERSEDED",
+      "status" : 400
+    },
+    {
+      "code" : "PASSWORD_TOO_WEAK",
+      "status" : 400
+    },
+    {
+      "code" : "REFRESH_TOKEN_INVALID",
+      "status" : 401
+    },
+    {
+      "code" : "REFRESH_TOKEN_REUSED",
+      "status" : 401
+    },
+    {
+      "code" : "RESET_TOKEN_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "ROLE_NOT_ALLOWED_FOR_ORGANIZATION",
+      "status" : 400
+    },
+    {
+      "code" : "SHORT_CODE_ALREADY_IN_USE",
+      "status" : 409
+    },
+    {
+      "code" : "TENANT_REQUIRED",
+      "status" : 500
+    },
+    {
+      "code" : "TOTP_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "UNAUTHORIZED",
+      "status" : 401
+    },
+    {
+      "code" : "USER_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "VALIDATION_ERROR",
+      "status" : 400
+    }
+  ],
+  "validation" : [
+    "CHANNELS_DUPLICATED",
+    "CHANNELS_EMPTY",
+    "CONTAINS_EMAIL",
+    "DEFAULT_CHANNEL_NOT_ENABLED",
+    "FALLBACK_ORDER_MISMATCH",
+    "INVALID_CURRENCY",
+    "INVALID_DATE",
+    "INVALID_DOCUMENT_NUMBER",
+    "INVALID_EMAIL",
+    "INVALID_MSISDN",
+    "INVALID_NAME",
+    "INVALID_NUIT",
+    "INVALID_PHONE",
+    "INVALID_PLATE",
+    "INVALID_SORT",
+    "NOT_ALLOWED",
+    "NOT_BLANK",
+    "NOT_NULL",
+    "OUT_OF_RANGE",
+    "PATTERN",
+    "REQUIRED",
+    "SIZE",
+    "TOO_COMMON",
+    "TOO_LONG",
+    "TOO_SHORT",
+    "TYPE_MISMATCH",
+    "UNDERAGE"
+  ]
+}

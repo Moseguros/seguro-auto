@@ -1,0 +1,629 @@
+{
+  "app": {
+    "name": "MoSeguros"
+  },
+  "language": {
+    "label": "Language",
+    "pt-MZ": "Português",
+    "en": "English"
+  },
+  "nav": {
+    "openMenu": "Open menu"
+  },
+  "areas": {
+    "cliente": "Customer area",
+    "admin": "Administration",
+    "seguradora": "Insurer",
+    "mediador": "Broker",
+    "perito": "Assessor",
+    "oficina": "Repair shop",
+    "assistencia": "Roadside assistance",
+    "provedor": "Customer ombudsman",
+    "supervisao": "Supervision",
+    "frota": "Fleet"
+  },
+  "menu": {
+    "cliente": {
+      "home": "Home",
+      "quote": "Get a quote",
+      "policies": "My policies",
+      "vehicles": "Vehicles",
+      "payments": "Payments",
+      "claims": "Claims",
+      "complaints": "Complaints",
+      "profile": "Profile"
+    },
+    "admin": {
+      "home": "Dashboard",
+      "organizations": "Organizations",
+      "users": "Users",
+      "auth": "Authentication",
+      "references": "Reference tables",
+      "audit": "Audit"
+    },
+    "seguradora": {
+      "home": "Dashboard",
+      "products": "Products",
+      "tariffs": "Tariffs",
+      "proposals": "Proposals",
+      "policies": "Policies",
+      "payments": "Payments",
+      "claims": "Claims",
+      "complaints": "Complaints",
+      "reports": "Reports",
+      "users": "Users",
+      "settings": "Settings"
+    },
+    "mediador": {
+      "home": "Dashboard",
+      "customers": "Customers",
+      "quotes": "Quotes",
+      "policies": "Policies",
+      "reports": "Reports",
+      "users": "Users"
+    },
+    "perito": {
+      "home": "Dashboard",
+      "assessments": "Assessments",
+      "users": "Users"
+    },
+    "oficina": {
+      "home": "Dashboard",
+      "repairs": "Repairs",
+      "estimates": "Estimates",
+      "users": "Users"
+    },
+    "assistencia": {
+      "home": "Dashboard",
+      "requests": "Requests",
+      "users": "Users"
+    },
+    "provedor": {
+      "home": "Dashboard",
+      "cases": "Cases",
+      "users": "Users"
+    },
+    "supervisao": {
+      "home": "Dashboard",
+      "insurers": "Insurers",
+      "reports": "Reports",
+      "users": "Users"
+    },
+    "frota": {
+      "home": "Dashboard",
+      "vehicles": "Vehicles",
+      "policies": "Policies",
+      "claims": "Claims",
+      "users": "Users"
+    }
+  },
+  "home": {
+    "tagline": "Compare, buy and manage your car insurance in one place."
+  },
+  "systemStatus": {
+    "title": "System status",
+    "loading": "Checking the API…",
+    "version": "Version",
+    "commit": "Commit",
+    "unknown": "unknown",
+    "error": "Could not get the API status."
+  },
+  "underConstruction": {
+    "title": "Under construction",
+    "description": "This page is still being prepared."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The address you are looking for does not exist.",
+    "backHome": "Back to home"
+  },
+  "errors": {
+    "NETWORK_ERROR": "No connection to the server. Check your Internet connection.",
+    "UNKNOWN": "An unexpected error occurred.",
+    "VALIDATION_ERROR": "The data sent is not valid.",
+    "NOT_FOUND": "The requested resource does not exist.",
+    "UNAUTHORIZED": "You need to sign in.",
+    "FORBIDDEN": "You do not have permission for this operation.",
+    "INTERNAL_ERROR": "Internal server error. Please try again later.",
+    "INVALID_CURRENCY": "Invalid currency.",
+    "INVALID_MSISDN": "Invalid mobile number.",
+    "INVALID_NUIT": "Invalid NUIT.",
+    "INVALID_PLATE": "Invalid number plate.",
+    "INVALID_EMAIL": "Invalid e-mail address.",
+    "INVALID_PHONE": "Invalid phone number.",
+    "TENANT_REQUIRED": "Internal server error. Please try again later.",
+    "DECRYPTION_FAILED": "Internal server error. Please try again later.",
+    "INVALID_STATE_TRANSITION": "This operation is not possible in the current state.",
+    "LICENSE_NUMBER_REQUIRED": "The ASFPM licence number is required for insurers, brokers and agents.",
+    "CHANNELS_EMPTY": "Choose at least one channel.",
+    "CHANNELS_DUPLICATED": "Each channel can only appear once.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
+    "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
+    "OUT_OF_RANGE": "Value outside the allowed range.",
+    "REFRESH_TOKEN_INVALID": "Your session has ended. Please sign in again.",
+    "REFRESH_TOKEN_REUSED": "For your security, your session was ended. Please sign in again.",
+    "CONCURRENT_MODIFICATION": "Someone else changed this data in the meantime. Refresh the page and try again.",
+    "OTP_CHANNEL_CHOICE_DISABLED": "Choosing the delivery channel is not allowed.",
+    "OTP_CHANNEL_NOT_AVAILABLE": "This channel is not available. Use another channel or sign in with the other identifier.",
+    "OTP_RATE_LIMITED": "You requested too many codes. Please try again later.",
+    "OTP_RESEND_TOO_SOON": "Please wait a moment before requesting a new code.",
+    "OTP_DELIVERY_FAILED": "The code could not be sent. Please try again in a moment.",
+    "OTP_CHALLENGE_NOT_FOUND": "Unknown code request. Please request a new code.",
+    "OTP_ALREADY_USED": "This code was already used. Please request a new code.",
+    "OTP_SUPERSEDED": "You requested a newer code. Use the last code you received.",
+    "OTP_EXPIRED": "The code has expired. Please request a new code.",
+    "OTP_INVALID": "Wrong code. Please check it and try again.",
+    "OTP_ATTEMPTS_EXCEEDED": "Too many wrong attempts. Please request a new code.",
+    "ACCOUNT_DISABLED": "This account is disabled. Please contact customer support.",
+    "ORGANIZATION_NOT_FOUND": "Organization not found.",
+    "ORGANIZATION_NOT_ACTIVE": "The organization is suspended.",
+    "NUIT_ALREADY_IN_USE": "There is already an organization with this NUIT.",
+    "SHORT_CODE_ALREADY_IN_USE": "This short code is already used by another insurer.",
+    "OMBUDSMAN_INVALID": "Choose an existing customer ombudsman.",
+    "ROLE_NOT_ALLOWED_FOR_ORGANIZATION": "One of the selected roles cannot be assigned in this organization.",
+    "EMAIL_ALREADY_IN_USE": "This e-mail address already belongs to another user.",
+    "INVITATION_INVALID": "This invitation is no longer valid. Ask the person who invited you for a new one.",
+    "INVITATION_NOT_ACCEPTED": "Set your password first.",
+    "TOTP_INVALID": "Wrong code. Check your authenticator app and try again.",
+    "PASSWORD_TOO_WEAK": "The password does not meet the security rules.",
+    "INVALID_CREDENTIALS": "Wrong e-mail, password or authentication code.",
+    "ACCOUNT_LOCKED": "Too many failed attempts. The account is temporarily locked; please try again later.",
+    "ORGANIZATION_SUSPENDED": "Your organization is suspended. Please contact the MoSeguros administration.",
+    "RESET_TOKEN_INVALID": "This recovery link is no longer valid. Please request a new one.",
+    "USER_NOT_FOUND": "User not found.",
+    "CANNOT_MODIFY_SELF": "You cannot change your own account.",
+    "LAST_MANAGER": "The organization must keep at least one active manager.",
+    "CONTACT_ALREADY_IN_USE": "This contact already belongs to another account.",
+    "CONTACT_ALREADY_VERIFIED": "This contact is already confirmed on your account.",
+    "LAST_CONTACT": "The account must keep at least one confirmed contact."
+  },
+  "validation": {
+    "INVALID_CURRENCY": "Invalid currency.",
+    "INVALID_MSISDN": "Invalid mobile number (e.g. +258 84 123 4567).",
+    "INVALID_NUIT": "The NUIT has 9 digits.",
+    "INVALID_PLATE": "Invalid number plate.",
+    "INVALID_EMAIL": "Invalid e-mail (e.g. name@example.co.mz).",
+    "INVALID_PHONE": "Invalid phone number (9 to 15 digits).",
+    "LICENSE_NUMBER_REQUIRED": "Enter the ASFPM licence number.",
+    "CHANNELS_EMPTY": "Choose at least one channel.",
+    "CHANNELS_DUPLICATED": "Each channel can only appear once.",
+    "DEFAULT_CHANNEL_NOT_ENABLED": "The default channel must be enabled.",
+    "FALLBACK_ORDER_MISMATCH": "The fallback order must contain exactly the enabled channels.",
+    "OUT_OF_RANGE": "Value outside the allowed range.",
+    "NOT_BLANK": "This field is required.",
+    "NOT_NULL": "This field is required.",
+    "NOT_ALLOWED": "This field does not apply here.",
+    "REQUIRED": "This field is required.",
+    "INVALID_SORT": "Unsupported sort order.",
+    "TOO_SHORT": "The password must have at least 12 characters.",
+    "TOO_LONG": "The password can have at most 128 characters.",
+    "CONTAINS_EMAIL": "The password must not contain your e-mail address.",
+    "TOO_COMMON": "This password is too common. Choose another one.",
+    "SIZE": "Length outside the allowed limits.",
+    "PATTERN": "Invalid format.",
+    "TYPE_MISMATCH": "Invalid value.",
+    "INVALID_NAME": "Enter your full name (at least two words, only letters, spaces, ' and -).",
+    "UNDERAGE": "You must be at least 18 years old.",
+    "INVALID_DATE": "Invalid date.",
+    "INVALID_DOCUMENT_NUMBER": "Invalid document number (5 to 20 upper-case letters or digits)."
+  },
+  "province": {
+    "MAPUTO_CITY": "Maputo City",
+    "MAPUTO": "Maputo Province",
+    "GAZA": "Gaza",
+    "INHAMBANE": "Inhambane",
+    "SOFALA": "Sofala",
+    "MANICA": "Manica",
+    "TETE": "Tete",
+    "ZAMBEZIA": "Zambezia",
+    "NAMPULA": "Nampula",
+    "CABO_DELGADO": "Cabo Delgado",
+    "NIASSA": "Niassa"
+  },
+  "auth": {
+    "loading": "Loading…",
+    "retry": "Try again",
+    "retryIn": "Try again in {{seconds}} s.",
+    "login": {
+      "title": "Sign in to your customer area",
+      "subtitle": "Use your mobile number or e-mail. We send you a code to sign in, no password needed."
+    },
+    "identifier": {
+      "typeLabel": "Sign in with",
+      "type": {
+        "MSISDN": "Mobile",
+        "EMAIL": "E-mail"
+      },
+      "msisdnLabel": "Mobile number",
+      "msisdnHelper": "9 digits, for example 84 123 4567.",
+      "emailLabel": "E-mail",
+      "channelLabel": "Receive the code by",
+      "submit": "Get code"
+    },
+    "code": {
+      "subtitle": "Enter the code you received.",
+      "inputLabel": "Code received",
+      "digitLabel": "Digit {{position}} of {{total}}",
+      "sentTo": "We sent a code by {{channel}} to {{destination}}.",
+      "change": "Change",
+      "fallback": "We could not send it by {{requested}}. We sent the code by {{used}}.",
+      "wrongCode_one": "Wrong code. {{count}} attempt left.",
+      "wrongCode_other": "Wrong code. {{count}} attempts left.",
+      "resent": "We sent a new code.",
+      "resend": "Resend code",
+      "resendIn": "Resend code ({{seconds}} s)"
+    },
+    "noAccess": {
+      "title": "You do not have access to this area",
+      "description": "Your session cannot open this page.",
+      "goToArea": "Go to my area",
+      "goHome": "Go to the home page"
+    },
+    "userMenu": {
+      "open": "Account menu",
+      "account": "My account",
+      "logout": "Sign out"
+    }
+  },
+  "customer": {
+    "home": {
+      "greeting": "Hello, {{name}}",
+      "greetingNoName": "Hello",
+      "incompleteProfile": "Complete your profile to be able to buy insurance.",
+      "completeProfile": "Complete profile",
+      "quoteTitle": "Car insurance",
+      "quoteText": "Compare insurers' prices for your vehicle.",
+      "quote": "Get a quote"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "personalData": "Personal details",
+    "completeNotice": "We need these details to issue your policies.",
+    "fields": {
+      "fullName": "Full name",
+      "birthDate": "Date of birth",
+      "idDocType": "Document type",
+      "idDocNumber": "Document number",
+      "nuit": "NUIT (tax number)",
+      "address": "Address",
+      "province": "Province"
+    },
+    "choose": "Choose…",
+    "change": "Change",
+    "changeDocument": "Change the document number",
+    "changeNuit": "Change the NUIT",
+    "nuitHelper": "9 digits.",
+    "optional": "Optional.",
+    "save": "Save",
+    "saved": "Profile saved"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "type": {
+      "MSISDN": "Mobile",
+      "EMAIL": "E-mail"
+    },
+    "verified": "Verified",
+    "add": {
+      "MSISDN": "Add mobile",
+      "EMAIL": "Add e-mail"
+    },
+    "change": {
+      "MSISDN": "Change mobile",
+      "EMAIL": "Change e-mail"
+    },
+    "changeShort": "Change",
+    "remove": {
+      "MSISDN": "Remove mobile",
+      "EMAIL": "Remove e-mail"
+    },
+    "removeShort": "Remove",
+    "cancel": "Cancel",
+    "saved": "Contact confirmed",
+    "removed": "Contact removed",
+    "confirmRemove": {
+      "title": "Remove contact?",
+      "text": "You will no longer be able to sign in or receive notices at {{value}}.",
+      "confirm": "Remove"
+    },
+    "dialog": {
+      "add": {
+        "MSISDN": "Add mobile",
+        "EMAIL": "Add e-mail"
+      },
+      "change": {
+        "MSISDN": "Change mobile",
+        "EMAIL": "Change e-mail"
+      }
+    }
+  },
+  "idDocType": {
+    "BI": "Identity Card (BI)",
+    "PASSPORT": "Passport",
+    "DIRE": "DIRE (residence permit)"
+  },
+  "channel": {
+    "SMS": "SMS",
+    "WHATSAPP": "WhatsApp",
+    "EMAIL": "E-mail"
+  },
+  "staffAuth": {
+    "login": {
+      "title": "Sign in to MoSeguros",
+      "subtitle": "For insurers, intermediaries and partners.",
+      "email": "Email",
+      "password": "Password",
+      "totp": "Authenticator app code",
+      "totpHelper": "6 digits.",
+      "submit": "Sign in",
+      "forgot": "I forgot my password",
+      "invalidCredentials": "Wrong email, password or code.",
+      "locked_one": "Account locked. Try again in {{count}} minute.",
+      "locked_other": "Account locked. Try again in {{count}} minutes.",
+      "customer": "Are you a customer? Sign in here"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password",
+      "rulesTitle": "The password must:",
+      "rules": {
+        "minLength": "Have at least 12 characters",
+        "noEmail": "Not contain your email",
+        "notCommon": "Not be a common password"
+      },
+      "ruleMet": "met",
+      "ruleNotMet": "not met",
+      "new": "New password",
+      "confirm": "Confirm password",
+      "mismatch": "The passwords do not match."
+    },
+    "forgot": {
+      "title": "Recover your password",
+      "subtitle": "Enter your account email. We will send you a link to set a new password.",
+      "submit": "Send link",
+      "sent": "If the email is registered, you will receive a link in the next few minutes.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "submit": "Save password",
+      "done": "Password changed",
+      "doneText": "You can now sign in with the new password.",
+      "goToLogin": "Sign in",
+      "invalid": "This link is no longer valid",
+      "requestNew": "Request a new link"
+    },
+    "invitation": {
+      "title": "Activate your account",
+      "invalid": "This invitation is no longer valid. Ask your organisation manager for a new one.",
+      "step1": "Password",
+      "step2": "Authenticator app",
+      "name": "Name",
+      "email": "Email",
+      "organization": "Organisation",
+      "platform": "MoSeguros (platform)",
+      "continue": "Continue"
+    },
+    "totp": {
+      "instructions": "Open your authenticator app and scan the QR code.",
+      "qrLabel": "QR code for the authenticator app",
+      "manual": "If you cannot scan the code, type this secret:",
+      "copy": "Copy the secret",
+      "copied": "Secret copied",
+      "code": "6-digit code",
+      "activate": "Activate account",
+      "invalid": "Wrong code. Check your phone's time."
+    }
+  },
+  "otpSettings": {
+    "title": "Customer authentication",
+    "subtitle": "How customers receive the sign-in code.",
+    "channels": "Active channels",
+    "defaultChannel": "Default channel",
+    "customerCanChoose": "Customers can choose the channel",
+    "fallback": "Fallback order",
+    "fallbackHelp": "If sending fails, the next channel is tried. Drag or use the buttons to change the order.",
+    "fallbackNote": "There is no fallback between phone and email.",
+    "moveUp": "Move {{channel}} up",
+    "moveDown": "Move {{channel}} down",
+    "drag": "Drag {{channel}}",
+    "parameters": "Code parameters",
+    "codeLength": "Code length",
+    "validityMinutes": "Validity (minutes)",
+    "maxAttempts": "Attempts",
+    "resendAfterSeconds": "Resend (seconds)",
+    "maxRequestsPerHour": "Requests per hour",
+    "range": "Between {{min}} and {{max}}.",
+    "save": "Save",
+    "saved": "Settings saved",
+    "conflict": "Someone else changed these settings",
+    "reload": "Reload",
+    "readOnly": "You can only view these settings.",
+    "test": {
+      "open": "Send test code",
+      "title": "Send test code",
+      "identifierType": "Identifier type",
+      "identifier": "Identifier",
+      "channel": "Channel",
+      "inactive": "{{channel}} (inactive)",
+      "send": "Send",
+      "close": "Close",
+      "result": "Result: {{status}} ({{channel}})."
+    }
+  },
+  "deliveryStatus": {
+    "PENDING": "Pending",
+    "SENT": "Sent",
+    "DELIVERED": "Delivered",
+    "FAILED": "Failed"
+  },
+  "organizations": {
+    "title": "Organisations",
+    "new": "New organisation",
+    "filters": {
+      "type": "Type",
+      "status": "Status",
+      "search": "Search",
+      "all": "All"
+    },
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "nuit": "NUIT",
+      "status": "Status",
+      "createdAt": "Created on"
+    },
+    "sections": {
+      "data": "Details",
+      "insurer": "Insurer profile",
+      "manager": "First manager"
+    },
+    "fields": {
+      "type": "Type",
+      "legalName": "Legal name",
+      "tradeName": "Trade name",
+      "nuit": "NUIT",
+      "licenseNumber": "ASFPM licence number",
+      "contactEmail": "Contact email",
+      "contactPhone": "Contact phone",
+      "address": "Address",
+      "province": "Province",
+      "shortCode": "Short code",
+      "complaintsEmail": "Complaints email",
+      "ombudsman": "Customer ombudsman",
+      "managerName": "Name",
+      "managerEmail": "Email"
+    },
+    "shortCodeHelper": "2 to 10 capital letters or digits.",
+    "optional": "Optional.",
+    "none": "None",
+    "choose": "Choose…",
+    "create": "Create organisation",
+    "save": "Save",
+    "saved": "Details saved",
+    "tabs": {
+      "data": "Details",
+      "users": "Users"
+    },
+    "noManager": "This organisation has no active manager yet.",
+    "inviteFailed": "The organisation was created, but the manager's invitation failed. Fix the details and send it again.",
+    "suspend": "Suspend",
+    "reactivate": "Reactivate",
+    "suspendDialog": {
+      "title": "Suspend the organisation",
+      "text": "The organisation's users can no longer sign in until it is reactivated.",
+      "reason": "Reason",
+      "confirm": "Suspend",
+      "cancel": "Cancel"
+    },
+    "reactivateDialog": {
+      "title": "Reactivate the organisation?",
+      "text": "The organisation's users can sign in again.",
+      "confirm": "Reactivate",
+      "cancel": "Cancel"
+    },
+    "suspended": "Organisation suspended",
+    "reactivated": "Organisation reactivated"
+  },
+  "users": {
+    "title": "Users",
+    "invite": "Invite user",
+    "invitations": "Invitations",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "roles": "Roles",
+      "status": "Status",
+      "lastLogin": "Last sign-in",
+      "expiresAt": "Expires on",
+      "actions": "Actions"
+    },
+    "noUsers": "No users yet.",
+    "noInvitations": "No invitations.",
+    "never": "Never",
+    "you": "(you)",
+    "actions": {
+      "open": "Actions for {{name}}",
+      "roles": "Change roles",
+      "disable": "Disable",
+      "enable": "Enable",
+      "unlock": "Unlock",
+      "resetAccess": "Reset access",
+      "resend": "Resend",
+      "revoke": "Revoke"
+    },
+    "resetConfirm": {
+      "title": "Reset access?",
+      "text": "The person receives a new invitation and will have to set up the password and the code again.",
+      "confirm": "Reset access",
+      "cancel": "Cancel"
+    },
+    "done": {
+      "roles": "Roles changed",
+      "disable": "User disabled",
+      "enable": "User enabled",
+      "unlock": "User unlocked",
+      "resetAccess": "We sent a new invitation",
+      "resend": "Invitation resent",
+      "revoke": "Invitation revoked",
+      "invite": "Invitation sent"
+    },
+    "inviteDialog": {
+      "title": "Invite user",
+      "fullName": "Name",
+      "email": "Email",
+      "roles": "Roles",
+      "send": "Send invitation",
+      "cancel": "Cancel"
+    },
+    "rolesDialog": {
+      "title": "Change roles of {{name}}",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  },
+  "role": {
+    "PLATFORM_ADMIN": "Platform administrator",
+    "INSURER_ADMIN": "Insurer manager",
+    "ORG_ADMIN": "Organisation manager",
+    "PRODUCT_MANAGER": "Product manager",
+    "UNDERWRITER": "Underwriter",
+    "CLAIMS_HANDLER": "Claims handler",
+    "COMPLAINTS_OFFICER": "Complaints officer",
+    "FINANCE": "Finance",
+    "BROKER": "Broker",
+    "AGENT": "Insurance agent",
+    "ASSESSOR": "Assessor",
+    "WORKSHOP": "Workshop",
+    "ASSISTANCE_PROVIDER": "Assistance provider",
+    "OMBUDSMAN": "Customer ombudsman",
+    "REGULATOR_VIEWER": "Supervisor (ASFPM)",
+    "POLICE_OFFICER": "Police officer",
+    "FLEET_MANAGER": "Fleet manager",
+    "CUSTOMER": "Customer"
+  },
+  "orgType": {
+    "INSURER": "Insurer",
+    "BROKER": "Brokerage",
+    "AGENT": "Insurance agent",
+    "WORKSHOP": "Workshop",
+    "ASSESSOR": "Loss assessor",
+    "ASSISTANCE": "Assistance",
+    "OMBUDSMAN": "Customer ombudsman",
+    "REGULATOR": "Regulator",
+    "POLICE": "Police",
+    "CORPORATE_CLIENT": "Corporate client"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "PENDING_ACTIVATION": "Pending activation",
+    "LOCKED": "Locked",
+    "DISABLED": "Disabled",
+    "SUSPENDED": "Suspended",
+    "PENDING": "Pending",
+    "EXPIRED": "Expired",
+    "REVOKED": "Revoked",
+    "ACCEPTED": "Accepted"
+  }
+}
