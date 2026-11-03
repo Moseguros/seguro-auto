@@ -892,6 +892,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.';
 
   @override
+  String get errorRatingRulesTooLarge =>
+      'A tarifa é demasiado grande (máximo 256 KB).';
+
+  @override
   String get validationInvalidChassis => 'N.º de chassis inválido.';
 
   @override
@@ -914,6 +918,56 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get validationMultipleHabitualDrivers =>
       'Só pode haver um condutor habitual.';
+
+  @override
+  String get validationSchemaViolation => 'Formato inválido.';
+
+  @override
+  String get validationCoverageTariffMissing =>
+      'Falta a tarifa de uma cobertura do produto.';
+
+  @override
+  String get validationCoverageNotInProduct =>
+      'Esta cobertura não existe no produto.';
+
+  @override
+  String get validationDuplicateCoverage => 'Cobertura repetida.';
+
+  @override
+  String get validationBaseTypeNotAllowed =>
+      'Este tipo de base não serve para o capital desta cobertura.';
+
+  @override
+  String get validationValueOutOfRange => 'Valor fora dos limites permitidos.';
+
+  @override
+  String get validationInvalidRange =>
+      'O limite inferior tem de ser menor que o superior.';
+
+  @override
+  String get validationDuplicateFactor => 'Factor repetido.';
+
+  @override
+  String get validationReservedFactorCode =>
+      'Este código está reservado ao sistema.';
+
+  @override
+  String get validationDuplicateDuration => 'Duração repetida.';
+
+  @override
+  String get validationDuration365NotOne =>
+      'O factor de 365 dias tem de ser 1.';
+
+  @override
+  String get validationDurationFactorsRequired =>
+      'Um produto temporário precisa da tabela de duração.';
+
+  @override
+  String get validationDurationNotAllowed =>
+      'Duração não permitida para este produto.';
+
+  @override
+  String get validationDuplicateCharge => 'Encargo repetido.';
 
   @override
   String get save => 'Guardar';

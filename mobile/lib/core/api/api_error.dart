@@ -98,6 +98,7 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'DRIVER_LIMIT_REACHED' => l10n.errorDriverLimitReached,
   'OWNER_DRIVER_ALREADY_EXISTS' => l10n.errorOwnerDriverAlreadyExists,
   'DRIVER_IS_HABITUAL' => l10n.errorDriverIsHabitual,
+  'RATING_RULES_TOO_LARGE' => l10n.errorRatingRulesTooLarge,
   _ => l10n.errorUnknown,
 };
 
@@ -164,6 +165,20 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'LICENCE_ISSUE_DATE_INVALID' => l10n.validationLicenceIssueDateInvalid,
   'HABITUAL_DRIVER_REQUIRED' => l10n.validationHabitualDriverRequired,
   'MULTIPLE_HABITUAL_DRIVERS' => l10n.validationMultipleHabitualDrivers,
+  'SCHEMA_VIOLATION' => l10n.validationSchemaViolation,
+  'COVERAGE_TARIFF_MISSING' => l10n.validationCoverageTariffMissing,
+  'COVERAGE_NOT_IN_PRODUCT' => l10n.validationCoverageNotInProduct,
+  'DUPLICATE_COVERAGE' => l10n.validationDuplicateCoverage,
+  'BASE_TYPE_NOT_ALLOWED' => l10n.validationBaseTypeNotAllowed,
+  'VALUE_OUT_OF_RANGE' => l10n.validationValueOutOfRange,
+  'INVALID_RANGE' => l10n.validationInvalidRange,
+  'DUPLICATE_FACTOR' => l10n.validationDuplicateFactor,
+  'RESERVED_FACTOR_CODE' => l10n.validationReservedFactorCode,
+  'DUPLICATE_DURATION' => l10n.validationDuplicateDuration,
+  'DURATION_365_NOT_ONE' => l10n.validationDuration365NotOne,
+  'DURATION_FACTORS_REQUIRED' => l10n.validationDurationFactorsRequired,
+  'DURATION_NOT_ALLOWED' => l10n.validationDurationNotAllowed,
+  'DUPLICATE_CHARGE' => l10n.validationDuplicateCharge,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,

@@ -1628,6 +1628,12 @@ abstract class AppLocalizations {
   /// **'Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.'**
   String get errorDriverIsHabitual;
 
+  /// No description provided for @errorRatingRulesTooLarge.
+  ///
+  /// In pt, this message translates to:
+  /// **'A tarifa é demasiado grande (máximo 256 KB).'**
+  String get errorRatingRulesTooLarge;
+
   /// No description provided for @validationInvalidChassis.
   ///
   /// In pt, this message translates to:
@@ -1669,6 +1675,90 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Só pode haver um condutor habitual.'**
   String get validationMultipleHabitualDrivers;
+
+  /// No description provided for @validationSchemaViolation.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato inválido.'**
+  String get validationSchemaViolation;
+
+  /// No description provided for @validationCoverageTariffMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falta a tarifa de uma cobertura do produto.'**
+  String get validationCoverageTariffMissing;
+
+  /// No description provided for @validationCoverageNotInProduct.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cobertura não existe no produto.'**
+  String get validationCoverageNotInProduct;
+
+  /// No description provided for @validationDuplicateCoverage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cobertura repetida.'**
+  String get validationDuplicateCoverage;
+
+  /// No description provided for @validationBaseTypeNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este tipo de base não serve para o capital desta cobertura.'**
+  String get validationBaseTypeNotAllowed;
+
+  /// No description provided for @validationValueOutOfRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor fora dos limites permitidos.'**
+  String get validationValueOutOfRange;
+
+  /// No description provided for @validationInvalidRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'O limite inferior tem de ser menor que o superior.'**
+  String get validationInvalidRange;
+
+  /// No description provided for @validationDuplicateFactor.
+  ///
+  /// In pt, this message translates to:
+  /// **'Factor repetido.'**
+  String get validationDuplicateFactor;
+
+  /// No description provided for @validationReservedFactorCode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este código está reservado ao sistema.'**
+  String get validationReservedFactorCode;
+
+  /// No description provided for @validationDuplicateDuration.
+  ///
+  /// In pt, this message translates to:
+  /// **'Duração repetida.'**
+  String get validationDuplicateDuration;
+
+  /// No description provided for @validationDuration365NotOne.
+  ///
+  /// In pt, this message translates to:
+  /// **'O factor de 365 dias tem de ser 1.'**
+  String get validationDuration365NotOne;
+
+  /// No description provided for @validationDurationFactorsRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Um produto temporário precisa da tabela de duração.'**
+  String get validationDurationFactorsRequired;
+
+  /// No description provided for @validationDurationNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Duração não permitida para este produto.'**
+  String get validationDurationNotAllowed;
+
+  /// No description provided for @validationDuplicateCharge.
+  ///
+  /// In pt, this message translates to:
+  /// **'Encargo repetido.'**
+  String get validationDuplicateCharge;
 
   /// No description provided for @save.
   ///

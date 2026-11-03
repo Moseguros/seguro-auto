@@ -208,7 +208,8 @@
     "DRIVER_ALREADY_REGISTERED": "Já tem um condutor com esta carta.",
     "DRIVER_LIMIT_REACHED": "Atingiu o máximo de 10 condutores.",
     "OWNER_DRIVER_ALREADY_EXISTS": "Já se registou como condutor.",
-    "DRIVER_IS_HABITUAL": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro."
+    "DRIVER_IS_HABITUAL": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.",
+    "RATING_RULES_TOO_LARGE": "A tarifa é demasiado grande (máximo 256 KB)."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -272,7 +273,21 @@
     "LICENCE_CATEGORY_UNKNOWN": "Categoria de carta desconhecida.",
     "LICENCE_ISSUE_DATE_INVALID": "A data de emissão tem de ser depois do nascimento e até hoje.",
     "HABITUAL_DRIVER_REQUIRED": "Escolha o condutor habitual.",
-    "MULTIPLE_HABITUAL_DRIVERS": "Só pode haver um condutor habitual."
+    "MULTIPLE_HABITUAL_DRIVERS": "Só pode haver um condutor habitual.",
+    "SCHEMA_VIOLATION": "Formato inválido.",
+    "COVERAGE_TARIFF_MISSING": "Falta a tarifa de uma cobertura do produto.",
+    "COVERAGE_NOT_IN_PRODUCT": "Esta cobertura não existe no produto.",
+    "DUPLICATE_COVERAGE": "Cobertura repetida.",
+    "BASE_TYPE_NOT_ALLOWED": "Este tipo de base não serve para o capital desta cobertura.",
+    "VALUE_OUT_OF_RANGE": "Valor fora dos limites permitidos.",
+    "INVALID_RANGE": "O limite inferior tem de ser menor que o superior.",
+    "DUPLICATE_FACTOR": "Factor repetido.",
+    "RESERVED_FACTOR_CODE": "Este código está reservado ao sistema.",
+    "DUPLICATE_DURATION": "Duração repetida.",
+    "DURATION_365_NOT_ONE": "O factor de 365 dias tem de ser 1.",
+    "DURATION_FACTORS_REQUIRED": "Um produto temporário precisa da tabela de duração.",
+    "DURATION_NOT_ALLOWED": "Duração não permitida para este produto.",
+    "DUPLICATE_CHARGE": "Encargo repetido."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
