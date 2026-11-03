@@ -68,32 +68,6 @@ export const CatalogProductResponseType = {
   FLEET: 'FLEET',
 } as const;
 
-export type CatalogProductResponseUsagesItem =
-  (typeof CatalogProductResponseUsagesItem)[keyof typeof CatalogProductResponseUsagesItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CatalogProductResponseUsagesItem = {
-  PRIVATE: 'PRIVATE',
-  RENTAL: 'RENTAL',
-  PASSENGER_TRANSPORT: 'PASSENGER_TRANSPORT',
-  GOODS: 'GOODS',
-  TAXI: 'TAXI',
-  DRIVING_SCHOOL: 'DRIVING_SCHOOL',
-} as const;
-
-export type CatalogProductResponseVehicleCategoriesItem =
-  (typeof CatalogProductResponseVehicleCategoriesItem)[keyof typeof CatalogProductResponseVehicleCategoriesItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CatalogProductResponseVehicleCategoriesItem = {
-  LIGHT_PASSENGER: 'LIGHT_PASSENGER',
-  LIGHT_MIXED: 'LIGHT_MIXED',
-  HEAVY: 'HEAVY',
-  MOTORCYCLE: 'MOTORCYCLE',
-  TRAILER: 'TRAILER',
-  BUS: 'BUS',
-} as const;
-
 export interface CatalogProductResponse {
   code: string;
   coverages: CoverageResponse[];
@@ -105,10 +79,10 @@ export interface CatalogProductResponse {
   productVersionId: string;
   status: CatalogProductResponseStatus;
   type: CatalogProductResponseType;
-  usages: CatalogProductResponseUsagesItem[];
+  usages: VehicleUsage[];
   validFrom: string;
   validTo?: string;
-  vehicleCategories: CatalogProductResponseVehicleCategoriesItem[];
+  vehicleCategories: VehicleCategory[];
   versionNo: number;
 }
 
@@ -1274,32 +1248,6 @@ export const ProductVersionResponseStatus = {
   RETIRED: 'RETIRED',
 } as const;
 
-export type ProductVersionResponseUsagesItem =
-  (typeof ProductVersionResponseUsagesItem)[keyof typeof ProductVersionResponseUsagesItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ProductVersionResponseUsagesItem = {
-  PRIVATE: 'PRIVATE',
-  RENTAL: 'RENTAL',
-  PASSENGER_TRANSPORT: 'PASSENGER_TRANSPORT',
-  GOODS: 'GOODS',
-  TAXI: 'TAXI',
-  DRIVING_SCHOOL: 'DRIVING_SCHOOL',
-} as const;
-
-export type ProductVersionResponseVehicleCategoriesItem =
-  (typeof ProductVersionResponseVehicleCategoriesItem)[keyof typeof ProductVersionResponseVehicleCategoriesItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ProductVersionResponseVehicleCategoriesItem = {
-  LIGHT_PASSENGER: 'LIGHT_PASSENGER',
-  LIGHT_MIXED: 'LIGHT_MIXED',
-  HEAVY: 'HEAVY',
-  MOTORCYCLE: 'MOTORCYCLE',
-  TRAILER: 'TRAILER',
-  BUS: 'BUS',
-} as const;
-
 export interface ProductVersionResponse {
   basedOnVersionId?: string;
   changeNotes?: string;
@@ -1316,10 +1264,10 @@ export interface ProductVersionResponse {
   publishedBy?: string;
   status: ProductVersionResponseStatus;
   updatedAt: string;
-  usages: ProductVersionResponseUsagesItem[];
+  usages: VehicleUsage[];
   validFrom?: string;
   validTo?: string;
-  vehicleCategories: ProductVersionResponseVehicleCategoriesItem[];
+  vehicleCategories: VehicleCategory[];
   version: number;
   versionNo: number;
 }
@@ -1792,32 +1740,6 @@ export interface UpdateProductRequest {
   version: number;
 }
 
-export type UpdateProductVersionRequestUsagesItem =
-  (typeof UpdateProductVersionRequestUsagesItem)[keyof typeof UpdateProductVersionRequestUsagesItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateProductVersionRequestUsagesItem = {
-  PRIVATE: 'PRIVATE',
-  RENTAL: 'RENTAL',
-  PASSENGER_TRANSPORT: 'PASSENGER_TRANSPORT',
-  GOODS: 'GOODS',
-  TAXI: 'TAXI',
-  DRIVING_SCHOOL: 'DRIVING_SCHOOL',
-} as const;
-
-export type UpdateProductVersionRequestVehicleCategoriesItem =
-  (typeof UpdateProductVersionRequestVehicleCategoriesItem)[keyof typeof UpdateProductVersionRequestVehicleCategoriesItem];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateProductVersionRequestVehicleCategoriesItem = {
-  LIGHT_PASSENGER: 'LIGHT_PASSENGER',
-  LIGHT_MIXED: 'LIGHT_MIXED',
-  HEAVY: 'HEAVY',
-  MOTORCYCLE: 'MOTORCYCLE',
-  TRAILER: 'TRAILER',
-  BUS: 'BUS',
-} as const;
-
 export interface UpdateProductVersionRequest {
   /**
    * O que mudou nesta versão
@@ -1825,8 +1747,8 @@ export interface UpdateProductVersionRequest {
    * @maxLength 1000
    */
   changeNotes?: string;
-  usages: UpdateProductVersionRequestUsagesItem[];
-  vehicleCategories: UpdateProductVersionRequestVehicleCategoriesItem[];
+  usages: VehicleUsage[];
+  vehicleCategories: VehicleCategory[];
   version: number;
 }
 
@@ -1856,6 +1778,30 @@ export interface UpdateUserRolesRequest {
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
 }
+
+export type VehicleCategory = (typeof VehicleCategory)[keyof typeof VehicleCategory];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const VehicleCategory = {
+  LIGHT_PASSENGER: 'LIGHT_PASSENGER',
+  LIGHT_MIXED: 'LIGHT_MIXED',
+  HEAVY: 'HEAVY',
+  MOTORCYCLE: 'MOTORCYCLE',
+  TRAILER: 'TRAILER',
+  BUS: 'BUS',
+} as const;
+
+export type VehicleUsage = (typeof VehicleUsage)[keyof typeof VehicleUsage];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const VehicleUsage = {
+  PRIVATE: 'PRIVATE',
+  RENTAL: 'RENTAL',
+  PASSENGER_TRANSPORT: 'PASSENGER_TRANSPORT',
+  GOODS: 'GOODS',
+  TAXI: 'TAXI',
+  DRIVING_SCHOOL: 'DRIVING_SCHOOL',
+} as const;
 
 export interface VerifyContactRequest {
   /** challengeId devolvido no pedido */
@@ -1926,38 +1872,12 @@ export const ListPlatformUsersStatus = {
 } as const;
 
 export type ListCatalogProductsParams = {
-  vehicleCategory?: ListCatalogProductsVehicleCategory;
-  usage?: ListCatalogProductsUsage;
+  vehicleCategory?: VehicleCategory;
+  usage?: VehicleUsage;
   type?: ListCatalogProductsType;
   page?: number;
   size?: number;
 };
-
-export type ListCatalogProductsVehicleCategory =
-  (typeof ListCatalogProductsVehicleCategory)[keyof typeof ListCatalogProductsVehicleCategory];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ListCatalogProductsVehicleCategory = {
-  LIGHT_PASSENGER: 'LIGHT_PASSENGER',
-  LIGHT_MIXED: 'LIGHT_MIXED',
-  HEAVY: 'HEAVY',
-  MOTORCYCLE: 'MOTORCYCLE',
-  TRAILER: 'TRAILER',
-  BUS: 'BUS',
-} as const;
-
-export type ListCatalogProductsUsage =
-  (typeof ListCatalogProductsUsage)[keyof typeof ListCatalogProductsUsage];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ListCatalogProductsUsage = {
-  PRIVATE: 'PRIVATE',
-  RENTAL: 'RENTAL',
-  PASSENGER_TRANSPORT: 'PASSENGER_TRANSPORT',
-  GOODS: 'GOODS',
-  TAXI: 'TAXI',
-  DRIVING_SCHOOL: 'DRIVING_SCHOOL',
-} as const;
 
 export type ListCatalogProductsType =
   (typeof ListCatalogProductsType)[keyof typeof ListCatalogProductsType];
