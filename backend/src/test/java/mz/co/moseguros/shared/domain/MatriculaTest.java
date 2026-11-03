@@ -3,7 +3,6 @@ package mz.co.moseguros.shared.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import mz.co.moseguros.shared.error.DomainException;
@@ -15,12 +14,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class MatriculaTest {
 
-    static final PlateFormat STANDARD = new PlateFormat("STANDARD", "Actual (ABC-123-MC)",
-            Pattern.compile("^(?<l>[A-Z]{3})(?<n>\\d{3})(?<p>[A-Z]{2})$"), "{l}-{n}-{p}", true);
-    static final PlateFormat LEGACY = new PlateFormat("LEGACY", "Antigo (ABC-12-34)",
-            Pattern.compile("^(?<l>[A-Z]{3})(?<a>\\d{2})(?<b>\\d{2})$"), "{l}-{a}-{b}", true);
+    static final PlateFormat STANDARD = StaticPlateFormatProvider.STANDARD;
+    static final PlateFormat LEGACY = StaticPlateFormatProvider.LEGACY;
 
-    private final PlateParser parser = new PlateParser(() -> List.of(STANDARD, LEGACY));
+    private final PlateParser parser = StaticPlateFormatProvider.defaultParser();
 
     @ParameterizedTest
     @CsvSource({
@@ -52,7 +49,7 @@ class MatriculaTest {
     void firstMatchingFormatWins() {
         PlateFormat broad = new PlateFormat("BROAD", "Tudo",
                 Pattern.compile("^(?<all>[A-Z0-9]+)$"), "{all}", true);
-        PlateParser ordered = new PlateParser(() -> List.of(STANDARD, broad));
+        PlateParser ordered = new PlateParser(StaticPlateFormatProvider.of(STANDARD, broad));
         assertThat(ordered.parse("ABC123MC").formatCode()).isEqualTo("STANDARD");
         assertThat(ordered.parse("ZZ9").formatCode()).isEqualTo("BROAD");
     }
@@ -61,8 +58,21 @@ class MatriculaTest {
     void inactiveFormatsAreIgnored() {
         PlateFormat inactive = new PlateFormat("LEGACY", "Antigo",
                 LEGACY.pattern(), LEGACY.displayTemplate(), false);
-        PlateParser p = new PlateParser(() -> List.of(STANDARD, inactive));
+        PlateParser p = new PlateParser(StaticPlateFormatProvider.of(STANDARD, inactive));
         assertThatThrownBy(() -> p.parse("ABC1234")).isInstanceOf(DomainException.class);
+    }
+
+    /** S2-02: acima de 15 caracteres normalizados recusa sem aplicar nenhum padrão. */
+    @Test
+    void longValuesAreRejectedBeforeAnyPattern() {
+        PlateFormat broad = new PlateFormat("BROAD", "Tudo",
+                Pattern.compile("^(?<all>[A-Z0-9]+)$"), "{all}", true);
+        PlateParser p = new PlateParser(StaticPlateFormatProvider.of(broad));
+        assertThat(p.parse("ABCDEFGHIJ-12345").value()).isEqualTo("ABCDEFGHIJ12345");
+        assertThatThrownBy(() -> p.parse("ABCDEFGHIJ 123456"))
+                .isInstanceOf(DomainException.class)
+                .extracting(e -> ((DomainException) e).getCode())
+                .isEqualTo("INVALID_PLATE");
     }
 
     @Test

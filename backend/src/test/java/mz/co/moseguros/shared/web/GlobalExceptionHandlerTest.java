@@ -12,15 +12,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import mz.co.moseguros.shared.domain.Matricula;
 import mz.co.moseguros.shared.domain.Msisdn;
-import mz.co.moseguros.shared.domain.PlateFormat;
 import mz.co.moseguros.shared.domain.PlateParser;
+import mz.co.moseguros.shared.domain.StaticPlateFormatProvider;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.json.ValueObjectsModule;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,10 +43,9 @@ class GlobalExceptionHandlerTest {
 
     @BeforeEach
     void setUp() {
-        PlateFormat standard = new PlateFormat("STANDARD", "Actual",
-                Pattern.compile("^(?<l>[A-Z]{3})(?<n>\\d{3})(?<p>[A-Z]{2})$"), "{l}-{n}-{p}", true);
         ObjectMapper mapper = Jackson2ObjectMapperBuilder.json()
-                .modulesToInstall(new ValueObjectsModule(new PlateParser(() -> List.of(standard))))
+                .modulesToInstall(new ValueObjectsModule(
+                        new PlateParser(StaticPlateFormatProvider.of(StaticPlateFormatProvider.STANDARD))))
                 .build();
         mvc = MockMvcBuilders.standaloneSetup(new TestController())
                 .setControllerAdvice(new GlobalExceptionHandler())
