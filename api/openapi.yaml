@@ -1222,6 +1222,96 @@ paths:
       summary: Renova a sessão
       tags:
       - Identity
+  /api/v1/broker/quotes:
+    get:
+      description: "Permissão quote:create-for-client. Pedidos de todos os utilizadores\
+        \ da organização do mediador; clientMsisdn (opcional) filtra pelo telemóvel\
+        \ do cliente (INVALID_MSISDN). Ordenação por createdAt (defeito createdAt,desc)."
+      operationId: listBrokerQuoteRequests
+      parameters:
+      - description: Telemóvel do cliente
+        example: "+258841234567"
+        in: query
+        name: clientMsisdn
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseQuoteRequestSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os pedidos de cotações da organização
+      tags:
+      - Rating
+    post:
+      description: "Permissão quote:create-for-client (corretor ou agente). Dados\
+        \ do veículo e do condutor escritos à mão (só o que a tarifa usa) e o telemó\
+        vel do cliente: a conta do cliente é encontrada ou criada (telemóvel por verificar),\
+        \ sem mensagem nenhuma. O cliente vê o pedido em listMyQuoteRequests com origin\
+        \ = BROKER. Mesmas regras e respostas de createQuoteRequest."
+      operationId: createBrokerQuoteRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBrokerQuoteRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteRequestResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Pede cotações em nome de um cliente
+      tags:
+      - Rating
   /api/v1/catalog/product-versions/{id}:
     get:
       description: "Público. Qualquer versão que foi publicada (também SUPERSEDED\
@@ -1784,6 +1874,49 @@ paths:
                 $ref: "#/components/schemas/ProblemDetail"
           description: Server error (RFC 7807)
       summary: Grava a tarifa de uma versão em preparação
+      tags:
+      - Rating
+  /api/v1/insurer/product-versions/{id}/rating/simulate:
+    post:
+      description: "Permissão rating:manage. Versões em qualquer estado da própria\
+        \ seguradora (outra → 404 PRODUCT_VERSION_NOT_FOUND). Usa sempre a tarifa\
+        \ interna: a gravada ou rating (validada como em updateRatingRules), com os\
+        \ encargos gravados ou charges. Devolve a decomposição completa. Não grava\
+        \ nada nem chama seguradoras externas."
+      operationId: simulateRating
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimulateRatingRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingSimulationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Simula a tarifa de uma versão de produto
       tags:
       - Rating
   /api/v1/insurer/product-versions/{id}/rating/validate:
@@ -2697,6 +2830,54 @@ paths:
       summary: Altera o perfil do cliente
       tags:
       - Identity
+  /api/v1/me/quotes:
+    get:
+      description: "Permissão self:quotes. Inclui os pedidos de um mediador em nome\
+        \ do cliente (origin = BROKER). offeredCount e bestTotal contam só as cotaç\
+        ões ainda OFFERED. Ordenação por createdAt (defeito createdAt,desc)."
+      operationId: listMyQuoteRequests
+      parameters:
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseQuoteRequestSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os pedidos de cotações do cliente
+      tags:
+      - Rating
   /api/v1/me/vehicles:
     get:
       description: "Só os activos. Ordenação por createdAt (defeito, desc) ou plate."
@@ -3209,6 +3390,82 @@ paths:
       summary: Altera uma organização
       tags:
       - Organization
+  /api/v1/organizations/{id}/rating-integration:
+    get:
+      description: Permissão organization:manage. Organização inexistente → 404 ORGANIZATION_NOT_FOUND;
+        que não é seguradora → 400 ORGANIZATION_NOT_INSURER.
+      operationId: getRatingIntegration
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingIntegrationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta a ligação à tarifação de uma seguradora
+      tags:
+      - Organization
+    put:
+      description: "Permissão organization:manage. EXTERNAL exige ratingEndpointUrl\
+        \ (https://, até 500 caracteres: INVALID_URL) e ratingSecretRef (config:<chave>:\
+        \ INVALID_SECRET_REF); em falta → REQUIRED. INTERNAL mantém os outros dois\
+        \ campos gravados. version diferente → 409 CONCURRENT_MODIFICATION. Auditado\
+        \ (RATING_INTEGRATION.UPDATE)."
+      operationId: updateRatingIntegration
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRatingIntegrationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingIntegrationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera a ligação à tarifação de uma seguradora
+      tags:
+      - Organization
   /api/v1/organizations/{id}/reactivate:
     post:
       description: Permissão organization:manage. Já activa → 409 INVALID_STATE_TRANSITION.
@@ -3508,6 +3765,80 @@ paths:
       summary: Lista os parâmetros da plataforma
       tags:
       - Catalog
+  /api/v1/quotes:
+    post:
+      description: "Permissão self:quotes. Uma cotação por produto publicado compatí\
+        vel de cada seguradora activa (OFFERED, ou NOT_AVAILABLE com unavailableReason),\
+        \ em menos de 3 s, ordenadas por preço; valem 15 dias. Veículo ou condutor\
+        \ de outro cliente → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND. Danos próprios\
+        \ sem valor comercial → 400 VEHICLE_VALUE_REQUIRED. Mais de 30 pedidos numa\
+        \ hora → 429 QUOTE_RATE_LIMITED (Retry-After). Sem produtos compatíveis →\
+        \ quotes: []."
+      operationId: createQuoteRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateQuoteRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteRequestResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Pede cotações para um veículo do cliente
+      tags:
+      - Rating
+  /api/v1/quotes/{id}:
+    get:
+      description: Permissão self:quotes ou quote:create-for-client. O cliente vê
+        os seus (também os do mediador em nome dele); o mediador os da sua organização.
+        Outro → 404 QUOTE_REQUEST_NOT_FOUND. status é o estado efectivo (EXPIRED depois
+        da validade ou da data de início).
+      operationId: getQuoteRequest
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteRequestResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um pedido de cotações
+      tags:
+      - Rating
   /api/v1/reference-domains/{domain}/values:
     get:
       description: "Público. Lista completa, não paginada, por sortOrder e labelPt.\
@@ -3859,6 +4190,69 @@ components:
       - managerInviteRoles
       - managerRoles
       - roles
+    BrokerVehicleRequest:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/VehicleCategory"
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        engineCc:
+          type: integer
+          format: int32
+          description: 1–30 000; em TRAILER tem de faltar
+          example: 1600
+        grossWeightKg:
+          type: integer
+          format: int32
+          description: 1–100 000; obrigatório em HEAVY e TRAILER
+        hasTracker:
+          type: boolean
+          description: Localizador instalado (defeito false)
+        make:
+          type: string
+          example: Toyota
+          maxLength: 60
+        model:
+          type: string
+          example: Corolla
+          maxLength: 60
+        plate:
+          type: string
+          description: Opcional; num dos formatos activos (INVALID_PLATE)
+          example: ABC-123-MC
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        seats:
+          type: integer
+          format: int32
+          description: "TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100"
+          example: 5
+        usage:
+          $ref: "#/components/schemas/VehicleUsage"
+        year:
+          type: integer
+          format: int32
+          description: De 1900 ao próximo ano
+          example: 2024
+      required:
+      - category
+      - provinceOfCirculation
+      - seats
+      - usage
+      - year
     CatalogInsurerResponse:
       type: object
       properties:
@@ -4180,6 +4574,48 @@ components:
       - code
       - deductibleType
       - mandatory
+    CreateBrokerQuoteRequest:
+      type: object
+      properties:
+        clientMsisdn:
+          type: string
+          description: Telemóvel do cliente (INVALID_MSISDN)
+          example: "+258841234567"
+        coverages:
+          type: array
+          description: Coberturas pedidas além das obrigatórias (pode ser vazia)
+          items:
+            $ref: "#/components/schemas/RequestedCoverageRequest"
+        driver:
+          $ref: "#/components/schemas/RiskDriverRequest"
+        durationDays:
+          type: integer
+          format: int32
+          description: "TEMPORARY: 7, 14, 30, 60 ou 365; os outros tipos: 365"
+          example: 365
+        productType:
+          type: string
+          description: "MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED)"
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        startDate:
+          type: string
+          format: date
+          description: Entre hoje e hoje + 60 dias (Africa/Maputo)
+          example: 2027-01-15
+        vehicle:
+          $ref: "#/components/schemas/BrokerVehicleRequest"
+      required:
+      - clientMsisdn
+      - driver
+      - durationDays
+      - productType
+      - startDate
+      - vehicle
     CreateDriverRequest:
       type: object
       properties:
@@ -4357,6 +4793,47 @@ components:
       - code
       - name
       - type
+    CreateQuoteRequest:
+      type: object
+      properties:
+        coverages:
+          type: array
+          description: Coberturas pedidas além das obrigatórias (pode ser vazia)
+          items:
+            $ref: "#/components/schemas/RequestedCoverageRequest"
+        driverId:
+          type: string
+          format: uuid
+          description: Condutor do cliente
+        durationDays:
+          type: integer
+          format: int32
+          description: "TEMPORARY: 7, 14, 30, 60 ou 365; os outros tipos: 365"
+          example: 365
+        productType:
+          type: string
+          description: "MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED)"
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        startDate:
+          type: string
+          format: date
+          description: Entre hoje e hoje + 60 dias (Africa/Maputo)
+          example: 2027-01-15
+        vehicleId:
+          type: string
+          format: uuid
+          description: Veículo activo do cliente
+      required:
+      - driverId
+      - durationDays
+      - productType
+      - startDate
+      - vehicleId
     CreateReferenceValueRequest:
       type: object
       properties:
@@ -5396,6 +5873,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseQuoteRequestSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteRequestSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseReferenceValueResponse:
       type: object
       properties:
@@ -5555,6 +6055,13 @@ components:
             $ref: "#/components/schemas/PlatformSettingResponse"
       required:
       - settings
+    PremiumBreakdown:
+      type: object
+      additionalProperties: true
+      description: "Decomposição do prémio (S3-01 §10): provider, variables, durationFactor,\
+        \ coverages (capitalAmount, deductible, base, factors, bonusMalusFactor, exactPremium,\
+        \ premiumAmount), commercialPremiumAmount, charges, subtotalAmount, roundingAdjustmentAmount\
+        \ e totalAmount. Decimais em texto, centavos em inteiro."
     ProblemDetail:
       type: object
       description: Erro RFC 7807 (application/problem+json)
@@ -5946,6 +6453,388 @@ components:
           format: int64
       required:
       - version
+    QuoteChargeResponse:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        code:
+          type: string
+          example: DEMO_STAMP
+        labelEn:
+          type: string
+        labelPt:
+          type: string
+      required:
+      - amount
+      - code
+      - labelEn
+      - labelPt
+    QuoteCoverageResponse:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        code:
+          type: string
+          enum:
+          - MTPL
+          - VTPL
+          - OD_COLLISION
+          - OD_GLASS
+          - OD_FIRE
+          - OD_NATURE
+          - OD_THEFT
+          - OCCUPANTS
+          - ASSISTANCE
+          - LEGAL
+          - SRCC
+          - CROSS_BORDER
+        deductible:
+          $ref: "#/components/schemas/QuoteDeductible"
+        mandatory:
+          type: boolean
+        premium:
+          $ref: "#/components/schemas/Money"
+      required:
+      - code
+      - deductible
+      - mandatory
+      - premium
+    QuoteDeductible:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        minAmount:
+          $ref: "#/components/schemas/Money"
+        percent:
+          type: string
+          example: "10"
+        type:
+          type: string
+          enum:
+          - NONE
+          - FIXED
+          - PERCENT
+      required:
+      - type
+    QuoteInsurer:
+      type: object
+      properties:
+        displayName:
+          type: string
+          example: Seguradora Demo
+        id:
+          type: string
+          format: uuid
+        logoFileId:
+          type: string
+          format: uuid
+          nullable: true
+        shortCode:
+          type: string
+          example: DEMO
+      required:
+      - displayName
+      - id
+      - shortCode
+    QuoteProduct:
+      type: object
+      properties:
+        code:
+          type: string
+          example: DEMO-AUTO
+        generalConditionsFileId:
+          type: string
+          format: uuid
+          nullable: true
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Auto Demo
+        preContractInfoFileId:
+          type: string
+          format: uuid
+          nullable: true
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        versionId:
+          type: string
+          format: uuid
+        versionNo:
+          type: integer
+          format: int32
+      required:
+      - code
+      - id
+      - name
+      - type
+      - versionId
+      - versionNo
+    QuoteRequestResponse:
+      type: object
+      properties:
+        clientMsisdn:
+          type: string
+          example: "+258841234567"
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        driver:
+          $ref: "#/components/schemas/QuotedDriver"
+        durationDays:
+          type: integer
+          format: int32
+        endDate:
+          type: string
+          format: date
+          description: Inclusiva
+        id:
+          type: string
+          format: uuid
+        origin:
+          type: string
+          enum:
+          - CUSTOMER
+          - BROKER
+        productType:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        quotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteResponse"
+        requestedCoverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/RequestedCoverageResponse"
+        startDate:
+          type: string
+          format: date
+        vehicle:
+          $ref: "#/components/schemas/QuotedVehicle"
+      required:
+      - createdAt
+      - driver
+      - durationDays
+      - endDate
+      - id
+      - origin
+      - productType
+      - quotes
+      - requestedCoverages
+      - startDate
+      - vehicle
+    QuoteRequestSummaryResponse:
+      type: object
+      properties:
+        bestTotal:
+          $ref: "#/components/schemas/Money"
+        clientMsisdn:
+          type: string
+          example: "+258841234567"
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        durationDays:
+          type: integer
+          format: int32
+        expired:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        offeredCount:
+          type: integer
+          format: int64
+        origin:
+          type: string
+          enum:
+          - CUSTOMER
+          - BROKER
+        productType:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        startDate:
+          type: string
+          format: date
+        validUntil:
+          type: string
+          format: date-time
+          nullable: true
+        vehicle:
+          $ref: "#/components/schemas/QuoteSummaryVehicle"
+      required:
+      - createdAt
+      - durationDays
+      - expired
+      - id
+      - offeredCount
+      - origin
+      - productType
+      - startDate
+      - vehicle
+    QuoteResponse:
+      type: object
+      properties:
+        charges:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteChargeResponse"
+        commercialPremium:
+          $ref: "#/components/schemas/Money"
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteCoverageResponse"
+        id:
+          type: string
+          format: uuid
+        insurer:
+          $ref: "#/components/schemas/QuoteInsurer"
+        product:
+          $ref: "#/components/schemas/QuoteProduct"
+        roundingAdjustment:
+          $ref: "#/components/schemas/Money"
+        status:
+          type: string
+          enum:
+          - OFFERED
+          - NOT_AVAILABLE
+          - EXPIRED
+          - USED
+        totalAmount:
+          $ref: "#/components/schemas/Money"
+        unavailableDetail:
+          $ref: "#/components/schemas/UnavailableDetail"
+        unavailableReason:
+          $ref: "#/components/schemas/UnavailableReason"
+        validUntil:
+          type: string
+          format: date-time
+          description: Até quando se pode usar numa proposta
+      required:
+      - id
+      - insurer
+      - product
+      - status
+    QuoteSummaryVehicle:
+      type: object
+      properties:
+        make:
+          type: string
+          example: Toyota
+          nullable: true
+        model:
+          type: string
+          example: Corolla
+          nullable: true
+        plate:
+          type: string
+          example: ABC-123-MC
+          nullable: true
+    QuotedDriver:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          nullable: true
+        driverId:
+          type: string
+          format: uuid
+          nullable: true
+        licenceCategories:
+          type: array
+          items:
+            type: string
+        licenceIssueDate:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - licenceCategories
+    QuotedVehicle:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/VehicleCategory"
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        engineCc:
+          type: integer
+          format: int32
+          nullable: true
+        grossWeightKg:
+          type: integer
+          format: int32
+          nullable: true
+        hasTracker:
+          type: boolean
+        make:
+          type: string
+          nullable: true
+        model:
+          type: string
+          nullable: true
+        plate:
+          type: string
+          example: ABC-123-MC
+          nullable: true
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        seats:
+          type: integer
+          format: int32
+          nullable: true
+        usage:
+          $ref: "#/components/schemas/VehicleUsage"
+        vehicleId:
+          type: string
+          format: uuid
+          nullable: true
+        year:
+          type: integer
+          format: int32
+      required:
+      - category
+      - hasTracker
+      - provinceOfCirculation
+      - usage
+      - year
     RatingCoverage:
       type: object
       properties:
@@ -5984,6 +6873,28 @@ components:
       - capitalType
       - code
       - mandatory
+    RatingIntegrationResponse:
+      type: object
+      properties:
+        ratingEndpointUrl:
+          type: string
+          example: https://cotacoes.seguradora.co.mz/moseguros
+          nullable: true
+        ratingMode:
+          type: string
+          enum:
+          - INTERNAL
+          - EXTERNAL
+        ratingSecretRef:
+          type: string
+          example: config:demox
+          nullable: true
+        version:
+          type: integer
+          format: int64
+      required:
+      - ratingMode
+      - version
     RatingRuleError:
       type: object
       properties:
@@ -6049,6 +6960,24 @@ components:
       required:
       - errors
       - valid
+    RatingSimulationResponse:
+      type: object
+      properties:
+        breakdown:
+          $ref: "#/components/schemas/PremiumBreakdown"
+        status:
+          type: string
+          enum:
+          - OFFERED
+          - NOT_AVAILABLE
+          - EXPIRED
+          - USED
+        unavailableDetail:
+          $ref: "#/components/schemas/UnavailableDetail"
+        unavailableReason:
+          $ref: "#/components/schemas/UnavailableReason"
+      required:
+      - status
     ReferenceValueResponse:
       type: object
       properties:
@@ -6205,6 +7134,50 @@ components:
       required:
       - identifier
       - identifierType
+    RequestedCoverageRequest:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        code:
+          type: string
+          enum:
+          - MTPL
+          - VTPL
+          - OD_COLLISION
+          - OD_GLASS
+          - OD_FIRE
+          - OD_NATURE
+          - OD_THEFT
+          - OCCUPANTS
+          - ASSISTANCE
+          - LEGAL
+          - SRCC
+          - CROSS_BORDER
+      required:
+      - code
+    RequestedCoverageResponse:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        code:
+          type: string
+          enum:
+          - MTPL
+          - VTPL
+          - OD_COLLISION
+          - OD_GLASS
+          - OD_FIRE
+          - OD_NATURE
+          - OD_THEFT
+          - OCCUPANTS
+          - ASSISTANCE
+          - LEGAL
+          - SRCC
+          - CROSS_BORDER
+      required:
+      - code
     ResetPasswordRequest:
       type: object
       properties:
@@ -6222,6 +7195,27 @@ components:
       required:
       - newPassword
       - token
+    RiskDriverRequest:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          description: No passado; idade até 100 anos
+          example: 1991-09-09
+        licenceCategories:
+          type: array
+          description: "Opcional (0–12): códigos activos em LICENCE_CATEGORY"
+          items:
+            type: string
+          maxItems: 12
+        licenceIssueDate:
+          type: string
+          format: date
+          description: Opcional; entre o nascimento e hoje
+          example: 2011-04-04
+      required:
+      - birthDate
     RuleError:
       type: object
       properties:
@@ -6234,6 +7228,93 @@ components:
       required:
       - code
       - field
+    SimulateRatingRequest:
+      type: object
+      properties:
+        charges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Charge"
+          maxItems: 10
+          nullable: true
+        coverages:
+          type: array
+          description: Coberturas pedidas além das obrigatórias (pode ser vazia)
+          items:
+            $ref: "#/components/schemas/RequestedCoverageRequest"
+        driver:
+          $ref: "#/components/schemas/RiskDriverRequest"
+        durationDays:
+          type: integer
+          format: int32
+          example: 365
+        rating:
+          $ref: "#/components/schemas/RatingRules"
+        startDate:
+          type: string
+          format: date
+          description: Qualquer data
+          example: 2027-01-15
+        vehicle:
+          $ref: "#/components/schemas/SimulationVehicleRequest"
+      required:
+      - driver
+      - durationDays
+      - startDate
+      - vehicle
+    SimulationVehicleRequest:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/VehicleCategory"
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        engineCc:
+          type: integer
+          format: int32
+          description: 1–30 000; em TRAILER tem de faltar
+        grossWeightKg:
+          type: integer
+          format: int32
+          description: 1–100 000
+        hasTracker:
+          type: boolean
+          description: Localizador instalado (defeito false)
+        make:
+          type: string
+          maxLength: 60
+        model:
+          type: string
+          maxLength: 60
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        seats:
+          type: integer
+          format: int32
+          description: "TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100"
+        usage:
+          $ref: "#/components/schemas/VehicleUsage"
+        year:
+          type: integer
+          format: int32
+          example: 2024
+      required:
+      - category
+      - provinceOfCirculation
+      - usage
+      - year
     StaffLoginRequest:
       type: object
       properties:
@@ -6392,6 +7473,30 @@ components:
       required:
       - otpauthUri
       - totpSecret
+    UnavailableDetail:
+      type: object
+      additionalProperties: true
+      description: "Pormenores do motivo de uma cotação NOT_AVAILABLE (ex.: {\"coverageCode\"\
+        : \"OD_COLLISION\", \"table\": \"BASE\"} ou {\"declineReason\": \"…\"}). Valores\
+        \ em texto, números ou listas de texto."
+    UnavailableReason:
+      type: string
+      description: Motivo de uma cotação NOT_AVAILABLE (traduzido em quoteUnavailable.<REASON>)
+      enum:
+      - TARIFF_MISSING
+      - TARIFF_INVALID
+      - COVERAGE_NOT_OFFERED
+      - COVERAGE_REQUIREMENTS_NOT_MET
+      - CAPITAL_NOT_OFFERED
+      - VEHICLE_VALUE_REQUIRED
+      - DURATION_NOT_RATED
+      - NO_MATCHING_ROW
+      - INSURER_TIMEOUT
+      - INSURER_UNAVAILABLE
+      - INSURER_DECLINED
+      - EXTERNAL_INVALID_RESPONSE
+      - EVALUATION_ERROR
+      nullable: true
     UpdateDriverRequest:
       type: object
       properties:
@@ -6744,6 +7849,28 @@ components:
       required:
       - usages
       - vehicleCategories
+      - version
+    UpdateRatingIntegrationRequest:
+      type: object
+      properties:
+        ratingEndpointUrl:
+          type: string
+          example: https://cotacoes.seguradora.co.mz/moseguros
+          maxLength: 500
+        ratingMode:
+          type: string
+          enum:
+          - INTERNAL
+          - EXTERNAL
+        ratingSecretRef:
+          type: string
+          example: config:demox
+          maxLength: 200
+        version:
+          type: integer
+          format: int64
+      required:
+      - ratingMode
       - version
     UpdateRatingRulesRequest:
       type: object

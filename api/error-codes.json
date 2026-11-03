@@ -153,6 +153,10 @@
       "status" : 404
     },
     {
+      "code" : "ORGANIZATION_NOT_INSURER",
+      "status" : 400
+    },
+    {
       "code" : "ORGANIZATION_SUSPENDED",
       "status" : 403
     },
@@ -261,6 +265,30 @@
       "status" : 400
     },
     {
+      "code" : "QUOTE_ALREADY_USED",
+      "status" : 409
+    },
+    {
+      "code" : "QUOTE_EXPIRED",
+      "status" : 409
+    },
+    {
+      "code" : "QUOTE_NOT_AVAILABLE",
+      "status" : 409
+    },
+    {
+      "code" : "QUOTE_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "QUOTE_RATE_LIMITED",
+      "status" : 429
+    },
+    {
+      "code" : "QUOTE_REQUEST_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "RATING_RULES_TOO_LARGE",
       "status" : 400
     },
@@ -339,6 +367,10 @@
     {
       "code" : "VEHICLE_REMOVAL_BLOCKED",
       "status" : 409
+    },
+    {
+      "code" : "VEHICLE_VALUE_REQUIRED",
+      "status" : 400
     }
   ],
   "validation" : [
@@ -348,7 +380,9 @@
     "CHANNELS_DUPLICATED",
     "CHANNELS_EMPTY",
     "CONTAINS_EMAIL",
+    "COVERAGE_NOT_ALLOWED_FOR_TYPE",
     "COVERAGE_NOT_IN_PRODUCT",
+    "COVERAGE_REQUIRES",
     "COVERAGE_TARIFF_MISSING",
     "CROSS_BORDER_SCOPE_REQUIRED",
     "DEFAULT_CHANNEL_NOT_ENABLED",
@@ -381,7 +415,9 @@
     "INVALID_PLATE",
     "INVALID_RANGE",
     "INVALID_REQUIREMENT",
+    "INVALID_SECRET_REF",
     "INVALID_SORT",
+    "INVALID_URL",
     "INVALID_VALUE",
     "INVALID_YEAR",
     "LICENCE_CATEGORY_UNKNOWN",
@@ -399,6 +435,7 @@
     "OD_REQUIRED_FOR_COMPREHENSIVE",
     "OD_THEFT_REQUIRES_OD_COVERAGES",
     "OUT_OF_RANGE",
+    "OWN_DAMAGE_REQUIRED",
     "PARENT_NOT_FOUND",
     "PATTERN",
     "PATTERN_NOT_ANCHORED",
@@ -408,6 +445,7 @@
     "RESERVED_FACTOR_CODE",
     "SCHEMA_VIOLATION",
     "SIZE",
+    "START_DATE_OUT_OF_RANGE",
     "TEMPLATE_GROUP_UNKNOWN",
     "TOO_COMMON",
     "TOO_LONG",
