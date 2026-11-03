@@ -35,6 +35,9 @@
     <awssdk.version>2.57.8</awssdk.version>
     <!-- JSON Schema da tarifa e dos encargos (S3-01) -->
     <json-schema-validator.version>1.5.9</json-schema-validator.version>
+    <!-- Tarifação externa (S3-02): circuit breaker e bulkhead por seguradora; WireMock nos testes -->
+    <resilience4j.version>2.2.0</resilience4j.version>
+    <wiremock.version>3.9.2</wiremock.version>
   </properties>
 
   <dependencyManagement>
@@ -189,6 +192,24 @@
       <version>${json-schema-validator.version}</version>
     </dependency>
 
+    <!-- HTTP de saída resiliente (S3-02; modelo transversal §7): circuit breaker e bulkhead por
+         seguradora externa -->
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-spring-boot3</artifactId>
+      <version>${resilience4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-circuitbreaker</artifactId>
+      <version>${resilience4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-bulkhead</artifactId>
+      <version>${resilience4j.version}</version>
+    </dependency>
+
     <!-- Testes -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -223,6 +244,12 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wiremock</groupId>
+      <artifactId>wiremock-standalone</artifactId>
+      <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

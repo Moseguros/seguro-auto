@@ -4,6 +4,12 @@ logging:
     mz.co.moseguros: DEBUG
 
 moseguros:
+  # Tarifação externa (S3-02): aceita http:// (WireMock) e um segredo de teste.
+  rating:
+    external:
+      allow-http: true
+    secrets:
+      wiremock-test: segredo-de-teste-s3-02
   crypto:
     data-keys:
       1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento

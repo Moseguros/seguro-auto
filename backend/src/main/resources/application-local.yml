@@ -9,6 +9,10 @@ springdoc:
     enabled: true
 
 moseguros:
+  # Tarifação externa (S3-02): aceita http:// (simuladores locais).
+  rating:
+    external:
+      allow-http: true
   crypto:
     data-keys:
       1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento
