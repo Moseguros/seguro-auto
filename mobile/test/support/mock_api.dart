@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:moseguros/app.dart';
@@ -195,6 +196,7 @@ Future<ProviderContainer> pumpMoSeguros(
   String? refreshToken,
   TokenStorage? storage,
   Locale locale = const Locale('pt'),
+  List<Override> overrides = const [],
 }) async {
   useSmallPhone(tester);
   SharedPreferences.setMockInitialValues({
@@ -209,6 +211,7 @@ Future<ProviderContainer> pumpMoSeguros(
         storage ?? MemoryTokenStorage(refreshToken),
       ),
       sharedPreferencesProvider.overrideWithValue(preferences),
+      ...overrides,
     ],
   );
   addTearDown(container.dispose);

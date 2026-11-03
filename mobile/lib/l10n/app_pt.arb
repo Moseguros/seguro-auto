@@ -319,5 +319,191 @@
       }
     }
   },
-  "contactsConfirmRemove": "Remover"
+  "contactsConfirmRemove": "Remover",
+  "save": "Guardar",
+  "close": "Fechar",
+  "reload": "Recarregar",
+  "yes": "Sim",
+  "no": "Não",
+  "valueMissing": "—",
+  "@valueMissing": {
+    "description": "Valor em falta numa lista de dados."
+  },
+  "moreOptions": "Mais opções",
+  "navHome": "Início",
+  "@navHome": {
+    "description": "Destino da barra inferior."
+  },
+  "navVehicles": "Veículos",
+  "@navVehicles": {
+    "description": "Destino da barra inferior e segmento \"Veículos\"."
+  },
+  "navProfile": "Perfil",
+  "@navProfile": {
+    "description": "Destino da barra inferior."
+  },
+  "validationInvalidMoney": "Valor inválido. Use no máximo 2 casas decimais.",
+  "@validationInvalidMoney": {
+    "description": "Só nos ecrãs (MoneyField, S2-05 §2); não é um código da API."
+  },
+  "vehicleCategoryLightPassenger": "Ligeiro de passageiros",
+  "@vehicleCategoryLightPassenger": {
+    "description": "vehicleCategory.LIGHT_PASSENGER (S2-02 §8)."
+  },
+  "vehicleCategoryLightMixed": "Ligeiro misto",
+  "vehicleCategoryHeavy": "Pesado",
+  "vehicleCategoryMotorcycle": "Motociclo",
+  "vehicleCategoryTrailer": "Reboque",
+  "vehicleCategoryBus": "Autocarro",
+  "vehicleUsagePrivate": "Particular",
+  "@vehicleUsagePrivate": {
+    "description": "vehicleUsage.PRIVATE (S2-02 §8)."
+  },
+  "vehicleUsageRental": "Aluguer sem condutor",
+  "vehicleUsagePassengerTransport": "Transporte de passageiros",
+  "vehicleUsageGoods": "Transporte de mercadorias",
+  "vehicleUsageTaxi": "Táxi",
+  "vehicleUsageDrivingSchool": "Escola de condução",
+  "vehiclesAddButton": "Acrescentar veículo",
+  "vehiclesEmpty": "Ainda não registou nenhum veículo.",
+  "vehiclesBackToList": "Ver os meus veículos",
+  "vehicleMakeModelYear": "{make} {model} · {year}",
+  "@vehicleMakeModelYear": {
+    "placeholders": {
+      "make": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleHabitualDriver": "Condutor habitual: {name}",
+  "@vehicleHabitualDriver": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleNoHabitualDriver": "Sem condutor habitual",
+  "vehicleDocMissing": "Livrete em falta",
+  "vehicleRegistryVerified": "Confirmado no registo",
+  "vehicleRegistryNotVerified": "Não confirmado no registo",
+  "vehicleNewTitle": "Acrescentar veículo",
+  "vehicleEditTitle": "Alterar veículo",
+  "vehicleFieldPlate": "Matrícula",
+  "vehiclePlateHelper": "Ex.: {examples}",
+  "@vehiclePlateHelper": {
+    "placeholders": {
+      "examples": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleOr": " ou ",
+  "@vehicleOr": {
+    "description": "Separador dos exemplos de matrícula."
+  },
+  "vehicleRegistryLookup": "Procurar no registo",
+  "vehicleRegistryFilled": "Preenchemos os dados a partir do registo automóvel. Confirme-os com o seu livrete.",
+  "vehicleFieldChassis": "N.º de chassis",
+  "vehicleFieldMake": "Marca",
+  "vehicleFieldModel": "Modelo",
+  "vehicleFieldYear": "Ano",
+  "vehicleFieldCategory": "Categoria",
+  "vehicleFieldEngineCc": "Cilindrada (cm³)",
+  "vehicleFieldSeats": "Lugares",
+  "vehicleFieldGrossWeight": "Peso bruto (kg)",
+  "vehicleFieldUsage": "Uso",
+  "vehicleFieldProvince": "Província de circulação",
+  "vehicleFieldCommercialValue": "Valor comercial",
+  "vehicleCommercialValueHelper": "Necessário para seguros de danos próprios.",
+  "vehicleFieldHasTracker": "Tem localizador (GPS)",
+  "vehicleCreated": "Veículo acrescentado. Envie agora a foto do livrete.",
+  "vehicleConflict": "Este veículo foi alterado noutro dispositivo",
+  "vehicleEdit": "Alterar",
+  "vehicleRemove": "Retirar veículo",
+  "vehicleRemoveConfirmTitle": "Retirar veículo?",
+  "vehicleRemoveConfirmText": "O veículo deixa de aparecer na sua conta.",
+  "vehicleRemoveConfirm": "Retirar",
+  "vehicleRemoved": "Veículo retirado",
+  "vehicleSectionData": "Dados",
+  "vehicleSectionDoc": "Livrete",
+  "vehicleSectionDrivers": "Condutores",
+  "vehicleDocNone": "Ainda não enviou o livrete.",
+  "vehicleDocUpload": "Enviar livrete",
+  "vehicleDocReplace": "Substituir",
+  "vehicleDocOpen": "Abrir",
+  "vehicleDocUploading": "A enviar…",
+  "vehicleDocSaved": "Livrete guardado",
+  "fileOpenFailed": "Não há nenhuma aplicação para abrir este ficheiro.",
+  "vehicleNoDrivers": "Nenhum condutor associado.",
+  "vehicleDriverHabitual": "Habitual",
+  "vehicleManageDrivers": "Gerir condutores",
+  "manageDriversHelp": "Marque até {max} condutores e escolha o habitual.",
+  "@manageDriversHelp": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "docSourceCamera": "Tirar foto",
+  "docSourceGallery": "Escolher da galeria",
+  "docSourcePdf": "Escolher PDF",
+  "cameraFrameHint": "Enquadre o livrete dentro do rectângulo, com boa luz e sem reflexos.",
+  "cameraPermissionDenied": "Precisamos da câmara para fotografar o livrete.",
+  "cameraOpenSettings": "Abrir definições",
+  "cameraUnavailable": "Não foi possível abrir a câmara. Escolha uma foto da galeria.",
+  "cameraCapture": "Tirar foto",
+  "cameraFlashOff": "Flash desligado",
+  "cameraFlashAuto": "Flash automático",
+  "cameraFlashOn": "Flash sempre ligado",
+  "photoRetake": "Repetir",
+  "photoUse": "Usar foto",
+  "driversTitle": "Condutores",
+  "driversAddButton": "Registar condutor",
+  "driversEmpty": "Ainda não registou condutores.",
+  "driversBackToList": "Ver os meus condutores",
+  "driverEditTitle": "Alterar condutor",
+  "driverOwnerTag": "Eu",
+  "driverCategories": "Categorias: {categories}",
+  "@driverCategories": {
+    "placeholders": {
+      "categories": {
+        "type": "String"
+      }
+    }
+  },
+  "driverLicenceMasked": "Carta: {masked}",
+  "@driverLicenceMasked": {
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "driverVehicleCount": "{count, plural, =0{Sem veículos} =1{1 veículo} other{{count} veículos}}",
+  "@driverVehicleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driverEdit": "Alterar",
+  "driverRemove": "Retirar",
+  "driverRemoveConfirmTitle": "Retirar condutor?",
+  "driverRemoveConfirmText": "O condutor deixa de aparecer na sua conta.",
+  "driverRemoved": "Condutor retirado",
+  "driverFieldIsMe": "Sou eu",
+  "driverFieldLicenceNumber": "N.º da carta",
+  "driverChangeLicence": "Alterar o n.º da carta",
+  "driverFieldLicenceCategories": "Categorias",
+  "driverFieldLicenceIssueDate": "Data de emissão da carta",
+  "driverConflict": "Este condutor foi alterado noutro dispositivo"
 }

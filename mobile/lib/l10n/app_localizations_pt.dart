@@ -812,4 +812,356 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get contactsConfirmRemove => 'Remover';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get close => 'Fechar';
+
+  @override
+  String get reload => 'Recarregar';
+
+  @override
+  String get yes => 'Sim';
+
+  @override
+  String get no => 'Não';
+
+  @override
+  String get valueMissing => '—';
+
+  @override
+  String get moreOptions => 'Mais opções';
+
+  @override
+  String get navHome => 'Início';
+
+  @override
+  String get navVehicles => 'Veículos';
+
+  @override
+  String get navProfile => 'Perfil';
+
+  @override
+  String get validationInvalidMoney =>
+      'Valor inválido. Use no máximo 2 casas decimais.';
+
+  @override
+  String get vehicleCategoryLightPassenger => 'Ligeiro de passageiros';
+
+  @override
+  String get vehicleCategoryLightMixed => 'Ligeiro misto';
+
+  @override
+  String get vehicleCategoryHeavy => 'Pesado';
+
+  @override
+  String get vehicleCategoryMotorcycle => 'Motociclo';
+
+  @override
+  String get vehicleCategoryTrailer => 'Reboque';
+
+  @override
+  String get vehicleCategoryBus => 'Autocarro';
+
+  @override
+  String get vehicleUsagePrivate => 'Particular';
+
+  @override
+  String get vehicleUsageRental => 'Aluguer sem condutor';
+
+  @override
+  String get vehicleUsagePassengerTransport => 'Transporte de passageiros';
+
+  @override
+  String get vehicleUsageGoods => 'Transporte de mercadorias';
+
+  @override
+  String get vehicleUsageTaxi => 'Táxi';
+
+  @override
+  String get vehicleUsageDrivingSchool => 'Escola de condução';
+
+  @override
+  String get vehiclesAddButton => 'Acrescentar veículo';
+
+  @override
+  String get vehiclesEmpty => 'Ainda não registou nenhum veículo.';
+
+  @override
+  String get vehiclesBackToList => 'Ver os meus veículos';
+
+  @override
+  String vehicleMakeModelYear(String make, String model, String year) {
+    return '$make $model · $year';
+  }
+
+  @override
+  String vehicleHabitualDriver(String name) {
+    return 'Condutor habitual: $name';
+  }
+
+  @override
+  String get vehicleNoHabitualDriver => 'Sem condutor habitual';
+
+  @override
+  String get vehicleDocMissing => 'Livrete em falta';
+
+  @override
+  String get vehicleRegistryVerified => 'Confirmado no registo';
+
+  @override
+  String get vehicleRegistryNotVerified => 'Não confirmado no registo';
+
+  @override
+  String get vehicleNewTitle => 'Acrescentar veículo';
+
+  @override
+  String get vehicleEditTitle => 'Alterar veículo';
+
+  @override
+  String get vehicleFieldPlate => 'Matrícula';
+
+  @override
+  String vehiclePlateHelper(String examples) {
+    return 'Ex.: $examples';
+  }
+
+  @override
+  String get vehicleOr => ' ou ';
+
+  @override
+  String get vehicleRegistryLookup => 'Procurar no registo';
+
+  @override
+  String get vehicleRegistryFilled =>
+      'Preenchemos os dados a partir do registo automóvel. Confirme-os com o seu livrete.';
+
+  @override
+  String get vehicleFieldChassis => 'N.º de chassis';
+
+  @override
+  String get vehicleFieldMake => 'Marca';
+
+  @override
+  String get vehicleFieldModel => 'Modelo';
+
+  @override
+  String get vehicleFieldYear => 'Ano';
+
+  @override
+  String get vehicleFieldCategory => 'Categoria';
+
+  @override
+  String get vehicleFieldEngineCc => 'Cilindrada (cm³)';
+
+  @override
+  String get vehicleFieldSeats => 'Lugares';
+
+  @override
+  String get vehicleFieldGrossWeight => 'Peso bruto (kg)';
+
+  @override
+  String get vehicleFieldUsage => 'Uso';
+
+  @override
+  String get vehicleFieldProvince => 'Província de circulação';
+
+  @override
+  String get vehicleFieldCommercialValue => 'Valor comercial';
+
+  @override
+  String get vehicleCommercialValueHelper =>
+      'Necessário para seguros de danos próprios.';
+
+  @override
+  String get vehicleFieldHasTracker => 'Tem localizador (GPS)';
+
+  @override
+  String get vehicleCreated =>
+      'Veículo acrescentado. Envie agora a foto do livrete.';
+
+  @override
+  String get vehicleConflict => 'Este veículo foi alterado noutro dispositivo';
+
+  @override
+  String get vehicleEdit => 'Alterar';
+
+  @override
+  String get vehicleRemove => 'Retirar veículo';
+
+  @override
+  String get vehicleRemoveConfirmTitle => 'Retirar veículo?';
+
+  @override
+  String get vehicleRemoveConfirmText =>
+      'O veículo deixa de aparecer na sua conta.';
+
+  @override
+  String get vehicleRemoveConfirm => 'Retirar';
+
+  @override
+  String get vehicleRemoved => 'Veículo retirado';
+
+  @override
+  String get vehicleSectionData => 'Dados';
+
+  @override
+  String get vehicleSectionDoc => 'Livrete';
+
+  @override
+  String get vehicleSectionDrivers => 'Condutores';
+
+  @override
+  String get vehicleDocNone => 'Ainda não enviou o livrete.';
+
+  @override
+  String get vehicleDocUpload => 'Enviar livrete';
+
+  @override
+  String get vehicleDocReplace => 'Substituir';
+
+  @override
+  String get vehicleDocOpen => 'Abrir';
+
+  @override
+  String get vehicleDocUploading => 'A enviar…';
+
+  @override
+  String get vehicleDocSaved => 'Livrete guardado';
+
+  @override
+  String get fileOpenFailed =>
+      'Não há nenhuma aplicação para abrir este ficheiro.';
+
+  @override
+  String get vehicleNoDrivers => 'Nenhum condutor associado.';
+
+  @override
+  String get vehicleDriverHabitual => 'Habitual';
+
+  @override
+  String get vehicleManageDrivers => 'Gerir condutores';
+
+  @override
+  String manageDriversHelp(int max) {
+    return 'Marque até $max condutores e escolha o habitual.';
+  }
+
+  @override
+  String get docSourceCamera => 'Tirar foto';
+
+  @override
+  String get docSourceGallery => 'Escolher da galeria';
+
+  @override
+  String get docSourcePdf => 'Escolher PDF';
+
+  @override
+  String get cameraFrameHint =>
+      'Enquadre o livrete dentro do rectângulo, com boa luz e sem reflexos.';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Precisamos da câmara para fotografar o livrete.';
+
+  @override
+  String get cameraOpenSettings => 'Abrir definições';
+
+  @override
+  String get cameraUnavailable =>
+      'Não foi possível abrir a câmara. Escolha uma foto da galeria.';
+
+  @override
+  String get cameraCapture => 'Tirar foto';
+
+  @override
+  String get cameraFlashOff => 'Flash desligado';
+
+  @override
+  String get cameraFlashAuto => 'Flash automático';
+
+  @override
+  String get cameraFlashOn => 'Flash sempre ligado';
+
+  @override
+  String get photoRetake => 'Repetir';
+
+  @override
+  String get photoUse => 'Usar foto';
+
+  @override
+  String get driversTitle => 'Condutores';
+
+  @override
+  String get driversAddButton => 'Registar condutor';
+
+  @override
+  String get driversEmpty => 'Ainda não registou condutores.';
+
+  @override
+  String get driversBackToList => 'Ver os meus condutores';
+
+  @override
+  String get driverEditTitle => 'Alterar condutor';
+
+  @override
+  String get driverOwnerTag => 'Eu';
+
+  @override
+  String driverCategories(String categories) {
+    return 'Categorias: $categories';
+  }
+
+  @override
+  String driverLicenceMasked(String masked) {
+    return 'Carta: $masked';
+  }
+
+  @override
+  String driverVehicleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count veículos',
+      one: '1 veículo',
+      zero: 'Sem veículos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driverEdit => 'Alterar';
+
+  @override
+  String get driverRemove => 'Retirar';
+
+  @override
+  String get driverRemoveConfirmTitle => 'Retirar condutor?';
+
+  @override
+  String get driverRemoveConfirmText =>
+      'O condutor deixa de aparecer na sua conta.';
+
+  @override
+  String get driverRemoved => 'Condutor retirado';
+
+  @override
+  String get driverFieldIsMe => 'Sou eu';
+
+  @override
+  String get driverFieldLicenceNumber => 'N.º da carta';
+
+  @override
+  String get driverChangeLicence => 'Alterar o n.º da carta';
+
+  @override
+  String get driverFieldLicenceCategories => 'Categorias';
+
+  @override
+  String get driverFieldLicenceIssueDate => 'Data de emissão da carta';
+
+  @override
+  String get driverConflict => 'Este condutor foi alterado noutro dispositivo';
 }

@@ -88,13 +88,13 @@ void main() {
     );
   });
 
-  testWidgets('o ícone de perfil abre o perfil, com "Sobre" no fundo', (
+  testWidgets('o destino "Perfil" da barra inferior abre o perfil, com "Sobre" no fundo', (
     tester,
   ) async {
     api.on('GET', '/api/v1/me', 200, Fixtures.me());
     await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
 
-    await tester.tap(find.byKey(const Key('open-profile')));
+    await tester.tap(find.byKey(const Key('nav-profile')));
     await tester.pumpAndSettle();
 
     expect(find.text('Perfil'), findsWidgets);
@@ -125,7 +125,7 @@ void main() {
         MockApi.problem(500, 'INTERNAL_ERROR'),
       );
     await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
-    await tester.tap(find.byKey(const Key('open-profile')));
+    await tester.tap(find.byKey(const Key('nav-profile')));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Tentar de novo'),
