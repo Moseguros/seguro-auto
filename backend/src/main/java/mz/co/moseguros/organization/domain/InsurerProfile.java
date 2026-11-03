@@ -29,7 +29,7 @@ public class InsurerProfile extends BaseEntity {
     @Column(name = "short_code", nullable = false, length = 10)
     private String shortCode;
 
-    /** Preenchido quando existir o módulo {@code document} (Sprint 3). */
+    /** Ficheiro do logótipo ({@code document.file}, sem FK); enviado pelo {@code catalog} (S2-04 §7.1). */
     @Column(name = "logo_file_id")
     private UUID logoFileId;
 
@@ -67,6 +67,11 @@ public class InsurerProfile extends BaseEntity {
         setOmbudsman(ombudsman);
         this.shortCode = code;
         this.complaintsEmail = email;
+    }
+
+    /** Novo logótipo ({@code null} retira-o). */
+    public void changeLogo(UUID fileIdOrNull) {
+        this.logoFileId = fileIdOrNull;
     }
 
     public void setOmbudsman(Organization ombudsman) {
