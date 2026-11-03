@@ -52,10 +52,12 @@ class DevSeedIT {
         assertThat(flyway(locations).migrate().success).isTrue();
         assertThat(flyway(locations).migrate().success).isTrue();
         assertSevenRecordsOnce();
+        assertDemoProductsOnce();
 
         // o script repetível volta a correr (como quando muda) sem erro nem duplicados
         owner().execute(devSeedSql());
         assertSevenRecordsOnce();
+        assertDemoProductsOnce();
 
         assertThat(owner().queryForObject("select count(*) from public.flyway_schema_history where script = ?",
                 Integer.class, "R__dev_seed_s2.sql")).isEqualTo(1);
@@ -88,6 +90,42 @@ class DevSeedIT {
                 .isEqualTo(sha256Hex("dev-convite-gestor-demo"));
         assertThat(owner.queryForObject("select short_code from organization.insurer_profile where id = ?::uuid",
                 String.class, id(2))).isEqualTo("DEMO");
+    }
+
+    /** S2-04: os dois produtos publicados da Seguradora Demo, com as coberturas e os PDFs em pt. */
+    private void assertDemoProductsOnce() throws IOException {
+        JdbcTemplate owner = owner();
+        assertThat(owner.queryForList("""
+                select p.code || ':' || p.type || ':' || p.status || ':' || v.version_no || ':' || v.status || ':'
+                       || v.valid_from || ':' || (select count(*) from catalog.coverage c where c.product_version_id = v.id)
+                       || ':' || (select count(*) from catalog.product_document d where d.product_version_id = v.id)
+                  from catalog.product p join catalog.product_version v on v.product_id = p.id
+                 where p.insurer_id = ?::uuid order by p.code""", String.class, id(1)))
+                .containsExactly("AUTO-COMPLETO:COMPREHENSIVE:PUBLISHED:1:PUBLISHED:2026-12-01:9:2",
+                        "RC-AUTO:MTPL_ONLY:PUBLISHED:1:PUBLISHED:2026-12-01:1:2");
+        byte[] placeholder;
+        try (InputStream in = new ClassPathResource("db/dev/files/dev-placeholder.pdf").getInputStream()) {
+            placeholder = in.readAllBytes();
+        }
+        List<Map<String, Object>> files = owner.queryForList("""
+                select f.storage_key, f.size_bytes, f.sha256, f.linked_at is not null as linked
+                  from document.file f join catalog.product_document d on d.file_id = f.id
+                 where d.insurer_id = ?::uuid and f.owner_type = 'PRODUCT_VERSION'""", id(1));
+        assertThat(files).hasSize(4).allSatisfy(f -> {
+            assertThat(f.get("size_bytes")).isEqualTo((long) placeholder.length);
+            assertThat(f.get("sha256")).isEqualTo(java.util.HexFormat.of().formatHex(sha256(placeholder)));
+            assertThat(f.get("linked")).isEqualTo(true);
+            String name = ((String) f.get("storage_key")).substring("dev-seed/".length());
+            assertThat(new ClassPathResource("db/dev/files/" + name).exists()).as(name).isTrue();
+        });
+    }
+
+    private static byte[] sha256(byte[] value) {
+        try {
+            return java.security.MessageDigest.getInstance("SHA-256").digest(value);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static String id(int n) {

@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import mz.co.moseguros.document.DocumentApi;
 import mz.co.moseguros.document.FileClassification;
 import mz.co.moseguros.document.FileRef;
@@ -97,7 +98,7 @@ public class InsurerLogoService {
                 new LogoSnapshot(after)));
     }
 
-    /** Estado auditado. */
-    public record LogoSnapshot(UUID logoFileId) {
+    /** Estado auditado ({@code logoFileId} vai sempre, também a {@code null}). */
+    public record LogoSnapshot(@JsonInclude(JsonInclude.Include.ALWAYS) UUID logoFileId) {
     }
 }

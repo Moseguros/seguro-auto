@@ -62,6 +62,20 @@ class RunAsSystemUsageTest {
                 .contains("DocumentSystemLookups.find", "OrphanFileCleanupJob.purgeOrphans");
     }
 
+    /** S2-04: o catálogo público e o CatalogApi lêem entre seguradoras só pelo CatalogSystemLookups. */
+    @Test
+    void catalogSystemLookupsIsAllowed() {
+        JavaClasses catalog = new ClassFileImporter().importClasses(
+                mz.co.moseguros.catalog.application.CatalogSystemLookups.class);
+        RUN_AS_SYSTEM_OWNERS.check(catalog);
+        org.assertj.core.api.Assertions.assertThat(catalog.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("CatalogSystemLookups.publishedVersions",
+                        "CatalogSystemLookups.publishedVersion", "CatalogSystemLookups.versionAccess");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

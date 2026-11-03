@@ -4,7 +4,8 @@ package mz.co.moseguros.catalog.api;
 final class CatalogTag {
 
     static final String NAME = "Catalog";
-    static final String DESCRIPTION = "Catálogo: tabelas de referência, parâmetros da plataforma e formatos de matrícula";
+    static final String DESCRIPTION = "Catálogo: tabelas de referência, parâmetros da plataforma, formatos de matrícula, "
+            + "produtos das seguradoras e catálogo público";
 
     private CatalogTag() {
     }

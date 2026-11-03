@@ -49,6 +49,8 @@ public class SecurityConfig {
         "/api/v1/reference-domains/*/values",
         "/api/v1/platform-settings",
         "/api/v1/plate-formats",
+        // catálogo público de produtos (S2-04); a gestão fica em /api/v1/insurer/**
+        "/api/v1/catalog/**",
         "/.well-known/jwks.json",
         "/v3/api-docs/**",
         "/v3/api-docs.yaml",
