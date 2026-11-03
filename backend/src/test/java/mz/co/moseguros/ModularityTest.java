@@ -72,6 +72,22 @@ class ModularityTest {
                 .isEmpty();
     }
 
+    /**
+     * S3-01: rating depende de catalog e organization (modelo transversal §1:
+     * {@code rating → catalog, vehicle, organization, identity, notification}; o vehicle entra na
+     * S3-02) e nenhum módulo depende de rating nesta fase.
+     */
+    @Test
+    void ratingDependsOnCatalogAndOrganizationAndNobodyDependsOnRating() {
+        assertThat(dependenciesOf("rating")).contains("catalog", "organization")
+                .isSubsetOf("shared", "catalog", "organization");
+        assertThat(modules.stream()
+                .filter(m -> !m.getName().equals("rating"))
+                .filter(m -> dependenciesOf(m.getName()).contains("rating"))
+                .map(ApplicationModule::getName))
+                .isEmpty();
+    }
+
     private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
         return module.getDependencies(modules).stream()

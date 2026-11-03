@@ -5,9 +5,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mz.co.moseguros.catalog.CapitalType;
+import mz.co.moseguros.catalog.CoverageCode;
+import mz.co.moseguros.catalog.DeductibleType;
+import mz.co.moseguros.catalog.ProductType;
+import mz.co.moseguros.rating.domain.tariff.CoverageDefinition;
+import mz.co.moseguros.rating.domain.tariff.ProductDefinition;
+import mz.co.moseguros.rating.domain.tariff.RatingRulesValidator;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,14 +64,19 @@ class DevSeedIT {
         assertThat(flyway(locations).migrate().success).isTrue();
         assertSevenRecordsOnce();
         assertDemoProductsOnce();
+        assertRatingDemoOnce();
 
-        // o script repetível volta a correr (como quando muda) sem erro nem duplicados
-        owner().execute(devSeedSql());
+        // os scripts repetíveis voltam a correr (como quando mudam) sem erro nem duplicados
+        owner().execute(devSeedSql("R__dev_seed_s2.sql"));
+        owner().execute(devSeedSql("R__dev_seed_s3.sql"));
         assertSevenRecordsOnce();
         assertDemoProductsOnce();
+        assertRatingDemoOnce();
 
-        assertThat(owner().queryForObject("select count(*) from public.flyway_schema_history where script = ?",
-                Integer.class, "R__dev_seed_s2.sql")).isEqualTo(1);
+        for (String script : new String[] {"R__dev_seed_s2.sql", "R__dev_seed_s3.sql"}) {
+            assertThat(owner().queryForObject("select count(*) from public.flyway_schema_history where script = ?",
+                    Integer.class, script)).as(script).isEqualTo(1);
+        }
     }
 
     @Test
@@ -107,7 +123,8 @@ class DevSeedIT {
                   from catalog.product p join catalog.product_version v on v.product_id = p.id
                  where p.insurer_id = ?::uuid order by p.code""", String.class, id(1)))
                 .containsExactly("AUTO-COMPLETO:COMPREHENSIVE:PUBLISHED:1:PUBLISHED:2026-12-01:9:2",
-                        "RC-AUTO:MTPL_ONLY:PUBLISHED:1:PUBLISHED:2026-12-01:1:2");
+                        "RC-AUTO:MTPL_ONLY:PUBLISHED:1:PUBLISHED:2026-12-01:1:2",
+                        "TEMP-AUTO:TEMPORARY:PUBLISHED:1:PUBLISHED:2026-12-15:1:2");
         byte[] placeholder;
         try (InputStream in = new ClassPathResource("db/dev/files/dev-placeholder.pdf").getInputStream()) {
             placeholder = in.readAllBytes();
@@ -116,13 +133,88 @@ class DevSeedIT {
                 select f.storage_key, f.size_bytes, f.sha256, f.linked_at is not null as linked
                   from document.file f join catalog.product_document d on d.file_id = f.id
                  where d.insurer_id = ?::uuid and f.owner_type = 'PRODUCT_VERSION'""", id(1));
-        assertThat(files).hasSize(4).allSatisfy(f -> {
+        // S3-01: os documentos do TEMP-AUTO são os ficheiros do RC-AUTO
+        assertThat(files).hasSize(6).allSatisfy(f -> {
             assertThat(f.get("size_bytes")).isEqualTo((long) placeholder.length);
             assertThat(f.get("sha256")).isEqualTo(java.util.HexFormat.of().formatHex(sha256(placeholder)));
             assertThat(f.get("linked")).isEqualTo(true);
             String name = ((String) f.get("storage_key")).substring("dev-seed/".length());
             assertThat(new ClassPathResource("db/dev/files/" + name).exists()).as(name).isTrue();
         });
+    }
+
+    /**
+     * S3-01: encargos das duas seguradoras de demonstração, a Seguradora Demo B e os produtos
+     * RC-AUTO, AUTO-COMPLETO e TEMP-AUTO das duas, publicados e com tarifa válida (as mesmas
+     * validações do {@code validateRatingRules}).
+     */
+    private void assertRatingDemoOnce() throws IOException {
+        JdbcTemplate owner = owner();
+        String demoB = "01930000-0000-7000-8000-000000000320";
+        assertThat(owner.queryForList("""
+                select o.legal_name || '/' || o.trade_name || '/' || o.nuit || '/' || p.short_code || '/'
+                       || p.rating_mode || '/' || jsonb_array_length(p.charges)
+                  from organization.organization o join organization.insurer_profile p on p.organization_id = o.id
+                 where o.id in (?::uuid, ?::uuid) order by o.nuit""", String.class, id(1), demoB))
+                .containsExactly("Seguradora Demo, SA/Seguradora Demo/400000001/DEMO/INTERNAL/2",
+                        "Seguradora Demo B, SA/Seguradora Demo B/400000010/DEMOB/INTERNAL/2");
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode charges;
+        try (InputStream in = new ClassPathResource("rating/reference/charges.json").getInputStream()) {
+            charges = mapper.readTree(in);
+        }
+        for (String insurer : new String[] {id(1), demoB}) {
+            assertThat(mapper.readTree(owner.queryForObject(
+                    "select charges::text from organization.insurer_profile where organization_id = ?::uuid",
+                    String.class, insurer))).as(insurer).isEqualTo(charges);
+        }
+
+        List<Map<String, Object>> versions = owner.queryForList("""
+                select v.id, p.code, p.type, v.status, v.insurer_id, (v.rules -> 'rating')::text as rating
+                  from catalog.product p join catalog.product_version v on v.product_id = p.id
+                 where p.insurer_id in (?::uuid, ?::uuid) order by p.insurer_id, p.code""", id(1), demoB);
+        assertThat(versions).extracting(v -> v.get("code") + ":" + v.get("status")).containsExactly(
+                "AUTO-COMPLETO:PUBLISHED", "RC-AUTO:PUBLISHED", "TEMP-AUTO:PUBLISHED",
+                "AUTO-COMPLETO:PUBLISHED", "RC-AUTO:PUBLISHED", "TEMP-AUTO:PUBLISHED");
+        for (Map<String, Object> v : versions) {
+            String label = v.get("insurer_id") + " " + v.get("code");
+            assertThat(v.get("rating")).as(label).isNotNull();
+            JsonNode rating = mapper.readTree((String) v.get("rating"));
+            ProductDefinition product = productDefinition(owner, (UUID) v.get("id"), (String) v.get("type"));
+            assertThat(RatingRulesValidator.validate(rating, product)).as(label).isEmpty();
+            boolean demoBProduct = demoB.equals(v.get("insurer_id").toString());
+            rating.get("coverages").forEach(c -> {
+                JsonNode factors = c.path("factors");
+                boolean commercialLast = factors.size() > 0
+                        && "COMMERCIAL".equals(factors.get(factors.size() - 1).get("code").asText());
+                assertThat(commercialLast).as(label + " " + c.get("coverageCode")).isEqualTo(demoBProduct);
+            });
+        }
+        assertThat(owner.queryForObject("""
+                select count(*) from catalog.product_document d
+                  join catalog.product_version v on v.id = d.product_version_id
+                 where v.insurer_id = ?::uuid""", Integer.class, demoB)).isEqualTo(6);
+        assertThat(owner.queryForObject("select count(*) from identity.user_account where organization_id = ?::uuid",
+                Integer.class, demoB)).isZero();
+    }
+
+    /** Coberturas de uma versão lidas da BD, como o {@code ProductDefinition.from(CatalogApi…)}. */
+    private static ProductDefinition productDefinition(JdbcTemplate owner, UUID versionId, String type) {
+        List<CoverageDefinition> coverages = owner.query("""
+                select code, mandatory, array_to_string(requires_codes, ',') as requires, capital_type,
+                       capital_amount, array_to_string(capital_options_amount, ',') as options, deductible_type,
+                       deductible_amount, deductible_percent, deductible_min_amount
+                  from catalog.coverage where product_version_id = ? order by sort_order""", (rs, n) ->
+                new CoverageDefinition(CoverageCode.valueOf(rs.getString("code")), rs.getBoolean("mandatory"),
+                        Arrays.stream(rs.getString("requires").split(",")).filter(x -> !x.isBlank())
+                                .map(CoverageCode::valueOf).toList(),
+                        CapitalType.valueOf(rs.getString("capital_type")), rs.getObject("capital_amount", Long.class),
+                        rs.getString("options") == null ? null
+                                : Arrays.stream(rs.getString("options").split(",")).map(Long::valueOf).toList(),
+                        DeductibleType.valueOf(rs.getString("deductible_type")),
+                        rs.getObject("deductible_amount", Long.class), rs.getBigDecimal("deductible_percent"),
+                        rs.getObject("deductible_min_amount", Long.class)), versionId);
+        return new ProductDefinition(ProductType.valueOf(type), coverages);
     }
 
     private static byte[] sha256(byte[] value) {
@@ -160,8 +252,8 @@ class DevSeedIT {
                 postgres.getPassword()));
     }
 
-    private static String devSeedSql() throws IOException {
-        try (InputStream in = new ClassPathResource("db/dev/R__dev_seed_s2.sql").getInputStream()) {
+    private static String devSeedSql(String script) throws IOException {
+        try (InputStream in = new ClassPathResource("db/dev/" + script).getInputStream()) {
             return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
