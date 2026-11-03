@@ -67,20 +67,38 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 [*CatalogApi*](doc/CatalogApi.md) | [**activatePlateFormat**](doc/CatalogApi.md#activateplateformat) | **POST** /api/v1/admin/plate-formats/{id}/activate | Activa um formato de matrícula
 [*CatalogApi*](doc/CatalogApi.md) | [**activateReferenceValue**](doc/CatalogApi.md#activatereferencevalue) | **POST** /api/v1/admin/reference-domains/{domain}/values/{id}/activate | Activa um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**createInsurerProduct**](doc/CatalogApi.md#createinsurerproduct) | **POST** /api/v1/insurer/products | Cria um produto
 [*CatalogApi*](doc/CatalogApi.md) | [**createPlateFormat**](doc/CatalogApi.md#createplateformat) | **POST** /api/v1/admin/plate-formats | Cria um formato de matrícula
+[*CatalogApi*](doc/CatalogApi.md) | [**createProductVersion**](doc/CatalogApi.md#createproductversion) | **POST** /api/v1/insurer/products/{id}/versions | Cria uma nova versão do produto
 [*CatalogApi*](doc/CatalogApi.md) | [**createReferenceValue**](doc/CatalogApi.md#createreferencevalue) | **POST** /api/v1/admin/reference-domains/{domain}/values | Cria um valor de referência
 [*CatalogApi*](doc/CatalogApi.md) | [**deactivatePlateFormat**](doc/CatalogApi.md#deactivateplateformat) | **POST** /api/v1/admin/plate-formats/{id}/deactivate | Desactiva um formato de matrícula
 [*CatalogApi*](doc/CatalogApi.md) | [**deactivateReferenceValue**](doc/CatalogApi.md#deactivatereferencevalue) | **POST** /api/v1/admin/reference-domains/{domain}/values/{id}/deactivate | Desactiva um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**deleteProductVersionDocument**](doc/CatalogApi.md#deleteproductversiondocument) | **DELETE** /api/v1/insurer/product-versions/{id}/documents/{documentId} | Retira um documento de uma versão
+[*CatalogApi*](doc/CatalogApi.md) | [**getCatalogProductVersion**](doc/CatalogApi.md#getcatalogproductversion) | **GET** /api/v1/catalog/product-versions/{id} | Consulta uma versão publicada
+[*CatalogApi*](doc/CatalogApi.md) | [**getInsurerBranding**](doc/CatalogApi.md#getinsurerbranding) | **GET** /api/v1/insurer/branding | Consulta o logótipo da seguradora
+[*CatalogApi*](doc/CatalogApi.md) | [**getInsurerProduct**](doc/CatalogApi.md#getinsurerproduct) | **GET** /api/v1/insurer/products/{id} | Consulta um produto
+[*CatalogApi*](doc/CatalogApi.md) | [**getProductVersion**](doc/CatalogApi.md#getproductversion) | **GET** /api/v1/insurer/product-versions/{id} | Consulta uma versão de um produto
 [*CatalogApi*](doc/CatalogApi.md) | [**listActivePlateFormats**](doc/CatalogApi.md#listactiveplateformats) | **GET** /api/v1/plate-formats | Lista os formatos de matrícula aceites
 [*CatalogApi*](doc/CatalogApi.md) | [**listAdminReferenceValues**](doc/CatalogApi.md#listadminreferencevalues) | **GET** /api/v1/admin/reference-domains/{domain}/values | Lista os valores de um domínio (administração)
+[*CatalogApi*](doc/CatalogApi.md) | [**listCatalogProducts**](doc/CatalogApi.md#listcatalogproducts) | **GET** /api/v1/catalog/products | Lista os produtos publicados
+[*CatalogApi*](doc/CatalogApi.md) | [**listInsurerProducts**](doc/CatalogApi.md#listinsurerproducts) | **GET** /api/v1/insurer/products | Lista os produtos da seguradora
 [*CatalogApi*](doc/CatalogApi.md) | [**listPlateFormats**](doc/CatalogApi.md#listplateformats) | **GET** /api/v1/admin/plate-formats | Lista os formatos de matrícula (administração)
 [*CatalogApi*](doc/CatalogApi.md) | [**listPlatformSettings**](doc/CatalogApi.md#listplatformsettings) | **GET** /api/v1/admin/platform-settings | Lista os parâmetros da plataforma (administração)
 [*CatalogApi*](doc/CatalogApi.md) | [**listPublicPlatformSettings**](doc/CatalogApi.md#listpublicplatformsettings) | **GET** /api/v1/platform-settings | Lista os parâmetros da plataforma
 [*CatalogApi*](doc/CatalogApi.md) | [**listReferenceValues**](doc/CatalogApi.md#listreferencevalues) | **GET** /api/v1/reference-domains/{domain}/values | Lista os valores activos de um domínio
+[*CatalogApi*](doc/CatalogApi.md) | [**publishProductVersion**](doc/CatalogApi.md#publishproductversion) | **POST** /api/v1/insurer/product-versions/{id}/publish | Publica uma versão
+[*CatalogApi*](doc/CatalogApi.md) | [**removeInsurerLogo**](doc/CatalogApi.md#removeinsurerlogo) | **DELETE** /api/v1/insurer/branding/logo | Retira o logótipo da seguradora
+[*CatalogApi*](doc/CatalogApi.md) | [**replaceProductVersionCoverages**](doc/CatalogApi.md#replaceproductversioncoverages) | **PUT** /api/v1/insurer/product-versions/{id}/coverages | Substitui as coberturas de uma versão
+[*CatalogApi*](doc/CatalogApi.md) | [**retireInsurerProduct**](doc/CatalogApi.md#retireinsurerproduct) | **POST** /api/v1/insurer/products/{id}/retire | Retira um produto
 [*CatalogApi*](doc/CatalogApi.md) | [**testPlateFormat**](doc/CatalogApi.md#testplateformat) | **POST** /api/v1/admin/plate-formats/test | Experimenta um padrão com um valor
+[*CatalogApi*](doc/CatalogApi.md) | [**updateInsurerProduct**](doc/CatalogApi.md#updateinsurerproduct) | **PUT** /api/v1/insurer/products/{id} | Altera um produto
 [*CatalogApi*](doc/CatalogApi.md) | [**updatePlateFormat**](doc/CatalogApi.md#updateplateformat) | **PUT** /api/v1/admin/plate-formats/{id} | Altera um formato de matrícula
 [*CatalogApi*](doc/CatalogApi.md) | [**updatePlatformSetting**](doc/CatalogApi.md#updateplatformsetting) | **PUT** /api/v1/admin/platform-settings/{key} | Altera o valor de um parâmetro
+[*CatalogApi*](doc/CatalogApi.md) | [**updateProductVersion**](doc/CatalogApi.md#updateproductversion) | **PUT** /api/v1/insurer/product-versions/{id} | Altera a elegibilidade de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**updateReferenceValue**](doc/CatalogApi.md#updatereferencevalue) | **PUT** /api/v1/admin/reference-domains/{domain}/values/{id} | Altera um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**uploadInsurerLogo**](doc/CatalogApi.md#uploadinsurerlogo) | **POST** /api/v1/insurer/branding/logo | Envia o logótipo da seguradora
+[*CatalogApi*](doc/CatalogApi.md) | [**uploadProductVersionDocument**](doc/CatalogApi.md#uploadproductversiondocument) | **POST** /api/v1/insurer/product-versions/{id}/documents | Envia um documento de uma versão
+[*CatalogApi*](doc/CatalogApi.md) | [**validateProductVersion**](doc/CatalogApi.md#validateproductversion) | **POST** /api/v1/insurer/product-versions/{id}/validate | Verifica as regras de publicação
 [*DocumentApi*](doc/DocumentApi.md) | [**downloadFile**](doc/DocumentApi.md#downloadfile) | **GET** /api/v1/files/{id} | Descarrega um ficheiro
 [*IdentityApi*](doc/IdentityApi.md) | [**acceptInvitation**](doc/IdentityApi.md#acceptinvitation) | **POST** /api/v1/auth/invitations/{token}/accept | Define a palavra-passe e o TOTP
 [*IdentityApi*](doc/IdentityApi.md) | [**activateInvitation**](doc/IdentityApi.md#activateinvitation) | **POST** /api/v1/auth/invitations/{token}/activate | Activa a conta com o primeiro código TOTP
@@ -136,15 +154,21 @@ Class | Method | HTTP request | Description
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
+ - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
+ - [CatalogProductResponse](doc/CatalogProductResponse.md)
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
+ - [CoverageRequest](doc/CoverageRequest.md)
+ - [CoverageResponse](doc/CoverageResponse.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
+ - [CreateProductRequest](doc/CreateProductRequest.md)
  - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
  - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
+ - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
  - [InvitationDetailsResponse](doc/InvitationDetailsResponse.md)
@@ -166,8 +190,10 @@ Class | Method | HTTP request | Description
  - [OtpTestRequest](doc/OtpTestRequest.md)
  - [OtpTestResponse](doc/OtpTestResponse.md)
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
+ - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
+ - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
@@ -175,16 +201,25 @@ Class | Method | HTTP request | Description
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
  - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
  - [ProblemDetail](doc/ProblemDetail.md)
+ - [ProductDocumentResponse](doc/ProductDocumentResponse.md)
+ - [ProductResponse](doc/ProductResponse.md)
+ - [ProductSummaryResponse](doc/ProductSummaryResponse.md)
+ - [ProductVersionRefResponse](doc/ProductVersionRefResponse.md)
+ - [ProductVersionResponse](doc/ProductVersionResponse.md)
+ - [ProductVersionValidationResponse](doc/ProductVersionValidationResponse.md)
  - [PublicPlateFormatResponse](doc/PublicPlateFormatResponse.md)
  - [PublicPlateFormatsResponse](doc/PublicPlateFormatsResponse.md)
  - [PublicPlatformSettingResponse](doc/PublicPlatformSettingResponse.md)
  - [PublicPlatformSettingsResponse](doc/PublicPlatformSettingsResponse.md)
  - [PublicReferenceValueResponse](doc/PublicReferenceValueResponse.md)
  - [PublicReferenceValuesResponse](doc/PublicReferenceValuesResponse.md)
+ - [PublishProductVersionRequest](doc/PublishProductVersionRequest.md)
  - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
+ - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
+ - [RuleError](doc/RuleError.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
@@ -199,8 +234,12 @@ Class | Method | HTTP request | Description
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
  - [UpdatePlateFormatRequest](doc/UpdatePlateFormatRequest.md)
  - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
+ - [UpdateProductRequest](doc/UpdateProductRequest.md)
+ - [UpdateProductVersionRequest](doc/UpdateProductVersionRequest.md)
  - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
+ - [VehicleCategory](doc/VehicleCategory.md)
+ - [VehicleUsage](doc/VehicleUsage.md)
  - [VerifyContactRequest](doc/VerifyContactRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)
  - [VersionResponse](doc/VersionResponse.md)

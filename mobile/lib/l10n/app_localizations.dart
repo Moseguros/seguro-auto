@@ -686,6 +686,66 @@ abstract class AppLocalizations {
   /// **'Tem de ficar pelo menos um formato de matrícula activo.'**
   String get errorLastActivePlateFormat;
 
+  /// No description provided for @errorProductNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto não encontrado.'**
+  String get errorProductNotFound;
+
+  /// No description provided for @errorProductVersionNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Versão do produto não encontrada.'**
+  String get errorProductVersionNotFound;
+
+  /// No description provided for @errorProductDocumentNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Documento não encontrado.'**
+  String get errorProductDocumentNotFound;
+
+  /// No description provided for @errorProductCodeAlreadyExists.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe um produto com este código.'**
+  String get errorProductCodeAlreadyExists;
+
+  /// No description provided for @errorProductTypeLocked.
+  ///
+  /// In pt, this message translates to:
+  /// **'O tipo não pode mudar depois de o produto ter sido publicado.'**
+  String get errorProductTypeLocked;
+
+  /// No description provided for @errorProductRetired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este produto foi retirado e já não pode ser alterado.'**
+  String get errorProductRetired;
+
+  /// No description provided for @errorProductDraftExists.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe uma versão em preparação deste produto.'**
+  String get errorProductDraftExists;
+
+  /// No description provided for @errorProductVersionNotEditable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta versão já foi publicada e não pode ser alterada. Crie uma nova versão.'**
+  String get errorProductVersionNotEditable;
+
+  /// No description provided for @errorProductDocumentLimitReached.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cada versão pode ter no máximo 10 documentos.'**
+  String get errorProductDocumentLimitReached;
+
+  /// No description provided for @errorProductVersionNotPublishable.
+  ///
+  /// In pt, this message translates to:
+  /// **'A versão ainda não cumpre as regras de publicação.'**
+  String get errorProductVersionNotPublishable;
+
   /// No description provided for @validationNotAllowed.
   ///
   /// In pt, this message translates to:
@@ -817,6 +877,114 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'O exemplo não corresponde ao formato.'**
   String get validationExampleDoesNotMatch;
+
+  /// No description provided for @validationDuplicated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor repetido.'**
+  String get validationDuplicated;
+
+  /// No description provided for @validationInvalidRequirement.
+  ///
+  /// In pt, this message translates to:
+  /// **'Uma cobertura não pode exigir-se a si própria.'**
+  String get validationInvalidRequirement;
+
+  /// No description provided for @validationCapitalOptionsInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indique 2 a 10 valores, do menor para o maior.'**
+  String get validationCapitalOptionsInvalid;
+
+  /// No description provided for @validationInvalidCountryCode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Código de país inválido.'**
+  String get validationInvalidCountryCode;
+
+  /// No description provided for @validationMzScopeRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O âmbito tem de incluir Moçambique.'**
+  String get validationMzScopeRequired;
+
+  /// No description provided for @validationInvalidCapitalType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de capital não permitido para esta cobertura.'**
+  String get validationInvalidCapitalType;
+
+  /// No description provided for @validationMtplRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O produto tem de incluir a responsabilidade civil obrigatória.'**
+  String get validationMtplRequired;
+
+  /// No description provided for @validationMtplMustBeMandatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'A responsabilidade civil obrigatória não pode ser opcional.'**
+  String get validationMtplMustBeMandatory;
+
+  /// No description provided for @validationMtplCapitalBelowMinimum.
+  ///
+  /// In pt, this message translates to:
+  /// **'O capital é inferior ao capital mínimo legal configurado.'**
+  String get validationMtplCapitalBelowMinimum;
+
+  /// No description provided for @validationBorderOnlyMtpl.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seguro de fronteira só pode ter a responsabilidade civil obrigatória.'**
+  String get validationBorderOnlyMtpl;
+
+  /// No description provided for @validationOdNotAllowedForType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este tipo de produto não admite coberturas de danos próprios.'**
+  String get validationOdNotAllowedForType;
+
+  /// No description provided for @validationOdRequiredForComprehensive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Um produto de danos próprios precisa de pelo menos uma cobertura de danos próprios.'**
+  String get validationOdRequiredForComprehensive;
+
+  /// No description provided for @validationOdCapitalMustBeVehicleValue.
+  ///
+  /// In pt, this message translates to:
+  /// **'As coberturas de danos próprios usam o valor do veículo como capital.'**
+  String get validationOdCapitalMustBeVehicleValue;
+
+  /// No description provided for @validationOdTheftRequiresOdCoverages.
+  ///
+  /// In pt, this message translates to:
+  /// **'Furto ou roubo exige choque, incêndio e fenómenos da natureza.'**
+  String get validationOdTheftRequiresOdCoverages;
+
+  /// No description provided for @validationRequiredCoverageMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falta uma cobertura que esta exige.'**
+  String get validationRequiredCoverageMissing;
+
+  /// No description provided for @validationVtplCapitalTooLow.
+  ///
+  /// In pt, this message translates to:
+  /// **'O capital da RC facultativa tem de ser superior ao capital mínimo legal.'**
+  String get validationVtplCapitalTooLow;
+
+  /// No description provided for @validationCrossBorderScopeRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indique pelo menos um país além de Moçambique.'**
+  String get validationCrossBorderScopeRequired;
+
+  /// No description provided for @validationDocumentRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falta este documento em português.'**
+  String get validationDocumentRequired;
 
   /// province.MAPUTO_CITY (Province no backend).
   ///

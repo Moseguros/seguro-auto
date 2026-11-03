@@ -10,13 +10,29 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AcceptInvitationRequest.serializer)
       ..add(ActivateInvitationRequest.serializer)
       ..add(AssignableRolesResponse.serializer)
+      ..add(CatalogInsurerResponse.serializer)
+      ..add(CatalogProductResponse.serializer)
+      ..add(CatalogProductResponseStatusEnum.serializer)
+      ..add(CatalogProductResponseTypeEnum.serializer)
       ..add(ContactResponse.serializer)
       ..add(ContactResponseTypeEnum.serializer)
       ..add(ContactsResponse.serializer)
+      ..add(CoverageRequest.serializer)
+      ..add(CoverageRequestCapitalTypeEnum.serializer)
+      ..add(CoverageRequestCodeEnum.serializer)
+      ..add(CoverageRequestDeductibleTypeEnum.serializer)
+      ..add(CoverageRequestRequiresCodesEnum.serializer)
+      ..add(CoverageResponse.serializer)
+      ..add(CoverageResponseCapitalTypeEnum.serializer)
+      ..add(CoverageResponseCodeEnum.serializer)
+      ..add(CoverageResponseDeductibleTypeEnum.serializer)
+      ..add(CoverageResponseRequiresCodesEnum.serializer)
       ..add(CreateOrganizationRequest.serializer)
       ..add(CreateOrganizationRequestProvinceEnum.serializer)
       ..add(CreateOrganizationRequestTypeEnum.serializer)
       ..add(CreatePlateFormatRequest.serializer)
+      ..add(CreateProductRequest.serializer)
+      ..add(CreateProductRequestTypeEnum.serializer)
       ..add(CreateReferenceValueRequest.serializer)
       ..add(CustomerProfileResponse.serializer)
       ..add(CustomerProfileResponseIdDocTypeEnum.serializer)
@@ -25,6 +41,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
       ..add(FieldError.serializer)
       ..add(ForgotPasswordRequest.serializer)
+      ..add(InsurerBrandingResponse.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
       ..add(InvitationDetailsResponse.serializer)
@@ -68,8 +85,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpTestResponseChannelEnum.serializer)
       ..add(OtpTestResponseDeliveryStatusEnum.serializer)
       ..add(OtpVerifyResponse.serializer)
+      ..add(PageResponseCatalogProductResponse.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
+      ..add(PageResponseProductSummaryResponse.serializer)
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
       ..add(PlateFormatResponse.serializer)
@@ -78,6 +97,21 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PlatformSettingResponseValueTypeEnum.serializer)
       ..add(PlatformSettingsResponse.serializer)
       ..add(ProblemDetail.serializer)
+      ..add(ProductDocumentResponse.serializer)
+      ..add(ProductDocumentResponseDocTypeEnum.serializer)
+      ..add(ProductDocumentResponseLanguageEnum.serializer)
+      ..add(ProductResponse.serializer)
+      ..add(ProductResponseStatusEnum.serializer)
+      ..add(ProductResponseTypeEnum.serializer)
+      ..add(ProductSummaryResponse.serializer)
+      ..add(ProductSummaryResponseStatusEnum.serializer)
+      ..add(ProductSummaryResponseTypeEnum.serializer)
+      ..add(ProductVersionRefResponse.serializer)
+      ..add(ProductVersionRefResponseStatusEnum.serializer)
+      ..add(ProductVersionResponse.serializer)
+      ..add(ProductVersionResponseProductTypeEnum.serializer)
+      ..add(ProductVersionResponseStatusEnum.serializer)
+      ..add(ProductVersionValidationResponse.serializer)
       ..add(PublicPlateFormatResponse.serializer)
       ..add(PublicPlateFormatsResponse.serializer)
       ..add(PublicPlatformSettingResponse.serializer)
@@ -85,13 +119,16 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PublicPlatformSettingsResponse.serializer)
       ..add(PublicReferenceValueResponse.serializer)
       ..add(PublicReferenceValuesResponse.serializer)
+      ..add(PublishProductVersionRequest.serializer)
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
+      ..add(ReplaceCoveragesRequest.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
       ..add(ResetPasswordRequest.serializer)
+      ..add(RuleError.serializer)
       ..add(StaffLoginRequest.serializer)
       ..add(StaffUserResponse.serializer)
       ..add(StaffUserResponseStatusEnum.serializer)
@@ -116,14 +153,52 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateOtpSettingsRequestFallbackOrderEnum.serializer)
       ..add(UpdatePlateFormatRequest.serializer)
       ..add(UpdatePlatformSettingRequest.serializer)
+      ..add(UpdateProductRequest.serializer)
+      ..add(UpdateProductRequestTypeEnum.serializer)
+      ..add(UpdateProductVersionRequest.serializer)
       ..add(UpdateReferenceValueRequest.serializer)
       ..add(UpdateUserRolesRequest.serializer)
+      ..add(VehicleCategory.serializer)
+      ..add(VehicleUsage.serializer)
       ..add(VerifyContactRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
       ..add(VersionResponse.serializer)
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(CatalogProductResponse)]),
+          () => ListBuilder<CatalogProductResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(ContactResponse)]),
           () => ListBuilder<ContactResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(CoverageRequest)]),
+          () => ListBuilder<CoverageRequest>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(CoverageResponse)]),
+          () => ListBuilder<CoverageResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ProductDocumentResponse)]),
+          () => ListBuilder<ProductDocumentResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleUsage)]),
+          () => ListBuilder<VehicleUsage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleCategory)]),
+          () => ListBuilder<VehicleCategory>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(CoverageResponse)]),
+          () => ListBuilder<CoverageResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ProductDocumentResponse)]),
+          () => ListBuilder<ProductDocumentResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleUsage)]),
+          () => ListBuilder<VehicleUsage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleCategory)]),
+          () => ListBuilder<VehicleCategory>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FieldError)]),
           () => ListBuilder<FieldError>())
@@ -133,6 +208,26 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Jwk)]),
           () => ListBuilder<Jwk>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Money)]),
+          () => ListBuilder<Money>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(CoverageRequestRequiresCodesEnum)]),
+          () => ListBuilder<CoverageRequestRequiresCodesEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Money)]),
+          () => ListBuilder<Money>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(CoverageResponseRequiresCodesEnum)]),
+          () => ListBuilder<CoverageResponseRequiresCodesEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(OrganizationSummaryResponse)]),
@@ -155,6 +250,14 @@ Serializers _$serializers = (Serializers().toBuilder()
           () => ListBuilder<PlatformSettingResponse>())
       ..addBuilderFactory(
           const FullType(
+              BuiltList, const [const FullType(ProductSummaryResponse)]),
+          () => ListBuilder<ProductSummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ProductVersionRefResponse)]),
+          () => ListBuilder<ProductVersionRefResponse>())
+      ..addBuilderFactory(
+          const FullType(
               BuiltList, const [const FullType(PublicPlateFormatResponse)]),
           () => ListBuilder<PublicPlateFormatResponse>())
       ..addBuilderFactory(
@@ -169,6 +272,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(ReferenceValueResponse)]),
           () => ListBuilder<ReferenceValueResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(RuleError)]),
+          () => ListBuilder<RuleError>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(StaffUserResponse)]),
           () => ListBuilder<StaffUserResponse>())
@@ -209,6 +315,12 @@ Serializers _$serializers = (Serializers().toBuilder()
             const FullType(UpdateOtpSettingsRequestFallbackOrderEnum)
           ]),
           () => ListBuilder<UpdateOtpSettingsRequestFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleUsage)]),
+          () => ListBuilder<VehicleUsage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleCategory)]),
+          () => ListBuilder<VehicleCategory>())
       ..addBuilderFactory(
           const FullType(BuiltMap, const [
             const FullType(String),

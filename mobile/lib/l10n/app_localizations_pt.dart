@@ -354,6 +354,43 @@ class AppLocalizationsPt extends AppLocalizations {
       'Tem de ficar pelo menos um formato de matrícula activo.';
 
   @override
+  String get errorProductNotFound => 'Produto não encontrado.';
+
+  @override
+  String get errorProductVersionNotFound => 'Versão do produto não encontrada.';
+
+  @override
+  String get errorProductDocumentNotFound => 'Documento não encontrado.';
+
+  @override
+  String get errorProductCodeAlreadyExists =>
+      'Já existe um produto com este código.';
+
+  @override
+  String get errorProductTypeLocked =>
+      'O tipo não pode mudar depois de o produto ter sido publicado.';
+
+  @override
+  String get errorProductRetired =>
+      'Este produto foi retirado e já não pode ser alterado.';
+
+  @override
+  String get errorProductDraftExists =>
+      'Já existe uma versão em preparação deste produto.';
+
+  @override
+  String get errorProductVersionNotEditable =>
+      'Esta versão já foi publicada e não pode ser alterada. Crie uma nova versão.';
+
+  @override
+  String get errorProductDocumentLimitReached =>
+      'Cada versão pode ter no máximo 10 documentos.';
+
+  @override
+  String get errorProductVersionNotPublishable =>
+      'A versão ainda não cumpre as regras de publicação.';
+
+  @override
   String get validationNotAllowed => 'Este campo não se aplica neste caso.';
 
   @override
@@ -428,6 +465,74 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get validationExampleDoesNotMatch =>
       'O exemplo não corresponde ao formato.';
+
+  @override
+  String get validationDuplicated => 'Valor repetido.';
+
+  @override
+  String get validationInvalidRequirement =>
+      'Uma cobertura não pode exigir-se a si própria.';
+
+  @override
+  String get validationCapitalOptionsInvalid =>
+      'Indique 2 a 10 valores, do menor para o maior.';
+
+  @override
+  String get validationInvalidCountryCode => 'Código de país inválido.';
+
+  @override
+  String get validationMzScopeRequired => 'O âmbito tem de incluir Moçambique.';
+
+  @override
+  String get validationInvalidCapitalType =>
+      'Tipo de capital não permitido para esta cobertura.';
+
+  @override
+  String get validationMtplRequired =>
+      'O produto tem de incluir a responsabilidade civil obrigatória.';
+
+  @override
+  String get validationMtplMustBeMandatory =>
+      'A responsabilidade civil obrigatória não pode ser opcional.';
+
+  @override
+  String get validationMtplCapitalBelowMinimum =>
+      'O capital é inferior ao capital mínimo legal configurado.';
+
+  @override
+  String get validationBorderOnlyMtpl =>
+      'O seguro de fronteira só pode ter a responsabilidade civil obrigatória.';
+
+  @override
+  String get validationOdNotAllowedForType =>
+      'Este tipo de produto não admite coberturas de danos próprios.';
+
+  @override
+  String get validationOdRequiredForComprehensive =>
+      'Um produto de danos próprios precisa de pelo menos uma cobertura de danos próprios.';
+
+  @override
+  String get validationOdCapitalMustBeVehicleValue =>
+      'As coberturas de danos próprios usam o valor do veículo como capital.';
+
+  @override
+  String get validationOdTheftRequiresOdCoverages =>
+      'Furto ou roubo exige choque, incêndio e fenómenos da natureza.';
+
+  @override
+  String get validationRequiredCoverageMissing =>
+      'Falta uma cobertura que esta exige.';
+
+  @override
+  String get validationVtplCapitalTooLow =>
+      'O capital da RC facultativa tem de ser superior ao capital mínimo legal.';
+
+  @override
+  String get validationCrossBorderScopeRequired =>
+      'Indique pelo menos um país além de Moçambique.';
+
+  @override
+  String get validationDocumentRequired => 'Falta este documento em português.';
 
   @override
   String get provinceMaputoCity => 'Maputo Cidade';

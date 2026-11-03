@@ -355,6 +355,43 @@ class AppLocalizationsEn extends AppLocalizations {
       'At least one plate format must stay active.';
 
   @override
+  String get errorProductNotFound => 'Product not found.';
+
+  @override
+  String get errorProductVersionNotFound => 'Product version not found.';
+
+  @override
+  String get errorProductDocumentNotFound => 'Document not found.';
+
+  @override
+  String get errorProductCodeAlreadyExists =>
+      'A product with this code already exists.';
+
+  @override
+  String get errorProductTypeLocked =>
+      'The type cannot change after the product has been published.';
+
+  @override
+  String get errorProductRetired =>
+      'This product was retired and can no longer be changed.';
+
+  @override
+  String get errorProductDraftExists =>
+      'There is already a version of this product being prepared.';
+
+  @override
+  String get errorProductVersionNotEditable =>
+      'This version has already been published and cannot be changed. Create a new version.';
+
+  @override
+  String get errorProductDocumentLimitReached =>
+      'Each version can have at most 10 documents.';
+
+  @override
+  String get errorProductVersionNotPublishable =>
+      'The version does not meet the publication rules yet.';
+
+  @override
   String get validationNotAllowed => 'This field does not apply here.';
 
   @override
@@ -430,6 +467,75 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get validationExampleDoesNotMatch =>
       'The example does not match the format.';
+
+  @override
+  String get validationDuplicated => 'Repeated value.';
+
+  @override
+  String get validationInvalidRequirement =>
+      'A coverage cannot require itself.';
+
+  @override
+  String get validationCapitalOptionsInvalid =>
+      'Enter 2 to 10 values, from lowest to highest.';
+
+  @override
+  String get validationInvalidCountryCode => 'Invalid country code.';
+
+  @override
+  String get validationMzScopeRequired => 'The scope must include Mozambique.';
+
+  @override
+  String get validationInvalidCapitalType =>
+      'Capital type not allowed for this coverage.';
+
+  @override
+  String get validationMtplRequired =>
+      'The product must include compulsory third-party liability.';
+
+  @override
+  String get validationMtplMustBeMandatory =>
+      'Compulsory third-party liability cannot be optional.';
+
+  @override
+  String get validationMtplCapitalBelowMinimum =>
+      'The capital is below the configured legal minimum capital.';
+
+  @override
+  String get validationBorderOnlyMtpl =>
+      'Border insurance can only have compulsory third-party liability.';
+
+  @override
+  String get validationOdNotAllowedForType =>
+      'This product type does not allow own damage coverages.';
+
+  @override
+  String get validationOdRequiredForComprehensive =>
+      'An own damage product needs at least one own damage coverage.';
+
+  @override
+  String get validationOdCapitalMustBeVehicleValue =>
+      'Own damage coverages use the vehicle value as capital.';
+
+  @override
+  String get validationOdTheftRequiresOdCoverages =>
+      'Theft requires collision, fire and natural events.';
+
+  @override
+  String get validationRequiredCoverageMissing =>
+      'A coverage required by this one is missing.';
+
+  @override
+  String get validationVtplCapitalTooLow =>
+      'The voluntary third-party liability capital must be higher than the legal minimum capital.';
+
+  @override
+  String get validationCrossBorderScopeRequired =>
+      'Enter at least one country besides Mozambique.';
+
+  @override
+  String get validationDocumentRequired =>
+      'This document in Portuguese is missing.';
 
   @override
   String get provinceMaputoCity => 'Maputo City';
