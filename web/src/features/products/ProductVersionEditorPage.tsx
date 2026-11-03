@@ -152,7 +152,6 @@ export function ProductVersionEditorPage() {
 
   const setStep = (next: EditorStep) => {
     setSearchParams({ passo: next }, { replace: false });
-    window.scrollTo?.({ top: 0 });
   };
 
   const goTo = (next: EditorStep) => {
