@@ -38,19 +38,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S2-01 Módulo `document`: ficheiros, `FileStorage`, `FileAccessPolicy`, download | S1 | em revisão (branch `task/S2-01-modulo-document`) |
-| S2-02 Tabelas de referência, configuração da plataforma e formatos de matrícula na BD | S2-01 | pronta |
-| S2-03 Veículos e condutores do cliente | S2-02 | pronta |
-| S2-04 Catálogo: produtos, versões, coberturas, documentos, publicação | S2-02 | pronta |
-| S2-05 Web seguradora: editor de produtos; web admin: tabelas de referência | S2-04 | pronta |
-| S2-06 Web cliente: veículos e condutores | S2-03 | pronta |
-| S2-07 Mobile: veículos e condutores (câmara do livrete) | S2-03 | pronta |
-
-### Sprint 2 — Veículos, condutores e catálogo
-
-| Tarefa | Depende de | Estado |
-| --- | --- | --- |
-| S2-01 Módulo `document`: ficheiros, `FileStorage`, `FileAccessPolicy`, download (ADR-005) | S1 | pronta |
+| S2-01 Módulo `document`: ficheiros, `FileStorage`, `FileAccessPolicy`, download (ADR-005) | S1 | em revisão (branch `task/S2-01-modulo-document`) |
 | S2-02 Tabelas de referência, configuração da plataforma e formatos de matrícula na BD | S2-01 | pronta |
 | S2-03 Veículos e condutores do cliente (inclui `VehicleRegistryPort` com mock) | S2-02 | pronta |
 | S2-04 Catálogo: produtos, versões, coberturas, documentos, publicação, catálogo público | S2-02 | pronta |
