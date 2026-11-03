@@ -40,7 +40,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 | --- | --- | --- |
 | S2-01 Módulo `document`: ficheiros, `FileStorage`, `FileAccessPolicy`, download (ADR-005) | S1 | em revisão (branch `task/S2-01-modulo-document`) |
 | S2-02 Tabelas de referência, configuração da plataforma e formatos de matrícula na BD | S2-01 | em revisão (branch `task/S2-02-referencias-e-matriculas`) |
-| S2-03 Veículos e condutores do cliente (inclui `VehicleRegistryPort` com mock) | S2-02 | pronta |
+| S2-03 Veículos e condutores do cliente (inclui `VehicleRegistryPort` com mock) | S2-02 | em revisão (branch `task/S2-03-veiculos-e-condutores`) |
 | S2-04 Catálogo: produtos, versões, coberturas, documentos, publicação, catálogo público | S2-02 | pronta |
 | S2-05 Web seguradora: editor de produtos; web admin: tabelas de referência | S2-04 | pronta |
 | S2-06 Web cliente: veículos e condutores | S2-03 | pronta |
@@ -220,6 +220,7 @@ Cada sprint só começa depois de o anterior estar todo no `main`. As fichas dos
 - **Dados de demonstração (S2-01):** só no perfil `local` (`db/dev/R__dev_seed_s2.sql`): Seguradora Demo, Corretora Demo, convites `dev-convite-gestor-demo`/`dev-convite-corretor-demo` e o cliente `+258840000001`. Ver `infra/README.md`.
 - **Jobs (S2-01):** `@Scheduled` só com `moseguros.jobs.enabled=true` (defeito; `false` nos testes). Sem ShedLock até ao S6: uma só instância.
 - **Referências e parâmetros (S2-02):** marcas, modelos e categorias de carta em `catalog.reference_value`; parâmetros da plataforma (`MTPL_MIN_CAPITAL`, provisório) em `catalog.platform_setting` (chaves novas só por migração, todos públicos: nunca segredos). Os formatos de matrícula activos ficam em memória até 30 s (recarregam logo após uma alteração na mesma instância); `moseguros.plates` deixou de existir. Matrícula normalizada com mais de 15 caracteres é sempre `INVALID_PLATE`.
+- **Veículos e condutores (S2-03):** `/me/vehicles` e `/me/drivers` exigem `self:vehicles` (staff → 403) e só mostram os do próprio cliente (RLS; o âmbito `ORG` não vê estas tabelas). O número da carta é cifrado e só sai mascarado (`****1234`); os repetidos procuram-se pelo índice cego (`BlindIndex`, HMAC-SHA256): fora dos perfis `local` e `test` o backend não arranca sem `MOSEGUROS_BLIND_INDEX_KEY` (32 bytes em Base64, diferente da chave de cifra; mudá-la invalida os hashes gravados). O registo automóvel (INATRO) é simulado em todos os perfis (`moseguros.vehicle.registry.provider: mock`; matrículas de teste em `infra/README.md`). Retirar um veículo é sempre permitido até o `policy` implementar o `VehicleRemovalGuard` (S6-01).
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
 - **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
 - **SIMO:** até haver o algoritmo e o layout oficiais, o pagamento por referência funciona com o mock `MOCK_SIMO_V1` e o simulador `simo-mock` (S5-07, S5-08), em `local`, `test` e `staging`; em `prod` é proibido. **Bloqueadas:** S5-13 e S5-14 (algoritmo e layout reais) — pedir ao proprietário do produto, que os obtém do banco da seguradora ao aderir ao serviço de cobrança.
