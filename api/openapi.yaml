@@ -22,6 +22,8 @@ tags:
   name: Organization
 - description: "Identidade, sessões e utilizador autenticado"
   name: Identity
+- description: Veículos e condutores do cliente
+  name: Vehicle
 paths:
   /.well-known/jwks.json:
     get:
@@ -1554,6 +1556,185 @@ paths:
       summary: Remove um contacto
       tags:
       - Identity
+  /api/v1/me/drivers:
+    get:
+      description: "Só os activos. Ordenação por createdAt (defeito, desc)."
+      operationId: listMyDrivers
+      parameters:
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseDriverResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os condutores do cliente
+      tags:
+      - Vehicle
+    post:
+      description: "Erros de validação → 400 VALIDATION_ERROR com errors[]; carta\
+        \ já registada → 409 DRIVER_ALREADY_REGISTERED; segundo isOwner → 409 OWNER_DRIVER_ALREADY_EXISTS;\
+        \ mais de 10 → 409 DRIVER_LIMIT_REACHED."
+      operationId: createMyDriver
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDriverRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DriverResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Regista um condutor
+      tags:
+      - Vehicle
+  /api/v1/me/drivers/{id}:
+    delete:
+      description: Passa a REMOVED e sai dos veículos activos. Habitual de um veículo
+        activo → 409 DRIVER_IS_HABITUAL.
+      operationId: deleteMyDriver
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Retira um condutor
+      tags:
+      - Vehicle
+    get:
+      operationId: getMyDriver
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DriverResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Condutor do cliente
+      tags:
+      - Vehicle
+    put:
+      description: Mesmas regras do registo; licenceNumber omitido mantém o actual.
+        version antiga → 409 CONCURRENT_MODIFICATION.
+      operationId: updateMyDriver
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDriverRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DriverResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera um condutor
+      tags:
+      - Vehicle
   /api/v1/me/profile:
     get:
       description: O documento e o NUIT vêm mascarados; os campos por preencher são
@@ -1613,6 +1794,310 @@ paths:
       summary: Altera o perfil do cliente
       tags:
       - Identity
+  /api/v1/me/vehicles:
+    get:
+      description: "Só os activos. Ordenação por createdAt (defeito, desc) ou plate."
+      operationId: listMyVehicles
+      parameters:
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt ou plate, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseVehicleResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os veículos do cliente
+      tags:
+      - Vehicle
+    post:
+      description: "Consulta o registo automóvel: inatroVerified = true se a matrí\
+        cula existir com o mesmo chassis (a gravação nunca depende do registo). Erros\
+        \ de validação → 400 VALIDATION_ERROR com errors[]; matrícula já registada\
+        \ → 409 VEHICLE_ALREADY_REGISTERED; mais de 20 → 409 VEHICLE_LIMIT_REACHED."
+      operationId: createMyVehicle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVehicleRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Regista um veículo
+      tags:
+      - Vehicle
+  /api/v1/me/vehicles/registry-lookup:
+    get:
+      description: Para pré-preencher o formulário; não grava nada. Matrícula inválida
+        → 400 VALIDATION_ERROR (plate/INVALID_PLATE); sem registo → 404 VEHICLE_REGISTRY_NOT_FOUND;
+        registo indisponível → 503 VEHICLE_REGISTRY_UNAVAILABLE.
+      operationId: lookupVehicleRegistry
+      parameters:
+      - description: Matrícula
+        example: AAA-100-MC
+        in: query
+        name: plate
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegistryLookupResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma matrícula no registo automóvel
+      tags:
+      - Vehicle
+  /api/v1/me/vehicles/{id}:
+    delete:
+      description: Passa a REMOVED (sem apagamento físico). Com uma apólice em vigor
+        → 409 VEHICLE_REMOVAL_BLOCKED.
+      operationId: deleteMyVehicle
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Retira um veículo
+      tags:
+      - Vehicle
+    get:
+      operationId: getMyVehicle
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Veículo do cliente
+      tags:
+      - Vehicle
+    put:
+      description: Mesmas regras do registo; consulta de novo o registo automóvel
+        se mudar a matrícula ou o chassis. version antiga → 409 CONCURRENT_MODIFICATION.
+      operationId: updateMyVehicle
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVehicleRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera um veículo
+      tags:
+      - Vehicle
+  /api/v1/me/vehicles/{id}/drivers:
+    put:
+      description: "Lista vazia permitida; senão até 5, sem repetidos e com exactamente\
+        \ um habitual. Condutor que não é do cliente ou foi retirado → 404 DRIVER_NOT_FOUND.\
+        \ version é a do veículo."
+      operationId: updateMyVehicleDrivers
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVehicleDriversRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Substitui os condutores do veículo
+      tags:
+      - Vehicle
+  /api/v1/me/vehicles/{id}/registration-doc:
+    post:
+      description: "Parte file: JPEG, PNG, HEIC ou PDF até 10 MB. Passa a ser o livrete\
+        \ actual (o anterior fica no histórico). Vazio → 400 FILE_EMPTY; maior → 413\
+        \ FILE_TOO_LARGE; outro tipo → 415 FILE_TYPE_NOT_ALLOWED; sem a parte → 400\
+        \ VALIDATION_ERROR (file/REQUIRED)."
+      operationId: uploadMyVehicleRegistrationDoc
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia a foto ou o PDF do livrete
+      tags:
+      - Vehicle
   /api/v1/meta/version:
     get:
       operationId: getVersion
@@ -2498,6 +2983,45 @@ components:
             $ref: "#/components/schemas/ContactResponse"
       required:
       - contacts
+    CreateDriverRequest:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          description: No passado; idade até 100 anos
+          example: 1990-05-14
+        fullName:
+          type: string
+          description: "Letras, espaços, apóstrofo e hífen; pelo menos duas palavras"
+          example: Ana Maria Mussa
+          maxLength: 120
+          minLength: 2
+        isOwner:
+          type: boolean
+          description: O condutor é o próprio cliente (defeito false); só um por cliente
+        licenceCategories:
+          type: array
+          description: "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos"
+          items:
+            type: string
+            description: "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos"
+        licenceIssueDate:
+          type: string
+          format: date
+          description: Entre o nascimento e hoje
+          example: 2010-03-01
+        licenceNumber:
+          type: string
+          description: "5–20 letras, dígitos, / ou - (espaços ignorados). Nunca é\
+            \ devolvido."
+          example: MAP-1234567
+      required:
+      - birthDate
+      - fullName
+      - licenceCategories
+      - licenceIssueDate
+      - licenceNumber
     CreateOrganizationRequest:
       type: object
       properties:
@@ -2632,6 +3156,92 @@ components:
       required:
       - code
       - labelPt
+    CreateVehicleRequest:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+          - LIGHT_PASSENGER
+          - LIGHT_MIXED
+          - HEAVY
+          - MOTORCYCLE
+          - TRAILER
+          - BUS
+        chassisNumber:
+          type: string
+          description: 5–30 letras ou dígitos (espaços e hífens ignorados)
+          example: JTDBR32E720012345
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        engineCc:
+          type: integer
+          format: int32
+          description: "1–30 000; obrigatório excepto em TRAILER, onde tem de faltar"
+          example: 1598
+        grossWeightKg:
+          type: integer
+          format: int32
+          description: 1–100 000; obrigatório em HEAVY e TRAILER
+          example: 40000
+        hasTracker:
+          type: boolean
+          description: Localizador instalado (defeito false)
+        make:
+          type: string
+          example: Toyota
+          maxLength: 60
+        model:
+          type: string
+          example: Corolla
+          maxLength: 60
+        plate:
+          type: string
+          description: "Num dos formatos activos (espaços, hífens e minúsculas aceites)"
+          example: AAA-100-MC
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        seats:
+          type: integer
+          format: int32
+          description: "TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100"
+          example: 5
+        usage:
+          type: string
+          enum:
+          - PRIVATE
+          - RENTAL
+          - PASSENGER_TRANSPORT
+          - GOODS
+          - TAXI
+          - DRIVING_SCHOOL
+        year:
+          type: integer
+          format: int32
+          description: De 1900 ao próximo ano (em Africa/Maputo)
+          example: 2018
+      required:
+      - category
+      - chassisNumber
+      - make
+      - model
+      - plate
+      - provinceOfCirculation
+      - seats
+      - usage
+      - year
     CustomerProfileResponse:
       type: object
       properties:
@@ -2704,6 +3314,61 @@ components:
       required:
       - providerMessageId
       - status
+    DriverResponse:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          example: 1990-05-14
+        createdAt:
+          type: string
+          format: date-time
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+        id:
+          type: string
+          format: uuid
+        isOwner:
+          type: boolean
+        licenceCategories:
+          type: array
+          items:
+            type: string
+        licenceIssueDate:
+          type: string
+          format: date
+          example: 2010-03-01
+        licenceNumberMasked:
+          type: string
+          description: Quatro * fixos e os últimos 4 caracteres
+          example: '****4567'
+        updatedAt:
+          type: string
+          format: date-time
+        vehicleIds:
+          type: array
+          description: Veículos activos a que está associado
+          items:
+            type: string
+            format: uuid
+            description: Veículos activos a que está associado
+        version:
+          type: integer
+          format: int64
+      required:
+      - birthDate
+      - createdAt
+      - fullName
+      - id
+      - isOwner
+      - licenceCategories
+      - licenceIssueDate
+      - licenceNumberMasked
+      - updatedAt
+      - vehicleIds
+      - version
     FieldError:
       type: object
       description: Erro de um campo do pedido
@@ -3375,6 +4040,29 @@ components:
       - expiresIn
       - isNewUser
       - refreshToken
+    PageResponseDriverResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/DriverResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInvitationResponse:
       type: object
       properties:
@@ -3451,6 +4139,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/StaffUserResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseVehicleResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/VehicleResponse"
         page:
           type: integer
           format: int32
@@ -3724,6 +4435,80 @@ components:
           description: Refresh token recebido no login ou na última renovação
       required:
       - refreshToken
+    RegistrationDocResponse:
+      type: object
+      properties:
+        contentType:
+          type: string
+          example: image/jpeg
+        fileId:
+          type: string
+          format: uuid
+          description: "Descarregar com GET /api/v1/files/{fileId} (downloadFile)"
+        sizeBytes:
+          type: integer
+          format: int64
+          example: 812345
+        uploadedAt:
+          type: string
+          format: date-time
+      required:
+      - contentType
+      - fileId
+      - sizeBytes
+      - uploadedAt
+    RegistryLookupResponse:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+          - LIGHT_PASSENGER
+          - LIGHT_MIXED
+          - HEAVY
+          - MOTORCYCLE
+          - TRAILER
+          - BUS
+        chassisNumber:
+          type: string
+          example: JTDBR32E720012345
+        engineCc:
+          type: integer
+          format: int32
+          example: 1598
+        grossWeightKg:
+          type: integer
+          format: int32
+        make:
+          type: string
+          example: Toyota
+        model:
+          type: string
+          example: Corolla
+        plate:
+          type: string
+          example: AAA-100-MC
+        seats:
+          type: integer
+          format: int32
+          example: 5
+        source:
+          type: string
+          description: Origem dos dados (MOCK até haver acesso ao INATRO)
+          example: MOCK
+        year:
+          type: integer
+          format: int32
+          example: 2018
+      required:
+      - category
+      - chassisNumber
+      - make
+      - model
+      - plate
+      - seats
+      - source
+      - year
     RequestOtpRequest:
       type: object
       properties:
@@ -3923,6 +4708,44 @@ components:
       required:
       - otpauthUri
       - totpSecret
+    UpdateDriverRequest:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          example: 1990-05-14
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+          maxLength: 120
+          minLength: 2
+        isOwner:
+          type: boolean
+        licenceCategories:
+          type: array
+          description: "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos"
+          items:
+            type: string
+            description: "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos"
+        licenceIssueDate:
+          type: string
+          format: date
+          example: 2010-03-01
+        licenceNumber:
+          type: string
+          description: Omitido ou null mantém o actual
+          example: MAP-1234567
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - birthDate
+      - fullName
+      - licenceCategories
+      - licenceIssueDate
+      - version
     UpdateMeRequest:
       type: object
       properties:
@@ -4215,6 +5038,240 @@ components:
       required:
       - roleCodes
       - version
+    UpdateVehicleDriversRequest:
+      type: object
+      properties:
+        drivers:
+          type: array
+          description: Até 5 condutores; vazia = sem condutores
+          items:
+            $ref: "#/components/schemas/VehicleDriverAssignment"
+        version:
+          type: integer
+          format: int64
+          description: Versão do veículo lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - drivers
+      - version
+    UpdateVehicleRequest:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+          - LIGHT_PASSENGER
+          - LIGHT_MIXED
+          - HEAVY
+          - MOTORCYCLE
+          - TRAILER
+          - BUS
+        chassisNumber:
+          type: string
+          example: JTDBR32E720012345
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        engineCc:
+          type: integer
+          format: int32
+          description: "Obrigatório excepto em TRAILER, onde tem de faltar"
+          example: 1598
+        grossWeightKg:
+          type: integer
+          format: int32
+          description: Obrigatório em HEAVY e TRAILER
+        hasTracker:
+          type: boolean
+        make:
+          type: string
+          example: Toyota
+          maxLength: 60
+        model:
+          type: string
+          example: Corolla
+          maxLength: 60
+        plate:
+          type: string
+          example: AAA-100-MC
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        seats:
+          type: integer
+          format: int32
+          example: 5
+        usage:
+          type: string
+          enum:
+          - PRIVATE
+          - RENTAL
+          - PASSENGER_TRANSPORT
+          - GOODS
+          - TAXI
+          - DRIVING_SCHOOL
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+        year:
+          type: integer
+          format: int32
+          example: 2018
+      required:
+      - category
+      - chassisNumber
+      - make
+      - model
+      - plate
+      - provinceOfCirculation
+      - seats
+      - usage
+      - version
+      - year
+    VehicleDriverAssignment:
+      type: object
+      description: Até 5 condutores; vazia = sem condutores
+      properties:
+        driverId:
+          type: string
+          format: uuid
+          description: Condutor activo do cliente; senão 404 DRIVER_NOT_FOUND
+        habitual:
+          type: boolean
+      required:
+      - driverId
+      - habitual
+    VehicleDriverResponse:
+      type: object
+      description: "Condutores activos, o habitual primeiro"
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+        habitual:
+          type: boolean
+      required:
+      - driverId
+      - fullName
+      - habitual
+    VehicleResponse:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+          - LIGHT_PASSENGER
+          - LIGHT_MIXED
+          - HEAVY
+          - MOTORCYCLE
+          - TRAILER
+          - BUS
+        chassisNumber:
+          type: string
+          example: JTDBR32E720012345
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        createdAt:
+          type: string
+          format: date-time
+        drivers:
+          type: array
+          description: "Condutores activos, o habitual primeiro"
+          items:
+            $ref: "#/components/schemas/VehicleDriverResponse"
+        engineCc:
+          type: integer
+          format: int32
+          example: 1598
+        grossWeightKg:
+          type: integer
+          format: int32
+        hasTracker:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        inatroVerified:
+          type: boolean
+          description: true se o registo automóvel confirmou a matrícula e o chassis
+        make:
+          type: string
+          example: Toyota
+        model:
+          type: string
+          example: Corolla
+        plate:
+          type: string
+          example: AAA-100-MC
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        registrationDoc:
+          $ref: "#/components/schemas/RegistrationDocResponse"
+        seats:
+          type: integer
+          format: int32
+          example: 5
+        updatedAt:
+          type: string
+          format: date-time
+        usage:
+          type: string
+          enum:
+          - PRIVATE
+          - RENTAL
+          - PASSENGER_TRANSPORT
+          - GOODS
+          - TAXI
+          - DRIVING_SCHOOL
+        version:
+          type: integer
+          format: int64
+        year:
+          type: integer
+          format: int32
+          example: 2018
+      required:
+      - category
+      - chassisNumber
+      - createdAt
+      - drivers
+      - hasTracker
+      - id
+      - inatroVerified
+      - make
+      - model
+      - plate
+      - provinceOfCirculation
+      - seats
+      - updatedAt
+      - usage
+      - version
+      - year
     VerifyContactRequest:
       type: object
       properties:

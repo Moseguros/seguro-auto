@@ -29,6 +29,22 @@
       "status" : 500
     },
     {
+      "code" : "DRIVER_ALREADY_REGISTERED",
+      "status" : 409
+    },
+    {
+      "code" : "DRIVER_IS_HABITUAL",
+      "status" : 409
+    },
+    {
+      "code" : "DRIVER_LIMIT_REACHED",
+      "status" : 409
+    },
+    {
+      "code" : "DRIVER_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "EMAIL_ALREADY_IN_USE",
       "status" : 409
     },
@@ -185,6 +201,10 @@
       "status" : 400
     },
     {
+      "code" : "OWNER_DRIVER_ALREADY_EXISTS",
+      "status" : 409
+    },
+    {
       "code" : "PASSWORD_TOO_WEAK",
       "status" : 400
     },
@@ -251,6 +271,30 @@
     {
       "code" : "VALIDATION_ERROR",
       "status" : 400
+    },
+    {
+      "code" : "VEHICLE_ALREADY_REGISTERED",
+      "status" : 409
+    },
+    {
+      "code" : "VEHICLE_LIMIT_REACHED",
+      "status" : 409
+    },
+    {
+      "code" : "VEHICLE_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "VEHICLE_REGISTRY_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "VEHICLE_REGISTRY_UNAVAILABLE",
+      "status" : 503
+    },
+    {
+      "code" : "VEHICLE_REMOVAL_BLOCKED",
+      "status" : 409
     }
   ],
   "validation" : [
@@ -258,13 +302,17 @@
     "CHANNELS_EMPTY",
     "CONTAINS_EMAIL",
     "DEFAULT_CHANNEL_NOT_ENABLED",
+    "DUPLICATED",
     "EXAMPLE_DOES_NOT_MATCH",
     "FALLBACK_ORDER_MISMATCH",
+    "HABITUAL_DRIVER_REQUIRED",
+    "INVALID_CHASSIS",
     "INVALID_CODE",
     "INVALID_CURRENCY",
     "INVALID_DATE",
     "INVALID_DOCUMENT_NUMBER",
     "INVALID_EMAIL",
+    "INVALID_LICENCE_NUMBER",
     "INVALID_MSISDN",
     "INVALID_NAME",
     "INVALID_NUIT",
@@ -273,6 +321,10 @@
     "INVALID_PLATE",
     "INVALID_SORT",
     "INVALID_VALUE",
+    "INVALID_YEAR",
+    "LICENCE_CATEGORY_UNKNOWN",
+    "LICENCE_ISSUE_DATE_INVALID",
+    "MULTIPLE_HABITUAL_DRIVERS",
     "NOT_ALLOWED",
     "NOT_BLANK",
     "NOT_NULL",
