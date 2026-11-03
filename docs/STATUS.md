@@ -42,7 +42,7 @@ O Sprint 1 só começa depois de o Sprint 0 estar todo no `main`.
 | S2-02 Tabelas de referência, configuração da plataforma e formatos de matrícula na BD | S2-01 | em revisão (branch `task/S2-02-referencias-e-matriculas`) |
 | S2-03 Veículos e condutores do cliente (inclui `VehicleRegistryPort` com mock) | S2-02 | pronta |
 | S2-04 Catálogo: produtos, versões, coberturas, documentos, publicação, catálogo público | S2-02 | em revisão (branch `task/S2-04-catalogo-produtos`) |
-| S2-05 Web seguradora: editor de produtos; web admin: tabelas de referência | S2-04 | pronta |
+| S2-05 Web seguradora: editor de produtos; web admin: tabelas de referência | S2-04 | em revisão (branch `task/S2-05-web-produtos-e-referencias`) |
 | S2-06 Web cliente: veículos e condutores | S2-03 | pronta |
 | S2-07 Mobile: veículos e condutores (câmara do livrete) | S2-03 | pronta |
 
