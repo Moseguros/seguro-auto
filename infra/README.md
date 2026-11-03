@@ -80,6 +80,36 @@ Sem isto o backend não arranca (`password authentication failed for user "moseg
 
 **Staging e produção:** os papéis são criados pela equipa de operações antes do primeiro deploy, com o mesmo conteúdo de `postgres/init/01-roles.sql` (a palavra-passe de `moseguros_app_user` vem do cofre de segredos, não a do ficheiro). O dono das tabelas não precisa de ser superutilizador: basta ser dono da base de dados. O backend recebe `DB_URL`, `DB_USERNAME`/`DB_PASSWORD` (`moseguros_app_user`), `DB_OWNER_USERNAME`/`DB_OWNER_PASSWORD` (dono, só para o Flyway) e `MOSEGUROS_DATA_KEY_1` (chave de cifra das colunas, 32 bytes em Base64; sem ela a aplicação não arranca).
 
+## Ficheiros
+
+Os ficheiros enviados (fotos do livrete, documentos dos produtos…; S2-01, ADR-005) ficam em disco no volume `files`, montado no backend em `/var/lib/moseguros/files` (`MOSEGUROS_FILES_DIR`). Cada ficheiro tem a chave `{aaaa}/{mm}/{dd}/{id}.{ext}`; os metadados estão em `document.file`. Os ficheiros dos dados de demonstração ficam em `dev-seed/` e são copiados no arranque do backend se faltarem.
+
+- Ver o que lá está: `docker compose exec backend ls -R /var/lib/moseguros/files`.
+- Descarregar: `GET /api/v1/files/{id}` (o módulo dono decide quem pode ler; sem autorização → 404).
+- Limite de 10 MB por ficheiro; o nginx da web aceita pedidos até 12 MB (`client_max_body_size` em `web/nginx.conf`).
+- Apagar tudo: `docker compose down -v` (apaga também a BD, para os metadados não ficarem sem conteúdo).
+
+Fora do Docker (backend no IDE com o perfil `local`) os ficheiros ficam em `backend/var/files` (ignorada pelo git). Staging e produção usam S3 (`MOSEGUROS_S3_*`).
+
+## Dados de demonstração
+
+No perfil `local` o Flyway aplica também `backend/src/main/resources/db/dev/` (scripts repetíveis `R__dev_seed_s{n}.sql`; nunca em staging nem produção):
+
+| O quê | Valores |
+| --- | --- |
+| Seguradora | "Seguradora Demo, SA" (`DEMO`), NUIT `400000001`, id `01930000-0000-7000-8000-000000000001` |
+| Corretora | "Corretora Demo, Lda", NUIT `400000002`, id `01930000-0000-7000-8000-000000000003` |
+| Gestor da seguradora | convite para `gestor@demo.local` (`INSURER_ADMIN`, `PRODUCT_MANAGER`) |
+| Corretor | convite para `corretor@demo.local` (`ORG_ADMIN`, `BROKER`) |
+| Cliente de teste | `+258840000001` ("Cliente Teste"), entra por OTP com o código no cabeçalho `X-Debug-Otp` |
+
+Activar as contas de staff (palavra-passe e TOTP) abrindo os convites, que não expiram:
+
+- <http://localhost:5173/convite/dev-convite-gestor-demo> (no compose: <http://localhost:3000/convite/dev-convite-gestor-demo>)
+- <http://localhost:5173/convite/dev-convite-corretor-demo> (no compose: <http://localhost:3000/convite/dev-convite-corretor-demo>)
+
+Os ids são fixos (`01930000-0000-7000-8000-00000000000N`, N = 1 a 7) e os scripts não duplicam nada se correrem outra vez.
+
 ## Comandos úteis
 
 ```bash
@@ -87,7 +117,7 @@ docker compose logs -f backend            # registos de um serviço
 docker compose up -d --build backend      # reconstruir só o backend depois de mudar código
 docker compose stop                       # parar sem apagar nada
 docker compose down                       # remover os contentores (os dados da BD ficam)
-docker compose down -v                    # remover também o volume pgdata (BD vazia no próximo arranque)
+docker compose down -v                    # remover também os volumes pgdata e files (BD e ficheiros vazios)
 ```
 
 Para correr o backend ou a web fora do Docker (ex.: no IDE), suba só o que precisa, por exemplo `docker compose up -d postgres mailpit sms-mock`; o backend com o perfil `local` liga-se a `localhost:5432` e a web (`pnpm dev`) faz proxy de `/api` para `localhost:8080`.
@@ -98,4 +128,4 @@ Para correr o backend ou a web fora do Docker (ex.: no IDE), suba só o que prec
 - Os contentores do backend e do `sms-mock` correm como `app` (uid 10001) e o da web como `nginx` (uid 101).
 - O nginx escuta em IPv4 e IPv6 dentro do contentor (o healthcheck usa `localhost`, que resolve para `::1`).
 - Se o Docker Hub responder 429 (limite de pedidos), ver as notas em `docs/STATUS.md`.
-- Armazenamento S3 (Sprint 3), RabbitMQ, SFTP, cofre de segredos e `mpesa-mock` (Sprint 5) ainda não fazem parte do compose.
+- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP, cofre de segredos e `mpesa-mock` (Sprint 5) ainda não fazem parte do compose.

@@ -72,9 +72,13 @@ services:
       # administrador da plataforma (o e-mail aparece no Mailpit, http://localhost:8025).
       MOSEGUROS_WEB_BASE_URL: http://localhost:3000
       MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL: admin@moseguros.local
+      # Ficheiros enviados (S2-01): disco, no volume "files" (apagado com "docker compose down -v").
+      MOSEGUROS_FILES_DIR: /var/lib/moseguros/files
       JAVA_OPTS: -XX:MaxRAMPercentage=75
     ports:
       - "8080:8080"
+    volumes:
+      - files:/var/lib/moseguros/files
     depends_on:
       postgres:
         condition: service_healthy
@@ -96,3 +100,4 @@ services:
 
 volumes:
   pgdata:
+  files:

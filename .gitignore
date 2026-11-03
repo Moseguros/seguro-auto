@@ -52,3 +52,6 @@ mobile/ios/Flutter/flutter_export_environment.sh
 
 # Infra local
 infra/data/
+
+# Ficheiros enviados no perfil local (MOSEGUROS_FILES_DIR, por defeito backend/var/files)
+backend/var/
