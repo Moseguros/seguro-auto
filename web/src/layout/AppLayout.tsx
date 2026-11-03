@@ -23,11 +23,13 @@ import { hasPermission } from '../auth/permissions';
 import { useAuth } from '../auth/useAuth';
 import { Brand } from '../components/Brand';
 import { LanguageSelector } from '../components/LanguageSelector';
-import { menus, type Area, type MenuItem } from './menus';
+import { aliasedMenuKey, menus, type Area, type MenuItem } from './menus';
 
 const drawerWidth = 260;
 
-function isSelected(item: MenuItem, area: Area, pathname: string): boolean {
+export function isSelected(item: MenuItem, area: Area, pathname: string): boolean {
+  const alias = aliasedMenuKey(pathname);
+  if (alias) return item.key === alias;
   const areaRoot = `/${area}`;
   if (item.path === areaRoot) return pathname === areaRoot || pathname === `${areaRoot}/`;
   return pathname === item.path || pathname.startsWith(`${item.path}/`);
