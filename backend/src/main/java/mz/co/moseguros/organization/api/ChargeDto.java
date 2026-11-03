@@ -25,9 +25,7 @@ public record ChargeDto(
         String labelEn,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ChargeType type,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, oneOf = {String.class, Long.class},
-                description = "PERCENT: percentagem em texto (\"2.5\" = 2,5 %); FIXED: centavos (inteiro)",
-                example = "2.5")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, ref = ChargeValueSchema.REF)
         JsonNode value) {
 
     static ChargeDto from(ChargeRule rule) {

@@ -12,8 +12,7 @@ import jakarta.validation.constraints.NotNull;
  */
 public record UpdateRatingRulesRequest(
         @NotNull
-        @Schema(type = "object", requiredMode = Schema.RequiredMode.REQUIRED,
-                description = "Tarifa no formato rating-v1 (schemas/rating-v1.json)")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, ref = RatingRulesSchema.REF)
         JsonNode rating,
         @NotNull
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

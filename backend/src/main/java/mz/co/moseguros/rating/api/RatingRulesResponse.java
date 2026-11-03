@@ -32,8 +32,7 @@ public record RatingRulesResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         boolean configured,
         @JsonInclude(JsonInclude.Include.ALWAYS)
-        @Schema(type = "object", nullable = true, description = "Tarifa no formato rating-v1 (schemas/rating-v1.json); "
-                + "null quando não está configurada")
+        @Schema(ref = RatingRulesSchema.REF, nullable = true)
         JsonNode rating,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<RatingCoverage> coverages,

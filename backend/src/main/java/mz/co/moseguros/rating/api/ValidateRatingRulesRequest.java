@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 /** Tarifa a validar contra as coberturas de uma versão, sem gravar. */
 public record ValidateRatingRulesRequest(
         @NotNull
-        @Schema(type = "object", requiredMode = Schema.RequiredMode.REQUIRED,
-                description = "Tarifa no formato rating-v1 (schemas/rating-v1.json)")
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED, ref = RatingRulesSchema.REF)
         JsonNode rating) {
 }
