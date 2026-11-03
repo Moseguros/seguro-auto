@@ -20,6 +20,8 @@ import 'package:moseguros_api/src/model/assignable_roles_response.dart';
 import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
+import 'package:moseguros_api/src/model/create_plate_format_request.dart';
+import 'package:moseguros_api/src/model/create_reference_value_request.dart';
 import 'package:moseguros_api/src/model/customer_profile_response.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
@@ -47,8 +49,20 @@ import 'package:moseguros_api/src/model/otp_test_response.dart';
 import 'package:moseguros_api/src/model/otp_verify_response.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
+import 'package:moseguros_api/src/model/plate_format_response.dart';
+import 'package:moseguros_api/src/model/plate_formats_response.dart';
+import 'package:moseguros_api/src/model/platform_setting_response.dart';
+import 'package:moseguros_api/src/model/platform_settings_response.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
+import 'package:moseguros_api/src/model/public_plate_format_response.dart';
+import 'package:moseguros_api/src/model/public_plate_formats_response.dart';
+import 'package:moseguros_api/src/model/public_platform_setting_response.dart';
+import 'package:moseguros_api/src/model/public_platform_settings_response.dart';
+import 'package:moseguros_api/src/model/public_reference_value_response.dart';
+import 'package:moseguros_api/src/model/public_reference_values_response.dart';
+import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
 import 'package:moseguros_api/src/model/request_otp_request.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
@@ -56,12 +70,17 @@ import 'package:moseguros_api/src/model/staff_login_request.dart';
 import 'package:moseguros_api/src/model/staff_user_response.dart';
 import 'package:moseguros_api/src/model/start_contact_verification_request.dart';
 import 'package:moseguros_api/src/model/suspend_organization_request.dart';
+import 'package:moseguros_api/src/model/test_plate_format_request.dart';
+import 'package:moseguros_api/src/model/test_plate_format_response.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/totp_setup_response.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
 import 'package:moseguros_api/src/model/update_otp_settings_request.dart';
+import 'package:moseguros_api/src/model/update_plate_format_request.dart';
+import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
+import 'package:moseguros_api/src/model/update_reference_value_request.dart';
 import 'package:moseguros_api/src/model/update_user_roles_request.dart';
 import 'package:moseguros_api/src/model/verify_contact_request.dart';
 import 'package:moseguros_api/src/model/verify_otp_request.dart';
@@ -76,6 +95,8 @@ part 'serializers.g.dart';
   ContactResponse,
   ContactsResponse,
   CreateOrganizationRequest,
+  CreatePlateFormatRequest,
+  CreateReferenceValueRequest,
   CustomerProfileResponse,
   DeliveryReceiptRequest,
   FieldError,
@@ -103,8 +124,20 @@ part 'serializers.g.dart';
   OtpVerifyResponse,
   PageResponseInvitationResponse,
   PageResponseOrganizationSummaryResponse,
+  PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
+  PlateFormatResponse,
+  PlateFormatsResponse,
+  PlatformSettingResponse,
+  PlatformSettingsResponse,
   ProblemDetail,
+  PublicPlateFormatResponse,
+  PublicPlateFormatsResponse,
+  PublicPlatformSettingResponse,
+  PublicPlatformSettingsResponse,
+  PublicReferenceValueResponse,
+  PublicReferenceValuesResponse,
+  ReferenceValueResponse,
   RefreshTokenRequest,
   RequestOtpRequest,
   ResetPasswordRequest,
@@ -112,12 +145,17 @@ part 'serializers.g.dart';
   StaffUserResponse,
   StartContactVerificationRequest,
   SuspendOrganizationRequest,
+  TestPlateFormatRequest,
+  TestPlateFormatResponse,
   TokenResponse,
   TotpSetupResponse,
   UpdateMeRequest,
   UpdateMyProfileRequest,
   UpdateOrganizationRequest,
   UpdateOtpSettingsRequest,
+  UpdatePlateFormatRequest,
+  UpdatePlatformSettingRequest,
+  UpdateReferenceValueRequest,
   UpdateUserRolesRequest,
   VerifyContactRequest,
   VerifyOtpRequest,

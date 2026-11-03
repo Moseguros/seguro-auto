@@ -129,6 +129,46 @@ export interface CreateOrganizationRequest {
   type: CreateOrganizationRequestType;
 }
 
+export interface CreatePlateFormatRequest {
+  /** ^[A-Z0-9_]{2,20}$; não muda depois de criado */
+  code: string;
+  /**
+   * Grupos do padrão como {nome}, letras, dígitos, espaço e -
+   * @minLength 0
+   * @maxLength 100
+   */
+  displayTemplate: string;
+  /**
+   * Valor já formatado que o formato aceita
+   * @minLength 0
+   * @maxLength 20
+   */
+  example: string;
+  /** 2–80 caracteres */
+  label: string;
+  /** Expressão regular Java (≤ 200), com ^ e $ e pelo menos um grupo nomeado; aplica-se ao valor normalizado (maiúsculas, sem espaços nem hífens) */
+  pattern: string;
+  /** 0–999: ordem de teste */
+  sortOrder: number;
+}
+
+export interface CreateReferenceValueRequest {
+  /** ^[A-Z0-9_]{1,40}$; não muda depois de criado */
+  code: string;
+  /**
+   * @minLength 0
+   * @maxLength 120
+   */
+  labelEn?: string;
+  /**
+   * @minLength 0
+   * @maxLength 120
+   */
+  labelPt: string;
+  parentCode?: string;
+  sortOrder?: number;
+}
+
 export type CustomerProfileResponseIdDocType =
   (typeof CustomerProfileResponseIdDocType)[keyof typeof CustomerProfileResponseIdDocType];
 
@@ -736,11 +776,58 @@ export interface PageResponseOrganizationSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseReferenceValueResponse {
+  content: ReferenceValueResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseStaffUserResponse {
   content: StaffUserResponse[];
   page: number;
   size: number;
   totalElements: number;
+}
+
+export interface PlateFormatResponse {
+  active: boolean;
+  code: string;
+  displayTemplate: string;
+  example: string;
+  id: string;
+  label: string;
+  pattern: string;
+  sortOrder: number;
+  version: number;
+}
+
+export interface PlateFormatsResponse {
+  formats: PlateFormatResponse[];
+}
+
+export type PlatformSettingResponseValueType =
+  (typeof PlatformSettingResponseValueType)[keyof typeof PlatformSettingResponseValueType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PlatformSettingResponseValueType = {
+  MONEY: 'MONEY',
+  INTEGER: 'INTEGER',
+  BOOLEAN: 'BOOLEAN',
+  STRING: 'STRING',
+} as const;
+
+export interface PlatformSettingResponse {
+  key: string;
+  updatedAt: string;
+  updatedBy: string;
+  value: string;
+  valueType: PlatformSettingResponseValueType;
+  version: number;
+}
+
+export interface PlatformSettingsResponse {
+  settings: PlatformSettingResponse[];
 }
 
 /**
@@ -756,6 +843,71 @@ export interface ProblemDetail {
   status: number;
   title: string;
   type: string;
+}
+
+export interface PublicPlateFormatResponse {
+  code: string;
+  example: string;
+  label: string;
+}
+
+export interface PublicPlateFormatsResponse {
+  formats: PublicPlateFormatResponse[];
+}
+
+export type PublicPlatformSettingResponseValueType =
+  (typeof PublicPlatformSettingResponseValueType)[keyof typeof PublicPlatformSettingResponseValueType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PublicPlatformSettingResponseValueType = {
+  MONEY: 'MONEY',
+  INTEGER: 'INTEGER',
+  BOOLEAN: 'BOOLEAN',
+  STRING: 'STRING',
+} as const;
+
+export interface PublicPlatformSettingResponse {
+  key: string;
+  value: string;
+  valueType: PublicPlatformSettingResponseValueType;
+}
+
+export interface PublicPlatformSettingsResponse {
+  settings: PublicPlatformSettingResponse[];
+}
+
+export interface PublicReferenceValueResponse {
+  code: string;
+  labelEn?: string;
+  labelPt: string;
+  parentCode?: string;
+}
+
+export interface PublicReferenceValuesResponse {
+  values: PublicReferenceValueResponse[];
+}
+
+export type ReferenceValueResponseDomain =
+  (typeof ReferenceValueResponseDomain)[keyof typeof ReferenceValueResponseDomain];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ReferenceValueResponseDomain = {
+  VEHICLE_MAKE: 'VEHICLE_MAKE',
+  VEHICLE_MODEL: 'VEHICLE_MODEL',
+  LICENCE_CATEGORY: 'LICENCE_CATEGORY',
+} as const;
+
+export interface ReferenceValueResponse {
+  active: boolean;
+  code: string;
+  domain: ReferenceValueResponseDomain;
+  id: string;
+  labelEn?: string;
+  labelPt: string;
+  parentCode?: string;
+  sortOrder: number;
+  updatedAt: string;
+  version: number;
 }
 
 export interface RefreshTokenRequest {
@@ -887,6 +1039,26 @@ export interface SuspendOrganizationRequest {
    * @maxLength 500
    */
   reason: string;
+}
+
+export interface TestPlateFormatRequest {
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  displayTemplate: string;
+  pattern: string;
+  /**
+   * Valor como o utilizador o escreveria
+   * @minLength 0
+   * @maxLength 100
+   */
+  value: string;
+}
+
+export interface TestPlateFormatResponse {
+  formatted?: string;
+  matches: boolean;
 }
 
 export interface TokenResponse {
@@ -1071,6 +1243,46 @@ export interface UpdateOtpSettingsRequest {
   version: number;
 }
 
+export interface UpdatePlateFormatRequest {
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  displayTemplate: string;
+  /**
+   * @minLength 0
+   * @maxLength 20
+   */
+  example: string;
+  label: string;
+  pattern: string;
+  sortOrder: number;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export interface UpdatePlatformSettingRequest {
+  value: string;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export interface UpdateReferenceValueRequest {
+  /**
+   * @minLength 0
+   * @maxLength 120
+   */
+  labelEn?: string;
+  /**
+   * @minLength 0
+   * @maxLength 120
+   */
+  labelPt: string;
+  sortOrder?: number;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface UpdateUserRolesRequest {
   /**
    * Perfis permitidos no tipo da organização (400 ROLE_NOT_ALLOWED_FOR_ORGANIZATION)
@@ -1118,6 +1330,18 @@ export const ListPlatformInvitationsStatus = {
   EXPIRED: 'EXPIRED',
   REVOKED: 'REVOKED',
 } as const;
+
+export type ListAdminReferenceValuesParams = {
+  active?: boolean;
+  parentCode?: string;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * sortOrder, labelPt ou createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
 
 export type ListPlatformUsersParams = {
   status?: ListPlatformUsersStatus;
@@ -1219,6 +1443,13 @@ export const ListOrganizationUsersStatus = {
   LOCKED: 'LOCKED',
   DISABLED: 'DISABLED',
 } as const;
+
+export type ListReferenceValuesParams = {
+  /**
+   * Só os valores com este pai (código da marca)
+   */
+  parentCode?: string;
+};
 
 export type ListAssignableRolesParams = {
   /**
@@ -1761,6 +1992,1282 @@ export const useTestOtpDelivery = <TError = ErrorType<ProblemDetail>, TContext =
   TContext
 > => {
   const mutationOptions = getTestOtpDeliveryMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Todos, incluindo os inactivos, por sortOrder.
+ * @summary Lista os formatos de matrícula (administração)
+ */
+export const listPlateFormats = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<PlateFormatsResponse>(
+    { url: `/api/v1/admin/plate-formats`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListPlateFormatsQueryKey = () => {
+  return [`/api/v1/admin/plate-formats`] as const;
+};
+
+export const getListPlateFormatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlateFormats>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPlateFormatsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlateFormats>>> = ({ signal }) =>
+    listPlateFormats(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPlateFormats>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPlateFormatsQueryResult = NonNullable<Awaited<ReturnType<typeof listPlateFormats>>>;
+export type ListPlateFormatsQueryError = ErrorType<ProblemDetail>;
+
+export function useListPlateFormats<
+  TData = Awaited<ReturnType<typeof listPlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlateFormats>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlateFormats>>,
+          TError,
+          Awaited<ReturnType<typeof listPlateFormats>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlateFormats<
+  TData = Awaited<ReturnType<typeof listPlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlateFormats>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlateFormats>>,
+          TError,
+          Awaited<ReturnType<typeof listPlateFormats>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlateFormats<
+  TData = Awaited<ReturnType<typeof listPlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlateFormats>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os formatos de matrícula (administração)
+ */
+
+export function useListPlateFormats<
+  TData = Awaited<ReturnType<typeof listPlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlateFormats>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPlateFormatsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão reference:manage. Passa a ser aceite nos pedidos sem reiniciar. Código repetido → 409 PLATE_FORMAT_CODE_ALREADY_EXISTS.
+ * @summary Cria um formato de matrícula
+ */
+export const createPlateFormat = (
+  createPlateFormatRequest: BodyType<CreatePlateFormatRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PlateFormatResponse>(
+    {
+      url: `/api/v1/admin/plate-formats`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createPlateFormatRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreatePlateFormatMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPlateFormat>>,
+    TError,
+    { data: BodyType<CreatePlateFormatRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createPlateFormat>>,
+  TError,
+  { data: BodyType<CreatePlateFormatRequest> },
+  TContext
+> => {
+  const mutationKey = ['createPlateFormat'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createPlateFormat>>,
+    { data: BodyType<CreatePlateFormatRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createPlateFormat(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreatePlateFormatMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createPlateFormat>>
+>;
+export type CreatePlateFormatMutationBody = BodyType<CreatePlateFormatRequest>;
+export type CreatePlateFormatMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Cria um formato de matrícula
+ */
+export const useCreatePlateFormat = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createPlateFormat>>,
+      TError,
+      { data: BodyType<CreatePlateFormatRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createPlateFormat>>,
+  TError,
+  { data: BodyType<CreatePlateFormatRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreatePlateFormatMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Não grava. As regras de pattern e displayTemplate aplicam-se (VALIDATION_ERROR).
+ * @summary Experimenta um padrão com um valor
+ */
+export const testPlateFormat = (
+  testPlateFormatRequest: BodyType<TestPlateFormatRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<TestPlateFormatResponse>(
+    {
+      url: `/api/v1/admin/plate-formats/test`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: testPlateFormatRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getTestPlateFormatMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof testPlateFormat>>,
+    TError,
+    { data: BodyType<TestPlateFormatRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof testPlateFormat>>,
+  TError,
+  { data: BodyType<TestPlateFormatRequest> },
+  TContext
+> => {
+  const mutationKey = ['testPlateFormat'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof testPlateFormat>>,
+    { data: BodyType<TestPlateFormatRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return testPlateFormat(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TestPlateFormatMutationResult = NonNullable<
+  Awaited<ReturnType<typeof testPlateFormat>>
+>;
+export type TestPlateFormatMutationBody = BodyType<TestPlateFormatRequest>;
+export type TestPlateFormatMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Experimenta um padrão com um valor
+ */
+export const useTestPlateFormat = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof testPlateFormat>>,
+      TError,
+      { data: BodyType<TestPlateFormatRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof testPlateFormat>>,
+  TError,
+  { data: BodyType<TestPlateFormatRequest> },
+  TContext
+> => {
+  const mutationOptions = getTestPlateFormatMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. O código não muda; version diferente → 409 CONCURRENT_MODIFICATION; id desconhecido → 404 PLATE_FORMAT_NOT_FOUND.
+ * @summary Altera um formato de matrícula
+ */
+export const updatePlateFormat = (
+  id: string,
+  updatePlateFormatRequest: BodyType<UpdatePlateFormatRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<PlateFormatResponse>(
+    {
+      url: `/api/v1/admin/plate-formats/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updatePlateFormatRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdatePlateFormatMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePlateFormat>>,
+    TError,
+    { id: string; data: BodyType<UpdatePlateFormatRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePlateFormat>>,
+  TError,
+  { id: string; data: BodyType<UpdatePlateFormatRequest> },
+  TContext
+> => {
+  const mutationKey = ['updatePlateFormat'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePlateFormat>>,
+    { id: string; data: BodyType<UpdatePlateFormatRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updatePlateFormat(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatePlateFormatMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePlateFormat>>
+>;
+export type UpdatePlateFormatMutationBody = BodyType<UpdatePlateFormatRequest>;
+export type UpdatePlateFormatMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera um formato de matrícula
+ */
+export const useUpdatePlateFormat = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatePlateFormat>>,
+      TError,
+      { id: string; data: BodyType<UpdatePlateFormatRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatePlateFormat>>,
+  TError,
+  { id: string; data: BodyType<UpdatePlateFormatRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdatePlateFormatMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Já activo → 409 INVALID_STATE_TRANSITION.
+ * @summary Activa um formato de matrícula
+ */
+export const activatePlateFormat = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PlateFormatResponse>(
+    { url: `/api/v1/admin/plate-formats/${id}/activate`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getActivatePlateFormatMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof activatePlateFormat>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof activatePlateFormat>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['activatePlateFormat'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof activatePlateFormat>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return activatePlateFormat(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ActivatePlateFormatMutationResult = NonNullable<
+  Awaited<ReturnType<typeof activatePlateFormat>>
+>;
+
+export type ActivatePlateFormatMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Activa um formato de matrícula
+ */
+export const useActivatePlateFormat = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof activatePlateFormat>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof activatePlateFormat>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getActivatePlateFormatMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Deixa de ser aceite em pedidos novos; as matrículas gravadas não mudam. Já inactivo → 409 INVALID_STATE_TRANSITION; último activo → 409 LAST_ACTIVE_PLATE_FORMAT.
+ * @summary Desactiva um formato de matrícula
+ */
+export const deactivatePlateFormat = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PlateFormatResponse>(
+    { url: `/api/v1/admin/plate-formats/${id}/deactivate`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getDeactivatePlateFormatMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deactivatePlateFormat>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deactivatePlateFormat>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['deactivatePlateFormat'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deactivatePlateFormat>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deactivatePlateFormat(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeactivatePlateFormatMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deactivatePlateFormat>>
+>;
+
+export type DeactivatePlateFormatMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Desactiva um formato de matrícula
+ */
+export const useDeactivatePlateFormat = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deactivatePlateFormat>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deactivatePlateFormat>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getDeactivatePlateFormatMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Inclui versão e autor da última alteração.
+ * @summary Lista os parâmetros da plataforma (administração)
+ */
+export const listPlatformSettings = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PlatformSettingsResponse>(
+    { url: `/api/v1/admin/platform-settings`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListPlatformSettingsQueryKey = () => {
+  return [`/api/v1/admin/platform-settings`] as const;
+};
+
+export const getListPlatformSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlatformSettings>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPlatformSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlatformSettings>>> = ({ signal }) =>
+    listPlatformSettings(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPlatformSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPlatformSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPlatformSettings>>
+>;
+export type ListPlatformSettingsQueryError = ErrorType<ProblemDetail>;
+
+export function useListPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformSettings>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlatformSettings>>,
+          TError,
+          Awaited<ReturnType<typeof listPlatformSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformSettings>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPlatformSettings>>,
+          TError,
+          Awaited<ReturnType<typeof listPlatformSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os parâmetros da plataforma (administração)
+ */
+
+export function useListPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPlatformSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPlatformSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão reference:manage. Só o valor muda (as chaves entram por migração). Valor inválido para o tipo → VALIDATION_ERROR com INVALID_VALUE em value; chave desconhecida → 404 PLATFORM_SETTING_NOT_FOUND; version diferente → 409 CONCURRENT_MODIFICATION.
+ * @summary Altera o valor de um parâmetro
+ */
+export const updatePlatformSetting = (
+  key: string,
+  updatePlatformSettingRequest: BodyType<UpdatePlatformSettingRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<PlatformSettingResponse>(
+    {
+      url: `/api/v1/admin/platform-settings/${key}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updatePlatformSettingRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdatePlatformSettingMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePlatformSetting>>,
+    TError,
+    { key: string; data: BodyType<UpdatePlatformSettingRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePlatformSetting>>,
+  TError,
+  { key: string; data: BodyType<UpdatePlatformSettingRequest> },
+  TContext
+> => {
+  const mutationKey = ['updatePlatformSetting'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePlatformSetting>>,
+    { key: string; data: BodyType<UpdatePlatformSettingRequest> }
+  > = (props) => {
+    const { key, data } = props ?? {};
+
+    return updatePlatformSetting(key, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdatePlatformSettingMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePlatformSetting>>
+>;
+export type UpdatePlatformSettingMutationBody = BodyType<UpdatePlatformSettingRequest>;
+export type UpdatePlatformSettingMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera o valor de um parâmetro
+ */
+export const useUpdatePlatformSetting = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatePlatformSetting>>,
+      TError,
+      { key: string; data: BodyType<UpdatePlatformSettingRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatePlatformSetting>>,
+  TError,
+  { key: string; data: BodyType<UpdatePlatformSettingRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdatePlatformSettingMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Inclui os inactivos. q procura no código e nos rótulos (sem diferenciar maiúsculas). Ordenação por sortOrder (defeito, asc), labelPt ou createdAt.
+ * @summary Lista os valores de um domínio (administração)
+ */
+export const listAdminReferenceValues = (
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListAdminReferenceValuesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseReferenceValueResponse>(
+    { url: `/api/v1/admin/reference-domains/${domain}/values`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListAdminReferenceValuesQueryKey = (
+  domain?: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListAdminReferenceValuesParams,
+) => {
+  return [`/api/v1/admin/reference-domains/${domain}/values`, ...(params ? [params] : [])] as const;
+};
+
+export const getListAdminReferenceValuesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listAdminReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListAdminReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAdminReferenceValues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListAdminReferenceValuesQueryKey(domain, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminReferenceValues>>> = ({
+    signal,
+  }) => listAdminReferenceValues(domain, params, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!domain, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listAdminReferenceValues>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAdminReferenceValuesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listAdminReferenceValues>>
+>;
+export type ListAdminReferenceValuesQueryError = ErrorType<ProblemDetail>;
+
+export function useListAdminReferenceValues<
+  TData = Awaited<ReturnType<typeof listAdminReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params: undefined | ListAdminReferenceValuesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAdminReferenceValues>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAdminReferenceValues>>,
+          TError,
+          Awaited<ReturnType<typeof listAdminReferenceValues>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListAdminReferenceValues<
+  TData = Awaited<ReturnType<typeof listAdminReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListAdminReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAdminReferenceValues>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAdminReferenceValues>>,
+          TError,
+          Awaited<ReturnType<typeof listAdminReferenceValues>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListAdminReferenceValues<
+  TData = Awaited<ReturnType<typeof listAdminReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListAdminReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAdminReferenceValues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os valores de um domínio (administração)
+ */
+
+export function useListAdminReferenceValues<
+  TData = Awaited<ReturnType<typeof listAdminReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListAdminReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listAdminReferenceValues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListAdminReferenceValuesQueryOptions(domain, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão reference:manage. code ^[A-Z0-9_]{1,40}$ (INVALID_CODE); parentCode obrigatório em VEHICLE_MODEL (REQUIRED, PARENT_NOT_FOUND) e proibido nos outros (NOT_ALLOWED); código repetido no domínio → 409 REFERENCE_CODE_ALREADY_EXISTS.
+ * @summary Cria um valor de referência
+ */
+export const createReferenceValue = (
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  createReferenceValueRequest: BodyType<CreateReferenceValueRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ReferenceValueResponse>(
+    {
+      url: `/api/v1/admin/reference-domains/${domain}/values`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createReferenceValueRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateReferenceValueMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createReferenceValue>>,
+    TError,
+    {
+      domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+      data: BodyType<CreateReferenceValueRequest>;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createReferenceValue>>,
+  TError,
+  {
+    domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+    data: BodyType<CreateReferenceValueRequest>;
+  },
+  TContext
+> => {
+  const mutationKey = ['createReferenceValue'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createReferenceValue>>,
+    {
+      domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+      data: BodyType<CreateReferenceValueRequest>;
+    }
+  > = (props) => {
+    const { domain, data } = props ?? {};
+
+    return createReferenceValue(domain, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateReferenceValueMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createReferenceValue>>
+>;
+export type CreateReferenceValueMutationBody = BodyType<CreateReferenceValueRequest>;
+export type CreateReferenceValueMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Cria um valor de referência
+ */
+export const useCreateReferenceValue = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createReferenceValue>>,
+      TError,
+      {
+        domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+        data: BodyType<CreateReferenceValueRequest>;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createReferenceValue>>,
+  TError,
+  {
+    domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+    data: BodyType<CreateReferenceValueRequest>;
+  },
+  TContext
+> => {
+  const mutationOptions = getCreateReferenceValueMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. O código e a marca não mudam; version diferente da gravada → 409 CONCURRENT_MODIFICATION.
+ * @summary Altera um valor de referência
+ */
+export const updateReferenceValue = (
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  id: string,
+  updateReferenceValueRequest: BodyType<UpdateReferenceValueRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<ReferenceValueResponse>(
+    {
+      url: `/api/v1/admin/reference-domains/${domain}/values/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateReferenceValueRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateReferenceValueMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateReferenceValue>>,
+    TError,
+    {
+      domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+      id: string;
+      data: BodyType<UpdateReferenceValueRequest>;
+    },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateReferenceValue>>,
+  TError,
+  {
+    domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+    id: string;
+    data: BodyType<UpdateReferenceValueRequest>;
+  },
+  TContext
+> => {
+  const mutationKey = ['updateReferenceValue'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateReferenceValue>>,
+    {
+      domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+      id: string;
+      data: BodyType<UpdateReferenceValueRequest>;
+    }
+  > = (props) => {
+    const { domain, id, data } = props ?? {};
+
+    return updateReferenceValue(domain, id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateReferenceValueMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateReferenceValue>>
+>;
+export type UpdateReferenceValueMutationBody = BodyType<UpdateReferenceValueRequest>;
+export type UpdateReferenceValueMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera um valor de referência
+ */
+export const useUpdateReferenceValue = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateReferenceValue>>,
+      TError,
+      {
+        domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+        id: string;
+        data: BodyType<UpdateReferenceValueRequest>;
+      },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateReferenceValue>>,
+  TError,
+  {
+    domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY';
+    id: string;
+    data: BodyType<UpdateReferenceValueRequest>;
+  },
+  TContext
+> => {
+  const mutationOptions = getUpdateReferenceValueMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Já activo → 409 INVALID_STATE_TRANSITION.
+ * @summary Activa um valor de referência
+ */
+export const activateReferenceValue = (
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ReferenceValueResponse>(
+    {
+      url: `/api/v1/admin/reference-domains/${domain}/values/${id}/activate`,
+      method: 'POST',
+      signal,
+    },
+    options,
+  );
+};
+
+export const getActivateReferenceValueMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof activateReferenceValue>>,
+    TError,
+    { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof activateReferenceValue>>,
+  TError,
+  { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+  TContext
+> => {
+  const mutationKey = ['activateReferenceValue'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof activateReferenceValue>>,
+    { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string }
+  > = (props) => {
+    const { domain, id } = props ?? {};
+
+    return activateReferenceValue(domain, id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ActivateReferenceValueMutationResult = NonNullable<
+  Awaited<ReturnType<typeof activateReferenceValue>>
+>;
+
+export type ActivateReferenceValueMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Activa um valor de referência
+ */
+export const useActivateReferenceValue = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof activateReferenceValue>>,
+      TError,
+      { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof activateReferenceValue>>,
+  TError,
+  { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+  TContext
+> => {
+  const mutationOptions = getActivateReferenceValueMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão reference:manage. Sai das listas públicas; os registos que já o usam não mudam. Já inactivo → 409 INVALID_STATE_TRANSITION.
+ * @summary Desactiva um valor de referência
+ */
+export const deactivateReferenceValue = (
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ReferenceValueResponse>(
+    {
+      url: `/api/v1/admin/reference-domains/${domain}/values/${id}/deactivate`,
+      method: 'POST',
+      signal,
+    },
+    options,
+  );
+};
+
+export const getDeactivateReferenceValueMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deactivateReferenceValue>>,
+    TError,
+    { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deactivateReferenceValue>>,
+  TError,
+  { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+  TContext
+> => {
+  const mutationKey = ['deactivateReferenceValue'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deactivateReferenceValue>>,
+    { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string }
+  > = (props) => {
+    const { domain, id } = props ?? {};
+
+    return deactivateReferenceValue(domain, id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeactivateReferenceValueMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deactivateReferenceValue>>
+>;
+
+export type DeactivateReferenceValueMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Desactiva um valor de referência
+ */
+export const useDeactivateReferenceValue = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deactivateReferenceValue>>,
+      TError,
+      { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deactivateReferenceValue>>,
+  TError,
+  { domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY'; id: string },
+  TContext
+> => {
+  const mutationOptions = getDeactivateReferenceValueMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -5310,6 +6817,399 @@ export const useInviteOrganizationUser = <TError = ErrorType<ProblemDetail>, TCo
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Público. Só os activos, pela ordem de teste, com rótulo e exemplo (sem o padrão).
+ * @summary Lista os formatos de matrícula aceites
+ */
+export const listActivePlateFormats = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicPlateFormatsResponse>(
+    { url: `/api/v1/plate-formats`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListActivePlateFormatsQueryKey = () => {
+  return [`/api/v1/plate-formats`] as const;
+};
+
+export const getListActivePlateFormatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listActivePlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listActivePlateFormats>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListActivePlateFormatsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listActivePlateFormats>>> = ({ signal }) =>
+    listActivePlateFormats(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listActivePlateFormats>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListActivePlateFormatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listActivePlateFormats>>
+>;
+export type ListActivePlateFormatsQueryError = ErrorType<ProblemDetail>;
+
+export function useListActivePlateFormats<
+  TData = Awaited<ReturnType<typeof listActivePlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listActivePlateFormats>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listActivePlateFormats>>,
+          TError,
+          Awaited<ReturnType<typeof listActivePlateFormats>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListActivePlateFormats<
+  TData = Awaited<ReturnType<typeof listActivePlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listActivePlateFormats>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listActivePlateFormats>>,
+          TError,
+          Awaited<ReturnType<typeof listActivePlateFormats>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListActivePlateFormats<
+  TData = Awaited<ReturnType<typeof listActivePlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listActivePlateFormats>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os formatos de matrícula aceites
+ */
+
+export function useListActivePlateFormats<
+  TData = Awaited<ReturnType<typeof listActivePlateFormats>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listActivePlateFormats>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListActivePlateFormatsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Público: nunca há segredos nesta tabela. MONEY em centavos, como texto.
+ * @summary Lista os parâmetros da plataforma
+ */
+export const listPublicPlatformSettings = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicPlatformSettingsResponse>(
+    { url: `/api/v1/platform-settings`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListPublicPlatformSettingsQueryKey = () => {
+  return [`/api/v1/platform-settings`] as const;
+};
+
+export const getListPublicPlatformSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listPublicPlatformSettings>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPublicPlatformSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPublicPlatformSettings>>> = ({
+    signal,
+  }) => listPublicPlatformSettings(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPublicPlatformSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPublicPlatformSettings>>
+>;
+export type ListPublicPlatformSettingsQueryError = ErrorType<ProblemDetail>;
+
+export function useListPublicPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPublicPlatformSettings>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+          TError,
+          Awaited<ReturnType<typeof listPublicPlatformSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPublicPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPublicPlatformSettings>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+          TError,
+          Awaited<ReturnType<typeof listPublicPlatformSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPublicPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPublicPlatformSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os parâmetros da plataforma
+ */
+
+export function useListPublicPlatformSettings<
+  TData = Awaited<ReturnType<typeof listPublicPlatformSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPublicPlatformSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPublicPlatformSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Público. Lista completa, não paginada, por sortOrder e labelPt. Em VEHICLE_MODEL exclui os modelos de marcas inactivas; parentCode filtra pela marca. Domínio desconhecido → 404 REFERENCE_DOMAIN_UNKNOWN.
+ * @summary Lista os valores activos de um domínio
+ */
+export const listReferenceValues = (
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListReferenceValuesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicReferenceValuesResponse>(
+    { url: `/api/v1/reference-domains/${domain}/values`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListReferenceValuesQueryKey = (
+  domain?: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListReferenceValuesParams,
+) => {
+  return [`/api/v1/reference-domains/${domain}/values`, ...(params ? [params] : [])] as const;
+};
+
+export const getListReferenceValuesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listReferenceValues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListReferenceValuesQueryKey(domain, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listReferenceValues>>> = ({ signal }) =>
+    listReferenceValues(domain, params, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!domain, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listReferenceValues>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListReferenceValuesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listReferenceValues>>
+>;
+export type ListReferenceValuesQueryError = ErrorType<ProblemDetail>;
+
+export function useListReferenceValues<
+  TData = Awaited<ReturnType<typeof listReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params: undefined | ListReferenceValuesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listReferenceValues>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listReferenceValues>>,
+          TError,
+          Awaited<ReturnType<typeof listReferenceValues>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListReferenceValues<
+  TData = Awaited<ReturnType<typeof listReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listReferenceValues>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listReferenceValues>>,
+          TError,
+          Awaited<ReturnType<typeof listReferenceValues>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListReferenceValues<
+  TData = Awaited<ReturnType<typeof listReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listReferenceValues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os valores activos de um domínio
+ */
+
+export function useListReferenceValues<
+  TData = Awaited<ReturnType<typeof listReferenceValues>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  domain: 'VEHICLE_MAKE' | 'VEHICLE_MODEL' | 'LICENCE_CATEGORY',
+  params?: ListReferenceValuesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listReferenceValues>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListReferenceValuesQueryOptions(domain, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão org-user:read. Indicar organizationId ou scope=PLATFORM (um dos dois), com as regras de âmbito dos convites. Devolve também os perfis de gestor e os do primeiro gestor.

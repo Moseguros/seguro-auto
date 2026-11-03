@@ -16,6 +16,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CreateOrganizationRequest.serializer)
       ..add(CreateOrganizationRequestProvinceEnum.serializer)
       ..add(CreateOrganizationRequestTypeEnum.serializer)
+      ..add(CreatePlateFormatRequest.serializer)
+      ..add(CreateReferenceValueRequest.serializer)
       ..add(CustomerProfileResponse.serializer)
       ..add(CustomerProfileResponseIdDocTypeEnum.serializer)
       ..add(CustomerProfileResponseProvinceEnum.serializer)
@@ -68,8 +70,23 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpVerifyResponse.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
+      ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
+      ..add(PlateFormatResponse.serializer)
+      ..add(PlateFormatsResponse.serializer)
+      ..add(PlatformSettingResponse.serializer)
+      ..add(PlatformSettingResponseValueTypeEnum.serializer)
+      ..add(PlatformSettingsResponse.serializer)
       ..add(ProblemDetail.serializer)
+      ..add(PublicPlateFormatResponse.serializer)
+      ..add(PublicPlateFormatsResponse.serializer)
+      ..add(PublicPlatformSettingResponse.serializer)
+      ..add(PublicPlatformSettingResponseValueTypeEnum.serializer)
+      ..add(PublicPlatformSettingsResponse.serializer)
+      ..add(PublicReferenceValueResponse.serializer)
+      ..add(PublicReferenceValuesResponse.serializer)
+      ..add(ReferenceValueResponse.serializer)
+      ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
@@ -82,6 +99,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(StartContactVerificationRequestChannelEnum.serializer)
       ..add(StartContactVerificationRequestTypeEnum.serializer)
       ..add(SuspendOrganizationRequest.serializer)
+      ..add(TestPlateFormatRequest.serializer)
+      ..add(TestPlateFormatResponse.serializer)
       ..add(TokenResponse.serializer)
       ..add(TotpSetupResponse.serializer)
       ..add(UpdateMeRequest.serializer)
@@ -95,6 +114,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateOtpSettingsRequestDefaultChannelEnum.serializer)
       ..add(UpdateOtpSettingsRequestEnabledChannelsEnum.serializer)
       ..add(UpdateOtpSettingsRequestFallbackOrderEnum.serializer)
+      ..add(UpdatePlateFormatRequest.serializer)
+      ..add(UpdatePlatformSettingRequest.serializer)
+      ..add(UpdateReferenceValueRequest.serializer)
       ..add(UpdateUserRolesRequest.serializer)
       ..add(VerifyContactRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
@@ -123,6 +145,30 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PlateFormatResponse)]),
+          () => ListBuilder<PlateFormatResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PlatformSettingResponse)]),
+          () => ListBuilder<PlatformSettingResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PublicPlateFormatResponse)]),
+          () => ListBuilder<PublicPlateFormatResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PublicPlatformSettingResponse)]),
+          () => ListBuilder<PublicPlatformSettingResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PublicReferenceValueResponse)]),
+          () => ListBuilder<PublicReferenceValueResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ReferenceValueResponse)]),
+          () => ListBuilder<ReferenceValueResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(StaffUserResponse)]),
           () => ListBuilder<StaffUserResponse>())

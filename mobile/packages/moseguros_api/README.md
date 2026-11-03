@@ -47,15 +47,14 @@ Please follow the [installation procedure](#installation--usage) and then run th
 import 'package:moseguros_api/moseguros_api.dart';
 
 
-final api = MosegurosApi().getDocumentApi();
+final api = MosegurosApi().getCatalogApi();
 final String id = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // String | 
-final bool download = true; // bool | true → Content-Disposition attachment (guardar); false → inline (mostrar)
 
 try {
-    final response = await api.downloadFile(id, download);
+    final response = await api.activatePlateFormat(id);
     print(response);
 } catch on DioException (e) {
-    print("Exception when calling DocumentApi->downloadFile: $e\n");
+    print("Exception when calling CatalogApi->activatePlateFormat: $e\n");
 }
 
 ```
@@ -66,6 +65,22 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*CatalogApi*](doc/CatalogApi.md) | [**activatePlateFormat**](doc/CatalogApi.md#activateplateformat) | **POST** /api/v1/admin/plate-formats/{id}/activate | Activa um formato de matrícula
+[*CatalogApi*](doc/CatalogApi.md) | [**activateReferenceValue**](doc/CatalogApi.md#activatereferencevalue) | **POST** /api/v1/admin/reference-domains/{domain}/values/{id}/activate | Activa um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**createPlateFormat**](doc/CatalogApi.md#createplateformat) | **POST** /api/v1/admin/plate-formats | Cria um formato de matrícula
+[*CatalogApi*](doc/CatalogApi.md) | [**createReferenceValue**](doc/CatalogApi.md#createreferencevalue) | **POST** /api/v1/admin/reference-domains/{domain}/values | Cria um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**deactivatePlateFormat**](doc/CatalogApi.md#deactivateplateformat) | **POST** /api/v1/admin/plate-formats/{id}/deactivate | Desactiva um formato de matrícula
+[*CatalogApi*](doc/CatalogApi.md) | [**deactivateReferenceValue**](doc/CatalogApi.md#deactivatereferencevalue) | **POST** /api/v1/admin/reference-domains/{domain}/values/{id}/deactivate | Desactiva um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**listActivePlateFormats**](doc/CatalogApi.md#listactiveplateformats) | **GET** /api/v1/plate-formats | Lista os formatos de matrícula aceites
+[*CatalogApi*](doc/CatalogApi.md) | [**listAdminReferenceValues**](doc/CatalogApi.md#listadminreferencevalues) | **GET** /api/v1/admin/reference-domains/{domain}/values | Lista os valores de um domínio (administração)
+[*CatalogApi*](doc/CatalogApi.md) | [**listPlateFormats**](doc/CatalogApi.md#listplateformats) | **GET** /api/v1/admin/plate-formats | Lista os formatos de matrícula (administração)
+[*CatalogApi*](doc/CatalogApi.md) | [**listPlatformSettings**](doc/CatalogApi.md#listplatformsettings) | **GET** /api/v1/admin/platform-settings | Lista os parâmetros da plataforma (administração)
+[*CatalogApi*](doc/CatalogApi.md) | [**listPublicPlatformSettings**](doc/CatalogApi.md#listpublicplatformsettings) | **GET** /api/v1/platform-settings | Lista os parâmetros da plataforma
+[*CatalogApi*](doc/CatalogApi.md) | [**listReferenceValues**](doc/CatalogApi.md#listreferencevalues) | **GET** /api/v1/reference-domains/{domain}/values | Lista os valores activos de um domínio
+[*CatalogApi*](doc/CatalogApi.md) | [**testPlateFormat**](doc/CatalogApi.md#testplateformat) | **POST** /api/v1/admin/plate-formats/test | Experimenta um padrão com um valor
+[*CatalogApi*](doc/CatalogApi.md) | [**updatePlateFormat**](doc/CatalogApi.md#updateplateformat) | **PUT** /api/v1/admin/plate-formats/{id} | Altera um formato de matrícula
+[*CatalogApi*](doc/CatalogApi.md) | [**updatePlatformSetting**](doc/CatalogApi.md#updateplatformsetting) | **PUT** /api/v1/admin/platform-settings/{key} | Altera o valor de um parâmetro
+[*CatalogApi*](doc/CatalogApi.md) | [**updateReferenceValue**](doc/CatalogApi.md#updatereferencevalue) | **PUT** /api/v1/admin/reference-domains/{domain}/values/{id} | Altera um valor de referência
 [*DocumentApi*](doc/DocumentApi.md) | [**downloadFile**](doc/DocumentApi.md#downloadfile) | **GET** /api/v1/files/{id} | Descarrega um ficheiro
 [*IdentityApi*](doc/IdentityApi.md) | [**acceptInvitation**](doc/IdentityApi.md#acceptinvitation) | **POST** /api/v1/auth/invitations/{token}/accept | Define a palavra-passe e o TOTP
 [*IdentityApi*](doc/IdentityApi.md) | [**activateInvitation**](doc/IdentityApi.md#activateinvitation) | **POST** /api/v1/auth/invitations/{token}/activate | Activa a conta com o primeiro código TOTP
@@ -124,6 +139,8 @@ Class | Method | HTTP request | Description
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
+ - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
+ - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
  - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [FieldError](doc/FieldError.md)
@@ -151,8 +168,20 @@ Class | Method | HTTP request | Description
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
+ - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
+ - [PlateFormatResponse](doc/PlateFormatResponse.md)
+ - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
+ - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
+ - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
  - [ProblemDetail](doc/ProblemDetail.md)
+ - [PublicPlateFormatResponse](doc/PublicPlateFormatResponse.md)
+ - [PublicPlateFormatsResponse](doc/PublicPlateFormatsResponse.md)
+ - [PublicPlatformSettingResponse](doc/PublicPlatformSettingResponse.md)
+ - [PublicPlatformSettingsResponse](doc/PublicPlatformSettingsResponse.md)
+ - [PublicReferenceValueResponse](doc/PublicReferenceValueResponse.md)
+ - [PublicReferenceValuesResponse](doc/PublicReferenceValuesResponse.md)
+ - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
@@ -160,12 +189,17 @@ Class | Method | HTTP request | Description
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
  - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
+ - [TestPlateFormatRequest](doc/TestPlateFormatRequest.md)
+ - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
  - [TokenResponse](doc/TokenResponse.md)
  - [TotpSetupResponse](doc/TotpSetupResponse.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
+ - [UpdatePlateFormatRequest](doc/UpdatePlateFormatRequest.md)
+ - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
+ - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
  - [VerifyContactRequest](doc/VerifyContactRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)
