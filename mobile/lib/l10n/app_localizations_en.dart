@@ -1462,4 +1462,351 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coverageCrossBorder => 'Driving abroad';
+
+  @override
+  String get quoteWizardTitle => 'Get a quote';
+
+  @override
+  String quoteStepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get quoteStepVehicle => 'Vehicle and driver';
+
+  @override
+  String get quoteStepType => 'Type of insurance';
+
+  @override
+  String get quoteStepCoverages => 'Coverages';
+
+  @override
+  String get quoteStepPeriod => 'Start and duration';
+
+  @override
+  String get quoteStepSummary => 'Summary';
+
+  @override
+  String get quoteBack => 'Back';
+
+  @override
+  String get quoteContinue => 'Continue';
+
+  @override
+  String get quoteVehicleLabel => 'Vehicle';
+
+  @override
+  String quoteVehicleLine(String make, String model, int year) {
+    return '$make $model · $year';
+  }
+
+  @override
+  String get quoteNoVehicles => 'You have no registered vehicles yet.';
+
+  @override
+  String get quoteAddVehicle => 'Add vehicle';
+
+  @override
+  String get quoteDriverLabel => 'Driver';
+
+  @override
+  String get quoteNoDrivers => 'You have no registered drivers yet.';
+
+  @override
+  String get quoteAddDriver => 'Add driver';
+
+  @override
+  String get quoteStartDateMoved => 'We updated the start date to today.';
+
+  @override
+  String get quoteTypeMtplOnly => 'Third-party liability only';
+
+  @override
+  String get quoteTypeMtplOnlyText =>
+      'The compulsory insurance: covers the damage you cause to others.';
+
+  @override
+  String get quoteTypeComprehensive => 'Third-party liability + own damage';
+
+  @override
+  String get quoteTypeComprehensiveText =>
+      'Also covers the damage to your vehicle.';
+
+  @override
+  String get quoteTypeTemporary => 'Temporary insurance';
+
+  @override
+  String get quoteTypeTemporaryText =>
+      'Third-party liability for 7 to 60 days, or one year.';
+
+  @override
+  String get quoteNeedsCommercialValue =>
+      'Needs the vehicle’s commercial value';
+
+  @override
+  String get quoteSetCommercialValue => 'Enter value';
+
+  @override
+  String get quoteCoverageMandatory => 'Mandatory';
+
+  @override
+  String quoteCoverageAvailableIn(int count, int total) {
+    return 'Available in $count of $total products';
+  }
+
+  @override
+  String get quoteCoverageCapital => 'Sum insured';
+
+  @override
+  String quoteCapitalPerPerson(String capital) {
+    return '$capital per person';
+  }
+
+  @override
+  String get quoteTheftNotice =>
+      'Theft or robbery always includes collision, fire and natural events.';
+
+  @override
+  String get quoteNoProducts =>
+      'There are currently no products of this type for this vehicle.';
+
+  @override
+  String get quoteStartDate => 'Start date';
+
+  @override
+  String get quoteDuration => 'Duration';
+
+  @override
+  String quoteDurationDays(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get quoteDurationYear => '1 year';
+
+  @override
+  String quoteEndsOn(String date) {
+    return 'Ends on $date';
+  }
+
+  @override
+  String get quoteChange => 'Change';
+
+  @override
+  String quoteDriverAges(int age, int years) {
+    return '$age years old, licence held for $years years';
+  }
+
+  @override
+  String quotePeriodRange(String start, String end) {
+    return '$start to $end';
+  }
+
+  @override
+  String get quoteRequesting => 'Asking the insurers for offers…';
+
+  @override
+  String quoteRetryInMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Try again in $count minutes.',
+      one: 'Try again in 1 minute.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quoteResultsTitle => 'Offers';
+
+  @override
+  String get quoteChangeSimulation => 'Change quote';
+
+  @override
+  String quoteSavedUntil(String date) {
+    return 'This quote is saved in My quotes and is valid until $date.';
+  }
+
+  @override
+  String get quoteByBroker => 'Quote prepared by your intermediary.';
+
+  @override
+  String get quoteGoToMyQuotes => 'See my quotes';
+
+  @override
+  String quoteIncludesCharges(String amount) {
+    return 'Includes $amount in charges';
+  }
+
+  @override
+  String quoteDeductible(String value) {
+    return 'Deductible $value';
+  }
+
+  @override
+  String quoteDeductiblePercent(String percent) {
+    return '$percent%';
+  }
+
+  @override
+  String quoteDeductiblePercentMin(String percent, String min) {
+    return '$percent% (min. $min)';
+  }
+
+  @override
+  String get quoteNoDeductible => 'No deductible';
+
+  @override
+  String quoteValidUntil(String date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String get quoteCheapest => 'Cheapest';
+
+  @override
+  String get quoteViewDetail => 'See details';
+
+  @override
+  String get quoteCompare => 'Compare';
+
+  @override
+  String get quoteUsed => 'Used in a proposal';
+
+  @override
+  String get quoteExpiredLabel => 'Expired';
+
+  @override
+  String get quoteNotAvailableLabel => 'No offer';
+
+  @override
+  String quoteCompareSelected(int count) {
+    return '$count selected (maximum 3)';
+  }
+
+  @override
+  String get quoteCompareMax => 'You can compare up to 3 offers';
+
+  @override
+  String quoteUnavailableTitle(int count) {
+    return 'No offer ($count)';
+  }
+
+  @override
+  String get quoteNoOffers => 'No insurer made an offer for these conditions.';
+
+  @override
+  String quoteExpiredOn(String date) {
+    return 'This quote expired on $date.';
+  }
+
+  @override
+  String get quoteGeneralConditions => 'General conditions';
+
+  @override
+  String get quotePreContractInfo => 'Pre-contractual information';
+
+  @override
+  String get compareTitle => 'Compare offers';
+
+  @override
+  String get compareInsurer => 'Insurer';
+
+  @override
+  String get compareProduct => 'Product';
+
+  @override
+  String get compareTotal => 'Total premium';
+
+  @override
+  String get compareCommercialPremium => 'Commercial premium';
+
+  @override
+  String get compareNotIncluded => 'Not included';
+
+  @override
+  String get compareValidUntil => 'Valid until';
+
+  @override
+  String get compareDocuments => 'Documents';
+
+  @override
+  String compareCoverageWithDeductible(
+    String capital,
+    String deductible,
+    String premium,
+  ) {
+    return '$capital · deductible $deductible · $premium';
+  }
+
+  @override
+  String compareCoverageNoDeductible(String capital, String premium) {
+    return '$capital · $premium';
+  }
+
+  @override
+  String get quoteDetailTitle => 'Offer details';
+
+  @override
+  String quoteProductVersion(String product, int version) {
+    return '$product · version $version';
+  }
+
+  @override
+  String get quoteDetailCoverages => 'Coverages';
+
+  @override
+  String quoteDetailCapital(String value) {
+    return 'Sum insured: $value';
+  }
+
+  @override
+  String get quoteDetailPremium => 'Premium';
+
+  @override
+  String get quoteRoundingAdjustment => 'Rounding adjustment';
+
+  @override
+  String get quoteDetailPeriod => 'Period';
+
+  @override
+  String get quoteDetailValidity => 'Validity';
+
+  @override
+  String get quoteProposalSoon =>
+      'Soon you will be able to move on from here to the proposal.';
+
+  @override
+  String get myQuotesTitle => 'My quotes';
+
+  @override
+  String get myQuotesEmpty => 'You have not requested any quotes yet.';
+
+  @override
+  String get myQuotesByBroker => 'By your intermediary';
+
+  @override
+  String myQuotesStart(String date) {
+    return 'Starts on $date';
+  }
+
+  @override
+  String myQuotesOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offers',
+      one: '1 offer',
+      zero: 'No offers',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String myQuotesFrom(String amount) {
+    return 'from $amount';
+  }
+
+  @override
+  String get myQuotesSeeAll => 'See all';
 }
