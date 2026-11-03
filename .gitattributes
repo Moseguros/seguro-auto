@@ -12,6 +12,8 @@
 *.jpg binary
 *.jpeg binary
 *.gif binary
+*.heic binary
+*.pdf binary
 *.ico binary
 *.jar binary
 *.keystore binary
