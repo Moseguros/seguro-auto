@@ -104,7 +104,7 @@ export function CatalogProductPreview({
 }: CatalogProductPreviewProps) {
   const { t } = useTranslation();
   return (
-    <Card variant="outlined" data-testid="catalog-preview">
+    <Card variant="outlined" elevation={0} data-testid="catalog-preview">
       <CardContent>
         <Stack spacing={2}>
           <Stack direction="row" spacing={2} alignItems="center" sx={{ minWidth: 0 }}>

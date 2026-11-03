@@ -109,6 +109,7 @@ function SettingCard({ setting }: { setting: PlatformSettingResponse }) {
             label={t('references.settings.value')}
             control={
               <Switch
+                inputProps={{ role: 'switch' }}
                 checked={value === 'true'}
                 onChange={(event) => setValue(String(event.target.checked))}
               />
@@ -142,7 +143,7 @@ function SettingCard({ setting }: { setting: PlatformSettingResponse }) {
   };
 
   return (
-    <Card variant="outlined" component="section" aria-labelledby={titleId}>
+    <Card variant="outlined" elevation={0} component="section" aria-labelledby={titleId}>
       <CardContent>
         <Stack spacing={2}>
           <Typography id={titleId} variant="h6" component="h3">

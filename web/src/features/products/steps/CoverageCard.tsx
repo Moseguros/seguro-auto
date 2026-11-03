@@ -113,7 +113,7 @@ export function CoverageCard({
   );
 
   return (
-    <Card component="section" variant="outlined" aria-labelledby={titleId}>
+    <Card component="section" variant="outlined" elevation={0} aria-labelledby={titleId}>
       <CardContent>
         <Stack spacing={2}>
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
@@ -154,6 +154,7 @@ export function CoverageCard({
               label={t('products.coverages.mandatory')}
               control={
                 <Switch
+                  inputProps={{ role: 'switch' }}
                   checked={coverage.mandatory}
                   disabled={readOnly || locked.mandatory}
                   onChange={(event) => set({ mandatory: event.target.checked })}

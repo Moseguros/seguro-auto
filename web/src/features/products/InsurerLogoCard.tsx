@@ -82,7 +82,12 @@ export function InsurerLogoCard() {
   };
 
   return (
-    <Card variant="outlined" component="section" aria-label={t('products.logo.title')}>
+    <Card
+      variant="outlined"
+      elevation={0}
+      component="section"
+      aria-label={t('products.logo.title')}
+    >
       <CardContent>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
           <Box
