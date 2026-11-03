@@ -1238,5 +1238,291 @@
       "conflict": "Este condutor foi alterado noutro dispositivo",
       "reload": "Recarregar"
     }
+  },
+  "tariffs": {
+    "title": "Tarifas",
+    "tabs": {
+      "products": "Produtos",
+      "charges": "Encargos",
+      "tariff": "Tarifa",
+      "simulator": "Simulador"
+    },
+    "externalNotice": "As cotações desta seguradora são calculadas pelo seu próprio sistema. As tarifas daqui só são usadas no simulador.",
+    "empty": "Ainda não há produtos. Crie um em Produtos.",
+    "emptyLink": "Ir para Produtos",
+    "retry": "Tentar de novo",
+    "columns": {
+      "product": "Produto",
+      "version": "Versão",
+      "status": "Estado",
+      "tariff": "Tarifa",
+      "actions": "Acções"
+    },
+    "versionNo": "Versão {{n}}",
+    "configured": "Com tarifa",
+    "notConfigured": "Sem tarifa",
+    "edit": "Editar tarifa",
+    "view": "Ver tarifa",
+    "noVersions": "Este produto ainda não tem versões.",
+    "publishWarning": {
+      "text": "Esta versão ainda não tem tarifa. Se a publicar assim, não vai aparecer nas cotações.",
+      "link": "Configurar tarifa"
+    },
+    "editor": {
+      "back": "Voltar às tarifas",
+      "title": "Tarifa de {{name}}",
+      "validate": "Validar",
+      "save": "Guardar",
+      "more": "Mais",
+      "undo": "Anular",
+      "redo": "Refazer",
+      "exportJson": "Exportar JSON",
+      "importJson": "Importar JSON",
+      "readOnlyStatus": "Esta versão já não está em preparação: a tarifa é só de leitura.",
+      "readOnlyPermission": "Não tem permissão para alterar tarifas: a tarifa é só de leitura.",
+      "valid": "A tarifa está válida",
+      "saved": "Tarifa guardada",
+      "fixFirst": "Corrija os erros antes de guardar.",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "hasErrors": "Tem erros",
+      "invalidJson": "O ficheiro não é uma tarifa em JSON válida.",
+      "conflict": {
+        "title": "Tarifa alterada",
+        "text": "Outra pessoa alterou esta tarifa. Recarregue para ver a versão actual; as suas alterações perdem-se.",
+        "reload": "Recarregar",
+        "cancel": "Cancelar"
+      },
+      "importConfirm": {
+        "title": "Importar JSON",
+        "text": "Substituir a tarifa actual?",
+        "confirm": "Substituir",
+        "cancel": "Cancelar"
+      },
+      "unsaved": {
+        "title": "Alterações por guardar",
+        "text": "Se sair agora, as alterações à tarifa perdem-se.",
+        "stay": "Ficar",
+        "leave": "Sair sem guardar"
+      }
+    },
+    "errorsPanel": {
+      "title": "Erros na tarifa ({{count}})",
+      "top": "Tarifa",
+      "duration": "Duração",
+      "base": "Base",
+      "row": "linha {{n}}"
+    },
+    "coverage": {
+      "capital": "Capital: {{type}}",
+      "mandatory": "Obrigatória",
+      "base": "Base",
+      "baseType": "Tipo de base",
+      "changeBaseType": {
+        "title": "Mudar o tipo de base?",
+        "text": "Os valores das linhas da base vão ser apagados.",
+        "confirm": "Mudar",
+        "cancel": "Cancelar"
+      },
+      "factors": "Factores",
+      "noFactors": "Esta cobertura não tem factores.",
+      "factorCode": "Código {{code}}",
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Descer {{name}}",
+      "delete": "Apagar {{name}}",
+      "deleteFactor": {
+        "title": "Apagar o factor {{name}}?",
+        "text": "As linhas deste factor perdem-se.",
+        "confirm": "Apagar",
+        "cancel": "Cancelar"
+      }
+    },
+    "table": {
+      "help": "Aplica-se a primeira linha cujas condições se cumprem. Se nenhuma se cumprir, a cobertura fica sem preço.",
+      "columns": {
+        "n": "N.º",
+        "label": "Descrição",
+        "conditions": "Condições",
+        "value": "Valor",
+        "actions": "Acções"
+      },
+      "addRow": "Acrescentar linha",
+      "exportCsv": "Exportar CSV",
+      "importCsv": "Importar CSV",
+      "edit": "Editar",
+      "duplicate": "Duplicar",
+      "moveUp": "Subir",
+      "moveDown": "Descer",
+      "delete": "Apagar",
+      "actions": "Acções da linha {{n}}",
+      "row": "Linha {{n}}",
+      "emptyValue": "Sem valor",
+      "importConfirm": {
+        "title": "Importar CSV",
+        "text": "Substituir as {{n}} linhas desta tabela?",
+        "confirm": "Substituir",
+        "cancel": "Cancelar"
+      },
+      "importErrors": {
+        "title": "Não foi possível importar o CSV",
+        "close": "Fechar"
+      }
+    },
+    "conditions": {
+      "always": "Sempre",
+      "from": "{{gte}} ou mais",
+      "below": "menos de {{lt}}",
+      "between": "{{gte}} a {{to}}",
+      "moneyBetween": "de {{gte}} até menos de {{lt}}",
+      "yes": "sim",
+      "no": "não"
+    },
+    "row": {
+      "titleNew": "Nova linha",
+      "titleEdit": "Editar a linha {{n}}",
+      "label": "Descrição (opcional)",
+      "conditions": "Condições",
+      "use": "Usar",
+      "gte": "A partir de (≥)",
+      "lt": "Menos de (<)",
+      "yes": "Sim",
+      "no": "Não",
+      "valueAmount": "Valor",
+      "valuePercent": "Taxa (%)",
+      "valueFactor": "Factor",
+      "apply": "Aplicar",
+      "cancel": "Cancelar"
+    },
+    "factorMenu": {
+      "add": "Acrescentar factor",
+      "custom": "Factor personalizado",
+      "code": "Código",
+      "label": "Nome",
+      "confirm": "Acrescentar",
+      "cancel": "Cancelar"
+    },
+    "duration": {
+      "title": "Duração",
+      "help": "Factor aplicado ao prémio anual em cada duração disponível. O de 365 dias é sempre 1.",
+      "available": "Disponível: {{days}} dias",
+      "factor": "Factor de {{days}} dias"
+    }
+  },
+  "charges": {
+    "title": "Encargos",
+    "columns": {
+      "code": "Código",
+      "labelPt": "Nome (pt)",
+      "labelEn": "Nome (en)",
+      "type": "Tipo",
+      "value": "Valor",
+      "actions": "Acções"
+    },
+    "type": {
+      "PERCENT": "Percentagem",
+      "FIXED": "Valor fixo"
+    },
+    "charge": "Encargo {{n}}",
+    "add": "Acrescentar encargo",
+    "moveUp": "Subir",
+    "moveDown": "Descer",
+    "delete": "Apagar",
+    "empty": "Esta seguradora não tem encargos.",
+    "note": "Os encargos somam-se ao prémio comercial e aplicam-se a todos os produtos. O total arredonda para cima ao metical.",
+    "save": "Guardar",
+    "saved": "Encargos guardados",
+    "fixFirst": "Corrija os erros antes de guardar.",
+    "conflict": "Outra pessoa alterou os encargos",
+    "reload": "Recarregar"
+  },
+  "simulator": {
+    "vehicle": "Veículo",
+    "driver": "Condutor",
+    "coverages": "Coberturas",
+    "period": "Período",
+    "category": "Categoria",
+    "usage": "Uso",
+    "province": "Província de circulação",
+    "year": "Ano",
+    "engineCc": "Cilindrada (cm³)",
+    "seats": "Lugares",
+    "grossWeightKg": "Peso bruto (kg)",
+    "commercialValue": "Valor comercial",
+    "hasTracker": "Localizador instalado",
+    "birthDate": "Data de nascimento",
+    "licenceIssueDate": "Data da carta",
+    "mandatory": "{{name}} (obrigatória)",
+    "capital": "Capital de {{name}}",
+    "startDate": "Início",
+    "duration": "Duração",
+    "oneYear": "1 ano",
+    "days": "{{days}} dias",
+    "calculate": "Calcular",
+    "invalidField": "Valor inválido",
+    "fixTariff": "Corrija a tarifa antes de simular",
+    "result": "Resultado",
+    "detail": {
+      "coverage": "Cobertura: {{name}}",
+      "table": "Tabela: {{name}}",
+      "base": "Base"
+    },
+    "goToTable": "Ir para a tabela",
+    "computed": {
+      "driverAgeYears": "Idade do condutor: {{n}} anos",
+      "vehicleAgeYears": "Idade do veículo: {{n}} anos",
+      "licenceYears": "Antiguidade da carta: {{n}} anos"
+    },
+    "breakdown": {
+      "variables": "Variáveis calculadas",
+      "coverages": "Coberturas",
+      "capital": "Capital",
+      "baseRow": "Base · linha {{n}}",
+      "baseAmount": "Montante base",
+      "factorRow": "{{name}} · linha {{n}}",
+      "bonusMalus": "Bónus/malus",
+      "duration": "Duração",
+      "exactPremium": "Prémio exacto",
+      "premium": "Prémio",
+      "commercialPremium": "Prémio comercial",
+      "rounding": "Ajuste de arredondamento",
+      "total": "Total"
+    }
+  },
+  "tariffCsv": {
+    "EMPTY_FILE": "O ficheiro não tem linhas.",
+    "UNKNOWN_COLUMN": "Coluna desconhecida: {{column}}.",
+    "MISSING_VALUE_COLUMN": "Falta a coluna \"value\".",
+    "MISSING_VALUE": "Linha {{line}}: falta o valor.",
+    "INVALID_NUMBER": "Linha {{line}}, coluna {{column}}: número inválido.",
+    "INVALID_ENUM": "Linha {{line}}, coluna {{column}}: código desconhecido \"{{value}}\".",
+    "INVALID_BOOLEAN": "Linha {{line}}, coluna {{column}}: use true ou false.",
+    "TOO_MANY_ROWS": "O ficheiro tem mais de 200 linhas."
+  },
+  "variables": {
+    "vehicleCategory": "Categoria do veículo",
+    "vehicleUsage": "Uso do veículo",
+    "province": "Província de circulação",
+    "hasTracker": "Localizador",
+    "vehicleAgeYears": "Idade do veículo (anos)",
+    "engineCc": "Cilindrada (cm³)",
+    "seats": "Lugares",
+    "grossWeightKg": "Peso bruto (kg)",
+    "driverAgeYears": "Idade do condutor (anos)",
+    "licenceYears": "Antiguidade da carta (anos)",
+    "durationDays": "Duração (dias)",
+    "capital": "Capital",
+    "vehicleValue": "Valor do veículo"
+  },
+  "baseType": {
+    "AMOUNT": "Valor fixo",
+    "RATE_OF_VEHICLE_VALUE": "Percentagem do valor do veículo",
+    "RATE_OF_CAPITAL": "Percentagem do capital"
+  },
+  "factorPreset": {
+    "DRIVER_AGE": "Idade do condutor",
+    "LICENCE_YEARS": "Antiguidade da carta",
+    "PROVINCE": "Província de circulação",
+    "VEHICLE_AGE": "Idade do veículo",
+    "TRACKER": "Localizador"
   }
 }

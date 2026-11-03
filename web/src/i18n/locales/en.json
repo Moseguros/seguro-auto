@@ -1238,5 +1238,291 @@
       "conflict": "This driver was changed on another device",
       "reload": "Reload"
     }
+  },
+  "tariffs": {
+    "title": "Tariffs",
+    "tabs": {
+      "products": "Products",
+      "charges": "Charges",
+      "tariff": "Tariff",
+      "simulator": "Simulator"
+    },
+    "externalNotice": "This insurer's quotes are calculated by its own system. The tariffs here are only used in the simulator.",
+    "empty": "There are no products yet. Create one in Products.",
+    "emptyLink": "Go to Products",
+    "retry": "Try again",
+    "columns": {
+      "product": "Product",
+      "version": "Version",
+      "status": "Status",
+      "tariff": "Tariff",
+      "actions": "Actions"
+    },
+    "versionNo": "Version {{n}}",
+    "configured": "With tariff",
+    "notConfigured": "No tariff",
+    "edit": "Edit tariff",
+    "view": "View tariff",
+    "noVersions": "This product has no versions yet.",
+    "publishWarning": {
+      "text": "This version has no tariff yet. If you publish it like this, it will not appear in quotes.",
+      "link": "Set up tariff"
+    },
+    "editor": {
+      "back": "Back to tariffs",
+      "title": "Tariff of {{name}}",
+      "validate": "Validate",
+      "save": "Save",
+      "more": "More",
+      "undo": "Undo",
+      "redo": "Redo",
+      "exportJson": "Export JSON",
+      "importJson": "Import JSON",
+      "readOnlyStatus": "This version is no longer in preparation: the tariff is read-only.",
+      "readOnlyPermission": "You are not allowed to change tariffs: the tariff is read-only.",
+      "valid": "The tariff is valid",
+      "saved": "Tariff saved",
+      "fixFirst": "Fix the errors before saving.",
+      "coverages": "Coverages",
+      "coverage": "Coverage",
+      "hasErrors": "Has errors",
+      "invalidJson": "The file is not a valid JSON tariff.",
+      "conflict": {
+        "title": "Tariff changed",
+        "text": "Someone else changed this tariff. Reload to see the current version; your changes will be lost.",
+        "reload": "Reload",
+        "cancel": "Cancel"
+      },
+      "importConfirm": {
+        "title": "Import JSON",
+        "text": "Replace the current tariff?",
+        "confirm": "Replace",
+        "cancel": "Cancel"
+      },
+      "unsaved": {
+        "title": "Unsaved changes",
+        "text": "If you leave now, your changes to the tariff will be lost.",
+        "stay": "Stay",
+        "leave": "Leave without saving"
+      }
+    },
+    "errorsPanel": {
+      "title": "Errors in the tariff ({{count}})",
+      "top": "Tariff",
+      "duration": "Duration",
+      "base": "Base",
+      "row": "row {{n}}"
+    },
+    "coverage": {
+      "capital": "Capital: {{type}}",
+      "mandatory": "Mandatory",
+      "base": "Base",
+      "baseType": "Base type",
+      "changeBaseType": {
+        "title": "Change the base type?",
+        "text": "The values of the base rows will be cleared.",
+        "confirm": "Change",
+        "cancel": "Cancel"
+      },
+      "factors": "Factors",
+      "noFactors": "This coverage has no factors.",
+      "factorCode": "Code {{code}}",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "delete": "Delete {{name}}",
+      "deleteFactor": {
+        "title": "Delete the factor {{name}}?",
+        "text": "The rows of this factor will be lost.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "table": {
+      "help": "The first row whose conditions are all met applies. If none is met, the coverage has no price.",
+      "columns": {
+        "n": "No.",
+        "label": "Description",
+        "conditions": "Conditions",
+        "value": "Value",
+        "actions": "Actions"
+      },
+      "addRow": "Add row",
+      "exportCsv": "Export CSV",
+      "importCsv": "Import CSV",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "delete": "Delete",
+      "actions": "Actions for row {{n}}",
+      "row": "Row {{n}}",
+      "emptyValue": "No value",
+      "importConfirm": {
+        "title": "Import CSV",
+        "text": "Replace the {{n}} rows of this table?",
+        "confirm": "Replace",
+        "cancel": "Cancel"
+      },
+      "importErrors": {
+        "title": "The CSV could not be imported",
+        "close": "Close"
+      }
+    },
+    "conditions": {
+      "always": "Always",
+      "from": "{{gte}} or more",
+      "below": "less than {{lt}}",
+      "between": "{{gte}} to {{to}}",
+      "moneyBetween": "from {{gte}} to less than {{lt}}",
+      "yes": "yes",
+      "no": "no"
+    },
+    "row": {
+      "titleNew": "New row",
+      "titleEdit": "Edit row {{n}}",
+      "label": "Description (optional)",
+      "conditions": "Conditions",
+      "use": "Use",
+      "gte": "From (≥)",
+      "lt": "Less than (<)",
+      "yes": "Yes",
+      "no": "No",
+      "valueAmount": "Value",
+      "valuePercent": "Rate (%)",
+      "valueFactor": "Factor",
+      "apply": "Apply",
+      "cancel": "Cancel"
+    },
+    "factorMenu": {
+      "add": "Add factor",
+      "custom": "Custom factor",
+      "code": "Code",
+      "label": "Name",
+      "confirm": "Add",
+      "cancel": "Cancel"
+    },
+    "duration": {
+      "title": "Duration",
+      "help": "Factor applied to the annual premium for each available duration. The 365-day one is always 1.",
+      "available": "Available: {{days}} days",
+      "factor": "{{days}}-day factor"
+    }
+  },
+  "charges": {
+    "title": "Charges",
+    "columns": {
+      "code": "Code",
+      "labelPt": "Name (pt)",
+      "labelEn": "Name (en)",
+      "type": "Type",
+      "value": "Value",
+      "actions": "Actions"
+    },
+    "type": {
+      "PERCENT": "Percentage",
+      "FIXED": "Fixed amount"
+    },
+    "charge": "Charge {{n}}",
+    "add": "Add charge",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "delete": "Delete",
+    "empty": "This insurer has no charges.",
+    "note": "Charges are added to the commercial premium and apply to all products. The total is rounded up to the metical.",
+    "save": "Save",
+    "saved": "Charges saved",
+    "fixFirst": "Fix the errors before saving.",
+    "conflict": "Someone else changed the charges",
+    "reload": "Reload"
+  },
+  "simulator": {
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "coverages": "Coverages",
+    "period": "Period",
+    "category": "Category",
+    "usage": "Use",
+    "province": "Province of circulation",
+    "year": "Year",
+    "engineCc": "Engine capacity (cc)",
+    "seats": "Seats",
+    "grossWeightKg": "Gross weight (kg)",
+    "commercialValue": "Market value",
+    "hasTracker": "Tracker installed",
+    "birthDate": "Date of birth",
+    "licenceIssueDate": "Licence date",
+    "mandatory": "{{name}} (mandatory)",
+    "capital": "Capital of {{name}}",
+    "startDate": "Start",
+    "duration": "Duration",
+    "oneYear": "1 year",
+    "days": "{{days}} days",
+    "calculate": "Calculate",
+    "invalidField": "Invalid value",
+    "fixTariff": "Fix the tariff before simulating",
+    "result": "Result",
+    "detail": {
+      "coverage": "Coverage: {{name}}",
+      "table": "Table: {{name}}",
+      "base": "Base"
+    },
+    "goToTable": "Go to the table",
+    "computed": {
+      "driverAgeYears": "Driver age: {{n}} years",
+      "vehicleAgeYears": "Vehicle age: {{n}} years",
+      "licenceYears": "Licence held for: {{n}} years"
+    },
+    "breakdown": {
+      "variables": "Calculated variables",
+      "coverages": "Coverages",
+      "capital": "Capital",
+      "baseRow": "Base · row {{n}}",
+      "baseAmount": "Base amount",
+      "factorRow": "{{name}} · row {{n}}",
+      "bonusMalus": "Bonus/malus",
+      "duration": "Duration",
+      "exactPremium": "Exact premium",
+      "premium": "Premium",
+      "commercialPremium": "Commercial premium",
+      "rounding": "Rounding adjustment",
+      "total": "Total"
+    }
+  },
+  "tariffCsv": {
+    "EMPTY_FILE": "The file has no rows.",
+    "UNKNOWN_COLUMN": "Unknown column: {{column}}.",
+    "MISSING_VALUE_COLUMN": "The \"value\" column is missing.",
+    "MISSING_VALUE": "Row {{line}}: the value is missing.",
+    "INVALID_NUMBER": "Row {{line}}, column {{column}}: invalid number.",
+    "INVALID_ENUM": "Row {{line}}, column {{column}}: unknown code \"{{value}}\".",
+    "INVALID_BOOLEAN": "Row {{line}}, column {{column}}: use true or false.",
+    "TOO_MANY_ROWS": "The file has more than 200 rows."
+  },
+  "variables": {
+    "vehicleCategory": "Vehicle category",
+    "vehicleUsage": "Vehicle use",
+    "province": "Province of circulation",
+    "hasTracker": "Tracker",
+    "vehicleAgeYears": "Vehicle age (years)",
+    "engineCc": "Engine capacity (cc)",
+    "seats": "Seats",
+    "grossWeightKg": "Gross weight (kg)",
+    "driverAgeYears": "Driver age (years)",
+    "licenceYears": "Licence held (years)",
+    "durationDays": "Duration (days)",
+    "capital": "Capital",
+    "vehicleValue": "Vehicle value"
+  },
+  "baseType": {
+    "AMOUNT": "Fixed amount",
+    "RATE_OF_VEHICLE_VALUE": "Percentage of the vehicle value",
+    "RATE_OF_CAPITAL": "Percentage of the capital"
+  },
+  "factorPreset": {
+    "DRIVER_AGE": "Driver age",
+    "LICENCE_YEARS": "Licence age",
+    "PROVINCE": "Province of circulation",
+    "VEHICLE_AGE": "Vehicle age",
+    "TRACKER": "Tracker"
   }
 }
