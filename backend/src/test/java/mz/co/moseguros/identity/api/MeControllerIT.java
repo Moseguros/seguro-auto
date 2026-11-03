@@ -96,7 +96,7 @@ class MeControllerIT {
                 .body("preferredLanguage", equalTo("pt"))
                 .body("$", not(hasKey("organization")))
                 .body("roles", contains("CUSTOMER"))
-                .body("permissions", contains("self:profile", "self:vehicles"))
+                .body("permissions", contains("self:profile", "self:quotes", "self:vehicles"))
                 .body("profileComplete", equalTo(false));
     }
 
@@ -117,7 +117,8 @@ class MeControllerIT {
                 .body("organization.type", equalTo("INSURER"))
                 .body("organization.displayName", equalTo("Seguradora Me"))
                 .body("roles", contains("INSURER_ADMIN"))
-                .body("permissions", contains("org-user:manage", "org-user:read", "product:manage", "product:read"))
+                .body("permissions", contains("org-user:manage", "org-user:read", "product:manage", "product:read",
+                        "rating:manage"))
                 .body("$", not(hasKey("profileComplete")));
     }
 
