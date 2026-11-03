@@ -209,7 +209,15 @@
     "DRIVER_LIMIT_REACHED": "You have reached the maximum of 10 drivers.",
     "OWNER_DRIVER_ALREADY_EXISTS": "You are already registered as a driver.",
     "DRIVER_IS_HABITUAL": "This driver is the habitual driver of a vehicle. Choose another habitual driver first.",
-    "RATING_RULES_TOO_LARGE": "The tariff is too large (maximum 256 KB)."
+    "RATING_RULES_TOO_LARGE": "The tariff is too large (maximum 256 KB).",
+    "QUOTE_REQUEST_NOT_FOUND": "Quote not found.",
+    "QUOTE_NOT_FOUND": "Quote not found.",
+    "QUOTE_EXPIRED": "This quote has expired. Run a new simulation.",
+    "QUOTE_NOT_AVAILABLE": "This insurer did not make an offer.",
+    "QUOTE_ALREADY_USED": "This quote has already been used in a proposal.",
+    "QUOTE_RATE_LIMITED": "You ran too many simulations in the last hour. Try again later.",
+    "VEHICLE_VALUE_REQUIRED": "For own damage, enter the commercial value of the vehicle.",
+    "ORGANIZATION_NOT_INSURER": "This organization is not an insurer."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -287,7 +295,13 @@
     "DURATION_365_NOT_ONE": "The 365-day factor must be 1.",
     "DURATION_FACTORS_REQUIRED": "A temporary product needs the duration table.",
     "DURATION_NOT_ALLOWED": "Duration not allowed for this product.",
-    "DUPLICATE_CHARGE": "Repeated charge."
+    "DUPLICATE_CHARGE": "Repeated charge.",
+    "START_DATE_OUT_OF_RANGE": "The start date must be between today and 60 days from now.",
+    "COVERAGE_NOT_ALLOWED_FOR_TYPE": "This coverage does not exist in this type of insurance.",
+    "OWN_DAMAGE_REQUIRED": "Choose at least one own damage coverage.",
+    "COVERAGE_REQUIRES": "Theft or robbery requires collision, fire and natural events.",
+    "INVALID_URL": "Invalid address (it must start with https://).",
+    "INVALID_SECRET_REF": "Invalid secret reference."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -746,6 +760,21 @@
     "LEGAL": "Legal protection",
     "SRCC": "Strikes, riots and civil commotion",
     "CROSS_BORDER": "Driving abroad"
+  },
+  "quoteUnavailable": {
+    "TARIFF_MISSING": "This insurer does not have a price for this product yet.",
+    "TARIFF_INVALID": "The price of this product could not be calculated.",
+    "COVERAGE_NOT_OFFERED": "This product does not include all the chosen coverages.",
+    "COVERAGE_REQUIREMENTS_NOT_MET": "In this product, the chosen coverages require others you did not choose.",
+    "CAPITAL_NOT_OFFERED": "This product does not offer the chosen capital.",
+    "VEHICLE_VALUE_REQUIRED": "The commercial value of the vehicle is required.",
+    "DURATION_NOT_RATED": "This product is not available for the chosen duration.",
+    "NO_MATCHING_ROW": "This insurer does not cover this vehicle or driver under these conditions.",
+    "INSURER_TIMEOUT": "The insurer did not answer in time.",
+    "INSURER_UNAVAILABLE": "The insurer is unavailable at the moment.",
+    "INSURER_DECLINED": "The insurer did not make an offer.",
+    "EXTERNAL_INVALID_RESPONSE": "The insurer returned an invalid answer.",
+    "EVALUATION_ERROR": "The price could not be calculated."
   },
   "capitalType": {
     "FIXED": "Fixed amount",

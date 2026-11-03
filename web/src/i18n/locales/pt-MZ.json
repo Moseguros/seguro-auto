@@ -209,7 +209,15 @@
     "DRIVER_LIMIT_REACHED": "Atingiu o máximo de 10 condutores.",
     "OWNER_DRIVER_ALREADY_EXISTS": "Já se registou como condutor.",
     "DRIVER_IS_HABITUAL": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.",
-    "RATING_RULES_TOO_LARGE": "A tarifa é demasiado grande (máximo 256 KB)."
+    "RATING_RULES_TOO_LARGE": "A tarifa é demasiado grande (máximo 256 KB).",
+    "QUOTE_REQUEST_NOT_FOUND": "Cotação não encontrada.",
+    "QUOTE_NOT_FOUND": "Cotação não encontrada.",
+    "QUOTE_EXPIRED": "Esta cotação já expirou. Faça uma nova simulação.",
+    "QUOTE_NOT_AVAILABLE": "Esta seguradora não apresentou proposta.",
+    "QUOTE_ALREADY_USED": "Esta cotação já foi usada numa proposta.",
+    "QUOTE_RATE_LIMITED": "Fez muitas simulações na última hora. Tente mais tarde.",
+    "VEHICLE_VALUE_REQUIRED": "Para danos próprios, indique o valor comercial do veículo.",
+    "ORGANIZATION_NOT_INSURER": "Esta organização não é uma seguradora."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -287,7 +295,13 @@
     "DURATION_365_NOT_ONE": "O factor de 365 dias tem de ser 1.",
     "DURATION_FACTORS_REQUIRED": "Um produto temporário precisa da tabela de duração.",
     "DURATION_NOT_ALLOWED": "Duração não permitida para este produto.",
-    "DUPLICATE_CHARGE": "Encargo repetido."
+    "DUPLICATE_CHARGE": "Encargo repetido.",
+    "START_DATE_OUT_OF_RANGE": "A data de início tem de ser entre hoje e daqui a 60 dias.",
+    "COVERAGE_NOT_ALLOWED_FOR_TYPE": "Esta cobertura não existe neste tipo de seguro.",
+    "OWN_DAMAGE_REQUIRED": "Escolha pelo menos uma cobertura de danos próprios.",
+    "COVERAGE_REQUIRES": "Furto ou roubo exige choque, incêndio e fenómenos da natureza.",
+    "INVALID_URL": "Endereço inválido (tem de começar por https://).",
+    "INVALID_SECRET_REF": "Referência do segredo inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -746,6 +760,21 @@
     "LEGAL": "Protecção jurídica",
     "SRCC": "Greves, tumultos e alterações da ordem pública",
     "CROSS_BORDER": "Circulação no estrangeiro"
+  },
+  "quoteUnavailable": {
+    "TARIFF_MISSING": "Esta seguradora ainda não tem preço para este produto.",
+    "TARIFF_INVALID": "Não foi possível calcular o preço deste produto.",
+    "COVERAGE_NOT_OFFERED": "Este produto não inclui todas as coberturas escolhidas.",
+    "COVERAGE_REQUIREMENTS_NOT_MET": "Neste produto, as coberturas escolhidas exigem outras que não escolheu.",
+    "CAPITAL_NOT_OFFERED": "Este produto não oferece o capital escolhido.",
+    "VEHICLE_VALUE_REQUIRED": "É preciso indicar o valor comercial do veículo.",
+    "DURATION_NOT_RATED": "Este produto não está disponível para a duração escolhida.",
+    "NO_MATCHING_ROW": "Esta seguradora não cobre este veículo ou condutor nestas condições.",
+    "INSURER_TIMEOUT": "A seguradora não respondeu a tempo.",
+    "INSURER_UNAVAILABLE": "A seguradora está indisponível neste momento.",
+    "INSURER_DECLINED": "A seguradora não apresentou proposta.",
+    "EXTERNAL_INVALID_RESPONSE": "A seguradora devolveu uma resposta inválida.",
+    "EVALUATION_ERROR": "Não foi possível calcular o preço."
   },
   "capitalType": {
     "FIXED": "Valor fixo",
