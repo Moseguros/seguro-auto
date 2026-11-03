@@ -147,6 +147,20 @@ public final class FieldErrorCodes {
     /** Código de encargo repetido. */
     public static final String DUPLICATE_CHARGE = "DUPLICATE_CHARGE";
 
+    // Cotações e ligação à tarifação externa (S3-02)
+    /** Data de início antes de hoje ou depois do limite ({@code max-start-days-ahead}). */
+    public static final String START_DATE_OUT_OF_RANGE = "START_DATE_OUT_OF_RANGE";
+    /** Cobertura que não existe no tipo de seguro pedido (ex.: danos próprios fora de {@code COMPREHENSIVE}). */
+    public static final String COVERAGE_NOT_ALLOWED_FOR_TYPE = "COVERAGE_NOT_ALLOWED_FOR_TYPE";
+    /** Pedido {@code COMPREHENSIVE} sem nenhuma cobertura de danos próprios. */
+    public static final String OWN_DAMAGE_REQUIRED = "OWN_DAMAGE_REQUIRED";
+    /** Cobertura pedida sem as coberturas que ela exige ({@code OD_THEFT}). */
+    public static final String COVERAGE_REQUIRES = "COVERAGE_REQUIRES";
+    /** Endereço que não é uma URL absoluta {@code https://} (ou {@code http://} onde é permitido). */
+    public static final String INVALID_URL = "INVALID_URL";
+    /** Referência de segredo fora do formato {@code config:<chave>}. */
+    public static final String INVALID_SECRET_REF = "INVALID_SECRET_REF";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";
