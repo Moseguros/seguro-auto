@@ -13,16 +13,22 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ContactResponse.serializer)
       ..add(ContactResponseTypeEnum.serializer)
       ..add(ContactsResponse.serializer)
+      ..add(CreateDriverRequest.serializer)
       ..add(CreateOrganizationRequest.serializer)
       ..add(CreateOrganizationRequestProvinceEnum.serializer)
       ..add(CreateOrganizationRequestTypeEnum.serializer)
       ..add(CreatePlateFormatRequest.serializer)
       ..add(CreateReferenceValueRequest.serializer)
+      ..add(CreateVehicleRequest.serializer)
+      ..add(CreateVehicleRequestCategoryEnum.serializer)
+      ..add(CreateVehicleRequestProvinceOfCirculationEnum.serializer)
+      ..add(CreateVehicleRequestUsageEnum.serializer)
       ..add(CustomerProfileResponse.serializer)
       ..add(CustomerProfileResponseIdDocTypeEnum.serializer)
       ..add(CustomerProfileResponseProvinceEnum.serializer)
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
+      ..add(DriverResponse.serializer)
       ..add(FieldError.serializer)
       ..add(ForgotPasswordRequest.serializer)
       ..add(InsurerProfileRequest.serializer)
@@ -68,10 +74,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpTestResponseChannelEnum.serializer)
       ..add(OtpTestResponseDeliveryStatusEnum.serializer)
       ..add(OtpVerifyResponse.serializer)
+      ..add(PageResponseDriverResponse.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
+      ..add(PageResponseVehicleResponse.serializer)
       ..add(PlateFormatResponse.serializer)
       ..add(PlateFormatsResponse.serializer)
       ..add(PlatformSettingResponse.serializer)
@@ -88,6 +96,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
+      ..add(RegistrationDocResponse.serializer)
+      ..add(RegistryLookupResponse.serializer)
+      ..add(RegistryLookupResponseCategoryEnum.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
@@ -103,6 +114,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(TestPlateFormatResponse.serializer)
       ..add(TokenResponse.serializer)
       ..add(TotpSetupResponse.serializer)
+      ..add(UpdateDriverRequest.serializer)
       ..add(UpdateMeRequest.serializer)
       ..add(UpdateMeRequestPreferredLanguageEnum.serializer)
       ..add(UpdateMyProfileRequest.serializer)
@@ -118,12 +130,26 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdatePlatformSettingRequest.serializer)
       ..add(UpdateReferenceValueRequest.serializer)
       ..add(UpdateUserRolesRequest.serializer)
+      ..add(UpdateVehicleDriversRequest.serializer)
+      ..add(UpdateVehicleRequest.serializer)
+      ..add(UpdateVehicleRequestCategoryEnum.serializer)
+      ..add(UpdateVehicleRequestProvinceOfCirculationEnum.serializer)
+      ..add(UpdateVehicleRequestUsageEnum.serializer)
+      ..add(VehicleDriverAssignment.serializer)
+      ..add(VehicleDriverResponse.serializer)
+      ..add(VehicleResponse.serializer)
+      ..add(VehicleResponseCategoryEnum.serializer)
+      ..add(VehicleResponseProvinceOfCirculationEnum.serializer)
+      ..add(VehicleResponseUsageEnum.serializer)
       ..add(VerifyContactRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
       ..add(VersionResponse.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(ContactResponse)]),
           () => ListBuilder<ContactResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(DriverResponse)]),
+          () => ListBuilder<DriverResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FieldError)]),
           () => ListBuilder<FieldError>())
@@ -200,6 +226,18 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [
             const FullType(UpdateOtpSettingsRequestEnabledChannelsEnum)
           ]),
@@ -209,6 +247,17 @@ Serializers _$serializers = (Serializers().toBuilder()
             const FullType(UpdateOtpSettingsRequestFallbackOrderEnum)
           ]),
           () => ListBuilder<UpdateOtpSettingsRequestFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(VehicleDriverAssignment)]),
+          () => ListBuilder<VehicleDriverAssignment>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(VehicleDriverResponse)]),
+          () => ListBuilder<VehicleDriverResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(VehicleResponse)]),
+          () => ListBuilder<VehicleResponse>())
       ..addBuilderFactory(
           const FullType(BuiltMap, const [
             const FullType(String),

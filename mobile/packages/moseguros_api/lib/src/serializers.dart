@@ -19,11 +19,14 @@ import 'package:moseguros_api/src/model/activate_invitation_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
 import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
+import 'package:moseguros_api/src/model/create_driver_request.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
 import 'package:moseguros_api/src/model/create_plate_format_request.dart';
 import 'package:moseguros_api/src/model/create_reference_value_request.dart';
+import 'package:moseguros_api/src/model/create_vehicle_request.dart';
 import 'package:moseguros_api/src/model/customer_profile_response.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
+import 'package:moseguros_api/src/model/driver_response.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
 import 'package:moseguros_api/src/model/forgot_password_request.dart';
 import 'package:moseguros_api/src/model/insurer_profile_request.dart';
@@ -47,10 +50,12 @@ import 'package:moseguros_api/src/model/otp_settings_response.dart';
 import 'package:moseguros_api/src/model/otp_test_request.dart';
 import 'package:moseguros_api/src/model/otp_test_response.dart';
 import 'package:moseguros_api/src/model/otp_verify_response.dart';
+import 'package:moseguros_api/src/model/page_response_driver_response.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
+import 'package:moseguros_api/src/model/page_response_vehicle_response.dart';
 import 'package:moseguros_api/src/model/plate_format_response.dart';
 import 'package:moseguros_api/src/model/plate_formats_response.dart';
 import 'package:moseguros_api/src/model/platform_setting_response.dart';
@@ -64,6 +69,8 @@ import 'package:moseguros_api/src/model/public_reference_value_response.dart';
 import 'package:moseguros_api/src/model/public_reference_values_response.dart';
 import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
+import 'package:moseguros_api/src/model/registration_doc_response.dart';
+import 'package:moseguros_api/src/model/registry_lookup_response.dart';
 import 'package:moseguros_api/src/model/request_otp_request.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
 import 'package:moseguros_api/src/model/staff_login_request.dart';
@@ -74,6 +81,7 @@ import 'package:moseguros_api/src/model/test_plate_format_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_response.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/totp_setup_response.dart';
+import 'package:moseguros_api/src/model/update_driver_request.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
@@ -82,6 +90,11 @@ import 'package:moseguros_api/src/model/update_plate_format_request.dart';
 import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
 import 'package:moseguros_api/src/model/update_reference_value_request.dart';
 import 'package:moseguros_api/src/model/update_user_roles_request.dart';
+import 'package:moseguros_api/src/model/update_vehicle_drivers_request.dart';
+import 'package:moseguros_api/src/model/update_vehicle_request.dart';
+import 'package:moseguros_api/src/model/vehicle_driver_assignment.dart';
+import 'package:moseguros_api/src/model/vehicle_driver_response.dart';
+import 'package:moseguros_api/src/model/vehicle_response.dart';
 import 'package:moseguros_api/src/model/verify_contact_request.dart';
 import 'package:moseguros_api/src/model/verify_otp_request.dart';
 import 'package:moseguros_api/src/model/version_response.dart';
@@ -94,11 +107,14 @@ part 'serializers.g.dart';
   AssignableRolesResponse,
   ContactResponse,
   ContactsResponse,
+  CreateDriverRequest,
   CreateOrganizationRequest,
   CreatePlateFormatRequest,
   CreateReferenceValueRequest,
+  CreateVehicleRequest,
   CustomerProfileResponse,
   DeliveryReceiptRequest,
+  DriverResponse,
   FieldError,
   ForgotPasswordRequest,
   InsurerProfileRequest,
@@ -122,10 +138,12 @@ part 'serializers.g.dart';
   OtpTestRequest,
   OtpTestResponse,
   OtpVerifyResponse,
+  PageResponseDriverResponse,
   PageResponseInvitationResponse,
   PageResponseOrganizationSummaryResponse,
   PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
+  PageResponseVehicleResponse,
   PlateFormatResponse,
   PlateFormatsResponse,
   PlatformSettingResponse,
@@ -139,6 +157,8 @@ part 'serializers.g.dart';
   PublicReferenceValuesResponse,
   ReferenceValueResponse,
   RefreshTokenRequest,
+  RegistrationDocResponse,
+  RegistryLookupResponse,
   RequestOtpRequest,
   ResetPasswordRequest,
   StaffLoginRequest,
@@ -149,6 +169,7 @@ part 'serializers.g.dart';
   TestPlateFormatResponse,
   TokenResponse,
   TotpSetupResponse,
+  UpdateDriverRequest,
   UpdateMeRequest,
   UpdateMyProfileRequest,
   UpdateOrganizationRequest,
@@ -157,6 +178,11 @@ part 'serializers.g.dart';
   UpdatePlatformSettingRequest,
   UpdateReferenceValueRequest,
   UpdateUserRolesRequest,
+  UpdateVehicleDriversRequest,
+  UpdateVehicleRequest,
+  VehicleDriverAssignment,
+  VehicleDriverResponse,
+  VehicleResponse,
   VerifyContactRequest,
   VerifyOtpRequest,
   VersionResponse,

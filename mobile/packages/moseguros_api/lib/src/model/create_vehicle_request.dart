@@ -1,0 +1,397 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:built_collection/built_collection.dart';
+import 'package:moseguros_api/src/model/money.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
+
+part 'create_vehicle_request.g.dart';
+
+/// CreateVehicleRequest
+///
+/// Properties:
+/// * [category] 
+/// * [chassisNumber] - 5–30 letras ou dígitos (espaços e hífens ignorados)
+/// * [commercialValue] 
+/// * [engineCc] - 1–30 000; obrigatório excepto em TRAILER, onde tem de faltar
+/// * [grossWeightKg] - 1–100 000; obrigatório em HEAVY e TRAILER
+/// * [hasTracker] - Localizador instalado (defeito false)
+/// * [make] 
+/// * [model] 
+/// * [plate] - Num dos formatos activos (espaços, hífens e minúsculas aceites)
+/// * [provinceOfCirculation] 
+/// * [seats] - TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100
+/// * [usage] 
+/// * [year] - De 1900 ao próximo ano (em Africa/Maputo)
+@BuiltValue()
+abstract class CreateVehicleRequest implements Built<CreateVehicleRequest, CreateVehicleRequestBuilder> {
+  @BuiltValueField(wireName: r'category')
+  CreateVehicleRequestCategoryEnum get category;
+  // enum categoryEnum {  LIGHT_PASSENGER,  LIGHT_MIXED,  HEAVY,  MOTORCYCLE,  TRAILER,  BUS,  };
+
+  /// 5–30 letras ou dígitos (espaços e hífens ignorados)
+  @BuiltValueField(wireName: r'chassisNumber')
+  String get chassisNumber;
+
+  @BuiltValueField(wireName: r'commercialValue')
+  Money? get commercialValue;
+
+  /// 1–30 000; obrigatório excepto em TRAILER, onde tem de faltar
+  @BuiltValueField(wireName: r'engineCc')
+  int? get engineCc;
+
+  /// 1–100 000; obrigatório em HEAVY e TRAILER
+  @BuiltValueField(wireName: r'grossWeightKg')
+  int? get grossWeightKg;
+
+  /// Localizador instalado (defeito false)
+  @BuiltValueField(wireName: r'hasTracker')
+  bool? get hasTracker;
+
+  @BuiltValueField(wireName: r'make')
+  String get make;
+
+  @BuiltValueField(wireName: r'model')
+  String get model;
+
+  /// Num dos formatos activos (espaços, hífens e minúsculas aceites)
+  @BuiltValueField(wireName: r'plate')
+  String get plate;
+
+  @BuiltValueField(wireName: r'provinceOfCirculation')
+  CreateVehicleRequestProvinceOfCirculationEnum get provinceOfCirculation;
+  // enum provinceOfCirculationEnum {  MAPUTO_CITY,  MAPUTO,  GAZA,  INHAMBANE,  SOFALA,  MANICA,  TETE,  ZAMBEZIA,  NAMPULA,  CABO_DELGADO,  NIASSA,  };
+
+  /// TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100
+  @BuiltValueField(wireName: r'seats')
+  int get seats;
+
+  @BuiltValueField(wireName: r'usage')
+  CreateVehicleRequestUsageEnum get usage;
+  // enum usageEnum {  PRIVATE,  RENTAL,  PASSENGER_TRANSPORT,  GOODS,  TAXI,  DRIVING_SCHOOL,  };
+
+  /// De 1900 ao próximo ano (em Africa/Maputo)
+  @BuiltValueField(wireName: r'year')
+  int get year;
+
+  CreateVehicleRequest._();
+
+  factory CreateVehicleRequest([void updates(CreateVehicleRequestBuilder b)]) = _$CreateVehicleRequest;
+
+  @BuiltValueHook(initializeBuilder: true)
+  static void _defaults(CreateVehicleRequestBuilder b) => b;
+
+  @BuiltValueSerializer(custom: true)
+  static Serializer<CreateVehicleRequest> get serializer => _$CreateVehicleRequestSerializer();
+}
+
+class _$CreateVehicleRequestSerializer implements PrimitiveSerializer<CreateVehicleRequest> {
+  @override
+  final Iterable<Type> types = const [CreateVehicleRequest, _$CreateVehicleRequest];
+
+  @override
+  final String wireName = r'CreateVehicleRequest';
+
+  Iterable<Object?> _serializeProperties(
+    Serializers serializers,
+    CreateVehicleRequest object, {
+    FullType specifiedType = FullType.unspecified,
+  }) sync* {
+    yield r'category';
+    yield serializers.serialize(
+      object.category,
+      specifiedType: const FullType(CreateVehicleRequestCategoryEnum),
+    );
+    yield r'chassisNumber';
+    yield serializers.serialize(
+      object.chassisNumber,
+      specifiedType: const FullType(String),
+    );
+    if (object.commercialValue != null) {
+      yield r'commercialValue';
+      yield serializers.serialize(
+        object.commercialValue,
+        specifiedType: const FullType(Money),
+      );
+    }
+    if (object.engineCc != null) {
+      yield r'engineCc';
+      yield serializers.serialize(
+        object.engineCc,
+        specifiedType: const FullType(int),
+      );
+    }
+    if (object.grossWeightKg != null) {
+      yield r'grossWeightKg';
+      yield serializers.serialize(
+        object.grossWeightKg,
+        specifiedType: const FullType(int),
+      );
+    }
+    if (object.hasTracker != null) {
+      yield r'hasTracker';
+      yield serializers.serialize(
+        object.hasTracker,
+        specifiedType: const FullType(bool),
+      );
+    }
+    yield r'make';
+    yield serializers.serialize(
+      object.make,
+      specifiedType: const FullType(String),
+    );
+    yield r'model';
+    yield serializers.serialize(
+      object.model,
+      specifiedType: const FullType(String),
+    );
+    yield r'plate';
+    yield serializers.serialize(
+      object.plate,
+      specifiedType: const FullType(String),
+    );
+    yield r'provinceOfCirculation';
+    yield serializers.serialize(
+      object.provinceOfCirculation,
+      specifiedType: const FullType(CreateVehicleRequestProvinceOfCirculationEnum),
+    );
+    yield r'seats';
+    yield serializers.serialize(
+      object.seats,
+      specifiedType: const FullType(int),
+    );
+    yield r'usage';
+    yield serializers.serialize(
+      object.usage,
+      specifiedType: const FullType(CreateVehicleRequestUsageEnum),
+    );
+    yield r'year';
+    yield serializers.serialize(
+      object.year,
+      specifiedType: const FullType(int),
+    );
+  }
+
+  @override
+  Object serialize(
+    Serializers serializers,
+    CreateVehicleRequest object, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+  }
+
+  void _deserializeProperties(
+    Serializers serializers,
+    Object serialized, {
+    FullType specifiedType = FullType.unspecified,
+    required List<Object?> serializedList,
+    required CreateVehicleRequestBuilder result,
+    required List<Object?> unhandled,
+  }) {
+    for (var i = 0; i < serializedList.length; i += 2) {
+      final key = serializedList[i] as String;
+      final value = serializedList[i + 1];
+      switch (key) {
+        case r'category':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(CreateVehicleRequestCategoryEnum),
+          ) as CreateVehicleRequestCategoryEnum;
+          result.category = valueDes;
+          break;
+        case r'chassisNumber':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.chassisNumber = valueDes;
+          break;
+        case r'commercialValue':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(Money),
+          ) as Money;
+          result.commercialValue.replace(valueDes);
+          break;
+        case r'engineCc':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.engineCc = valueDes;
+          break;
+        case r'grossWeightKg':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.grossWeightKg = valueDes;
+          break;
+        case r'hasTracker':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(bool),
+          ) as bool;
+          result.hasTracker = valueDes;
+          break;
+        case r'make':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.make = valueDes;
+          break;
+        case r'model':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.model = valueDes;
+          break;
+        case r'plate':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.plate = valueDes;
+          break;
+        case r'provinceOfCirculation':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(CreateVehicleRequestProvinceOfCirculationEnum),
+          ) as CreateVehicleRequestProvinceOfCirculationEnum;
+          result.provinceOfCirculation = valueDes;
+          break;
+        case r'seats':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.seats = valueDes;
+          break;
+        case r'usage':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(CreateVehicleRequestUsageEnum),
+          ) as CreateVehicleRequestUsageEnum;
+          result.usage = valueDes;
+          break;
+        case r'year':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.year = valueDes;
+          break;
+        default:
+          unhandled.add(key);
+          unhandled.add(value);
+          break;
+      }
+    }
+  }
+
+  @override
+  CreateVehicleRequest deserialize(
+    Serializers serializers,
+    Object serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    final result = CreateVehicleRequestBuilder();
+    final serializedList = (serialized as Iterable<Object?>).toList();
+    final unhandled = <Object?>[];
+    _deserializeProperties(
+      serializers,
+      serialized,
+      specifiedType: specifiedType,
+      serializedList: serializedList,
+      unhandled: unhandled,
+      result: result,
+    );
+    return result.build();
+  }
+}
+
+class CreateVehicleRequestCategoryEnum extends EnumClass {
+
+  @BuiltValueEnumConst(wireName: r'LIGHT_PASSENGER')
+  static const CreateVehicleRequestCategoryEnum LIGHT_PASSENGER = _$createVehicleRequestCategoryEnum_LIGHT_PASSENGER;
+  @BuiltValueEnumConst(wireName: r'LIGHT_MIXED')
+  static const CreateVehicleRequestCategoryEnum LIGHT_MIXED = _$createVehicleRequestCategoryEnum_LIGHT_MIXED;
+  @BuiltValueEnumConst(wireName: r'HEAVY')
+  static const CreateVehicleRequestCategoryEnum HEAVY = _$createVehicleRequestCategoryEnum_HEAVY;
+  @BuiltValueEnumConst(wireName: r'MOTORCYCLE')
+  static const CreateVehicleRequestCategoryEnum MOTORCYCLE = _$createVehicleRequestCategoryEnum_MOTORCYCLE;
+  @BuiltValueEnumConst(wireName: r'TRAILER')
+  static const CreateVehicleRequestCategoryEnum TRAILER = _$createVehicleRequestCategoryEnum_TRAILER;
+  @BuiltValueEnumConst(wireName: r'BUS')
+  static const CreateVehicleRequestCategoryEnum BUS = _$createVehicleRequestCategoryEnum_BUS;
+
+  static Serializer<CreateVehicleRequestCategoryEnum> get serializer => _$createVehicleRequestCategoryEnumSerializer;
+
+  const CreateVehicleRequestCategoryEnum._(String name): super(name);
+
+  static BuiltSet<CreateVehicleRequestCategoryEnum> get values => _$createVehicleRequestCategoryEnumValues;
+  static CreateVehicleRequestCategoryEnum valueOf(String name) => _$createVehicleRequestCategoryEnumValueOf(name);
+}
+
+class CreateVehicleRequestProvinceOfCirculationEnum extends EnumClass {
+
+  @BuiltValueEnumConst(wireName: r'MAPUTO_CITY')
+  static const CreateVehicleRequestProvinceOfCirculationEnum MAPUTO_CITY = _$createVehicleRequestProvinceOfCirculationEnum_MAPUTO_CITY;
+  @BuiltValueEnumConst(wireName: r'MAPUTO')
+  static const CreateVehicleRequestProvinceOfCirculationEnum MAPUTO = _$createVehicleRequestProvinceOfCirculationEnum_MAPUTO;
+  @BuiltValueEnumConst(wireName: r'GAZA')
+  static const CreateVehicleRequestProvinceOfCirculationEnum GAZA = _$createVehicleRequestProvinceOfCirculationEnum_GAZA;
+  @BuiltValueEnumConst(wireName: r'INHAMBANE')
+  static const CreateVehicleRequestProvinceOfCirculationEnum INHAMBANE = _$createVehicleRequestProvinceOfCirculationEnum_INHAMBANE;
+  @BuiltValueEnumConst(wireName: r'SOFALA')
+  static const CreateVehicleRequestProvinceOfCirculationEnum SOFALA = _$createVehicleRequestProvinceOfCirculationEnum_SOFALA;
+  @BuiltValueEnumConst(wireName: r'MANICA')
+  static const CreateVehicleRequestProvinceOfCirculationEnum MANICA = _$createVehicleRequestProvinceOfCirculationEnum_MANICA;
+  @BuiltValueEnumConst(wireName: r'TETE')
+  static const CreateVehicleRequestProvinceOfCirculationEnum TETE = _$createVehicleRequestProvinceOfCirculationEnum_TETE;
+  @BuiltValueEnumConst(wireName: r'ZAMBEZIA')
+  static const CreateVehicleRequestProvinceOfCirculationEnum ZAMBEZIA = _$createVehicleRequestProvinceOfCirculationEnum_ZAMBEZIA;
+  @BuiltValueEnumConst(wireName: r'NAMPULA')
+  static const CreateVehicleRequestProvinceOfCirculationEnum NAMPULA = _$createVehicleRequestProvinceOfCirculationEnum_NAMPULA;
+  @BuiltValueEnumConst(wireName: r'CABO_DELGADO')
+  static const CreateVehicleRequestProvinceOfCirculationEnum CABO_DELGADO = _$createVehicleRequestProvinceOfCirculationEnum_CABO_DELGADO;
+  @BuiltValueEnumConst(wireName: r'NIASSA')
+  static const CreateVehicleRequestProvinceOfCirculationEnum NIASSA = _$createVehicleRequestProvinceOfCirculationEnum_NIASSA;
+
+  static Serializer<CreateVehicleRequestProvinceOfCirculationEnum> get serializer => _$createVehicleRequestProvinceOfCirculationEnumSerializer;
+
+  const CreateVehicleRequestProvinceOfCirculationEnum._(String name): super(name);
+
+  static BuiltSet<CreateVehicleRequestProvinceOfCirculationEnum> get values => _$createVehicleRequestProvinceOfCirculationEnumValues;
+  static CreateVehicleRequestProvinceOfCirculationEnum valueOf(String name) => _$createVehicleRequestProvinceOfCirculationEnumValueOf(name);
+}
+
+class CreateVehicleRequestUsageEnum extends EnumClass {
+
+  @BuiltValueEnumConst(wireName: r'PRIVATE')
+  static const CreateVehicleRequestUsageEnum PRIVATE = _$createVehicleRequestUsageEnum_PRIVATE;
+  @BuiltValueEnumConst(wireName: r'RENTAL')
+  static const CreateVehicleRequestUsageEnum RENTAL = _$createVehicleRequestUsageEnum_RENTAL;
+  @BuiltValueEnumConst(wireName: r'PASSENGER_TRANSPORT')
+  static const CreateVehicleRequestUsageEnum PASSENGER_TRANSPORT = _$createVehicleRequestUsageEnum_PASSENGER_TRANSPORT;
+  @BuiltValueEnumConst(wireName: r'GOODS')
+  static const CreateVehicleRequestUsageEnum GOODS = _$createVehicleRequestUsageEnum_GOODS;
+  @BuiltValueEnumConst(wireName: r'TAXI')
+  static const CreateVehicleRequestUsageEnum TAXI = _$createVehicleRequestUsageEnum_TAXI;
+  @BuiltValueEnumConst(wireName: r'DRIVING_SCHOOL')
+  static const CreateVehicleRequestUsageEnum DRIVING_SCHOOL = _$createVehicleRequestUsageEnum_DRIVING_SCHOOL;
+
+  static Serializer<CreateVehicleRequestUsageEnum> get serializer => _$createVehicleRequestUsageEnumSerializer;
+
+  const CreateVehicleRequestUsageEnum._(String name): super(name);
+
+  static BuiltSet<CreateVehicleRequestUsageEnum> get values => _$createVehicleRequestUsageEnumValues;
+  static CreateVehicleRequestUsageEnum valueOf(String name) => _$createVehicleRequestUsageEnumValueOf(name);
+}
+
