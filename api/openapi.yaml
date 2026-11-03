@@ -11,6 +11,8 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
+- description: "Ficheiros: download com autorização do módulo dono"
+  name: Document
 - description: Envio de mensagens e recibos de entrega
   name: Notification
 - description: "Organizações: seguradoras, mediadores, oficinas e outras"
@@ -697,6 +699,53 @@ paths:
       summary: Renova a sessão
       tags:
       - Identity
+  /api/v1/files/{id}:
+    get:
+      description: "Público ou autenticado: sem token o pedido é anónimo; com token\
+        \ inválido ou expirado dá 401. O módulo dono do ficheiro decide quem o lê\
+        ; sem autorização, ficheiro inexistente ou já limpo → 404 FILE_NOT_FOUND (nunca\
+        \ 403). Content-Type é o tipo real do ficheiro (image/jpeg, image/png, image/heic\
+        \ ou application/pdf); download=true pede Content-Disposition attachment em\
+        \ vez de inline."
+      operationId: downloadFile
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: true → Content-Disposition attachment (guardar); false → inline
+          (mostrar)
+        in: query
+        name: download
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: Conteúdo do ficheiro
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Descarrega um ficheiro
+      tags:
+      - Document
   /api/v1/integrations/delivery-receipts/{provider}:
     post:
       description: Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED;
