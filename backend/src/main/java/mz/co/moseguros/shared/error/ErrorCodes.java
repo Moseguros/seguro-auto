@@ -153,6 +153,28 @@ public final class ErrorCodes {
     /** Desactivar o último formato de matrícula activo (409). */
     public static final String LAST_ACTIVE_PLATE_FORMAT = "LAST_ACTIVE_PLATE_FORMAT";
 
+    // Produtos e versões do catálogo (S2-04)
+    /** Produto inexistente ou de outra seguradora (404). */
+    public static final String PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND";
+    /** Versão inexistente, de outra seguradora, ou (no catálogo público) nunca publicada (404). */
+    public static final String PRODUCT_VERSION_NOT_FOUND = "PRODUCT_VERSION_NOT_FOUND";
+    /** Documento inexistente na versão (404). */
+    public static final String PRODUCT_DOCUMENT_NOT_FOUND = "PRODUCT_DOCUMENT_NOT_FOUND";
+    /** Código de produto já usado na mesma seguradora (409). */
+    public static final String PRODUCT_CODE_ALREADY_EXISTS = "PRODUCT_CODE_ALREADY_EXISTS";
+    /** Mudar o tipo de um produto que já foi publicado (409). */
+    public static final String PRODUCT_TYPE_LOCKED = "PRODUCT_TYPE_LOCKED";
+    /** Escrita num produto retirado (409). */
+    public static final String PRODUCT_RETIRED = "PRODUCT_RETIRED";
+    /** O produto já tem uma versão em preparação ({@code DRAFT}) (409). */
+    public static final String PRODUCT_DRAFT_EXISTS = "PRODUCT_DRAFT_EXISTS";
+    /** Alteração a uma versão que não está em preparação (409). */
+    public static final String PRODUCT_VERSION_NOT_EDITABLE = "PRODUCT_VERSION_NOT_EDITABLE";
+    /** Mais de 10 documentos numa versão (409). */
+    public static final String PRODUCT_DOCUMENT_LIMIT_REACHED = "PRODUCT_DOCUMENT_LIMIT_REACHED";
+    /** A versão não cumpre as regras de publicação; as falhas vão em {@code errors[]} (400). */
+    public static final String PRODUCT_VERSION_NOT_PUBLISHABLE = "PRODUCT_VERSION_NOT_PUBLISHABLE";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -217,7 +239,17 @@ public final class ErrorCodes {
             Map.entry(PLATFORM_SETTING_NOT_FOUND, 404),
             Map.entry(PLATE_FORMAT_NOT_FOUND, 404),
             Map.entry(PLATE_FORMAT_CODE_ALREADY_EXISTS, 409),
-            Map.entry(LAST_ACTIVE_PLATE_FORMAT, 409));
+            Map.entry(LAST_ACTIVE_PLATE_FORMAT, 409),
+            Map.entry(PRODUCT_NOT_FOUND, 404),
+            Map.entry(PRODUCT_VERSION_NOT_FOUND, 404),
+            Map.entry(PRODUCT_DOCUMENT_NOT_FOUND, 404),
+            Map.entry(PRODUCT_CODE_ALREADY_EXISTS, 409),
+            Map.entry(PRODUCT_TYPE_LOCKED, 409),
+            Map.entry(PRODUCT_RETIRED, 409),
+            Map.entry(PRODUCT_DRAFT_EXISTS, 409),
+            Map.entry(PRODUCT_VERSION_NOT_EDITABLE, 409),
+            Map.entry(PRODUCT_DOCUMENT_LIMIT_REACHED, 409),
+            Map.entry(PRODUCT_VERSION_NOT_PUBLISHABLE, 400));
 
     private ErrorCodes() {
     }

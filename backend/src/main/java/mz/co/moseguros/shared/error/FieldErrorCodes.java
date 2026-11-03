@@ -72,6 +72,36 @@ public final class FieldErrorCodes {
     /** O exemplo não corresponde ao formato, ou formatado dá outro valor. */
     public static final String EXAMPLE_DOES_NOT_MATCH = "EXAMPLE_DOES_NOT_MATCH";
 
+    // Coberturas e publicação de produtos (S2-04)
+    /** Valor repetido numa lista (ex.: o mesmo código de cobertura duas vezes). Também usado no S2-03. */
+    public static final String DUPLICATED = "DUPLICATED";
+    /** Uma cobertura que se exige a si própria em {@code requiresCodes}. */
+    public static final String INVALID_REQUIREMENT = "INVALID_REQUIREMENT";
+    /** {@code capitalOptions} sem 2 a 10 valores positivos em ordem estritamente crescente. */
+    public static final String CAPITAL_OPTIONS_INVALID = "CAPITAL_OPTIONS_INVALID";
+    /** Código de país fora de {@code ^[A-Z]{2}$}. */
+    public static final String INVALID_COUNTRY_CODE = "INVALID_COUNTRY_CODE";
+    /** Âmbito territorial sem {@code MZ}. */
+    public static final String MZ_SCOPE_REQUIRED = "MZ_SCOPE_REQUIRED";
+    /** Tipo de capital não permitido para a cobertura. */
+    public static final String INVALID_CAPITAL_TYPE = "INVALID_CAPITAL_TYPE";
+    public static final String MTPL_REQUIRED = "MTPL_REQUIRED";
+    public static final String MTPL_MUST_BE_MANDATORY = "MTPL_MUST_BE_MANDATORY";
+    /** Capital da RC obrigatória abaixo de {@code MTPL_MIN_CAPITAL}. */
+    public static final String MTPL_CAPITAL_BELOW_MINIMUM = "MTPL_CAPITAL_BELOW_MINIMUM";
+    public static final String BORDER_ONLY_MTPL = "BORDER_ONLY_MTPL";
+    public static final String OD_NOT_ALLOWED_FOR_TYPE = "OD_NOT_ALLOWED_FOR_TYPE";
+    public static final String OD_REQUIRED_FOR_COMPREHENSIVE = "OD_REQUIRED_FOR_COMPREHENSIVE";
+    public static final String OD_CAPITAL_MUST_BE_VEHICLE_VALUE = "OD_CAPITAL_MUST_BE_VEHICLE_VALUE";
+    public static final String OD_THEFT_REQUIRES_OD_COVERAGES = "OD_THEFT_REQUIRES_OD_COVERAGES";
+    /** Um código de {@code requiresCodes} que não existe na versão. */
+    public static final String REQUIRED_COVERAGE_MISSING = "REQUIRED_COVERAGE_MISSING";
+    /** Capital (ou uma opção) da RC facultativa não superior a {@code MTPL_MIN_CAPITAL}. */
+    public static final String VTPL_CAPITAL_TOO_LOW = "VTPL_CAPITAL_TOO_LOW";
+    public static final String CROSS_BORDER_SCOPE_REQUIRED = "CROSS_BORDER_SCOPE_REQUIRED";
+    /** Falta um documento legal obrigatório em português. */
+    public static final String DOCUMENT_REQUIRED = "DOCUMENT_REQUIRED";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";
