@@ -244,7 +244,8 @@
     "LICENCE_ISSUE_DATE_INVALID": "The issue date must be after the birth date and not after today.",
     "HABITUAL_DRIVER_REQUIRED": "Choose the habitual driver.",
     "MULTIPLE_HABITUAL_DRIVERS": "There can only be one habitual driver.",
-    "DUPLICATED": "Repeated value."
+    "DUPLICATED": "Repeated value.",
+    "INVALID_MONEY": "Invalid amount. Use at most 2 decimal places."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -664,5 +665,167 @@
     "EXPIRED": "Expired",
     "REVOKED": "Revoked",
     "ACCEPTED": "Accepted"
+  },
+  "vehicleCategory": {
+    "LIGHT_PASSENGER": "Light passenger car",
+    "LIGHT_MIXED": "Light mixed-use vehicle",
+    "HEAVY": "Heavy vehicle",
+    "MOTORCYCLE": "Motorcycle",
+    "TRAILER": "Trailer",
+    "BUS": "Bus"
+  },
+  "vehicleUsage": {
+    "PRIVATE": "Private",
+    "RENTAL": "Rental",
+    "PASSENGER_TRANSPORT": "Passenger transport",
+    "GOODS": "Goods transport",
+    "TAXI": "Taxi",
+    "DRIVING_SCHOOL": "Driving school"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "tabs": {
+      "label": "Vehicles and drivers",
+      "vehicles": "Vehicles",
+      "drivers": "Drivers"
+    },
+    "add": "Add vehicle",
+    "empty": "You haven't registered any vehicles yet.",
+    "retry": "Try again",
+    "loadMore": "Show more",
+    "backToList": "Back to vehicles",
+    "verified": "Confirmed in the registry",
+    "notVerified": "Not confirmed in the registry",
+    "created": "Vehicle added. Now send a photo of the registration document.",
+    "saved": "Changes saved",
+    "removed": "Vehicle removed",
+    "newTitle": "Add vehicle",
+    "editTitle": "Edit vehicle",
+    "card": {
+      "summary": "{{make}} {{model}} · {{year}}",
+      "habitualDriver": "Usual driver: {{name}}",
+      "noHabitualDriver": "No usual driver",
+      "missingDoc": "Registration document missing"
+    },
+    "fields": {
+      "plate": "Number plate",
+      "chassisNumber": "Chassis number",
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "category": "Category",
+      "engineCc": "Engine size (cc)",
+      "seats": "Seats",
+      "grossWeightKg": "Gross weight (kg)",
+      "usage": "Use",
+      "provinceOfCirculation": "Province of circulation",
+      "commercialValue": "Market value",
+      "hasTracker": "Has a tracker (GPS)"
+    },
+    "form": {
+      "plateHelp": "E.g. {{examples}}",
+      "or": " or ",
+      "choose": "Choose",
+      "optional": "Optional",
+      "commercialValueHelp": "Required for own-damage insurance.",
+      "save": "Save",
+      "conflict": "This vehicle was changed on another device",
+      "reload": "Reload"
+    },
+    "lookup": {
+      "button": "Look up in the registry",
+      "filled": "We filled in the details from the vehicle registry. Check them against your registration document."
+    },
+    "detail": {
+      "edit": "Edit",
+      "remove": "Remove vehicle",
+      "data": "Details",
+      "yes": "Yes",
+      "no": "No",
+      "none": "—",
+      "removeDialog": {
+        "title": "Remove the vehicle?",
+        "text": "The vehicle will no longer appear in your account.",
+        "cancel": "Cancel",
+        "confirm": "Remove"
+      }
+    },
+    "doc": {
+      "title": "Registration document",
+      "none": "You haven't sent the registration document yet.",
+      "takePhoto": "Take photo",
+      "chooseFile": "Choose file",
+      "replace": "Replace",
+      "replacePhoto": "Replace with a photo",
+      "replaceFile": "Replace with a file",
+      "open": "Open",
+      "saved": "Registration document saved",
+      "uploading": "Sending the registration document…",
+      "alt": "Photo of the registration document",
+      "uploadedAt": "sent on {{date}}",
+      "type": {
+        "pdf": "Registration document (PDF)",
+        "heic": "Registration document photo (HEIC)"
+      }
+    },
+    "drivers": {
+      "title": "Drivers",
+      "none": "You haven't linked any drivers to this vehicle yet.",
+      "habitual": "Usual",
+      "manage": "Manage drivers"
+    },
+    "manage": {
+      "title": "Vehicle drivers",
+      "help": "Choose up to {{max}} drivers and the usual one.",
+      "habitual": "Usual",
+      "habitualOf": "{{name}} is the usual driver",
+      "noDrivers": "You haven't registered any drivers yet.",
+      "register": "Register driver",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Drivers saved"
+    }
+  },
+  "drivers": {
+    "title": "Drivers",
+    "add": "Register driver",
+    "empty": "You haven't registered any drivers yet.",
+    "backToList": "Back to drivers",
+    "me": "Me",
+    "actions": "Actions for {{name}}",
+    "edit": "Edit",
+    "remove": "Remove",
+    "saved": "Driver saved",
+    "removed": "Driver removed",
+    "newTitle": "Register driver",
+    "editTitle": "Edit driver",
+    "card": {
+      "categories": "Categories: {{list}}",
+      "licence": "Licence {{masked}}",
+      "vehicles_one": "{{count}} vehicle",
+      "vehicles_other": "{{count}} vehicles"
+    },
+    "removeDialog": {
+      "title": "Remove the driver?",
+      "text": "{{name}} will no longer appear in your account or on your vehicles.",
+      "cancel": "Cancel",
+      "confirm": "Remove"
+    },
+    "fields": {
+      "isOwner": "It's me",
+      "fullName": "Full name",
+      "birthDate": "Date of birth",
+      "licenceNumber": "Licence number",
+      "licenceCategories": "Categories",
+      "licenceIssueDate": "Licence issue date"
+    },
+    "form": {
+      "isOwnerHelp": "Turn on if you are the driver. We'll fill in your details from your profile.",
+      "change": "Change",
+      "changeLicence": "Change the licence number",
+      "save": "Save",
+      "conflict": "This driver was changed on another device",
+      "reload": "Reload"
+    }
   }
 }

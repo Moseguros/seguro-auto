@@ -244,7 +244,8 @@
     "LICENCE_ISSUE_DATE_INVALID": "A data de emissão tem de ser depois do nascimento e até hoje.",
     "HABITUAL_DRIVER_REQUIRED": "Escolha o condutor habitual.",
     "MULTIPLE_HABITUAL_DRIVERS": "Só pode haver um condutor habitual.",
-    "DUPLICATED": "Valor repetido."
+    "DUPLICATED": "Valor repetido.",
+    "INVALID_MONEY": "Valor inválido. Use no máximo 2 casas decimais."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -664,5 +665,167 @@
     "EXPIRED": "Expirado",
     "REVOKED": "Revogado",
     "ACCEPTED": "Aceite"
+  },
+  "vehicleCategory": {
+    "LIGHT_PASSENGER": "Ligeiro de passageiros",
+    "LIGHT_MIXED": "Ligeiro misto",
+    "HEAVY": "Pesado",
+    "MOTORCYCLE": "Motociclo",
+    "TRAILER": "Reboque",
+    "BUS": "Autocarro"
+  },
+  "vehicleUsage": {
+    "PRIVATE": "Particular",
+    "RENTAL": "Aluguer sem condutor",
+    "PASSENGER_TRANSPORT": "Transporte de passageiros",
+    "GOODS": "Transporte de mercadorias",
+    "TAXI": "Táxi",
+    "DRIVING_SCHOOL": "Escola de condução"
+  },
+  "vehicles": {
+    "title": "Veículos",
+    "tabs": {
+      "label": "Veículos e condutores",
+      "vehicles": "Veículos",
+      "drivers": "Condutores"
+    },
+    "add": "Acrescentar veículo",
+    "empty": "Ainda não registou nenhum veículo.",
+    "retry": "Tentar de novo",
+    "loadMore": "Ver mais",
+    "backToList": "Voltar aos veículos",
+    "verified": "Confirmado no registo",
+    "notVerified": "Não confirmado no registo",
+    "created": "Veículo acrescentado. Envie agora a foto do livrete.",
+    "saved": "Alterações guardadas",
+    "removed": "Veículo retirado",
+    "newTitle": "Acrescentar veículo",
+    "editTitle": "Alterar veículo",
+    "card": {
+      "summary": "{{make}} {{model}} · {{year}}",
+      "habitualDriver": "Condutor habitual: {{name}}",
+      "noHabitualDriver": "Sem condutor habitual",
+      "missingDoc": "Livrete em falta"
+    },
+    "fields": {
+      "plate": "Matrícula",
+      "chassisNumber": "N.º de chassis",
+      "make": "Marca",
+      "model": "Modelo",
+      "year": "Ano",
+      "category": "Categoria",
+      "engineCc": "Cilindrada (cm³)",
+      "seats": "Lugares",
+      "grossWeightKg": "Peso bruto (kg)",
+      "usage": "Uso",
+      "provinceOfCirculation": "Província de circulação",
+      "commercialValue": "Valor comercial",
+      "hasTracker": "Tem localizador (GPS)"
+    },
+    "form": {
+      "plateHelp": "Ex.: {{examples}}",
+      "or": " ou ",
+      "choose": "Escolha",
+      "optional": "Opcional",
+      "commercialValueHelp": "Necessário para seguros de danos próprios.",
+      "save": "Guardar",
+      "conflict": "Este veículo foi alterado noutro dispositivo",
+      "reload": "Recarregar"
+    },
+    "lookup": {
+      "button": "Procurar no registo",
+      "filled": "Preenchemos os dados a partir do registo automóvel. Confirme-os com o seu livrete."
+    },
+    "detail": {
+      "edit": "Alterar",
+      "remove": "Retirar veículo",
+      "data": "Dados",
+      "yes": "Sim",
+      "no": "Não",
+      "none": "—",
+      "removeDialog": {
+        "title": "Retirar o veículo?",
+        "text": "O veículo deixa de aparecer na sua conta.",
+        "cancel": "Cancelar",
+        "confirm": "Retirar"
+      }
+    },
+    "doc": {
+      "title": "Livrete",
+      "none": "Ainda não enviou o livrete.",
+      "takePhoto": "Tirar foto",
+      "chooseFile": "Escolher ficheiro",
+      "replace": "Substituir",
+      "replacePhoto": "Substituir com uma foto",
+      "replaceFile": "Substituir com um ficheiro",
+      "open": "Abrir",
+      "saved": "Livrete guardado",
+      "uploading": "A enviar o livrete…",
+      "alt": "Foto do livrete",
+      "uploadedAt": "enviado em {{date}}",
+      "type": {
+        "pdf": "Livrete em PDF",
+        "heic": "Foto do livrete (HEIC)"
+      }
+    },
+    "drivers": {
+      "title": "Condutores",
+      "none": "Ainda não associou condutores a este veículo.",
+      "habitual": "Habitual",
+      "manage": "Gerir condutores"
+    },
+    "manage": {
+      "title": "Condutores do veículo",
+      "help": "Escolha até {{max}} condutores e indique o habitual.",
+      "habitual": "Habitual",
+      "habitualOf": "{{name}} é o condutor habitual",
+      "noDrivers": "Ainda não registou condutores.",
+      "register": "Registar condutor",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saved": "Condutores guardados"
+    }
+  },
+  "drivers": {
+    "title": "Condutores",
+    "add": "Registar condutor",
+    "empty": "Ainda não registou condutores.",
+    "backToList": "Voltar aos condutores",
+    "me": "Eu",
+    "actions": "Acções de {{name}}",
+    "edit": "Alterar",
+    "remove": "Retirar",
+    "saved": "Condutor guardado",
+    "removed": "Condutor retirado",
+    "newTitle": "Registar condutor",
+    "editTitle": "Alterar condutor",
+    "card": {
+      "categories": "Categorias: {{list}}",
+      "licence": "Carta {{masked}}",
+      "vehicles_one": "{{count}} veículo",
+      "vehicles_other": "{{count}} veículos"
+    },
+    "removeDialog": {
+      "title": "Retirar o condutor?",
+      "text": "{{name}} deixa de aparecer na sua conta e nos seus veículos.",
+      "cancel": "Cancelar",
+      "confirm": "Retirar"
+    },
+    "fields": {
+      "isOwner": "Sou eu",
+      "fullName": "Nome completo",
+      "birthDate": "Data de nascimento",
+      "licenceNumber": "N.º da carta",
+      "licenceCategories": "Categorias",
+      "licenceIssueDate": "Data de emissão da carta"
+    },
+    "form": {
+      "isOwnerHelp": "Ligue se o condutor é o próprio. Preenchemos os dados a partir do seu perfil.",
+      "change": "Alterar",
+      "changeLicence": "Alterar o n.º da carta",
+      "save": "Guardar",
+      "conflict": "Este condutor foi alterado noutro dispositivo",
+      "reload": "Recarregar"
+    }
   }
 }
