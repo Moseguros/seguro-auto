@@ -16,6 +16,8 @@ import { ProductDetailPage } from './features/products/ProductDetailPage';
 import { ProductListPage } from './features/products/ProductListPage';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
 import { ReferenceTablesPage } from './features/references/ReferenceTablesPage';
+import { TariffEditorPage } from './features/tariffs/TariffEditorPage';
+import { TariffsPage } from './features/tariffs/TariffsPage';
 import { ForgotPasswordPage } from './features/staff-auth/ForgotPasswordPage';
 import { InvitationPage } from './features/staff-auth/InvitationPage';
 import { ResetPasswordPage } from './features/staff-auth/ResetPasswordPage';
@@ -107,6 +109,14 @@ const insurerRoutes: RouteObject[] = [
   {
     path: 'produtos/:productId/versoes/:versionId',
     element: withPermission(Permissions.productRead, <ProductVersionEditorPage />),
+  },
+  {
+    path: 'tarifas',
+    element: withPermission(Permissions.productRead, <TariffsPage />),
+  },
+  {
+    path: 'tarifas/:versionId',
+    element: withPermission(Permissions.productRead, <TariffEditorPage />),
   },
 ];
 

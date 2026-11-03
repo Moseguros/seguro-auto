@@ -14,6 +14,7 @@ export const Permissions = {
   orgUserManage: 'org-user:manage',
   productRead: 'product:read',
   productManage: 'product:manage',
+  ratingManage: 'rating:manage',
   referenceManage: 'reference:manage',
 } as const;
 

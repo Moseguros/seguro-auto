@@ -18,6 +18,7 @@ import {
 } from '../../../api/generated';
 import { getProblem, problemMessage } from '../../../errors/problem';
 import { fieldText } from '../../organizations/OrganizationForm';
+import { TariffMissingWarning } from '../../tariffs/TariffMissingWarning';
 import { CatalogProductPreview } from '../CatalogProductPreview';
 import { PublishDialog } from '../PublishDialog';
 import { coverageIndex, groupByStep, type EditorStep } from '../publicationErrors';
@@ -114,6 +115,7 @@ export function PreviewStep({
       {!readOnly && validation.isSuccess && publishable && (
         <Alert severity="success">{t('products.preview.ready')}</Alert>
       )}
+      {!readOnly && <TariffMissingWarning versionId={version.id} />}
       <Stack spacing={1}>
         <Typography variant="h6" component="h3">
           {t('products.preview.title')}

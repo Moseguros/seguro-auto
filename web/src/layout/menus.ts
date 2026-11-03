@@ -101,7 +101,12 @@ export const menus: Record<Area, MenuItem[]> = {
       icon: Inventory,
       permission: 'product:read',
     },
-    { key: 'tariffs', path: '/seguradora/tarifas', icon: PriceChange },
+    {
+      key: 'tariffs',
+      path: '/seguradora/tarifas',
+      icon: PriceChange,
+      permission: 'product:read',
+    },
     { key: 'proposals', path: '/seguradora/propostas', icon: Assignment },
     { key: 'policies', path: '/seguradora/apolices', icon: Description },
     { key: 'payments', path: '/seguradora/pagamentos', icon: Payments },
