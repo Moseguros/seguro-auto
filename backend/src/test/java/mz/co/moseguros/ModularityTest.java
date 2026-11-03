@@ -53,6 +53,20 @@ class ModularityTest {
                 .getResource("mz/co/moseguros/shared/config/ConfigPlateFormatProvider.class")).isNull();
     }
 
+    /**
+     * S2-03: vehicle só usa document e shared (o vehicle → identity do grafo ainda não é usado), e
+     * nenhum módulo depende de vehicle nesta fase.
+     */
+    @Test
+    void vehicleDependsOnDocumentAndSharedAndNobodyDependsOnVehicle() {
+        assertThat(dependenciesOf("vehicle")).contains("document").isSubsetOf("shared", "document");
+        assertThat(modules.stream()
+                .filter(m -> !m.getName().equals("vehicle"))
+                .filter(m -> dependenciesOf(m.getName()).contains("vehicle"))
+                .map(ApplicationModule::getName))
+                .isEmpty();
+    }
+
     private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
         return module.getDependencies(modules).stream()
