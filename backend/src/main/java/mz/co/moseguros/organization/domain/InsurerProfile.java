@@ -51,11 +51,11 @@ public class InsurerProfile extends BaseEntity {
     @Column(name = "rating_mode", nullable = false, length = 10)
     private RatingMode ratingMode = RatingMode.INTERNAL;
 
-    /** Serviço de tarifação externo (S3-02); só leitura nesta fase. */
+    /** Serviço de tarifação externo (S3-02); muda só pela plataforma ({@code updateRatingIntegration}). */
     @Column(name = "rating_endpoint_url", length = 500)
     private String ratingEndpointUrl;
 
-    /** Referência do segredo no cofre (S3-02), nunca o segredo; só leitura nesta fase. */
+    /** Referência do segredo no cofre (S3-02), nunca o segredo; muda só pela plataforma. */
     @Column(name = "rating_secret_ref", length = 200)
     private String ratingSecretRef;
 
@@ -108,6 +108,21 @@ public class InsurerProfile extends BaseEntity {
             throw new IllegalArgumentException("charges must be a JSON array");
         }
         this.charges = newCharges.deepCopy();
+    }
+
+    /**
+     * Ligação à tarifação da seguradora (S3-02 §9), já validada pelo serviço. Em {@code EXTERNAL}
+     * o endereço e a referência do segredo são obrigatórios (a BD também o garante); em
+     * {@code INTERNAL} ficam gravados para voltar a ligar, mas não se usam.
+     */
+    public void changeRatingIntegration(RatingMode mode, String endpointUrl, String secretRef) {
+        Objects.requireNonNull(mode, "mode");
+        if (mode == RatingMode.EXTERNAL && (endpointUrl == null || secretRef == null)) {
+            throw new IllegalArgumentException("EXTERNAL rating needs the endpoint and the secret reference");
+        }
+        this.ratingMode = mode;
+        this.ratingEndpointUrl = endpointUrl;
+        this.ratingSecretRef = secretRef;
     }
 
     public void setOmbudsman(Organization ombudsman) {
