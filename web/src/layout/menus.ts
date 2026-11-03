@@ -50,6 +50,20 @@ export type MenuItem = {
   permission?: string;
 };
 
+/**
+ * Caminhos sem item próprio no menu e o item (`key`) que fica marcado quando se está neles (o
+ * próprio caminho e os que começam por ele).
+ */
+export const menuAliases: Record<string, string> = { '/cliente/condutores': 'vehicles' };
+
+/** Item marcado por um alias para o caminho, se houver. */
+export function aliasedMenuKey(pathname: string): string | undefined {
+  const match = Object.keys(menuAliases).find(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+  return match ? menuAliases[match] : undefined;
+}
+
 export const menus: Record<Area, MenuItem[]> = {
   cliente: [
     { key: 'home', path: '/cliente', icon: Home },

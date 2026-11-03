@@ -147,6 +147,19 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**reactivateOrganization**](doc/OrganizationApi.md#reactivateorganization) | **POST** /api/v1/organizations/{id}/reactivate | Reactiva uma organização suspensa
 [*OrganizationApi*](doc/OrganizationApi.md) | [**suspendOrganization**](doc/OrganizationApi.md#suspendorganization) | **POST** /api/v1/organizations/{id}/suspend | Suspende uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
+[*VehicleApi*](doc/VehicleApi.md) | [**createMyDriver**](doc/VehicleApi.md#createmydriver) | **POST** /api/v1/me/drivers | Regista um condutor
+[*VehicleApi*](doc/VehicleApi.md) | [**createMyVehicle**](doc/VehicleApi.md#createmyvehicle) | **POST** /api/v1/me/vehicles | Regista um veículo
+[*VehicleApi*](doc/VehicleApi.md) | [**deleteMyDriver**](doc/VehicleApi.md#deletemydriver) | **DELETE** /api/v1/me/drivers/{id} | Retira um condutor
+[*VehicleApi*](doc/VehicleApi.md) | [**deleteMyVehicle**](doc/VehicleApi.md#deletemyvehicle) | **DELETE** /api/v1/me/vehicles/{id} | Retira um veículo
+[*VehicleApi*](doc/VehicleApi.md) | [**getMyDriver**](doc/VehicleApi.md#getmydriver) | **GET** /api/v1/me/drivers/{id} | Condutor do cliente
+[*VehicleApi*](doc/VehicleApi.md) | [**getMyVehicle**](doc/VehicleApi.md#getmyvehicle) | **GET** /api/v1/me/vehicles/{id} | Veículo do cliente
+[*VehicleApi*](doc/VehicleApi.md) | [**listMyDrivers**](doc/VehicleApi.md#listmydrivers) | **GET** /api/v1/me/drivers | Lista os condutores do cliente
+[*VehicleApi*](doc/VehicleApi.md) | [**listMyVehicles**](doc/VehicleApi.md#listmyvehicles) | **GET** /api/v1/me/vehicles | Lista os veículos do cliente
+[*VehicleApi*](doc/VehicleApi.md) | [**lookupVehicleRegistry**](doc/VehicleApi.md#lookupvehicleregistry) | **GET** /api/v1/me/vehicles/registry-lookup | Consulta uma matrícula no registo automóvel
+[*VehicleApi*](doc/VehicleApi.md) | [**updateMyDriver**](doc/VehicleApi.md#updatemydriver) | **PUT** /api/v1/me/drivers/{id} | Altera um condutor
+[*VehicleApi*](doc/VehicleApi.md) | [**updateMyVehicle**](doc/VehicleApi.md#updatemyvehicle) | **PUT** /api/v1/me/vehicles/{id} | Altera um veículo
+[*VehicleApi*](doc/VehicleApi.md) | [**updateMyVehicleDrivers**](doc/VehicleApi.md#updatemyvehicledrivers) | **PUT** /api/v1/me/vehicles/{id}/drivers | Substitui os condutores do veículo
+[*VehicleApi*](doc/VehicleApi.md) | [**uploadMyVehicleRegistrationDoc**](doc/VehicleApi.md#uploadmyvehicleregistrationdoc) | **POST** /api/v1/me/vehicles/{id}/registration-doc | Envia a foto ou o PDF do livrete
 
 
 ## Documentation For Models
@@ -160,12 +173,15 @@ Class | Method | HTTP request | Description
  - [ContactsResponse](doc/ContactsResponse.md)
  - [CoverageRequest](doc/CoverageRequest.md)
  - [CoverageResponse](doc/CoverageResponse.md)
+ - [CreateDriverRequest](doc/CreateDriverRequest.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
  - [CreateProductRequest](doc/CreateProductRequest.md)
  - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
+ - [CreateVehicleRequest](doc/CreateVehicleRequest.md)
  - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
+ - [DriverResponse](doc/DriverResponse.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
@@ -191,11 +207,13 @@ Class | Method | HTTP request | Description
  - [OtpTestResponse](doc/OtpTestResponse.md)
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
  - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
+ - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
+ - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
@@ -216,6 +234,8 @@ Class | Method | HTTP request | Description
  - [PublishProductVersionRequest](doc/PublishProductVersionRequest.md)
  - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
+ - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
+ - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
@@ -228,6 +248,7 @@ Class | Method | HTTP request | Description
  - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
  - [TokenResponse](doc/TokenResponse.md)
  - [TotpSetupResponse](doc/TotpSetupResponse.md)
+ - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
@@ -238,7 +259,12 @@ Class | Method | HTTP request | Description
  - [UpdateProductVersionRequest](doc/UpdateProductVersionRequest.md)
  - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
+ - [UpdateVehicleDriversRequest](doc/UpdateVehicleDriversRequest.md)
+ - [UpdateVehicleRequest](doc/UpdateVehicleRequest.md)
  - [VehicleCategory](doc/VehicleCategory.md)
+ - [VehicleDriverAssignment](doc/VehicleDriverAssignment.md)
+ - [VehicleDriverResponse](doc/VehicleDriverResponse.md)
+ - [VehicleResponse](doc/VehicleResponse.md)
  - [VehicleUsage](doc/VehicleUsage.md)
  - [VerifyContactRequest](doc/VerifyContactRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)

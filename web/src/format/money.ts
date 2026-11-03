@@ -1,21 +1,24 @@
 import type { Money } from '../api/generated';
 import i18n from '../i18n';
 
-function numberLocale(): string {
-  return i18n.language === 'en' ? 'en' : 'pt-MZ';
+function numberLocale(language: string): string {
+  return language === 'en' ? 'en' : 'pt-MZ';
 }
 
 /** Só o número em meticais (`3 000 000,00`), sem a moeda. */
-export function formatAmount(m: Pick<Money, 'amount'>): string {
-  return new Intl.NumberFormat(numberLocale(), {
+export function formatAmount(m: Pick<Money, 'amount'>, language: string = i18n.language): string {
+  return new Intl.NumberFormat(numberLocale(language), {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(m.amount / 100);
 }
 
-/** Valor em centavos mostrado em meticais: `{ amount: 300000000 }` → `3 000 000,00 MT`. */
-export function formatMoney(m: Pick<Money, 'amount'>): string {
-  return `${formatAmount(m)} MT`;
+/**
+ * Valor em centavos mostrado em meticais: `{ amount: 300000000 }` → `3 000 000,00 MT` (pt) ou
+ * `3,000,000.00 MT` (en).
+ */
+export function formatMoney(m: Pick<Money, 'amount'>, language: string = i18n.language): string {
+  return `${formatAmount(m, language)} MT`;
 }
 
 /** Centavos → `Money` em meticais. */
@@ -26,12 +29,14 @@ export function mzn(amount: number): Money {
 const meticais = /^(\d+)(?:,(\d{1,2}))?$/;
 
 /**
- * Texto escrito pelo utilizador → centavos (inteiro), sem vírgula flutuante. Os espaços e os
- * pontos são separadores de milhares; a vírgula é o separador decimal (no máximo 2 casas).
- * Vazio → `null`; outra coisa → `'invalid'`.
+ * Texto escrito pelo utilizador → centavos (inteiro), sem vírgula flutuante. Os espaços
+ * (incluindo os não separáveis que o `Intl` usa nos milhares) e os pontos são separadores de
+ * milhares; a vírgula é o separador decimal (no máximo 2 casas). Vazio → `null`; outra coisa →
+ * `'invalid'`.
  */
 export function parseMeticais(text: string): number | null | 'invalid' {
-  const compact = text.replace(/[\s\u00a0\u202f]/g, '').replace(/\./g, '');
+  // `\s` inclui os espaços não separáveis (U+00A0, U+202F) que o `Intl` usa nos milhares.
+  const compact = text.replace(/\s/g, '').replace(/\./g, '');
   if (compact === '') return null;
   const match = meticais.exec(compact);
   if (!match) return 'invalid';

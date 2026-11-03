@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next';
 import type { Money } from '../api/generated';
 import { formatAmount, mzn, parseMeticais } from '../format/money';
 
-export interface MoneyFieldProps {
-  label: string;
+export interface MoneyFieldProps extends Omit<
+  TextFieldProps,
+  'value' | 'onChange' | 'error' | 'helperText' | 'type'
+> {
   value: Money | null;
   /** Só com um valor válido (ou `null` com o campo vazio). */
   onChange(value: Money | null): void;
@@ -14,30 +16,26 @@ export interface MoneyFieldProps {
   onValidityChange?(valid: boolean): void;
   error?: boolean;
   helperText?: string;
-  disabled?: boolean;
-  required?: boolean;
-  fullWidth?: boolean;
-  size?: TextFieldProps['size'];
-  name?: string;
 }
 
 function textOf(value: Money | null): string {
   return value ? formatAmount(value) : '';
 }
 
-/** Campo de dinheiro em meticais (sufixo "MT"); guarda centavos. */
+/**
+ * Campo de dinheiro em meticais (sufixo "MT"); guarda centavos. Aceita `3 000 000`,
+ * `3.000.000,50` ou `3000000,5` e, ao perder o foco, mostra o valor formatado.
+ */
 export function MoneyField({
-  label,
   value,
   onChange,
   onValidityChange,
   error,
   helperText,
-  disabled,
-  required,
   fullWidth = true,
-  size,
-  name,
+  onBlur,
+  slotProps,
+  ...props
 }: MoneyFieldProps) {
   const { t, i18n } = useTranslation();
   const [text, setText] = useState(() => textOf(value));
@@ -71,28 +69,27 @@ export function MoneyField({
       onChange(parsed === null ? null : mzn(parsed));
   };
 
-  const blur = () => {
-    const parsed = parseMeticais(text);
-    if (parsed !== 'invalid' && parsed !== null) setText(formatAmount({ amount: parsed }));
-  };
-
   return (
     <TextField
-      label={label}
-      name={name}
+      autoComplete="off"
+      {...props}
+      fullWidth={fullWidth}
       value={text}
       onChange={(event) => change(event.target.value)}
-      onBlur={blur}
+      onBlur={(event) => {
+        const parsed = parseMeticais(text);
+        if (parsed !== 'invalid' && parsed !== null) setText(formatAmount({ amount: parsed }));
+        onBlur?.(event);
+      }}
       error={invalid || error}
       helperText={invalid ? t('validation.INVALID_MONEY') : helperText}
-      disabled={disabled}
-      required={required}
-      fullWidth={fullWidth}
-      size={size}
-      autoComplete="off"
       slotProps={{
-        htmlInput: { inputMode: 'decimal' },
-        input: { endAdornment: <InputAdornment position="end">MT</InputAdornment> },
+        ...slotProps,
+        htmlInput: { inputMode: 'decimal', ...(slotProps?.htmlInput as object) },
+        input: {
+          endAdornment: <InputAdornment position="end">MT</InputAdornment>,
+          ...(slotProps?.input as object),
+        },
       }}
     />
   );

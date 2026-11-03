@@ -6,6 +6,8 @@ import { RequireAuth } from './auth/RequireAuth';
 import { OtpSettingsPage } from './features/admin-auth/OtpSettingsPage';
 import { CustomerLoginPage } from './features/customer-auth/CustomerLoginPage';
 import { CustomerHomePage } from './features/customer-profile/CustomerHomePage';
+import { DriverFormPage } from './features/drivers/DriverFormPage';
+import { DriverListPage } from './features/drivers/DriverListPage';
 import { ProfilePage } from './features/customer-profile/ProfilePage';
 import { OrganizationCreatePage } from './features/organizations/OrganizationCreatePage';
 import { OrganizationDetailPage } from './features/organizations/OrganizationDetailPage';
@@ -19,6 +21,9 @@ import { InvitationPage } from './features/staff-auth/InvitationPage';
 import { ResetPasswordPage } from './features/staff-auth/ResetPasswordPage';
 import { StaffLoginPage } from './features/staff-auth/StaffLoginPage';
 import { UsersPage } from './features/users/UsersPage';
+import { VehicleDetailPage } from './features/vehicles/VehicleDetailPage';
+import { VehicleFormPage } from './features/vehicles/VehicleFormPage';
+import { VehicleListPage } from './features/vehicles/VehicleListPage';
 import { AppLayout } from './layout/AppLayout';
 import { PublicLayout } from './layout/PublicLayout';
 import type { Area } from './layout/menus';
@@ -151,6 +156,13 @@ const customerRoutes: RouteObject = {
   children: [
     { index: true, element: <CustomerHomePage /> },
     { path: 'perfil', element: <ProfilePage /> },
+    { path: 'veiculos', element: <VehicleListPage /> },
+    { path: 'veiculos/novo', element: <VehicleFormPage /> },
+    { path: 'veiculos/:id', element: <VehicleDetailPage /> },
+    { path: 'veiculos/:id/editar', element: <VehicleFormPage /> },
+    { path: 'condutores', element: <DriverListPage /> },
+    { path: 'condutores/novo', element: <DriverFormPage /> },
+    { path: 'condutores/:id/editar', element: <DriverFormPage /> },
     { path: '*', element: <UnderConstructionPage /> },
   ],
 };

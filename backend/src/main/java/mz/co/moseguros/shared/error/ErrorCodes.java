@@ -174,6 +174,29 @@ public final class ErrorCodes {
     public static final String PRODUCT_DOCUMENT_LIMIT_REACHED = "PRODUCT_DOCUMENT_LIMIT_REACHED";
     /** A versão não cumpre as regras de publicação; as falhas vão em {@code errors[]} (400). */
     public static final String PRODUCT_VERSION_NOT_PUBLISHABLE = "PRODUCT_VERSION_NOT_PUBLISHABLE";
+    // Veículos e condutores do cliente (S2-03)
+    /** Veículo inexistente, retirado ou de outro cliente (404). */
+    public static final String VEHICLE_NOT_FOUND = "VEHICLE_NOT_FOUND";
+    /** O cliente já tem um veículo activo com esta matrícula (409). */
+    public static final String VEHICLE_ALREADY_REGISTERED = "VEHICLE_ALREADY_REGISTERED";
+    /** Máximo de 20 veículos activos por cliente (409). */
+    public static final String VEHICLE_LIMIT_REACHED = "VEHICLE_LIMIT_REACHED";
+    /** O veículo não pode ser retirado agora (ex.: apólice em vigor) (409). */
+    public static final String VEHICLE_REMOVAL_BLOCKED = "VEHICLE_REMOVAL_BLOCKED";
+    /** Matrícula sem registo no registo automóvel (404). */
+    public static final String VEHICLE_REGISTRY_NOT_FOUND = "VEHICLE_REGISTRY_NOT_FOUND";
+    /** Registo automóvel indisponível (503). */
+    public static final String VEHICLE_REGISTRY_UNAVAILABLE = "VEHICLE_REGISTRY_UNAVAILABLE";
+    /** Condutor inexistente, retirado ou de outro cliente (404). */
+    public static final String DRIVER_NOT_FOUND = "DRIVER_NOT_FOUND";
+    /** O cliente já tem um condutor activo com esta carta (409). */
+    public static final String DRIVER_ALREADY_REGISTERED = "DRIVER_ALREADY_REGISTERED";
+    /** Máximo de 10 condutores activos por cliente (409). */
+    public static final String DRIVER_LIMIT_REACHED = "DRIVER_LIMIT_REACHED";
+    /** O cliente já se registou como condutor ({@code isOwner}) (409). */
+    public static final String OWNER_DRIVER_ALREADY_EXISTS = "OWNER_DRIVER_ALREADY_EXISTS";
+    /** O condutor é o habitual de um veículo activo (409). */
+    public static final String DRIVER_IS_HABITUAL = "DRIVER_IS_HABITUAL";
 
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
@@ -249,7 +272,18 @@ public final class ErrorCodes {
             Map.entry(PRODUCT_DRAFT_EXISTS, 409),
             Map.entry(PRODUCT_VERSION_NOT_EDITABLE, 409),
             Map.entry(PRODUCT_DOCUMENT_LIMIT_REACHED, 409),
-            Map.entry(PRODUCT_VERSION_NOT_PUBLISHABLE, 400));
+            Map.entry(PRODUCT_VERSION_NOT_PUBLISHABLE, 400),
+            Map.entry(VEHICLE_NOT_FOUND, 404),
+            Map.entry(VEHICLE_ALREADY_REGISTERED, 409),
+            Map.entry(VEHICLE_LIMIT_REACHED, 409),
+            Map.entry(VEHICLE_REMOVAL_BLOCKED, 409),
+            Map.entry(VEHICLE_REGISTRY_NOT_FOUND, 404),
+            Map.entry(VEHICLE_REGISTRY_UNAVAILABLE, 503),
+            Map.entry(DRIVER_NOT_FOUND, 404),
+            Map.entry(DRIVER_ALREADY_REGISTERED, 409),
+            Map.entry(DRIVER_LIMIT_REACHED, 409),
+            Map.entry(OWNER_DRIVER_ALREADY_EXISTS, 409),
+            Map.entry(DRIVER_IS_HABITUAL, 409));
 
     private ErrorCodes() {
     }

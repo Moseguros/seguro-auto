@@ -23,12 +23,15 @@ import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/coverage_request.dart';
 import 'package:moseguros_api/src/model/coverage_response.dart';
+import 'package:moseguros_api/src/model/create_driver_request.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
 import 'package:moseguros_api/src/model/create_plate_format_request.dart';
 import 'package:moseguros_api/src/model/create_product_request.dart';
 import 'package:moseguros_api/src/model/create_reference_value_request.dart';
+import 'package:moseguros_api/src/model/create_vehicle_request.dart';
 import 'package:moseguros_api/src/model/customer_profile_response.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
+import 'package:moseguros_api/src/model/driver_response.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
 import 'package:moseguros_api/src/model/forgot_password_request.dart';
 import 'package:moseguros_api/src/model/insurer_branding_response.dart';
@@ -54,11 +57,13 @@ import 'package:moseguros_api/src/model/otp_test_request.dart';
 import 'package:moseguros_api/src/model/otp_test_response.dart';
 import 'package:moseguros_api/src/model/otp_verify_response.dart';
 import 'package:moseguros_api/src/model/page_response_catalog_product_response.dart';
+import 'package:moseguros_api/src/model/page_response_driver_response.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
+import 'package:moseguros_api/src/model/page_response_vehicle_response.dart';
 import 'package:moseguros_api/src/model/plate_format_response.dart';
 import 'package:moseguros_api/src/model/plate_formats_response.dart';
 import 'package:moseguros_api/src/model/platform_setting_response.dart';
@@ -79,6 +84,8 @@ import 'package:moseguros_api/src/model/public_reference_values_response.dart';
 import 'package:moseguros_api/src/model/publish_product_version_request.dart';
 import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
+import 'package:moseguros_api/src/model/registration_doc_response.dart';
+import 'package:moseguros_api/src/model/registry_lookup_response.dart';
 import 'package:moseguros_api/src/model/replace_coverages_request.dart';
 import 'package:moseguros_api/src/model/request_otp_request.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
@@ -91,6 +98,7 @@ import 'package:moseguros_api/src/model/test_plate_format_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_response.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/totp_setup_response.dart';
+import 'package:moseguros_api/src/model/update_driver_request.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
@@ -101,7 +109,12 @@ import 'package:moseguros_api/src/model/update_product_request.dart';
 import 'package:moseguros_api/src/model/update_product_version_request.dart';
 import 'package:moseguros_api/src/model/update_reference_value_request.dart';
 import 'package:moseguros_api/src/model/update_user_roles_request.dart';
+import 'package:moseguros_api/src/model/update_vehicle_drivers_request.dart';
+import 'package:moseguros_api/src/model/update_vehicle_request.dart';
 import 'package:moseguros_api/src/model/vehicle_category.dart';
+import 'package:moseguros_api/src/model/vehicle_driver_assignment.dart';
+import 'package:moseguros_api/src/model/vehicle_driver_response.dart';
+import 'package:moseguros_api/src/model/vehicle_response.dart';
 import 'package:moseguros_api/src/model/vehicle_usage.dart';
 import 'package:moseguros_api/src/model/verify_contact_request.dart';
 import 'package:moseguros_api/src/model/verify_otp_request.dart';
@@ -119,12 +132,15 @@ part 'serializers.g.dart';
   ContactsResponse,
   CoverageRequest,
   CoverageResponse,
+  CreateDriverRequest,
   CreateOrganizationRequest,
   CreatePlateFormatRequest,
   CreateProductRequest,
   CreateReferenceValueRequest,
+  CreateVehicleRequest,
   CustomerProfileResponse,
   DeliveryReceiptRequest,
+  DriverResponse,
   FieldError,
   ForgotPasswordRequest,
   InsurerBrandingResponse,
@@ -150,11 +166,13 @@ part 'serializers.g.dart';
   OtpTestResponse,
   OtpVerifyResponse,
   PageResponseCatalogProductResponse,
+  PageResponseDriverResponse,
   PageResponseInvitationResponse,
   PageResponseOrganizationSummaryResponse,
   PageResponseProductSummaryResponse,
   PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
+  PageResponseVehicleResponse,
   PlateFormatResponse,
   PlateFormatsResponse,
   PlatformSettingResponse,
@@ -175,6 +193,8 @@ part 'serializers.g.dart';
   PublishProductVersionRequest,
   ReferenceValueResponse,
   RefreshTokenRequest,
+  RegistrationDocResponse,
+  RegistryLookupResponse,
   ReplaceCoveragesRequest,
   RequestOtpRequest,
   ResetPasswordRequest,
@@ -187,6 +207,7 @@ part 'serializers.g.dart';
   TestPlateFormatResponse,
   TokenResponse,
   TotpSetupResponse,
+  UpdateDriverRequest,
   UpdateMeRequest,
   UpdateMyProfileRequest,
   UpdateOrganizationRequest,
@@ -197,7 +218,12 @@ part 'serializers.g.dart';
   UpdateProductVersionRequest,
   UpdateReferenceValueRequest,
   UpdateUserRolesRequest,
+  UpdateVehicleDriversRequest,
+  UpdateVehicleRequest,
   VehicleCategory,
+  VehicleDriverAssignment,
+  VehicleDriverResponse,
+  VehicleResponse,
   VehicleUsage,
   VerifyContactRequest,
   VerifyOtpRequest,

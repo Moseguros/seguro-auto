@@ -328,5 +328,23 @@
       }
     }
   },
-  "contactsConfirmRemove": "Remover"
+  "contactsConfirmRemove": "Remover",
+  "errorVehicleNotFound": "Veículo não encontrado.",
+  "errorVehicleAlreadyRegistered": "Já tem um veículo com esta matrícula.",
+  "errorVehicleLimitReached": "Atingiu o máximo de 20 veículos.",
+  "errorVehicleRemovalBlocked": "Este veículo tem uma apólice em vigor e não pode ser retirado.",
+  "errorVehicleRegistryNotFound": "Não encontrámos esta matrícula no registo. Preencha os dados do livrete.",
+  "errorVehicleRegistryUnavailable": "O registo automóvel não está disponível. Preencha os dados do livrete.",
+  "errorDriverNotFound": "Condutor não encontrado.",
+  "errorDriverAlreadyRegistered": "Já tem um condutor com esta carta.",
+  "errorDriverLimitReached": "Atingiu o máximo de 10 condutores.",
+  "errorOwnerDriverAlreadyExists": "Já se registou como condutor.",
+  "errorDriverIsHabitual": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.",
+  "validationInvalidChassis": "N.º de chassis inválido.",
+  "validationInvalidYear": "Ano inválido.",
+  "validationInvalidLicenceNumber": "N.º da carta inválido.",
+  "validationLicenceCategoryUnknown": "Categoria de carta desconhecida.",
+  "validationLicenceIssueDateInvalid": "A data de emissão tem de ser depois do nascimento e até hoje.",
+  "validationHabitualDriverRequired": "Escolha o condutor habitual.",
+  "validationMultipleHabitualDrivers": "Só pode haver um condutor habitual."
 }

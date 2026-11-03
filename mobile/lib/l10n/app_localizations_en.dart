@@ -852,4 +852,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactsConfirmRemove => 'Remove';
+
+  @override
+  String get errorVehicleNotFound => 'Vehicle not found.';
+
+  @override
+  String get errorVehicleAlreadyRegistered =>
+      'You already have a vehicle with this plate.';
+
+  @override
+  String get errorVehicleLimitReached =>
+      'You have reached the maximum of 20 vehicles.';
+
+  @override
+  String get errorVehicleRemovalBlocked =>
+      'This vehicle has a policy in force and cannot be removed.';
+
+  @override
+  String get errorVehicleRegistryNotFound =>
+      'We could not find this plate in the registry. Fill in the registration document details.';
+
+  @override
+  String get errorVehicleRegistryUnavailable =>
+      'The vehicle registry is not available. Fill in the registration document details.';
+
+  @override
+  String get errorDriverNotFound => 'Driver not found.';
+
+  @override
+  String get errorDriverAlreadyRegistered =>
+      'You already have a driver with this licence.';
+
+  @override
+  String get errorDriverLimitReached =>
+      'You have reached the maximum of 10 drivers.';
+
+  @override
+  String get errorOwnerDriverAlreadyExists =>
+      'You are already registered as a driver.';
+
+  @override
+  String get errorDriverIsHabitual =>
+      'This driver is the habitual driver of a vehicle. Choose another habitual driver first.';
+
+  @override
+  String get validationInvalidChassis => 'Invalid chassis number.';
+
+  @override
+  String get validationInvalidYear => 'Invalid year.';
+
+  @override
+  String get validationInvalidLicenceNumber =>
+      'Invalid driving licence number.';
+
+  @override
+  String get validationLicenceCategoryUnknown => 'Unknown licence category.';
+
+  @override
+  String get validationLicenceIssueDateInvalid =>
+      'The issue date must be after the birth date and not after today.';
+
+  @override
+  String get validationHabitualDriverRequired => 'Choose the habitual driver.';
+
+  @override
+  String get validationMultipleHabitualDrivers =>
+      'There can only be one habitual driver.';
 }

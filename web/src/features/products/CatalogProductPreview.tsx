@@ -58,7 +58,7 @@ export function capitalText(t: TFunction, coverage: PreviewCoverage): string {
       return t('capitalType.VEHICLE_VALUE');
     case 'OPTIONS': {
       const values = (coverage.capitalOptions ?? []).filter((m): m is Money => !!m);
-      return values.length ? values.map(formatMoney).join(' · ') : '—';
+      return values.length ? values.map((m) => formatMoney(m)).join(' · ') : '—';
     }
     case 'PER_PERSON':
       return coverage.capital

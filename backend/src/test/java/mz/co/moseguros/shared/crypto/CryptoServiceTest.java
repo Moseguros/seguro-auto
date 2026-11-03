@@ -16,7 +16,7 @@ class CryptoServiceTest {
     private static final String KEY_1 = newKey();
     private static final String KEY_2 = newKey();
 
-    private final CryptoService service = new CryptoService(new CryptoProperties(Map.of(1, KEY_1), 1));
+    private final CryptoService service = new CryptoService(new CryptoProperties(Map.of(1, KEY_1), 1, null));
 
     @Test
     void sameValueEncryptsDifferentlyEachTime() {
@@ -78,7 +78,7 @@ class CryptoServiceTest {
     void valueFromKeyVersion1IsStillReadableAfterVersion2BecomesCurrent() {
         byte[] old = service.encrypt("123456789");
 
-        CryptoService rotated = new CryptoService(new CryptoProperties(Map.of(1, KEY_1, 2, KEY_2), 2));
+        CryptoService rotated = new CryptoService(new CryptoProperties(Map.of(1, KEY_1, 2, KEY_2), 2, null));
 
         assertThat(rotated.decrypt(old)).isEqualTo("123456789");
         byte[] fresh = rotated.encrypt("987654321");
@@ -90,18 +90,18 @@ class CryptoServiceTest {
 
     @Test
     void wrongKeyFails() {
-        CryptoService other = new CryptoService(new CryptoProperties(Map.of(1, KEY_2), 1));
+        CryptoService other = new CryptoService(new CryptoProperties(Map.of(1, KEY_2), 1, null));
         assertThatThrownBy(() -> other.decrypt(service.encrypt("123456789"))).isInstanceOf(DomainException.class);
     }
 
     @Test
     void invalidConfigurationIsRejected() {
-        assertThat(new CryptoProperties(Map.of(1, KEY_1), 2).isValid()).isFalse();          // versão sem chave
-        assertThat(new CryptoProperties(Map.of(1, ""), 1).isValid()).isFalse();              // chave vazia
-        assertThat(new CryptoProperties(Map.of(1, "c2hvcnQ="), 1).isValid()).isFalse();      // 5 bytes
-        assertThat(new CryptoProperties(Map.of(1, "not base64!"), 1).isValid()).isFalse();
-        assertThat(new CryptoProperties(Map.of(1, KEY_1), 1).isValid()).isTrue();
-        assertThatThrownBy(() -> new CryptoService(new CryptoProperties(Map.of(1, ""), 1)))
+        assertThat(new CryptoProperties(Map.of(1, KEY_1), 2, null).isValid()).isFalse();          // versão sem chave
+        assertThat(new CryptoProperties(Map.of(1, ""), 1, null).isValid()).isFalse();              // chave vazia
+        assertThat(new CryptoProperties(Map.of(1, "c2hvcnQ="), 1, null).isValid()).isFalse();      // 5 bytes
+        assertThat(new CryptoProperties(Map.of(1, "not base64!"), 1, null).isValid()).isFalse();
+        assertThat(new CryptoProperties(Map.of(1, KEY_1), 1, null).isValid()).isTrue();
+        assertThatThrownBy(() -> new CryptoService(new CryptoProperties(Map.of(1, ""), 1, null)))
                 .isInstanceOf(IllegalStateException.class);
     }
 

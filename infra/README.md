@@ -78,7 +78,7 @@ docker compose down -v && docker compose up -d --build
 
 Sem isto o backend não arranca (`password authentication failed for user "moseguros_app_user"`).
 
-**Staging e produção:** os papéis são criados pela equipa de operações antes do primeiro deploy, com o mesmo conteúdo de `postgres/init/01-roles.sql` (a palavra-passe de `moseguros_app_user` vem do cofre de segredos, não a do ficheiro). O dono das tabelas não precisa de ser superutilizador: basta ser dono da base de dados. O backend recebe `DB_URL`, `DB_USERNAME`/`DB_PASSWORD` (`moseguros_app_user`), `DB_OWNER_USERNAME`/`DB_OWNER_PASSWORD` (dono, só para o Flyway) e `MOSEGUROS_DATA_KEY_1` (chave de cifra das colunas, 32 bytes em Base64; sem ela a aplicação não arranca).
+**Staging e produção:** os papéis são criados pela equipa de operações antes do primeiro deploy, com o mesmo conteúdo de `postgres/init/01-roles.sql` (a palavra-passe de `moseguros_app_user` vem do cofre de segredos, não a do ficheiro). O dono das tabelas não precisa de ser superutilizador: basta ser dono da base de dados. O backend recebe `DB_URL`, `DB_USERNAME`/`DB_PASSWORD` (`moseguros_app_user`), `DB_OWNER_USERNAME`/`DB_OWNER_PASSWORD` (dono, só para o Flyway) e `MOSEGUROS_DATA_KEY_1` (chave de cifra das colunas, 32 bytes em Base64; sem ela a aplicação não arranca), e `MOSEGUROS_BLIND_INDEX_KEY` (chave do índice cego, 32 bytes em Base64, diferente da anterior; sem ela a aplicação não arranca).
 
 ## Ficheiros
 
@@ -102,13 +102,30 @@ No perfil `local` o Flyway aplica também `backend/src/main/resources/db/dev/` (
 | Gestor da seguradora | convite para `gestor@demo.local` (`INSURER_ADMIN`, `PRODUCT_MANAGER`) |
 | Corretor | convite para `corretor@demo.local` (`ORG_ADMIN`, `BROKER`) |
 | Cliente de teste | `+258840000001` ("Cliente Teste"), entra por OTP com o código no cabeçalho `X-Debug-Otp` |
+| Veículo do cliente de teste | `AAA-100-MC` (Toyota Corolla 2018, `PRIVATE`, `MAPUTO_CITY`, 850 000 MZN), verificado no registo simulado; id `01930000-0000-7000-8000-000000000101`; sem livrete nem condutores |
 
 Activar as contas de staff (palavra-passe e TOTP) abrindo os convites, que não expiram:
 
 - <http://localhost:5173/convite/dev-convite-gestor-demo> (no compose: <http://localhost:3000/convite/dev-convite-gestor-demo>)
 - <http://localhost:5173/convite/dev-convite-corretor-demo> (no compose: <http://localhost:3000/convite/dev-convite-corretor-demo>)
 
-Os ids são fixos (`01930000-0000-7000-8000-00000000000N`, N = 1 a 7) e os scripts não duplicam nada se correrem outra vez.
+Os ids são fixos (`01930000-0000-7000-8000-00000000000N`, N = 1 a 7, e `…0101` para o veículo) e os scripts não duplicam nada se correrem outra vez.
+
+### Registo automóvel simulado (INATRO)
+
+Até haver acesso ao INATRO, o backend usa um registo simulado (`moseguros.vehicle.registry.provider: mock`, em todos os perfis; em `staging` e `prod` regista um aviso no arranque). Dados fictícios e fixos, usados pelo `GET /api/v1/me/vehicles/registry-lookup?plate=` e para marcar `inatroVerified` ao registar um veículo (matrícula e chassis iguais):
+
+| Matrícula | Chassis | Marca / modelo | Ano | cc | Categoria | Lugares | Peso (kg) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `AAA-100-MC` | `JTDBR32E720012345` | Toyota / Corolla | 2018 | 1598 | `LIGHT_PASSENGER` | 5 | — |
+| `AAA-200-MC` | `AHTFR22G106012345` | Toyota / Hilux | 2015 | 2982 | `LIGHT_MIXED` | 5 | — |
+| `AAA-300-MC` | `WDB9340321L123456` | Mercedes-Benz / Actros | 2012 | 11946 | `HEAVY` | 2 | 40000 |
+| `AAA-400-MC` | `LTMKD0791L5123456` | Honda / CG 125 | 2020 | 124 | `MOTORCYCLE` | 2 | — |
+| `AAA-500-MC` | `JTFSS22P900123456` | Toyota / Quantum | 2017 | 2494 | `BUS` | 15 | 3300 |
+| `MLA-12-34` | `ADNJ720000E123456` | Nissan / Hardbody | 2004 | 2389 | `LIGHT_MIXED` | 5 | — |
+| `AAA-999-MC` | — | — | — | — | — | — | — |
+
+`AAA-999-MC` simula o registo indisponível (503 `VEHICLE_REGISTRY_UNAVAILABLE`; ao registar o veículo grava-o sem verificação). Qualquer outra matrícula não tem registo (404 `VEHICLE_REGISTRY_NOT_FOUND`).
 
 ## Comandos úteis
 

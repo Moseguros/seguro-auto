@@ -851,4 +851,67 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get contactsConfirmRemove => 'Remover';
+
+  @override
+  String get errorVehicleNotFound => 'Veículo não encontrado.';
+
+  @override
+  String get errorVehicleAlreadyRegistered =>
+      'Já tem um veículo com esta matrícula.';
+
+  @override
+  String get errorVehicleLimitReached => 'Atingiu o máximo de 20 veículos.';
+
+  @override
+  String get errorVehicleRemovalBlocked =>
+      'Este veículo tem uma apólice em vigor e não pode ser retirado.';
+
+  @override
+  String get errorVehicleRegistryNotFound =>
+      'Não encontrámos esta matrícula no registo. Preencha os dados do livrete.';
+
+  @override
+  String get errorVehicleRegistryUnavailable =>
+      'O registo automóvel não está disponível. Preencha os dados do livrete.';
+
+  @override
+  String get errorDriverNotFound => 'Condutor não encontrado.';
+
+  @override
+  String get errorDriverAlreadyRegistered =>
+      'Já tem um condutor com esta carta.';
+
+  @override
+  String get errorDriverLimitReached => 'Atingiu o máximo de 10 condutores.';
+
+  @override
+  String get errorOwnerDriverAlreadyExists => 'Já se registou como condutor.';
+
+  @override
+  String get errorDriverIsHabitual =>
+      'Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.';
+
+  @override
+  String get validationInvalidChassis => 'N.º de chassis inválido.';
+
+  @override
+  String get validationInvalidYear => 'Ano inválido.';
+
+  @override
+  String get validationInvalidLicenceNumber => 'N.º da carta inválido.';
+
+  @override
+  String get validationLicenceCategoryUnknown =>
+      'Categoria de carta desconhecida.';
+
+  @override
+  String get validationLicenceIssueDateInvalid =>
+      'A data de emissão tem de ser depois do nascimento e até hoje.';
+
+  @override
+  String get validationHabitualDriverRequired => 'Escolha o condutor habitual.';
+
+  @override
+  String get validationMultipleHabitualDrivers =>
+      'Só pode haver um condutor habitual.';
 }

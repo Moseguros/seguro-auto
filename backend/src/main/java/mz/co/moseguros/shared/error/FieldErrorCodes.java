@@ -101,6 +101,21 @@ public final class FieldErrorCodes {
     public static final String CROSS_BORDER_SCOPE_REQUIRED = "CROSS_BORDER_SCOPE_REQUIRED";
     /** Falta um documento legal obrigatório em português. */
     public static final String DOCUMENT_REQUIRED = "DOCUMENT_REQUIRED";
+    // Veículos e condutores do cliente (S2-03)
+    /** N.º de chassis fora de {@code ^[A-Z0-9]{5,30}$} (depois de normalizado). */
+    public static final String INVALID_CHASSIS = "INVALID_CHASSIS";
+    /** Ano antes de 1900 ou depois do próximo ano (em {@code Africa/Maputo}). */
+    public static final String INVALID_YEAR = "INVALID_YEAR";
+    /** N.º da carta fora de {@code ^[A-Z0-9/-]{5,20}$} (depois de normalizado). */
+    public static final String INVALID_LICENCE_NUMBER = "INVALID_LICENCE_NUMBER";
+    /** Categoria de carta inexistente ou inactiva em {@code LICENCE_CATEGORY}. */
+    public static final String LICENCE_CATEGORY_UNKNOWN = "LICENCE_CATEGORY_UNKNOWN";
+    /** Data de emissão da carta antes do nascimento ou depois de hoje. */
+    public static final String LICENCE_ISSUE_DATE_INVALID = "LICENCE_ISSUE_DATE_INVALID";
+    /** Lista de condutores de um veículo sem nenhum habitual. */
+    public static final String HABITUAL_DRIVER_REQUIRED = "HABITUAL_DRIVER_REQUIRED";
+    /** Lista de condutores de um veículo com mais de um habitual. */
+    public static final String MULTIPLE_HABITUAL_DRIVERS = "MULTIPLE_HABITUAL_DRIVERS";
 
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
