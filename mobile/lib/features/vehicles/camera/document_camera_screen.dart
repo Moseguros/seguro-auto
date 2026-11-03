@@ -41,6 +41,10 @@ class _DocumentCameraScreenState extends ConsumerState<DocumentCameraScreen> {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Um aviso do ecrã anterior ("Veículo acrescentado…") taparia o disparo.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    });
     _start();
   }
 
@@ -136,8 +140,7 @@ class _DocumentCameraScreenState extends ConsumerState<DocumentCameraScreen> {
               }
             },
           );
-      // A foto só esteve em memória: ao sair, não fica cópia.
-      _photo = null;
+      // A foto só esteve em memória: sai com o ecrã, sem cópia em ficheiro.
       if (mounted) context.pop(true);
     } catch (error) {
       if (mounted) {
