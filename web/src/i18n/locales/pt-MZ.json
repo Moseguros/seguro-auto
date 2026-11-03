@@ -253,7 +253,8 @@
     "REQUIRED_COVERAGE_MISSING": "Falta uma cobertura que esta exige.",
     "VTPL_CAPITAL_TOO_LOW": "O capital da RC facultativa tem de ser superior ao capital mínimo legal.",
     "CROSS_BORDER_SCOPE_REQUIRED": "Indique pelo menos um país além de Moçambique.",
-    "DOCUMENT_REQUIRED": "Falta este documento em português."
+    "DOCUMENT_REQUIRED": "Falta este documento em português.",
+    "INVALID_MONEY": "Valor inválido. Use no máximo 2 casas decimais."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -673,5 +674,361 @@
     "EXPIRED": "Expirado",
     "REVOKED": "Revogado",
     "ACCEPTED": "Aceite"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  },
+  "files": {
+    "open": "Ver"
+  },
+  "productType": {
+    "MTPL_ONLY": "Responsabilidade civil",
+    "COMPREHENSIVE": "Danos próprios",
+    "TEMPORARY": "Temporário",
+    "BORDER": "Fronteira",
+    "FLEET": "Frota"
+  },
+  "productStatus": {
+    "DRAFT": "Em preparação",
+    "PUBLISHED": "Publicado",
+    "RETIRED": "Retirado"
+  },
+  "productVersionStatus": {
+    "DRAFT": "Em preparação",
+    "PUBLISHED": "Em vigor",
+    "SUPERSEDED": "Substituída",
+    "RETIRED": "Retirada"
+  },
+  "coverage": {
+    "MTPL": "Responsabilidade civil obrigatória",
+    "VTPL": "Responsabilidade civil facultativa",
+    "OD_COLLISION": "Choque, colisão e capotamento",
+    "OD_GLASS": "Quebra isolada de vidros",
+    "OD_FIRE": "Incêndio, raio e explosão",
+    "OD_NATURE": "Fenómenos da natureza",
+    "OD_THEFT": "Furto ou roubo",
+    "OCCUPANTS": "Ocupantes",
+    "ASSISTANCE": "Assistência em viagem",
+    "LEGAL": "Protecção jurídica",
+    "SRCC": "Greves, tumultos e alterações da ordem pública",
+    "CROSS_BORDER": "Circulação no estrangeiro"
+  },
+  "capitalType": {
+    "FIXED": "Valor fixo",
+    "VEHICLE_VALUE": "Valor do veículo",
+    "OPTIONS": "Opções à escolha",
+    "PER_PERSON": "Por pessoa"
+  },
+  "deductibleType": {
+    "NONE": "Sem franquia",
+    "FIXED": "Valor fixo",
+    "PERCENT": "Percentagem do prejuízo"
+  },
+  "productDocumentType": {
+    "GENERAL_CONDITIONS": "Condições gerais",
+    "PRE_CONTRACT_INFO": "Informação pré-contratual",
+    "SPECIAL_CONDITIONS": "Condições especiais",
+    "OTHER": "Outro"
+  },
+  "vehicleCategory": {
+    "LIGHT_PASSENGER": "Ligeiro de passageiros",
+    "LIGHT_MIXED": "Ligeiro misto",
+    "HEAVY": "Pesado",
+    "MOTORCYCLE": "Motociclo",
+    "TRAILER": "Reboque",
+    "BUS": "Autocarro"
+  },
+  "vehicleUsage": {
+    "PRIVATE": "Particular",
+    "RENTAL": "Aluguer sem condutor",
+    "PASSENGER_TRANSPORT": "Transporte de passageiros",
+    "GOODS": "Transporte de mercadorias",
+    "TAXI": "Táxi",
+    "DRIVING_SCHOOL": "Escola de condução"
+  },
+  "referenceDomain": {
+    "VEHICLE_MAKE": "Marcas",
+    "VEHICLE_MODEL": "Modelos",
+    "LICENCE_CATEGORY": "Categorias de carta"
+  },
+  "platformSetting": {
+    "MTPL_MIN_CAPITAL": "Capital mínimo da responsabilidade civil obrigatória"
+  },
+  "products": {
+    "title": "Produtos",
+    "new": "Novo produto",
+    "empty": "Ainda não há produtos.",
+    "filters": {
+      "status": "Estado",
+      "type": "Tipo",
+      "search": "Pesquisar",
+      "all": "Todos"
+    },
+    "columns": {
+      "code": "Código",
+      "name": "Nome",
+      "type": "Tipo",
+      "status": "Estado",
+      "currentVersion": "Versão em vigor",
+      "hasDraft": "Em preparação",
+      "updatedAt": "Actualizado em"
+    },
+    "fields": {
+      "code": "Código",
+      "codeHelp": "Maiúsculas, algarismos, _ e -; 2 a 30 caracteres. Não muda depois de criado.",
+      "name": "Nome",
+      "type": "Tipo",
+      "description": "Descrição",
+      "choose": "Escolha…",
+      "optional": "Opcional."
+    },
+    "create": {
+      "title": "Novo produto",
+      "submit": "Criar produto"
+    },
+    "edit": {
+      "title": "Editar dados do produto",
+      "typeLocked": "O tipo não pode mudar depois da primeira publicação."
+    },
+    "logo": {
+      "title": "Logótipo da seguradora",
+      "note": "Aparece nas cotações e nos certificados. PNG ou JPEG, até 1 MB.",
+      "upload": "Enviar logótipo",
+      "replace": "Substituir",
+      "remove": "Remover",
+      "alt": "Logótipo de {{name}}",
+      "tooLarge": "O logótipo tem mais de 1 MB.",
+      "removeDialog": {
+        "title": "Remover o logótipo?",
+        "text": "As cotações e os certificados passam a mostrar as iniciais da seguradora."
+      }
+    },
+    "detail": {
+      "back": "Produtos",
+      "published": "Versão {{n}} publicada",
+      "edit": "Editar dados",
+      "continueVersion": "Continuar versão {{n}}",
+      "newVersion": "Criar nova versão",
+      "retire": "Retirar produto",
+      "retired": "Produto retirado",
+      "saved": "Dados guardados",
+      "versions": "Versões",
+      "versionLabel": "Versão {{n}}",
+      "retireDialog": {
+        "title": "Retirar o produto?",
+        "text": "O produto deixa de estar à venda. As apólices em vigor continuam. Esta acção não se pode desfazer."
+      }
+    },
+    "versionColumns": {
+      "number": "N.º",
+      "status": "Estado",
+      "validity": "Em vigor",
+      "publishedAt": "Publicada em",
+      "notes": "Notas"
+    },
+    "editor": {
+      "back": "Voltar ao produto",
+      "title": "{{name}} · Versão {{n}}",
+      "publishedNotice": "Versão {{n}} publicada em {{date}}. Uma versão publicada não pode ser alterada.",
+      "noPermission": "Pode consultar esta versão, mas não alterá-la.",
+      "conflict": "Outra pessoa alterou esta versão. Recarregue para ver a versão actual.",
+      "reload": "Recarregar",
+      "fixFields": "Corrija os campos assinalados antes de guardar.",
+      "previous": "Anterior",
+      "next": "Seguinte",
+      "save": "Guardar",
+      "saveAndContinue": "Guardar e continuar",
+      "continue": "Continuar para a revisão",
+      "saved": "Alterações guardadas",
+      "unsaved": {
+        "title": "Sair sem guardar?",
+        "text": "Tem alterações por guardar.",
+        "stay": "Continuar a editar",
+        "leave": "Sair sem guardar"
+      }
+    },
+    "steps": {
+      "dados": "Dados gerais",
+      "coberturas": "Coberturas",
+      "franquias": "Franquias",
+      "documentos": "Documentos",
+      "revisao": "Revisão e publicação"
+    },
+    "general": {
+      "product": "Produto",
+      "editProduct": "Editar dados",
+      "categories": "Categorias de veículo",
+      "usages": "Usos",
+      "changeNotes": "Notas da versão"
+    },
+    "coverages": {
+      "add": "Acrescentar cobertura",
+      "empty": "Ainda não há coberturas. Acrescente pelo menos a responsabilidade civil obrigatória.",
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Descer {{name}}",
+      "remove": "Remover {{name}}",
+      "mandatory": "Obrigatória",
+      "capitalType": "Tipo de capital",
+      "capital": "Capital",
+      "capitalPerPerson": "Capital por pessoa",
+      "options": "Opções de capital",
+      "option": "Opção {{n}}",
+      "removeOption": "Remover a opção {{n}}",
+      "addOption": "Acrescentar opção",
+      "requires": "Exige as coberturas",
+      "scope": "Âmbito territorial",
+      "description": "Descrição",
+      "exclusions": "Exclusões",
+      "mtplMinimum": "Mínimo legal: {{value}}",
+      "vtplMinimum": "Tem de ser superior a {{value}}",
+      "vehicleValueHelp": "O capital é o valor comercial do veículo.",
+      "removeDialog": {
+        "title": "Remover {{name}}?",
+        "text": "A cobertura sai da lista. A alteração só fica gravada quando guardar.",
+        "confirm": "Remover"
+      }
+    },
+    "deductibles": {
+      "empty": "Acrescente primeiro as coberturas.",
+      "type": "Franquia",
+      "amount": "Valor da franquia",
+      "percent": "Percentagem",
+      "percentInvalid": "Indique de 0,01 a 100, com no máximo 2 casas decimais.",
+      "minimum": "Mínimo",
+      "minimumHelp": "Opcional."
+    },
+    "documents": {
+      "required": "Documentos obrigatórios (português)",
+      "english": "Em inglês (opcional)",
+      "others": "Outros documentos",
+      "noOthers": "Sem outros documentos.",
+      "inEnglish": "{{name}} (inglês)",
+      "sent": "Enviado",
+      "missing": "Em falta",
+      "upload": "Enviar PDF",
+      "replace": "Substituir",
+      "view": "Ver",
+      "remove": "Remover",
+      "removeOf": "Remover {{name}}",
+      "uploading": "A enviar",
+      "type": "Tipo",
+      "title": "Título",
+      "newDocument": "Novo documento",
+      "add": "Acrescentar documento",
+      "language": {
+        "pt": "Português",
+        "en": "Inglês"
+      },
+      "removeDialog": {
+        "title": "Remover o documento?",
+        "text": "O documento deixa de fazer parte desta versão."
+      }
+    },
+    "preview": {
+      "title": "Como o cliente vai ver o produto",
+      "validating": "A verificar as regras de publicação…",
+      "errorsTitle": "Falta corrigir antes de publicar",
+      "fix": "Corrigir",
+      "ready": "A versão cumpre as regras de publicação.",
+      "coverages": "Coberturas",
+      "noCoverages": "Sem coberturas.",
+      "included": "Incluída",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "documents": "Documentos",
+      "perPerson": "{{value}} por pessoa",
+      "percentWithMin": "{{percent}}, mínimo {{min}}"
+    },
+    "publish": {
+      "button": "Publicar versão",
+      "title": "Publicar a versão {{n}}?",
+      "text": "Depois de publicada, esta versão não pode ser alterada e passa a estar à venda hoje.",
+      "textWithPrevious": "Depois de publicada, esta versão não pode ser alterada e passa a estar à venda hoje. A versão {{previous}} deixa de estar à venda.",
+      "confirm": "Publicar"
+    }
+  },
+  "references": {
+    "title": "Tabelas de referência",
+    "tabs": {
+      "marcas": "Marcas",
+      "modelos": "Modelos",
+      "cartas": "Categorias de carta",
+      "matriculas": "Formatos de matrícula",
+      "parametros": "Parâmetros"
+    },
+    "actionsFor": "Acções para {{name}}",
+    "edit": "Editar",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "activated": "Activado",
+    "deactivated": "Desactivado",
+    "saved": "Alterações guardadas",
+    "columns": {
+      "code": "Código",
+      "labelPt": "Nome (pt)",
+      "labelEn": "Nome (en)",
+      "make": "Marca",
+      "sortOrder": "Ordem",
+      "status": "Estado"
+    },
+    "filters": {
+      "status": "Estado",
+      "all": "Todos",
+      "make": "Marca",
+      "search": "Pesquisar"
+    },
+    "values": {
+      "new": "Novo valor",
+      "newTitle": "Novo valor",
+      "editTitle": "Editar valor"
+    },
+    "fields": {
+      "code": "Código",
+      "codeHelp": "Maiúsculas, algarismos e _. Não muda depois de criado.",
+      "make": "Marca",
+      "choose": "Escolha…",
+      "labelPt": "Nome (pt)",
+      "labelEn": "Nome (en)",
+      "optional": "Opcional.",
+      "sortOrder": "Ordem",
+      "sortOrderHelp": "0 a 9999; os menores aparecem primeiro."
+    },
+    "deactivateDialog": {
+      "title": "Desactivar {{name}}?",
+      "text": "Deixa de aparecer nas listas. Os registos que já o usam não mudam."
+    },
+    "plates": {
+      "new": "Novo formato",
+      "newTitle": "Novo formato de matrícula",
+      "editTitle": "Editar formato de matrícula",
+      "sortOrderHelp": "0 a 999: ordem pela qual os formatos são testados.",
+      "help": "O padrão aplica-se à matrícula em maiúsculas, sem espaços nem hífens. Use grupos com nome, por exemplo (?<l>[A-Z]{3}), e refira-os no modelo como {l}.",
+      "test": "Testar",
+      "testValue": "Matrícula",
+      "matches": "Corresponde: {{formatted}}",
+      "noMatch": "Não corresponde"
+    },
+    "plateFields": {
+      "code": "Código",
+      "label": "Nome",
+      "pattern": "Padrão",
+      "displayTemplate": "Modelo de apresentação",
+      "example": "Exemplo",
+      "sortOrder": "Ordem"
+    },
+    "plateColumns": {
+      "code": "Código",
+      "label": "Nome",
+      "example": "Exemplo",
+      "pattern": "Padrão",
+      "sortOrder": "Ordem",
+      "status": "Estado"
+    },
+    "settings": {
+      "value": "Valor",
+      "mtplNote": "Usado para validar a publicação de produtos. Os produtos já publicados não mudam.",
+      "updated": "Alterado em {{date}} por {{by}}"
+    }
   }
 }

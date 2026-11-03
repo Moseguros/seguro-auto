@@ -253,7 +253,8 @@
     "REQUIRED_COVERAGE_MISSING": "A coverage required by this one is missing.",
     "VTPL_CAPITAL_TOO_LOW": "The voluntary third-party liability capital must be higher than the legal minimum capital.",
     "CROSS_BORDER_SCOPE_REQUIRED": "Enter at least one country besides Mozambique.",
-    "DOCUMENT_REQUIRED": "This document in Portuguese is missing."
+    "DOCUMENT_REQUIRED": "This document in Portuguese is missing.",
+    "INVALID_MONEY": "Invalid amount. Use at most 2 decimal places."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -673,5 +674,361 @@
     "EXPIRED": "Expired",
     "REVOKED": "Revoked",
     "ACCEPTED": "Accepted"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "files": {
+    "open": "View"
+  },
+  "productType": {
+    "MTPL_ONLY": "Third-party liability",
+    "COMPREHENSIVE": "Own damage",
+    "TEMPORARY": "Temporary",
+    "BORDER": "Border",
+    "FLEET": "Fleet"
+  },
+  "productStatus": {
+    "DRAFT": "In preparation",
+    "PUBLISHED": "Published",
+    "RETIRED": "Retired"
+  },
+  "productVersionStatus": {
+    "DRAFT": "In preparation",
+    "PUBLISHED": "In force",
+    "SUPERSEDED": "Superseded",
+    "RETIRED": "Retired"
+  },
+  "coverage": {
+    "MTPL": "Compulsory third-party liability",
+    "VTPL": "Voluntary third-party liability",
+    "OD_COLLISION": "Collision and overturning",
+    "OD_GLASS": "Glass breakage",
+    "OD_FIRE": "Fire, lightning and explosion",
+    "OD_NATURE": "Natural events",
+    "OD_THEFT": "Theft or robbery",
+    "OCCUPANTS": "Occupants",
+    "ASSISTANCE": "Roadside assistance",
+    "LEGAL": "Legal protection",
+    "SRCC": "Strikes, riots and civil commotion",
+    "CROSS_BORDER": "Driving abroad"
+  },
+  "capitalType": {
+    "FIXED": "Fixed amount",
+    "VEHICLE_VALUE": "Vehicle value",
+    "OPTIONS": "Choice of options",
+    "PER_PERSON": "Per person"
+  },
+  "deductibleType": {
+    "NONE": "No excess",
+    "FIXED": "Fixed amount",
+    "PERCENT": "Percentage of the loss"
+  },
+  "productDocumentType": {
+    "GENERAL_CONDITIONS": "General conditions",
+    "PRE_CONTRACT_INFO": "Pre-contract information",
+    "SPECIAL_CONDITIONS": "Special conditions",
+    "OTHER": "Other"
+  },
+  "vehicleCategory": {
+    "LIGHT_PASSENGER": "Light passenger car",
+    "LIGHT_MIXED": "Light mixed-use vehicle",
+    "HEAVY": "Heavy vehicle",
+    "MOTORCYCLE": "Motorcycle",
+    "TRAILER": "Trailer",
+    "BUS": "Bus"
+  },
+  "vehicleUsage": {
+    "PRIVATE": "Private",
+    "RENTAL": "Rental",
+    "PASSENGER_TRANSPORT": "Passenger transport",
+    "GOODS": "Goods transport",
+    "TAXI": "Taxi",
+    "DRIVING_SCHOOL": "Driving school"
+  },
+  "referenceDomain": {
+    "VEHICLE_MAKE": "Makes",
+    "VEHICLE_MODEL": "Models",
+    "LICENCE_CATEGORY": "Licence categories"
+  },
+  "platformSetting": {
+    "MTPL_MIN_CAPITAL": "Minimum compulsory third-party liability cover"
+  },
+  "products": {
+    "title": "Products",
+    "new": "New product",
+    "empty": "There are no products yet.",
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "search": "Search",
+      "all": "All"
+    },
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "type": "Type",
+      "status": "Status",
+      "currentVersion": "Version in force",
+      "hasDraft": "In preparation",
+      "updatedAt": "Updated on"
+    },
+    "fields": {
+      "code": "Code",
+      "codeHelp": "Capitals, digits, _ and -; 2 to 30 characters. Cannot change after creation.",
+      "name": "Name",
+      "type": "Type",
+      "description": "Description",
+      "choose": "Choose…",
+      "optional": "Optional."
+    },
+    "create": {
+      "title": "New product",
+      "submit": "Create product"
+    },
+    "edit": {
+      "title": "Edit product details",
+      "typeLocked": "The type cannot change after the first publication."
+    },
+    "logo": {
+      "title": "Insurer logo",
+      "note": "Shown on quotes and certificates. PNG or JPEG, up to 1 MB.",
+      "upload": "Upload logo",
+      "replace": "Replace",
+      "remove": "Remove",
+      "alt": "{{name}} logo",
+      "tooLarge": "The logo is larger than 1 MB.",
+      "removeDialog": {
+        "title": "Remove the logo?",
+        "text": "Quotes and certificates will show the insurer's initials instead."
+      }
+    },
+    "detail": {
+      "back": "Products",
+      "published": "Version {{n}} published",
+      "edit": "Edit details",
+      "continueVersion": "Continue version {{n}}",
+      "newVersion": "Create new version",
+      "retire": "Retire product",
+      "retired": "Product retired",
+      "saved": "Details saved",
+      "versions": "Versions",
+      "versionLabel": "Version {{n}}",
+      "retireDialog": {
+        "title": "Retire the product?",
+        "text": "The product will no longer be on sale. Policies in force continue. This cannot be undone."
+      }
+    },
+    "versionColumns": {
+      "number": "No.",
+      "status": "Status",
+      "validity": "In force",
+      "publishedAt": "Published on",
+      "notes": "Notes"
+    },
+    "editor": {
+      "back": "Back to the product",
+      "title": "{{name}} · Version {{n}}",
+      "publishedNotice": "Version {{n}} published on {{date}}. A published version cannot be changed.",
+      "noPermission": "You can view this version, but not change it.",
+      "conflict": "Someone else changed this version. Reload to see the current version.",
+      "reload": "Reload",
+      "fixFields": "Fix the highlighted fields before saving.",
+      "previous": "Previous",
+      "next": "Next",
+      "save": "Save",
+      "saveAndContinue": "Save and continue",
+      "continue": "Continue to review",
+      "saved": "Changes saved",
+      "unsaved": {
+        "title": "Leave without saving?",
+        "text": "You have unsaved changes.",
+        "stay": "Keep editing",
+        "leave": "Leave without saving"
+      }
+    },
+    "steps": {
+      "dados": "General details",
+      "coberturas": "Coverages",
+      "franquias": "Excesses",
+      "documentos": "Documents",
+      "revisao": "Review and publish"
+    },
+    "general": {
+      "product": "Product",
+      "editProduct": "Edit details",
+      "categories": "Vehicle categories",
+      "usages": "Uses",
+      "changeNotes": "Version notes"
+    },
+    "coverages": {
+      "add": "Add coverage",
+      "empty": "There are no coverages yet. Add at least compulsory third-party liability.",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "remove": "Remove {{name}}",
+      "mandatory": "Mandatory",
+      "capitalType": "Sum insured type",
+      "capital": "Sum insured",
+      "capitalPerPerson": "Sum insured per person",
+      "options": "Sum insured options",
+      "option": "Option {{n}}",
+      "removeOption": "Remove option {{n}}",
+      "addOption": "Add option",
+      "requires": "Requires the coverages",
+      "scope": "Territorial scope",
+      "description": "Description",
+      "exclusions": "Exclusions",
+      "mtplMinimum": "Legal minimum: {{value}}",
+      "vtplMinimum": "Must be greater than {{value}}",
+      "vehicleValueHelp": "The sum insured is the market value of the vehicle.",
+      "removeDialog": {
+        "title": "Remove {{name}}?",
+        "text": "The coverage leaves the list. The change is only stored when you save.",
+        "confirm": "Remove"
+      }
+    },
+    "deductibles": {
+      "empty": "Add the coverages first.",
+      "type": "Excess",
+      "amount": "Excess amount",
+      "percent": "Percentage",
+      "percentInvalid": "Enter 0.01 to 100, with at most 2 decimal places.",
+      "minimum": "Minimum",
+      "minimumHelp": "Optional."
+    },
+    "documents": {
+      "required": "Required documents (Portuguese)",
+      "english": "In English (optional)",
+      "others": "Other documents",
+      "noOthers": "No other documents.",
+      "inEnglish": "{{name}} (English)",
+      "sent": "Uploaded",
+      "missing": "Missing",
+      "upload": "Upload PDF",
+      "replace": "Replace",
+      "view": "View",
+      "remove": "Remove",
+      "removeOf": "Remove {{name}}",
+      "uploading": "Uploading",
+      "type": "Type",
+      "title": "Title",
+      "newDocument": "New document",
+      "add": "Add document",
+      "language": {
+        "pt": "Portuguese",
+        "en": "English"
+      },
+      "removeDialog": {
+        "title": "Remove the document?",
+        "text": "The document will no longer be part of this version."
+      }
+    },
+    "preview": {
+      "title": "How the customer will see the product",
+      "validating": "Checking the publication rules…",
+      "errorsTitle": "To fix before publishing",
+      "fix": "Fix",
+      "ready": "The version meets the publication rules.",
+      "coverages": "Coverages",
+      "noCoverages": "No coverages.",
+      "included": "Included",
+      "capital": "Sum insured",
+      "deductible": "Excess",
+      "documents": "Documents",
+      "perPerson": "{{value}} per person",
+      "percentWithMin": "{{percent}}, minimum {{min}}"
+    },
+    "publish": {
+      "button": "Publish version",
+      "title": "Publish version {{n}}?",
+      "text": "Once published, this version cannot be changed and goes on sale today.",
+      "textWithPrevious": "Once published, this version cannot be changed and goes on sale today. Version {{previous}} will no longer be on sale.",
+      "confirm": "Publish"
+    }
+  },
+  "references": {
+    "title": "Reference tables",
+    "tabs": {
+      "marcas": "Makes",
+      "modelos": "Models",
+      "cartas": "Licence categories",
+      "matriculas": "Plate formats",
+      "parametros": "Settings"
+    },
+    "actionsFor": "Actions for {{name}}",
+    "edit": "Edit",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "activated": "Activated",
+    "deactivated": "Deactivated",
+    "saved": "Changes saved",
+    "columns": {
+      "code": "Code",
+      "labelPt": "Name (pt)",
+      "labelEn": "Name (en)",
+      "make": "Make",
+      "sortOrder": "Order",
+      "status": "Status"
+    },
+    "filters": {
+      "status": "Status",
+      "all": "All",
+      "make": "Make",
+      "search": "Search"
+    },
+    "values": {
+      "new": "New value",
+      "newTitle": "New value",
+      "editTitle": "Edit value"
+    },
+    "fields": {
+      "code": "Code",
+      "codeHelp": "Capitals, digits and _. Cannot change after creation.",
+      "make": "Make",
+      "choose": "Choose…",
+      "labelPt": "Name (pt)",
+      "labelEn": "Name (en)",
+      "optional": "Optional.",
+      "sortOrder": "Order",
+      "sortOrderHelp": "0 to 9999; lower values come first."
+    },
+    "deactivateDialog": {
+      "title": "Deactivate {{name}}?",
+      "text": "It will no longer appear in the lists. Records that already use it do not change."
+    },
+    "plates": {
+      "new": "New format",
+      "newTitle": "New plate format",
+      "editTitle": "Edit plate format",
+      "sortOrderHelp": "0 to 999: order in which the formats are tested.",
+      "help": "The pattern applies to the plate in capitals, without spaces or hyphens. Use named groups, for example (?<l>[A-Z]{3}), and refer to them in the template as {l}.",
+      "test": "Test",
+      "testValue": "Plate",
+      "matches": "Matches: {{formatted}}",
+      "noMatch": "Does not match"
+    },
+    "plateFields": {
+      "code": "Code",
+      "label": "Name",
+      "pattern": "Pattern",
+      "displayTemplate": "Display template",
+      "example": "Example",
+      "sortOrder": "Order"
+    },
+    "plateColumns": {
+      "code": "Code",
+      "label": "Name",
+      "example": "Example",
+      "pattern": "Pattern",
+      "sortOrder": "Order",
+      "status": "Status"
+    },
+    "settings": {
+      "value": "Value",
+      "mtplNote": "Used to validate product publication. Products already published do not change.",
+      "updated": "Changed on {{date}} by {{by}}"
+    }
   }
 }
