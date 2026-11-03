@@ -64,10 +64,10 @@ class VehicleInput {
       ..model = model
       ..year = year
       ..engineCc = engineCc
-      ..category = CreateVehicleRequestCategoryEnum.valueOf(category)
+      ..category = VehicleCategory.valueOf(category)
       ..seats = seats
       ..grossWeightKg = grossWeightKg
-      ..usage = CreateVehicleRequestUsageEnum.valueOf(usage)
+      ..usage = VehicleUsage.valueOf(usage)
       ..provinceOfCirculation =
           CreateVehicleRequestProvinceOfCirculationEnum.valueOf(
             provinceOfCirculation,
@@ -84,10 +84,10 @@ class VehicleInput {
       ..model = model
       ..year = year
       ..engineCc = engineCc
-      ..category = UpdateVehicleRequestCategoryEnum.valueOf(category)
+      ..category = VehicleCategory.valueOf(category)
       ..seats = seats
       ..grossWeightKg = grossWeightKg
-      ..usage = UpdateVehicleRequestUsageEnum.valueOf(usage)
+      ..usage = VehicleUsage.valueOf(usage)
       ..provinceOfCirculation =
           UpdateVehicleRequestProvinceOfCirculationEnum.valueOf(
             provinceOfCirculation,
