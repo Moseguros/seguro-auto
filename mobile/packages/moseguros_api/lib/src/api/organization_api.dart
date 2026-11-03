@@ -10,10 +10,12 @@ import 'package:dio/dio.dart';
 
 import 'package:moseguros_api/src/api_util.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
+import 'package:moseguros_api/src/model/insurer_rating_settings_response.dart';
 import 'package:moseguros_api/src/model/organization_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
 import 'package:moseguros_api/src/model/suspend_organization_request.dart';
+import 'package:moseguros_api/src/model/update_insurer_rating_settings_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
 
 class OrganizationApi {
@@ -114,6 +116,85 @@ class OrganizationApi {
     }
 
     return Response<OrganizationResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Consulta as definições de tarifação
+  /// Permissão rating:manage ou product:read, staff de uma seguradora (outro âmbito → 403 FORBIDDEN). Encargos pela ordem em que se calculam.
+  ///
+  /// Parameters:
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [InsurerRatingSettingsResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<InsurerRatingSettingsResponse>> getInsurerRatingSettings({ 
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/rating-settings';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    InsurerRatingSettingsResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(InsurerRatingSettingsResponse),
+      ) as InsurerRatingSettingsResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<InsurerRatingSettingsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -480,6 +561,107 @@ class OrganizationApi {
     }
 
     return Response<OrganizationResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Altera os encargos da seguradora
+  /// Permissão rating:manage. charges validado por charges-v1.json (SCHEMA_VIOLATION) e pelas regras DUPLICATE_CHARGE e VALUE_OUT_OF_RANGE (PERCENT acima de 100): 400 VALIDATION_ERROR com errors[].field &#x3D; ponteiro JSON dentro de charges. version diferente → 409 CONCURRENT_MODIFICATION. O modo de tarifação não se altera aqui.
+  ///
+  /// Parameters:
+  /// * [updateInsurerRatingSettingsRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [InsurerRatingSettingsResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<InsurerRatingSettingsResponse>> updateInsurerRatingSettings({ 
+    required UpdateInsurerRatingSettingsRequest updateInsurerRatingSettingsRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/rating-settings';
+    final _options = Options(
+      method: r'PUT',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(UpdateInsurerRatingSettingsRequest);
+      _bodyData = _serializers.serialize(updateInsurerRatingSettingsRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    InsurerRatingSettingsResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(InsurerRatingSettingsResponse),
+      ) as InsurerRatingSettingsResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<InsurerRatingSettingsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

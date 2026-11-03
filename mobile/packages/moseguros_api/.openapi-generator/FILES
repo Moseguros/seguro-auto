@@ -10,6 +10,7 @@ lib/src/api/identity_api.dart
 lib/src/api/meta_api.dart
 lib/src/api/notification_api.dart
 lib/src/api/organization_api.dart
+lib/src/api/rating_api.dart
 lib/src/api/vehicle_api.dart
 lib/src/api_util.dart
 lib/src/auth/api_key_auth.dart
@@ -23,6 +24,8 @@ lib/src/model/activate_invitation_request.dart
 lib/src/model/assignable_roles_response.dart
 lib/src/model/catalog_insurer_response.dart
 lib/src/model/catalog_product_response.dart
+lib/src/model/charge.dart
+lib/src/model/charge_value.dart
 lib/src/model/contact_response.dart
 lib/src/model/contacts_response.dart
 lib/src/model/coverage_request.dart
@@ -42,6 +45,7 @@ lib/src/model/forgot_password_request.dart
 lib/src/model/insurer_branding_response.dart
 lib/src/model/insurer_profile_request.dart
 lib/src/model/insurer_profile_response.dart
+lib/src/model/insurer_rating_settings_response.dart
 lib/src/model/invitation_details_response.dart
 lib/src/model/invitation_organization.dart
 lib/src/model/invitation_response.dart
@@ -87,6 +91,10 @@ lib/src/model/public_platform_settings_response.dart
 lib/src/model/public_reference_value_response.dart
 lib/src/model/public_reference_values_response.dart
 lib/src/model/publish_product_version_request.dart
+lib/src/model/rating_coverage.dart
+lib/src/model/rating_rule_error.dart
+lib/src/model/rating_rules_response.dart
+lib/src/model/rating_rules_validation_response.dart
 lib/src/model/reference_value_response.dart
 lib/src/model/refresh_token_request.dart
 lib/src/model/registration_doc_response.dart
@@ -104,6 +112,7 @@ lib/src/model/test_plate_format_response.dart
 lib/src/model/token_response.dart
 lib/src/model/totp_setup_response.dart
 lib/src/model/update_driver_request.dart
+lib/src/model/update_insurer_rating_settings_request.dart
 lib/src/model/update_me_request.dart
 lib/src/model/update_my_profile_request.dart
 lib/src/model/update_organization_request.dart
@@ -112,10 +121,12 @@ lib/src/model/update_plate_format_request.dart
 lib/src/model/update_platform_setting_request.dart
 lib/src/model/update_product_request.dart
 lib/src/model/update_product_version_request.dart
+lib/src/model/update_rating_rules_request.dart
 lib/src/model/update_reference_value_request.dart
 lib/src/model/update_user_roles_request.dart
 lib/src/model/update_vehicle_drivers_request.dart
 lib/src/model/update_vehicle_request.dart
+lib/src/model/validate_rating_rules_request.dart
 lib/src/model/vehicle_category.dart
 lib/src/model/vehicle_driver_assignment.dart
 lib/src/model/vehicle_driver_response.dart

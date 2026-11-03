@@ -19,6 +19,8 @@ import 'package:moseguros_api/src/model/activate_invitation_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
 import 'package:moseguros_api/src/model/catalog_insurer_response.dart';
 import 'package:moseguros_api/src/model/catalog_product_response.dart';
+import 'package:moseguros_api/src/model/charge.dart';
+import 'package:moseguros_api/src/model/charge_value.dart';
 import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/coverage_request.dart';
@@ -37,6 +39,7 @@ import 'package:moseguros_api/src/model/forgot_password_request.dart';
 import 'package:moseguros_api/src/model/insurer_branding_response.dart';
 import 'package:moseguros_api/src/model/insurer_profile_request.dart';
 import 'package:moseguros_api/src/model/insurer_profile_response.dart';
+import 'package:moseguros_api/src/model/insurer_rating_settings_response.dart';
 import 'package:moseguros_api/src/model/invitation_details_response.dart';
 import 'package:moseguros_api/src/model/invitation_organization.dart';
 import 'package:moseguros_api/src/model/invitation_response.dart';
@@ -82,6 +85,10 @@ import 'package:moseguros_api/src/model/public_platform_settings_response.dart';
 import 'package:moseguros_api/src/model/public_reference_value_response.dart';
 import 'package:moseguros_api/src/model/public_reference_values_response.dart';
 import 'package:moseguros_api/src/model/publish_product_version_request.dart';
+import 'package:moseguros_api/src/model/rating_coverage.dart';
+import 'package:moseguros_api/src/model/rating_rule_error.dart';
+import 'package:moseguros_api/src/model/rating_rules_response.dart';
+import 'package:moseguros_api/src/model/rating_rules_validation_response.dart';
 import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
 import 'package:moseguros_api/src/model/registration_doc_response.dart';
@@ -99,6 +106,7 @@ import 'package:moseguros_api/src/model/test_plate_format_response.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
 import 'package:moseguros_api/src/model/totp_setup_response.dart';
 import 'package:moseguros_api/src/model/update_driver_request.dart';
+import 'package:moseguros_api/src/model/update_insurer_rating_settings_request.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
@@ -107,10 +115,12 @@ import 'package:moseguros_api/src/model/update_plate_format_request.dart';
 import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
 import 'package:moseguros_api/src/model/update_product_request.dart';
 import 'package:moseguros_api/src/model/update_product_version_request.dart';
+import 'package:moseguros_api/src/model/update_rating_rules_request.dart';
 import 'package:moseguros_api/src/model/update_reference_value_request.dart';
 import 'package:moseguros_api/src/model/update_user_roles_request.dart';
 import 'package:moseguros_api/src/model/update_vehicle_drivers_request.dart';
 import 'package:moseguros_api/src/model/update_vehicle_request.dart';
+import 'package:moseguros_api/src/model/validate_rating_rules_request.dart';
 import 'package:moseguros_api/src/model/vehicle_category.dart';
 import 'package:moseguros_api/src/model/vehicle_driver_assignment.dart';
 import 'package:moseguros_api/src/model/vehicle_driver_response.dart';
@@ -128,6 +138,8 @@ part 'serializers.g.dart';
   AssignableRolesResponse,
   CatalogInsurerResponse,
   CatalogProductResponse,
+  Charge,
+  ChargeValue,
   ContactResponse,
   ContactsResponse,
   CoverageRequest,
@@ -146,6 +158,7 @@ part 'serializers.g.dart';
   InsurerBrandingResponse,
   InsurerProfileRequest,
   InsurerProfileResponse,
+  InsurerRatingSettingsResponse,
   InvitationDetailsResponse,
   InvitationOrganization,
   InvitationResponse,
@@ -191,6 +204,10 @@ part 'serializers.g.dart';
   PublicReferenceValueResponse,
   PublicReferenceValuesResponse,
   PublishProductVersionRequest,
+  RatingCoverage,
+  RatingRuleError,
+  RatingRulesResponse,
+  RatingRulesValidationResponse,
   ReferenceValueResponse,
   RefreshTokenRequest,
   RegistrationDocResponse,
@@ -208,6 +225,7 @@ part 'serializers.g.dart';
   TokenResponse,
   TotpSetupResponse,
   UpdateDriverRequest,
+  UpdateInsurerRatingSettingsRequest,
   UpdateMeRequest,
   UpdateMyProfileRequest,
   UpdateOrganizationRequest,
@@ -216,10 +234,12 @@ part 'serializers.g.dart';
   UpdatePlatformSettingRequest,
   UpdateProductRequest,
   UpdateProductVersionRequest,
+  UpdateRatingRulesRequest,
   UpdateReferenceValueRequest,
   UpdateUserRolesRequest,
   UpdateVehicleDriversRequest,
   UpdateVehicleRequest,
+  ValidateRatingRulesRequest,
   VehicleCategory,
   VehicleDriverAssignment,
   VehicleDriverResponse,

@@ -14,6 +14,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CatalogProductResponse.serializer)
       ..add(CatalogProductResponseStatusEnum.serializer)
       ..add(CatalogProductResponseTypeEnum.serializer)
+      ..add(Charge.serializer)
+      ..add(ChargeTypeEnum.serializer)
+      ..add(ChargeValue.serializer)
       ..add(ContactResponse.serializer)
       ..add(ContactResponseTypeEnum.serializer)
       ..add(ContactsResponse.serializer)
@@ -48,6 +51,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(InsurerBrandingResponse.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
+      ..add(InsurerRatingSettingsResponse.serializer)
+      ..add(InsurerRatingSettingsResponseRatingModeEnum.serializer)
       ..add(InvitationDetailsResponse.serializer)
       ..add(InvitationOrganization.serializer)
       ..add(InvitationOrganizationTypeEnum.serializer)
@@ -126,6 +131,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PublicReferenceValueResponse.serializer)
       ..add(PublicReferenceValuesResponse.serializer)
       ..add(PublishProductVersionRequest.serializer)
+      ..add(RatingCoverage.serializer)
+      ..add(RatingCoverageCapitalTypeEnum.serializer)
+      ..add(RatingCoverageCodeEnum.serializer)
+      ..add(RatingRuleError.serializer)
+      ..add(RatingRulesResponse.serializer)
+      ..add(RatingRulesResponseProductTypeEnum.serializer)
+      ..add(RatingRulesValidationResponse.serializer)
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
@@ -149,6 +161,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(TokenResponse.serializer)
       ..add(TotpSetupResponse.serializer)
       ..add(UpdateDriverRequest.serializer)
+      ..add(UpdateInsurerRatingSettingsRequest.serializer)
       ..add(UpdateMeRequest.serializer)
       ..add(UpdateMeRequestPreferredLanguageEnum.serializer)
       ..add(UpdateMyProfileRequest.serializer)
@@ -165,11 +178,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateProductRequest.serializer)
       ..add(UpdateProductRequestTypeEnum.serializer)
       ..add(UpdateProductVersionRequest.serializer)
+      ..add(UpdateRatingRulesRequest.serializer)
       ..add(UpdateReferenceValueRequest.serializer)
       ..add(UpdateUserRolesRequest.serializer)
       ..add(UpdateVehicleDriversRequest.serializer)
       ..add(UpdateVehicleRequest.serializer)
       ..add(UpdateVehicleRequestProvinceOfCirculationEnum.serializer)
+      ..add(ValidateRatingRulesRequest.serializer)
       ..add(VehicleCategory.serializer)
       ..add(VehicleDriverAssignment.serializer)
       ..add(VehicleDriverResponse.serializer)
@@ -183,6 +198,12 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(CatalogProductResponse)]),
           () => ListBuilder<CatalogProductResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Charge)]),
+          () => ListBuilder<Charge>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Charge)]),
+          () => ListBuilder<Charge>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(ContactResponse)]),
           () => ListBuilder<ContactResponse>())
@@ -227,6 +248,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Jwk)]),
           () => ListBuilder<Jwk>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Money)]),
+          () => ListBuilder<Money>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Money)]),
           () => ListBuilder<Money>())
@@ -287,6 +311,12 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(PublicReferenceValueResponse)]),
           () => ListBuilder<PublicReferenceValueResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(RatingCoverage)]),
+          () => ListBuilder<RatingCoverage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(RatingRuleError)]),
+          () => ListBuilder<RatingRuleError>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(ReferenceValueResponse)]),

@@ -11,6 +11,8 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
+- description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
+  name: Rating
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
 - description: Envio de mensagens e recibos de entrega
@@ -1708,6 +1710,123 @@ paths:
       summary: Publica uma versão
       tags:
       - Catalog
+  /api/v1/insurer/product-versions/{id}/rating:
+    get:
+      description: Permissão rating:manage ou product:read. rating é null quando a
+        versão ainda não tem tarifa; coverages são as coberturas da versão; editable
+        = versão DRAFT.
+      operationId: getRatingRules
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingRulesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta a tarifa de uma versão de produto
+      tags:
+      - Rating
+    put:
+      description: "Permissão rating:manage. Só versões DRAFT (senão 409 PRODUCT_VERSION_NOT_EDITABLE);\
+        \ version diferente → 409 CONCURRENT_MODIFICATION. Validada por rating-v1.json\
+        \ e pelas regras do S3-01 §7: 400 VALIDATION_ERROR com errors[].field = ponteiro\
+        \ JSON dentro de rating. Mais de 256 KB → 400 RATING_RULES_TOO_LARGE."
+      operationId: updateRatingRules
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRatingRulesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingRulesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Grava a tarifa de uma versão em preparação
+      tags:
+      - Rating
+  /api/v1/insurer/product-versions/{id}/rating/validate:
+    post:
+      description: "Permissão rating:manage. As mesmas validações de updateRatingRules,\
+        \ em qualquer estado da versão; todos os erros em errors[] (field = ponteiro\
+        \ JSON dentro de rating). Não grava."
+      operationId: validateRatingRules
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateRatingRulesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingRulesValidationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Valida uma tarifa sem a gravar
+      tags:
+      - Rating
   /api/v1/insurer/product-versions/{id}/validate:
     post:
       description: "Permissão product:read. As mesmas regras da publicação, sem gravar;\
@@ -1989,6 +2108,68 @@ paths:
       summary: Cria uma nova versão do produto
       tags:
       - Catalog
+  /api/v1/insurer/rating-settings:
+    get:
+      description: "Permissão rating:manage ou product:read, staff de uma seguradora\
+        \ (outro âmbito → 403 FORBIDDEN). Encargos pela ordem em que se calculam."
+      operationId: getInsurerRatingSettings
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerRatingSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta as definições de tarifação
+      tags:
+      - Organization
+    put:
+      description: "Permissão rating:manage. charges validado por charges-v1.json\
+        \ (SCHEMA_VIOLATION) e pelas regras DUPLICATE_CHARGE e VALUE_OUT_OF_RANGE\
+        \ (PERCENT acima de 100): 400 VALIDATION_ERROR com errors[].field = ponteiro\
+        \ JSON dentro de charges. version diferente → 409 CONCURRENT_MODIFICATION.\
+        \ O modo de tarifação não se altera aqui."
+      operationId: updateInsurerRatingSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInsurerRatingSettingsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerRatingSettingsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera os encargos da seguradora
+      tags:
+      - Organization
   /api/v1/integrations/delivery-receipts/{provider}:
     post:
       description: Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED;
@@ -3763,6 +3944,48 @@ components:
       - validFrom
       - vehicleCategories
       - versionNo
+    Charge:
+      type: object
+      description: Encargo (imposto ou taxa) que a seguradora acrescenta ao prémio
+        comercial
+      properties:
+        code:
+          type: string
+          example: DEMO_STAMP
+          pattern: "^[A-Z][A-Z0-9_]{1,29}$"
+        labelEn:
+          type: string
+          example: Stamp duty (provisional)
+          maxLength: 80
+          minLength: 1
+        labelPt:
+          type: string
+          example: Imposto de selo (provisório)
+          maxLength: 80
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - PERCENT
+          - FIXED
+        value:
+          $ref: "#/components/schemas/ChargeValue"
+      required:
+      - code
+      - labelEn
+      - labelPt
+      - type
+      - value
+    ChargeValue:
+      description: "PERCENT: percentagem em texto (\"2.5\" = 2,5 %); FIXED: centavos\
+        \ (inteiro)"
+      oneOf:
+      - type: string
+        pattern: "^(0|[1-9][0-9]?)(\\.[0-9]{1,4})?$"
+      - type: integer
+        format: int64
+        maximum: 100000000
+        minimum: 0
     ContactResponse:
       type: object
       properties:
@@ -4429,6 +4652,25 @@ components:
       required:
       - complaintsEmail
       - shortCode
+    InsurerRatingSettingsResponse:
+      type: object
+      properties:
+        charges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Charge"
+        ratingMode:
+          type: string
+          enum:
+          - INTERNAL
+          - EXTERNAL
+        version:
+          type: integer
+          format: int64
+      required:
+      - charges
+      - ratingMode
+      - version
     InvitationDetailsResponse:
       type: object
       properties:
@@ -5704,6 +5946,109 @@ components:
           format: int64
       required:
       - version
+    RatingCoverage:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        capitalOptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Money"
+          nullable: true
+        capitalType:
+          type: string
+          enum:
+          - FIXED
+          - VEHICLE_VALUE
+          - OPTIONS
+          - PER_PERSON
+        code:
+          type: string
+          enum:
+          - MTPL
+          - VTPL
+          - OD_COLLISION
+          - OD_GLASS
+          - OD_FIRE
+          - OD_NATURE
+          - OD_THEFT
+          - OCCUPANTS
+          - ASSISTANCE
+          - LEGAL
+          - SRCC
+          - CROSS_BORDER
+        mandatory:
+          type: boolean
+      required:
+      - capitalType
+      - code
+      - mandatory
+    RatingRuleError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: VALUE_OUT_OF_RANGE
+        field:
+          type: string
+          example: /coverages/0/base/rows/3/value
+        message:
+          type: string
+      required:
+      - code
+      - field
+    RatingRules:
+      type: object
+      description: "Tarifa interna no formato rating-v1 (backend/src/main/resources/schemas/rating-v1.json):\
+        \ schemaVersion, durationFactors e coverages (base e factores). Decimais em\
+        \ texto, dinheiro em centavos."
+    RatingRulesResponse:
+      type: object
+      properties:
+        configured:
+          type: boolean
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/RatingCoverage"
+        editable:
+          type: boolean
+        productType:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        productVersionId:
+          type: string
+          format: uuid
+        rating:
+          $ref: "#/components/schemas/RatingRules"
+        version:
+          type: integer
+          format: int64
+      required:
+      - configured
+      - coverages
+      - editable
+      - productType
+      - productVersionId
+      - version
+    RatingRulesValidationResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/RatingRuleError"
+        valid:
+          type: boolean
+      required:
+      - errors
+      - valid
     ReferenceValueResponse:
       type: object
       properties:
@@ -6085,6 +6430,20 @@ components:
       - licenceCategories
       - licenceIssueDate
       - version
+    UpdateInsurerRatingSettingsRequest:
+      type: object
+      properties:
+        charges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Charge"
+          maxItems: 10
+        version:
+          type: integer
+          format: int64
+      required:
+      - charges
+      - version
     UpdateMeRequest:
       type: object
       properties:
@@ -6386,6 +6745,17 @@ components:
       - usages
       - vehicleCategories
       - version
+    UpdateRatingRulesRequest:
+      type: object
+      properties:
+        rating:
+          $ref: "#/components/schemas/RatingRules"
+        version:
+          type: integer
+          format: int64
+      required:
+      - rating
+      - version
     UpdateReferenceValueRequest:
       type: object
       properties:
@@ -6513,6 +6883,13 @@ components:
       - usage
       - version
       - year
+    ValidateRatingRulesRequest:
+      type: object
+      properties:
+        rating:
+          $ref: "#/components/schemas/RatingRules"
+      required:
+      - rating
     VehicleCategory:
       type: string
       enum:
