@@ -178,7 +178,7 @@ public final class QuoteRequestValidator {
     private static List<RequestedCoverage> coverages(List<CoverageInput> input, ProductType type, Errors errors) {
         List<RequestedCoverage> result = new ArrayList<>();
         if (input == null) {
-            return result;
+            input = List.of();
         }
         if (input.size() > CoverageCode.values().length) {
             errors.add("coverages", FieldErrorCodes.OUT_OF_RANGE,

@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import mz.co.moseguros.rating.application.RatingProperties;
 import org.springframework.http.MediaType;
@@ -102,7 +103,9 @@ public class ExternalRatingClient {
 
     static boolean isTimeout(Throwable e) {
         for (Throwable t = e; t != null; t = t.getCause() == t ? null : t.getCause()) {
-            if (t instanceof HttpTimeoutException || t instanceof SocketTimeoutException) {
+            // O JdkClientHttpRequest espera a resposta com Future.get(readTimeout): TimeoutException.
+            if (t instanceof HttpTimeoutException || t instanceof SocketTimeoutException
+                    || t instanceof TimeoutException) {
                 return true;
             }
         }

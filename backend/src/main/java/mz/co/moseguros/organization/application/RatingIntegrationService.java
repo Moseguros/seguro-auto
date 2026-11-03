@@ -43,7 +43,8 @@ public class RatingIntegrationService {
     private final InsurerProfileRepository profiles;
     private final AuditService audit;
     private final CurrentUser currentUser;
-    private final boolean allowHttp;
+    /** {@code moseguros.rating.external.allow-http}: {@code http://} só em local e test. */
+    private boolean allowHttp;
 
     public RatingIntegrationService(OrganizationRepository organizations, InsurerProfileRepository profiles,
                                     AuditService audit, CurrentUser currentUser,
