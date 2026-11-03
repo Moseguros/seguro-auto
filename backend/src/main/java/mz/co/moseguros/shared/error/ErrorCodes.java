@@ -125,6 +125,18 @@ public final class ErrorCodes {
     /** A conta ficaria sem nenhum contacto verificado (400). */
     public static final String LAST_CONTACT = "LAST_CONTACT";
 
+    // Ficheiros (S2-01)
+    /** Ficheiro inexistente, limpo, ou que quem pede não pode ler (404; nunca 403). */
+    public static final String FILE_NOT_FOUND = "FILE_NOT_FOUND";
+    /** Ficheiro com 0 bytes (400). */
+    public static final String FILE_EMPTY = "FILE_EMPTY";
+    /** Ficheiro com mais de 10 MB (413). */
+    public static final String FILE_TOO_LARGE = "FILE_TOO_LARGE";
+    /** Conteúdo que não é JPEG, PNG, HEIC ou PDF, fora dos tipos aceites, ou diferente do declarado (415). */
+    public static final String FILE_TYPE_NOT_ALLOWED = "FILE_TYPE_NOT_ALLOWED";
+    /** O conteúdo de um ficheiro registado não pôde ser lido do armazenamento (500). */
+    public static final String FILE_STORAGE_ERROR = "FILE_STORAGE_ERROR";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -177,7 +189,12 @@ public final class ErrorCodes {
             Map.entry(LAST_MANAGER, 400),
             Map.entry(CONTACT_ALREADY_IN_USE, 409),
             Map.entry(CONTACT_ALREADY_VERIFIED, 409),
-            Map.entry(LAST_CONTACT, 400));
+            Map.entry(LAST_CONTACT, 400),
+            Map.entry(FILE_NOT_FOUND, 404),
+            Map.entry(FILE_EMPTY, 400),
+            Map.entry(FILE_TOO_LARGE, 413),
+            Map.entry(FILE_TYPE_NOT_ALLOWED, 415),
+            Map.entry(FILE_STORAGE_ERROR, 500));
 
     private ErrorCodes() {
     }

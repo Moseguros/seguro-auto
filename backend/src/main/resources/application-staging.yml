@@ -2,3 +2,14 @@
 springdoc:
   swagger-ui:
     enabled: true
+
+# Ficheiros em S3 (ADR-005). Credenciais pela cadeia por defeito do SDK (AWS_ACCESS_KEY_ID/
+# AWS_SECRET_ACCESS_KEY ou papel da máquina), nunca aqui.
+moseguros:
+  files:
+    storage: ${MOSEGUROS_FILES_STORAGE:s3}
+    s3:
+      bucket: ${MOSEGUROS_S3_BUCKET:}
+      region: ${MOSEGUROS_S3_REGION:}
+      endpoint: ${MOSEGUROS_S3_ENDPOINT:}
+      path-style-access: ${MOSEGUROS_S3_PATH_STYLE:false}

@@ -33,7 +33,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  *
  * <p>Nos caminhos públicos o cabeçalho {@code Authorization} é ignorado: sem isso um token de
  * acesso expirado daria 401 mesmo em {@code permitAll}, e a renovação (chamada precisamente
- * quando o token expirou) falharia sempre.
+ * quando o token expirou) falharia sempre. Nos caminhos de {@link #OPTIONAL_AUTH_PATHS} (download de
+ * ficheiros) o pedido pode ser anónimo, mas um token presente é validado.
  */
 @Configuration
 @EnableMethodSecurity
@@ -56,6 +57,19 @@ public class SecurityConfig {
             .map(path -> (RequestMatcher) AntPathRequestMatcher.antMatcher(path))
             .toList());
 
+    /**
+     * Caminhos públicos <b>ou</b> autenticados (S2-01): sem token o pedido é anónimo; com token
+     * válido é autenticado; com token inválido ou expirado dá 401 (o cliente renova e repete). Por
+     * isso ficam fora de {@link #PUBLIC_PATHS}, onde o cabeçalho seria ignorado.
+     */
+    static final String[] OPTIONAL_AUTH_PATHS = {
+        "/api/v1/files/**"
+    };
+
+    static final RequestMatcher OPTIONAL_AUTH = new OrRequestMatcher(Arrays.stream(OPTIONAL_AUTH_PATHS)
+            .map(path -> (RequestMatcher) AntPathRequestMatcher.antMatcher(path))
+            .toList());
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper) throws Exception {
         AuthenticationEntryPoint unauthorized = (req, res, ex) -> write(res, objectMapper,
@@ -69,6 +83,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC).permitAll()
+                        .requestMatchers(OPTIONAL_AUTH).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .bearerTokenResolver(bearerTokenResolver())

@@ -21,6 +21,9 @@ spring:
     password: ${DB_OWNER_PASSWORD:moseguros}
     # A migração V202610311200 cria os schemas; o histórico do Flyway fica em public.
     default-schema: public
+    # As tarefas correm em paralelo: uma migração pode chegar ao main depois de outra com carimbo
+    # maior (modelo transversal §6). Sem isto seria recusada numa BD já migrada.
+    out-of-order: true
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -31,6 +34,11 @@ spring:
       enabled: true
   # SMTP do e-mail (OTP): sem spring.mail.host (SPRING_MAIL_HOST) os envios por e-mail falham
   # (FAILED) mas a aplicação arranca. Timeout de 5 s, como os outros canais.
+  # Envio de ficheiros (S2-01): 10 MB por ficheiro (ADR-005), 11 MB por pedido (ficheiro + campos).
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
   mail:
     properties:
       mail.smtp.connectiontimeout: 5000
@@ -127,6 +135,13 @@ moseguros:
     current-key-version: 1
     data-keys:
       1: ${MOSEGUROS_DATA_KEY_1:}
+  # Armazenamento de ficheiros (ADR-005, S2-01): filesystem ou s3, sem valor por defeito (sem ele
+  # a aplicação não arranca). Cada perfil define-o; staging e prod usam S3 (MOSEGUROS_S3_*).
+  files:
+    storage: ${MOSEGUROS_FILES_STORAGE:}
+  # Jobs agendados (@Scheduled, Africa/Maputo). false nos testes: chamam o job directamente.
+  jobs:
+    enabled: true
   plates:
     # Formatos de matrícula aceites, testados por ordem. O pattern aplica-se ao valor
     # normalizado (maiúsculas, sem espaços nem hífens); o display-template usa {grupo}.

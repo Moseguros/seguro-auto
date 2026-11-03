@@ -55,6 +55,14 @@ public class CurrentUser {
         return permissions().contains(permission);
     }
 
+    /**
+     * {@code false} para pedidos anónimos (ex.: download de um ficheiro público). Quem pode receber
+     * pedidos anónimos chama-o antes de {@link #id()} ou {@link #permissions()}.
+     */
+    public boolean isAuthenticated() {
+        return token().isPresent();
+    }
+
     /** Token do pedido, se houver. */
     public Optional<Jwt> token() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -19,3 +19,10 @@ moseguros:
       provider: fake
     email:
       provider: fake
+  files:
+    storage: filesystem
+    filesystem:
+      base-dir: ${java.io.tmpdir}/moseguros-test-files
+  # Sem @Scheduled nos testes: chamam o job directamente.
+  jobs:
+    enabled: false
