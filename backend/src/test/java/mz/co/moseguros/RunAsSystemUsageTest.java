@@ -48,6 +48,34 @@ class RunAsSystemUsageTest {
         RUN_AS_SYSTEM_OWNERS.check(MAIN_CLASSES);
     }
 
+    /** S2-01: o download e a limpeza de órfãos do document correm em SYSTEM, em classes permitidas. */
+    @Test
+    void documentSystemLookupsAndOrphanCleanupJobAreAllowed() {
+        JavaClasses document = new ClassFileImporter().importClasses(
+                mz.co.moseguros.document.application.DocumentSystemLookups.class,
+                mz.co.moseguros.document.application.OrphanFileCleanupJob.class);
+        RUN_AS_SYSTEM_OWNERS.check(document);
+        org.assertj.core.api.Assertions.assertThat(document.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .contains("DocumentSystemLookups.find", "OrphanFileCleanupJob.purgeOrphans");
+    }
+
+    /** S2-04: o catálogo público e o CatalogApi lêem entre seguradoras só pelo CatalogSystemLookups. */
+    @Test
+    void catalogSystemLookupsIsAllowed() {
+        JavaClasses catalog = new ClassFileImporter().importClasses(
+                mz.co.moseguros.catalog.application.CatalogSystemLookups.class);
+        RUN_AS_SYSTEM_OWNERS.check(catalog);
+        org.assertj.core.api.Assertions.assertThat(catalog.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("CatalogSystemLookups.publishedVersions",
+                        "CatalogSystemLookups.publishedVersion", "CatalogSystemLookups.versionAccess");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

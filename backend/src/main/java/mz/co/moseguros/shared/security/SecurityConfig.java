@@ -33,7 +33,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  *
  * <p>Nos caminhos públicos o cabeçalho {@code Authorization} é ignorado: sem isso um token de
  * acesso expirado daria 401 mesmo em {@code permitAll}, e a renovação (chamada precisamente
- * quando o token expirou) falharia sempre.
+ * quando o token expirou) falharia sempre. Nos caminhos de {@link #OPTIONAL_AUTH_PATHS} (download de
+ * ficheiros) o pedido pode ser anónimo, mas um token presente é validado.
  */
 @Configuration
 @EnableMethodSecurity
@@ -44,6 +45,12 @@ public class SecurityConfig {
         "/api/v1/meta/**",
         "/api/v1/auth/**",
         "/api/v1/integrations/delivery-receipts/**",
+        // listas de referência para os ecrãs (S2-02); a administração fica em /api/v1/admin/**
+        "/api/v1/reference-domains/*/values",
+        "/api/v1/platform-settings",
+        "/api/v1/plate-formats",
+        // catálogo público de produtos (S2-04); a gestão fica em /api/v1/insurer/**
+        "/api/v1/catalog/**",
         "/.well-known/jwks.json",
         "/v3/api-docs/**",
         "/v3/api-docs.yaml",
@@ -53,6 +60,19 @@ public class SecurityConfig {
     };
 
     static final RequestMatcher PUBLIC = new OrRequestMatcher(Arrays.stream(PUBLIC_PATHS)
+            .map(path -> (RequestMatcher) AntPathRequestMatcher.antMatcher(path))
+            .toList());
+
+    /**
+     * Caminhos públicos <b>ou</b> autenticados (S2-01): sem token o pedido é anónimo; com token
+     * válido é autenticado; com token inválido ou expirado dá 401 (o cliente renova e repete). Por
+     * isso ficam fora de {@link #PUBLIC_PATHS}, onde o cabeçalho seria ignorado.
+     */
+    static final String[] OPTIONAL_AUTH_PATHS = {
+        "/api/v1/files/**"
+    };
+
+    static final RequestMatcher OPTIONAL_AUTH = new OrRequestMatcher(Arrays.stream(OPTIONAL_AUTH_PATHS)
             .map(path -> (RequestMatcher) AntPathRequestMatcher.antMatcher(path))
             .toList());
 
@@ -69,6 +89,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC).permitAll()
+                        .requestMatchers(OPTIONAL_AUTH).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .bearerTokenResolver(bearerTokenResolver())

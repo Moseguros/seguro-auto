@@ -24,17 +24,8 @@ class HomeScreen extends ConsumerWidget {
     final name = firstName(me?.displayName);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.appName),
-        actions: [
-          IconButton(
-            key: const Key('open-profile'),
-            tooltip: l10n.profileOpen,
-            icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () => context.push('/profile'),
-          ),
-        ],
-      ),
+      // O perfil está na barra inferior (S2-07).
+      appBar: AppBar(title: Text(l10n.appName)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16),
@@ -58,7 +49,7 @@ class HomeScreen extends ConsumerWidget {
                       Text(l10n.homeIncompleteProfile),
                       const SizedBox(height: 16),
                       FilledButton(
-                        onPressed: () => context.push('/profile?complete=1'),
+                        onPressed: () => context.go('/profile?complete=1'),
                         child: Text(l10n.homeCompleteProfile),
                       ),
                     ],

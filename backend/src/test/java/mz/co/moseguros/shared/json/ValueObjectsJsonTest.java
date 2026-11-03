@@ -3,9 +3,6 @@ package mz.co.moseguros.shared.json;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
@@ -13,18 +10,16 @@ import mz.co.moseguros.shared.domain.Matricula;
 import mz.co.moseguros.shared.domain.Money;
 import mz.co.moseguros.shared.domain.Msisdn;
 import mz.co.moseguros.shared.domain.Nuit;
-import mz.co.moseguros.shared.domain.PlateFormat;
 import mz.co.moseguros.shared.domain.PlateParser;
+import mz.co.moseguros.shared.domain.StaticPlateFormatProvider;
 import mz.co.moseguros.shared.error.DomainException;
 import org.junit.jupiter.api.Test;
 
 class ValueObjectsJsonTest {
 
-    private static final PlateFormat STANDARD = new PlateFormat("STANDARD", "Actual",
-            Pattern.compile("^(?<l>[A-Z]{3})(?<n>\\d{3})(?<p>[A-Z]{2})$"), "{l}-{n}-{p}", true);
-
     private final ObjectMapper mapper = new ObjectMapper()
-            .registerModule(new ValueObjectsModule(new PlateParser(() -> List.of(STANDARD))));
+            .registerModule(new ValueObjectsModule(
+                    new PlateParser(StaticPlateFormatProvider.of(StaticPlateFormatProvider.STANDARD))));
 
     record Holder(Msisdn msisdn, Nuit nuit, Matricula plate, Money premium) {
     }

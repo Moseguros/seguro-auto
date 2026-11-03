@@ -175,7 +175,40 @@
     "LAST_MANAGER": "The organization must keep at least one active manager.",
     "CONTACT_ALREADY_IN_USE": "This contact already belongs to another account.",
     "CONTACT_ALREADY_VERIFIED": "This contact is already confirmed on your account.",
-    "LAST_CONTACT": "The account must keep at least one confirmed contact."
+    "LAST_CONTACT": "The account must keep at least one confirmed contact.",
+    "FILE_NOT_FOUND": "The file does not exist or you do not have access to it.",
+    "FILE_EMPTY": "The file is empty.",
+    "FILE_TOO_LARGE": "The file is larger than 10 MB.",
+    "FILE_TYPE_NOT_ALLOWED": "File type not accepted. Use JPEG, PNG, HEIC or PDF.",
+    "FILE_STORAGE_ERROR": "The file could not be read. Please try again later.",
+    "REFERENCE_DOMAIN_UNKNOWN": "This reference list does not exist.",
+    "REFERENCE_VALUE_NOT_FOUND": "The value does not exist in this list.",
+    "REFERENCE_CODE_ALREADY_EXISTS": "A value with this code already exists in this list.",
+    "PLATFORM_SETTING_NOT_FOUND": "This setting does not exist.",
+    "PLATE_FORMAT_NOT_FOUND": "The plate format does not exist.",
+    "PLATE_FORMAT_CODE_ALREADY_EXISTS": "A plate format with this code already exists.",
+    "LAST_ACTIVE_PLATE_FORMAT": "At least one plate format must stay active.",
+    "PRODUCT_NOT_FOUND": "Product not found.",
+    "PRODUCT_VERSION_NOT_FOUND": "Product version not found.",
+    "PRODUCT_DOCUMENT_NOT_FOUND": "Document not found.",
+    "PRODUCT_CODE_ALREADY_EXISTS": "A product with this code already exists.",
+    "PRODUCT_TYPE_LOCKED": "The type cannot change after the product has been published.",
+    "PRODUCT_RETIRED": "This product was retired and can no longer be changed.",
+    "PRODUCT_DRAFT_EXISTS": "There is already a version of this product being prepared.",
+    "PRODUCT_VERSION_NOT_EDITABLE": "This version has already been published and cannot be changed. Create a new version.",
+    "PRODUCT_DOCUMENT_LIMIT_REACHED": "Each version can have at most 10 documents.",
+    "PRODUCT_VERSION_NOT_PUBLISHABLE": "The version does not meet the publication rules yet.",
+    "VEHICLE_NOT_FOUND": "Vehicle not found.",
+    "VEHICLE_ALREADY_REGISTERED": "You already have a vehicle with this plate.",
+    "VEHICLE_LIMIT_REACHED": "You have reached the maximum of 20 vehicles.",
+    "VEHICLE_REMOVAL_BLOCKED": "This vehicle has a policy in force and cannot be removed.",
+    "VEHICLE_REGISTRY_NOT_FOUND": "We could not find this plate in the registry. Fill in the registration document details.",
+    "VEHICLE_REGISTRY_UNAVAILABLE": "The vehicle registry is not available. Fill in the registration document details.",
+    "DRIVER_NOT_FOUND": "Driver not found.",
+    "DRIVER_ALREADY_REGISTERED": "You already have a driver with this licence.",
+    "DRIVER_LIMIT_REACHED": "You have reached the maximum of 10 drivers.",
+    "OWNER_DRIVER_ALREADY_EXISTS": "You are already registered as a driver.",
+    "DRIVER_IS_HABITUAL": "This driver is the habitual driver of a vehicle. Choose another habitual driver first."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -205,7 +238,41 @@
     "INVALID_NAME": "Enter your full name (at least two words, only letters, spaces, ' and -).",
     "UNDERAGE": "You must be at least 18 years old.",
     "INVALID_DATE": "Invalid date.",
-    "INVALID_DOCUMENT_NUMBER": "Invalid document number (5 to 20 upper-case letters or digits)."
+    "INVALID_DOCUMENT_NUMBER": "Invalid document number (5 to 20 upper-case letters or digits).",
+    "INVALID_CODE": "Use only upper-case letters, digits and _.",
+    "PARENT_NOT_FOUND": "The make does not exist.",
+    "INVALID_VALUE": "Invalid value for this setting.",
+    "INVALID_PATTERN": "The regular expression is not valid.",
+    "PATTERN_NOT_ANCHORED": "The expression must start with ^ and end with $.",
+    "PATTERN_WITHOUT_GROUPS": "The expression needs at least one named group.",
+    "TEMPLATE_GROUP_UNKNOWN": "The template uses a group that is not in the expression.",
+    "EXAMPLE_DOES_NOT_MATCH": "The example does not match the format.",
+    "DUPLICATED": "Repeated value.",
+    "INVALID_REQUIREMENT": "A coverage cannot require itself.",
+    "CAPITAL_OPTIONS_INVALID": "Enter 2 to 10 values, from lowest to highest.",
+    "INVALID_COUNTRY_CODE": "Invalid country code.",
+    "MZ_SCOPE_REQUIRED": "The scope must include Mozambique.",
+    "INVALID_CAPITAL_TYPE": "Capital type not allowed for this coverage.",
+    "MTPL_REQUIRED": "The product must include compulsory third-party liability.",
+    "MTPL_MUST_BE_MANDATORY": "Compulsory third-party liability cannot be optional.",
+    "MTPL_CAPITAL_BELOW_MINIMUM": "The capital is below the configured legal minimum capital.",
+    "BORDER_ONLY_MTPL": "Border insurance can only have compulsory third-party liability.",
+    "OD_NOT_ALLOWED_FOR_TYPE": "This product type does not allow own damage coverages.",
+    "OD_REQUIRED_FOR_COMPREHENSIVE": "An own damage product needs at least one own damage coverage.",
+    "OD_CAPITAL_MUST_BE_VEHICLE_VALUE": "Own damage coverages use the vehicle value as capital.",
+    "OD_THEFT_REQUIRES_OD_COVERAGES": "Theft requires collision, fire and natural events.",
+    "REQUIRED_COVERAGE_MISSING": "A coverage required by this one is missing.",
+    "VTPL_CAPITAL_TOO_LOW": "The voluntary third-party liability capital must be higher than the legal minimum capital.",
+    "CROSS_BORDER_SCOPE_REQUIRED": "Enter at least one country besides Mozambique.",
+    "DOCUMENT_REQUIRED": "This document in Portuguese is missing.",
+    "INVALID_MONEY": "Invalid amount. Use at most 2 decimal places.",
+    "INVALID_CHASSIS": "Invalid chassis number.",
+    "INVALID_YEAR": "Invalid year.",
+    "INVALID_LICENCE_NUMBER": "Invalid driving licence number.",
+    "LICENCE_CATEGORY_UNKNOWN": "Unknown licence category.",
+    "LICENCE_ISSUE_DATE_INVALID": "The issue date must be after the birth date and not after today.",
+    "HABITUAL_DRIVER_REQUIRED": "Choose the habitual driver.",
+    "MULTIPLE_HABITUAL_DRIVERS": "There can only be one habitual driver."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -625,5 +692,507 @@
     "EXPIRED": "Expired",
     "REVOKED": "Revoked",
     "ACCEPTED": "Accepted"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "files": {
+    "open": "View"
+  },
+  "productType": {
+    "MTPL_ONLY": "Third-party liability",
+    "COMPREHENSIVE": "Own damage",
+    "TEMPORARY": "Temporary",
+    "BORDER": "Border",
+    "FLEET": "Fleet"
+  },
+  "productStatus": {
+    "DRAFT": "In preparation",
+    "PUBLISHED": "Published",
+    "RETIRED": "Retired"
+  },
+  "productVersionStatus": {
+    "DRAFT": "In preparation",
+    "PUBLISHED": "In force",
+    "SUPERSEDED": "Superseded",
+    "RETIRED": "Retired"
+  },
+  "coverage": {
+    "MTPL": "Compulsory third-party liability",
+    "VTPL": "Voluntary third-party liability",
+    "OD_COLLISION": "Collision and overturning",
+    "OD_GLASS": "Glass breakage",
+    "OD_FIRE": "Fire, lightning and explosion",
+    "OD_NATURE": "Natural events",
+    "OD_THEFT": "Theft or robbery",
+    "OCCUPANTS": "Occupants",
+    "ASSISTANCE": "Roadside assistance",
+    "LEGAL": "Legal protection",
+    "SRCC": "Strikes, riots and civil commotion",
+    "CROSS_BORDER": "Driving abroad"
+  },
+  "capitalType": {
+    "FIXED": "Fixed amount",
+    "VEHICLE_VALUE": "Vehicle value",
+    "OPTIONS": "Choice of options",
+    "PER_PERSON": "Per person"
+  },
+  "deductibleType": {
+    "NONE": "No excess",
+    "FIXED": "Fixed amount",
+    "PERCENT": "Percentage of the loss"
+  },
+  "productDocumentType": {
+    "GENERAL_CONDITIONS": "General conditions",
+    "PRE_CONTRACT_INFO": "Pre-contract information",
+    "SPECIAL_CONDITIONS": "Special conditions",
+    "OTHER": "Other"
+  },
+  "vehicleCategory": {
+    "LIGHT_PASSENGER": "Light passenger car",
+    "LIGHT_MIXED": "Light mixed-use vehicle",
+    "HEAVY": "Heavy vehicle",
+    "MOTORCYCLE": "Motorcycle",
+    "TRAILER": "Trailer",
+    "BUS": "Bus"
+  },
+  "vehicleUsage": {
+    "PRIVATE": "Private",
+    "RENTAL": "Rental",
+    "PASSENGER_TRANSPORT": "Passenger transport",
+    "GOODS": "Goods transport",
+    "TAXI": "Taxi",
+    "DRIVING_SCHOOL": "Driving school"
+  },
+  "referenceDomain": {
+    "VEHICLE_MAKE": "Makes",
+    "VEHICLE_MODEL": "Models",
+    "LICENCE_CATEGORY": "Licence categories"
+  },
+  "platformSetting": {
+    "MTPL_MIN_CAPITAL": "Minimum compulsory third-party liability cover"
+  },
+  "products": {
+    "title": "Products",
+    "new": "New product",
+    "empty": "There are no products yet.",
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "search": "Search",
+      "all": "All"
+    },
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "type": "Type",
+      "status": "Status",
+      "currentVersion": "Version in force",
+      "hasDraft": "In preparation",
+      "updatedAt": "Updated on"
+    },
+    "fields": {
+      "code": "Code",
+      "codeHelp": "Capitals, digits, _ and -; 2 to 30 characters. Cannot change after creation.",
+      "name": "Name",
+      "type": "Type",
+      "description": "Description",
+      "choose": "Choose…",
+      "optional": "Optional."
+    },
+    "create": {
+      "title": "New product",
+      "submit": "Create product"
+    },
+    "edit": {
+      "title": "Edit product details",
+      "typeLocked": "The type cannot change after the first publication."
+    },
+    "logo": {
+      "title": "Insurer logo",
+      "note": "Shown on quotes and certificates. PNG or JPEG, up to 1 MB.",
+      "upload": "Upload logo",
+      "replace": "Replace",
+      "remove": "Remove",
+      "alt": "{{name}} logo",
+      "tooLarge": "The logo is larger than 1 MB.",
+      "removeDialog": {
+        "title": "Remove the logo?",
+        "text": "Quotes and certificates will show the insurer's initials instead."
+      }
+    },
+    "detail": {
+      "back": "Products",
+      "published": "Version {{n}} published",
+      "edit": "Edit details",
+      "continueVersion": "Continue version {{n}}",
+      "newVersion": "Create new version",
+      "retire": "Retire product",
+      "retired": "Product retired",
+      "saved": "Details saved",
+      "versions": "Versions",
+      "versionLabel": "Version {{n}}",
+      "retireDialog": {
+        "title": "Retire the product?",
+        "text": "The product will no longer be on sale. Policies in force continue. This cannot be undone."
+      }
+    },
+    "versionColumns": {
+      "number": "No.",
+      "status": "Status",
+      "validity": "In force",
+      "publishedAt": "Published on",
+      "notes": "Notes"
+    },
+    "editor": {
+      "back": "Back to the product",
+      "title": "{{name}} · Version {{n}}",
+      "publishedNotice": "Version {{n}} published on {{date}}. A published version cannot be changed.",
+      "noPermission": "You can view this version, but not change it.",
+      "conflict": "Someone else changed this version. Reload to see the current version.",
+      "reload": "Reload",
+      "fixFields": "Fix the highlighted fields before saving.",
+      "previous": "Previous",
+      "next": "Next",
+      "save": "Save",
+      "saveAndContinue": "Save and continue",
+      "continue": "Continue to review",
+      "saved": "Changes saved",
+      "unsaved": {
+        "title": "Leave without saving?",
+        "text": "You have unsaved changes.",
+        "stay": "Keep editing",
+        "leave": "Leave without saving"
+      }
+    },
+    "steps": {
+      "dados": "General details",
+      "coberturas": "Coverages",
+      "franquias": "Excesses",
+      "documentos": "Documents",
+      "revisao": "Review and publish"
+    },
+    "general": {
+      "product": "Product",
+      "editProduct": "Edit details",
+      "categories": "Vehicle categories",
+      "usages": "Uses",
+      "changeNotes": "Version notes"
+    },
+    "coverages": {
+      "add": "Add coverage",
+      "empty": "There are no coverages yet. Add at least compulsory third-party liability.",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "remove": "Remove {{name}}",
+      "mandatory": "Mandatory",
+      "capitalType": "Sum insured type",
+      "capital": "Sum insured",
+      "capitalPerPerson": "Sum insured per person",
+      "options": "Sum insured options",
+      "option": "Option {{n}}",
+      "removeOption": "Remove option {{n}}",
+      "addOption": "Add option",
+      "requires": "Requires the coverages",
+      "scope": "Territorial scope",
+      "description": "Description",
+      "exclusions": "Exclusions",
+      "mtplMinimum": "Legal minimum: {{value}}",
+      "vtplMinimum": "Must be greater than {{value}}",
+      "vehicleValueHelp": "The sum insured is the market value of the vehicle.",
+      "removeDialog": {
+        "title": "Remove {{name}}?",
+        "text": "The coverage leaves the list. The change is only stored when you save.",
+        "confirm": "Remove"
+      }
+    },
+    "deductibles": {
+      "empty": "Add the coverages first.",
+      "type": "Excess",
+      "amount": "Excess amount",
+      "percent": "Percentage",
+      "percentInvalid": "Enter 0.01 to 100, with at most 2 decimal places.",
+      "minimum": "Minimum",
+      "minimumHelp": "Optional."
+    },
+    "documents": {
+      "required": "Required documents (Portuguese)",
+      "english": "In English (optional)",
+      "others": "Other documents",
+      "noOthers": "No other documents.",
+      "inEnglish": "{{name}} (English)",
+      "sent": "Uploaded",
+      "missing": "Missing",
+      "upload": "Upload PDF",
+      "replace": "Replace",
+      "view": "View",
+      "remove": "Remove",
+      "removeOf": "Remove {{name}}",
+      "uploading": "Uploading",
+      "type": "Type",
+      "title": "Title",
+      "newDocument": "New document",
+      "add": "Add document",
+      "language": {
+        "pt": "Portuguese",
+        "en": "English"
+      },
+      "removeDialog": {
+        "title": "Remove the document?",
+        "text": "The document will no longer be part of this version."
+      }
+    },
+    "preview": {
+      "title": "How the customer will see the product",
+      "validating": "Checking the publication rules…",
+      "errorsTitle": "To fix before publishing",
+      "fix": "Fix",
+      "ready": "The version meets the publication rules.",
+      "coverages": "Coverages",
+      "noCoverages": "No coverages.",
+      "included": "Included",
+      "capital": "Sum insured",
+      "deductible": "Excess",
+      "documents": "Documents",
+      "perPerson": "{{value}} per person",
+      "percentWithMin": "{{percent}}, minimum {{min}}"
+    },
+    "publish": {
+      "button": "Publish version",
+      "title": "Publish version {{n}}?",
+      "text": "Once published, this version cannot be changed and goes on sale today.",
+      "textWithPrevious": "Once published, this version cannot be changed and goes on sale today. Version {{previous}} will no longer be on sale.",
+      "confirm": "Publish"
+    }
+  },
+  "references": {
+    "title": "Reference tables",
+    "tabs": {
+      "marcas": "Makes",
+      "modelos": "Models",
+      "cartas": "Licence categories",
+      "matriculas": "Plate formats",
+      "parametros": "Settings"
+    },
+    "actionsFor": "Actions for {{name}}",
+    "edit": "Edit",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "activated": "Activated",
+    "deactivated": "Deactivated",
+    "saved": "Changes saved",
+    "columns": {
+      "code": "Code",
+      "labelPt": "Name (pt)",
+      "labelEn": "Name (en)",
+      "make": "Make",
+      "sortOrder": "Order",
+      "status": "Status"
+    },
+    "filters": {
+      "status": "Status",
+      "all": "All",
+      "make": "Make",
+      "search": "Search"
+    },
+    "values": {
+      "new": "New value",
+      "newTitle": "New value",
+      "editTitle": "Edit value"
+    },
+    "fields": {
+      "code": "Code",
+      "codeHelp": "Capitals, digits and _. Cannot change after creation.",
+      "make": "Make",
+      "choose": "Choose…",
+      "labelPt": "Name (pt)",
+      "labelEn": "Name (en)",
+      "optional": "Optional.",
+      "sortOrder": "Order",
+      "sortOrderHelp": "0 to 9999; lower values come first."
+    },
+    "deactivateDialog": {
+      "title": "Deactivate {{name}}?",
+      "text": "It will no longer appear in the lists. Records that already use it do not change."
+    },
+    "plates": {
+      "new": "New format",
+      "newTitle": "New plate format",
+      "editTitle": "Edit plate format",
+      "sortOrderHelp": "0 to 999: order in which the formats are tested.",
+      "help": "The pattern applies to the plate in capitals, without spaces or hyphens. Use named groups, for example (?<l>[A-Z]{3}), and refer to them in the template as {l}.",
+      "test": "Test",
+      "testValue": "Plate",
+      "matches": "Matches: {{formatted}}",
+      "noMatch": "Does not match"
+    },
+    "plateFields": {
+      "code": "Code",
+      "label": "Name",
+      "pattern": "Pattern",
+      "displayTemplate": "Display template",
+      "example": "Example",
+      "sortOrder": "Order"
+    },
+    "plateColumns": {
+      "code": "Code",
+      "label": "Name",
+      "example": "Example",
+      "pattern": "Pattern",
+      "sortOrder": "Order",
+      "status": "Status"
+    },
+    "settings": {
+      "value": "Value",
+      "mtplNote": "Used to validate product publication. Products already published do not change.",
+      "updated": "Changed on {{date}} by {{by}}"
+    }
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "tabs": {
+      "label": "Vehicles and drivers",
+      "vehicles": "Vehicles",
+      "drivers": "Drivers"
+    },
+    "add": "Add vehicle",
+    "empty": "You haven't registered any vehicles yet.",
+    "retry": "Try again",
+    "loadMore": "Show more",
+    "backToList": "Back to vehicles",
+    "verified": "Confirmed in the registry",
+    "notVerified": "Not confirmed in the registry",
+    "created": "Vehicle added. Now send a photo of the registration document.",
+    "saved": "Changes saved",
+    "removed": "Vehicle removed",
+    "newTitle": "Add vehicle",
+    "editTitle": "Edit vehicle",
+    "card": {
+      "summary": "{{make}} {{model}} · {{year}}",
+      "habitualDriver": "Usual driver: {{name}}",
+      "noHabitualDriver": "No usual driver",
+      "missingDoc": "Registration document missing"
+    },
+    "fields": {
+      "plate": "Number plate",
+      "chassisNumber": "Chassis number",
+      "make": "Make",
+      "model": "Model",
+      "year": "Year",
+      "category": "Category",
+      "engineCc": "Engine size (cc)",
+      "seats": "Seats",
+      "grossWeightKg": "Gross weight (kg)",
+      "usage": "Use",
+      "provinceOfCirculation": "Province of circulation",
+      "commercialValue": "Market value",
+      "hasTracker": "Has a tracker (GPS)"
+    },
+    "form": {
+      "plateHelp": "E.g. {{examples}}",
+      "or": " or ",
+      "choose": "Choose",
+      "optional": "Optional",
+      "commercialValueHelp": "Required for own-damage insurance.",
+      "save": "Save",
+      "conflict": "This vehicle was changed on another device",
+      "reload": "Reload"
+    },
+    "lookup": {
+      "button": "Look up in the registry",
+      "filled": "We filled in the details from the vehicle registry. Check them against your registration document."
+    },
+    "detail": {
+      "edit": "Edit",
+      "remove": "Remove vehicle",
+      "data": "Details",
+      "yes": "Yes",
+      "no": "No",
+      "none": "—",
+      "removeDialog": {
+        "title": "Remove the vehicle?",
+        "text": "The vehicle will no longer appear in your account.",
+        "cancel": "Cancel",
+        "confirm": "Remove"
+      }
+    },
+    "doc": {
+      "title": "Registration document",
+      "none": "You haven't sent the registration document yet.",
+      "takePhoto": "Take photo",
+      "chooseFile": "Choose file",
+      "replace": "Replace",
+      "replacePhoto": "Replace with a photo",
+      "replaceFile": "Replace with a file",
+      "open": "Open",
+      "saved": "Registration document saved",
+      "uploading": "Sending the registration document…",
+      "alt": "Photo of the registration document",
+      "uploadedAt": "sent on {{date}}",
+      "type": {
+        "pdf": "Registration document (PDF)",
+        "heic": "Registration document photo (HEIC)"
+      }
+    },
+    "drivers": {
+      "title": "Drivers",
+      "none": "You haven't linked any drivers to this vehicle yet.",
+      "habitual": "Usual",
+      "manage": "Manage drivers"
+    },
+    "manage": {
+      "title": "Vehicle drivers",
+      "help": "Choose up to {{max}} drivers and the usual one.",
+      "habitual": "Usual",
+      "habitualOf": "{{name}} is the usual driver",
+      "noDrivers": "You haven't registered any drivers yet.",
+      "register": "Register driver",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Drivers saved"
+    }
+  },
+  "drivers": {
+    "title": "Drivers",
+    "add": "Register driver",
+    "empty": "You haven't registered any drivers yet.",
+    "backToList": "Back to drivers",
+    "me": "Me",
+    "actions": "Actions for {{name}}",
+    "edit": "Edit",
+    "remove": "Remove",
+    "saved": "Driver saved",
+    "removed": "Driver removed",
+    "newTitle": "Register driver",
+    "editTitle": "Edit driver",
+    "card": {
+      "categories": "Categories: {{list}}",
+      "licence": "Licence {{masked}}",
+      "vehicles_one": "{{count}} vehicle",
+      "vehicles_other": "{{count}} vehicles"
+    },
+    "removeDialog": {
+      "title": "Remove the driver?",
+      "text": "{{name}} will no longer appear in your account or on your vehicles.",
+      "cancel": "Cancel",
+      "confirm": "Remove"
+    },
+    "fields": {
+      "isOwner": "It's me",
+      "fullName": "Full name",
+      "birthDate": "Date of birth",
+      "licenceNumber": "Licence number",
+      "licenceCategories": "Categories",
+      "licenceIssueDate": "Licence issue date"
+    },
+    "form": {
+      "isOwnerHelp": "Turn on if you are the driver. We'll fill in your details from your profile.",
+      "change": "Change",
+      "changeLicence": "Change the licence number",
+      "save": "Save",
+      "conflict": "This driver was changed on another device",
+      "reload": "Reload"
+    }
   }
 }

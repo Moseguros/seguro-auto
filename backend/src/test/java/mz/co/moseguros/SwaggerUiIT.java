@@ -38,7 +38,9 @@ class SwaggerUiIT {
     }
 
     @Nested
-    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    // o perfil prod exige S3 (S2-01); aqui basta o disco do perfil test
+    @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+            properties = "moseguros.files.storage=filesystem")
     @Import(TestcontainersConfiguration.class)
     @ActiveProfiles({"test", "prod"})
     class Prod {

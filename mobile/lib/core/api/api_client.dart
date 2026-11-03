@@ -15,6 +15,15 @@ class ApiClient {
     : dio = dio ?? Dio(baseOptions(env)),
       language = language ?? deviceLanguage {
     this.dio.interceptors.add(
+      // Um envio de ficheiro (até 10 MB) numa rede lenta precisa de mais de 15 s.
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (options.data is FormData) options.sendTimeout = uploadTimeout;
+          handler.next(options);
+        },
+      ),
+    );
+    this.dio.interceptors.add(
       AuthInterceptor(
         tokens: () => session,
         retryDio: bareDio,
@@ -29,6 +38,9 @@ class ApiClient {
   }
 
   static const timeout = Duration(seconds: 15);
+
+  /// Tempo máximo para enviar um ficheiro.
+  static const uploadTimeout = Duration(minutes: 2);
 
   /// Opções do Dio: `baseUrl` do [Env] e timeout de 15 s.
   static BaseOptions baseOptions(Env env) => BaseOptions(
@@ -63,10 +75,18 @@ class ApiClient {
   /// Operações da tag `Identity` (login, perfil, contactos…).
   IdentityApi get identity => _api.getIdentityApi();
 
+  /// Veículos e condutores do cliente (tag `Vehicle`).
+  VehicleApi get vehicle => _api.getVehicleApi();
+
+  /// Listas de referência e formatos de matrícula (tag `Catalog`).
+  CatalogApi get catalog => _api.getCatalogApi();
+
+  /// Descarga de ficheiros (tag `Document`).
+  DocumentApi get document => _api.getDocumentApi();
+
   /// `Identity` sem renovação automática: usado pelo `SessionController` para
   /// `refreshToken` e `logoutSession`.
-  IdentityApi get sessionIdentity =>
-      IdentityApi(bareDio(), apiSerializers);
+  IdentityApi get sessionIdentity => IdentityApi(bareDio(), apiSerializers);
 }
 
 final apiClientProvider = Provider<ApiClient>(

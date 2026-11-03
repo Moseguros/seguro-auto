@@ -12,6 +12,7 @@ moseguros:
   crypto:
     data-keys:
       1: nEcMdPbB/qV7ADNuz/GQcpMnu1sMcDyT3vcivU34TEQ= # chave só para desenvolvimento
+    blind-index-key: D41q5YP5RK464nQaKvEc7FkNnoZGgydbxcv0pcPbr+0= # chave só para desenvolvimento
   security:
     otp:
       pepper: ${MOSEGUROS_OTP_PEPPER:local-otp-pepper-only-for-development}
@@ -19,9 +20,17 @@ moseguros:
       debug-header: true
   notification:
     webhook-secret: ${MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET:local-webhook-secret}
+  # Ficheiros em disco; no compose MOSEGUROS_FILES_DIR=/var/lib/moseguros/files (volume files).
+  files:
+    storage: filesystem
+    filesystem:
+      base-dir: ${MOSEGUROS_FILES_DIR:./var/files}
 
-# SMTP do Mailpit (docker compose); no compose vem de SPRING_MAIL_HOST/SPRING_MAIL_PORT.
 spring:
+  # Dados de demonstração (db/dev, S2-01): só neste perfil.
+  flyway:
+    locations: classpath:db/migration,classpath:db/dev
+  # SMTP do Mailpit (docker compose); no compose vem de SPRING_MAIL_HOST/SPRING_MAIL_PORT.
   mail:
     host: ${SPRING_MAIL_HOST:localhost}
     port: ${SPRING_MAIL_PORT:1025}

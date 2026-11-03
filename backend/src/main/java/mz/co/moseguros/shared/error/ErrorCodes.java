@@ -125,6 +125,79 @@ public final class ErrorCodes {
     /** A conta ficaria sem nenhum contacto verificado (400). */
     public static final String LAST_CONTACT = "LAST_CONTACT";
 
+    // Ficheiros (S2-01)
+    /** Ficheiro inexistente, limpo, ou que quem pede não pode ler (404; nunca 403). */
+    public static final String FILE_NOT_FOUND = "FILE_NOT_FOUND";
+    /** Ficheiro com 0 bytes (400). */
+    public static final String FILE_EMPTY = "FILE_EMPTY";
+    /** Ficheiro com mais de 10 MB (413). */
+    public static final String FILE_TOO_LARGE = "FILE_TOO_LARGE";
+    /** Conteúdo que não é JPEG, PNG, HEIC ou PDF, fora dos tipos aceites, ou diferente do declarado (415). */
+    public static final String FILE_TYPE_NOT_ALLOWED = "FILE_TYPE_NOT_ALLOWED";
+    /** O conteúdo de um ficheiro registado não pôde ser lido do armazenamento (500). */
+    public static final String FILE_STORAGE_ERROR = "FILE_STORAGE_ERROR";
+
+    // Tabelas de referência, parâmetros e formatos de matrícula (S2-02)
+    /** Domínio de valores de referência desconhecido (404). */
+    public static final String REFERENCE_DOMAIN_UNKNOWN = "REFERENCE_DOMAIN_UNKNOWN";
+    /** Valor de referência inexistente ou de outro domínio (404). */
+    public static final String REFERENCE_VALUE_NOT_FOUND = "REFERENCE_VALUE_NOT_FOUND";
+    /** Código já usado no mesmo domínio (409). */
+    public static final String REFERENCE_CODE_ALREADY_EXISTS = "REFERENCE_CODE_ALREADY_EXISTS";
+    /** Parâmetro da plataforma inexistente (404). */
+    public static final String PLATFORM_SETTING_NOT_FOUND = "PLATFORM_SETTING_NOT_FOUND";
+    /** Formato de matrícula inexistente (404). */
+    public static final String PLATE_FORMAT_NOT_FOUND = "PLATE_FORMAT_NOT_FOUND";
+    /** Código de formato de matrícula já usado (409). */
+    public static final String PLATE_FORMAT_CODE_ALREADY_EXISTS = "PLATE_FORMAT_CODE_ALREADY_EXISTS";
+    /** Desactivar o último formato de matrícula activo (409). */
+    public static final String LAST_ACTIVE_PLATE_FORMAT = "LAST_ACTIVE_PLATE_FORMAT";
+
+    // Produtos e versões do catálogo (S2-04)
+    /** Produto inexistente ou de outra seguradora (404). */
+    public static final String PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND";
+    /** Versão inexistente, de outra seguradora, ou (no catálogo público) nunca publicada (404). */
+    public static final String PRODUCT_VERSION_NOT_FOUND = "PRODUCT_VERSION_NOT_FOUND";
+    /** Documento inexistente na versão (404). */
+    public static final String PRODUCT_DOCUMENT_NOT_FOUND = "PRODUCT_DOCUMENT_NOT_FOUND";
+    /** Código de produto já usado na mesma seguradora (409). */
+    public static final String PRODUCT_CODE_ALREADY_EXISTS = "PRODUCT_CODE_ALREADY_EXISTS";
+    /** Mudar o tipo de um produto que já foi publicado (409). */
+    public static final String PRODUCT_TYPE_LOCKED = "PRODUCT_TYPE_LOCKED";
+    /** Escrita num produto retirado (409). */
+    public static final String PRODUCT_RETIRED = "PRODUCT_RETIRED";
+    /** O produto já tem uma versão em preparação ({@code DRAFT}) (409). */
+    public static final String PRODUCT_DRAFT_EXISTS = "PRODUCT_DRAFT_EXISTS";
+    /** Alteração a uma versão que não está em preparação (409). */
+    public static final String PRODUCT_VERSION_NOT_EDITABLE = "PRODUCT_VERSION_NOT_EDITABLE";
+    /** Mais de 10 documentos numa versão (409). */
+    public static final String PRODUCT_DOCUMENT_LIMIT_REACHED = "PRODUCT_DOCUMENT_LIMIT_REACHED";
+    /** A versão não cumpre as regras de publicação; as falhas vão em {@code errors[]} (400). */
+    public static final String PRODUCT_VERSION_NOT_PUBLISHABLE = "PRODUCT_VERSION_NOT_PUBLISHABLE";
+    // Veículos e condutores do cliente (S2-03)
+    /** Veículo inexistente, retirado ou de outro cliente (404). */
+    public static final String VEHICLE_NOT_FOUND = "VEHICLE_NOT_FOUND";
+    /** O cliente já tem um veículo activo com esta matrícula (409). */
+    public static final String VEHICLE_ALREADY_REGISTERED = "VEHICLE_ALREADY_REGISTERED";
+    /** Máximo de 20 veículos activos por cliente (409). */
+    public static final String VEHICLE_LIMIT_REACHED = "VEHICLE_LIMIT_REACHED";
+    /** O veículo não pode ser retirado agora (ex.: apólice em vigor) (409). */
+    public static final String VEHICLE_REMOVAL_BLOCKED = "VEHICLE_REMOVAL_BLOCKED";
+    /** Matrícula sem registo no registo automóvel (404). */
+    public static final String VEHICLE_REGISTRY_NOT_FOUND = "VEHICLE_REGISTRY_NOT_FOUND";
+    /** Registo automóvel indisponível (503). */
+    public static final String VEHICLE_REGISTRY_UNAVAILABLE = "VEHICLE_REGISTRY_UNAVAILABLE";
+    /** Condutor inexistente, retirado ou de outro cliente (404). */
+    public static final String DRIVER_NOT_FOUND = "DRIVER_NOT_FOUND";
+    /** O cliente já tem um condutor activo com esta carta (409). */
+    public static final String DRIVER_ALREADY_REGISTERED = "DRIVER_ALREADY_REGISTERED";
+    /** Máximo de 10 condutores activos por cliente (409). */
+    public static final String DRIVER_LIMIT_REACHED = "DRIVER_LIMIT_REACHED";
+    /** O cliente já se registou como condutor ({@code isOwner}) (409). */
+    public static final String OWNER_DRIVER_ALREADY_EXISTS = "OWNER_DRIVER_ALREADY_EXISTS";
+    /** O condutor é o habitual de um veículo activo (409). */
+    public static final String DRIVER_IS_HABITUAL = "DRIVER_IS_HABITUAL";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -177,7 +250,40 @@ public final class ErrorCodes {
             Map.entry(LAST_MANAGER, 400),
             Map.entry(CONTACT_ALREADY_IN_USE, 409),
             Map.entry(CONTACT_ALREADY_VERIFIED, 409),
-            Map.entry(LAST_CONTACT, 400));
+            Map.entry(LAST_CONTACT, 400),
+            Map.entry(FILE_NOT_FOUND, 404),
+            Map.entry(FILE_EMPTY, 400),
+            Map.entry(FILE_TOO_LARGE, 413),
+            Map.entry(FILE_TYPE_NOT_ALLOWED, 415),
+            Map.entry(FILE_STORAGE_ERROR, 500),
+            Map.entry(REFERENCE_DOMAIN_UNKNOWN, 404),
+            Map.entry(REFERENCE_VALUE_NOT_FOUND, 404),
+            Map.entry(REFERENCE_CODE_ALREADY_EXISTS, 409),
+            Map.entry(PLATFORM_SETTING_NOT_FOUND, 404),
+            Map.entry(PLATE_FORMAT_NOT_FOUND, 404),
+            Map.entry(PLATE_FORMAT_CODE_ALREADY_EXISTS, 409),
+            Map.entry(LAST_ACTIVE_PLATE_FORMAT, 409),
+            Map.entry(PRODUCT_NOT_FOUND, 404),
+            Map.entry(PRODUCT_VERSION_NOT_FOUND, 404),
+            Map.entry(PRODUCT_DOCUMENT_NOT_FOUND, 404),
+            Map.entry(PRODUCT_CODE_ALREADY_EXISTS, 409),
+            Map.entry(PRODUCT_TYPE_LOCKED, 409),
+            Map.entry(PRODUCT_RETIRED, 409),
+            Map.entry(PRODUCT_DRAFT_EXISTS, 409),
+            Map.entry(PRODUCT_VERSION_NOT_EDITABLE, 409),
+            Map.entry(PRODUCT_DOCUMENT_LIMIT_REACHED, 409),
+            Map.entry(PRODUCT_VERSION_NOT_PUBLISHABLE, 400),
+            Map.entry(VEHICLE_NOT_FOUND, 404),
+            Map.entry(VEHICLE_ALREADY_REGISTERED, 409),
+            Map.entry(VEHICLE_LIMIT_REACHED, 409),
+            Map.entry(VEHICLE_REMOVAL_BLOCKED, 409),
+            Map.entry(VEHICLE_REGISTRY_NOT_FOUND, 404),
+            Map.entry(VEHICLE_REGISTRY_UNAVAILABLE, 503),
+            Map.entry(DRIVER_NOT_FOUND, 404),
+            Map.entry(DRIVER_ALREADY_REGISTERED, 409),
+            Map.entry(DRIVER_LIMIT_REACHED, 409),
+            Map.entry(OWNER_DRIVER_ALREADY_EXISTS, 409),
+            Map.entry(DRIVER_IS_HABITUAL, 409));
 
     private ErrorCodes() {
     }

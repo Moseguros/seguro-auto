@@ -1,0 +1,3 @@
+/* Permission prompts (en). */
+"NSCameraUsageDescription" = "MoSeguros uses the camera to photograph your registration document and other documents.";
+"NSPhotoLibraryUsageDescription" = "MoSeguros only accesses the photos you choose to send.";

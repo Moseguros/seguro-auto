@@ -9,10 +9,13 @@ import 'package:moseguros_api/src/auth/api_key_auth.dart';
 import 'package:moseguros_api/src/auth/basic_auth.dart';
 import 'package:moseguros_api/src/auth/bearer_auth.dart';
 import 'package:moseguros_api/src/auth/oauth.dart';
+import 'package:moseguros_api/src/api/catalog_api.dart';
+import 'package:moseguros_api/src/api/document_api.dart';
 import 'package:moseguros_api/src/api/identity_api.dart';
 import 'package:moseguros_api/src/api/meta_api.dart';
 import 'package:moseguros_api/src/api/notification_api.dart';
 import 'package:moseguros_api/src/api/organization_api.dart';
+import 'package:moseguros_api/src/api/vehicle_api.dart';
 
 class MosegurosApi {
   static const String basePath = r'http://localhost';
@@ -68,6 +71,18 @@ class MosegurosApi {
     }
   }
 
+  /// Get CatalogApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  CatalogApi getCatalogApi() {
+    return CatalogApi(dio, serializers);
+  }
+
+  /// Get DocumentApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  DocumentApi getDocumentApi() {
+    return DocumentApi(dio, serializers);
+  }
+
   /// Get IdentityApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   IdentityApi getIdentityApi() {
@@ -90,5 +105,11 @@ class MosegurosApi {
   /// by doing that all interceptors will not be executed
   OrganizationApi getOrganizationApi() {
     return OrganizationApi(dio, serializers);
+  }
+
+  /// Get VehicleApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  VehicleApi getVehicleApi() {
+    return VehicleApi(dio, serializers);
   }
 }

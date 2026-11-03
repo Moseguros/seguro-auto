@@ -15,6 +15,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlateParser {
 
+    /**
+     * Comprimento máximo do valor normalizado (S2-02): acima dele a matrícula é recusada sem
+     * aplicar nenhum padrão, o que protege contra expressões lentas configuradas na BD.
+     */
+    public static final int MAX_NORMALIZED_LENGTH = 15;
+
     private static final Pattern SEPARATORS = Pattern.compile("[\\s-]");
     private static final Pattern PLACEHOLDER = Pattern.compile("\\{([A-Za-z][A-Za-z0-9]*)}");
 
@@ -28,13 +34,17 @@ public class PlateParser {
      * Normaliza (maiúsculas, sem espaços nem hífens), testa os formatos activos por ordem
      * e devolve a matrícula formatada pelo primeiro que corresponder.
      *
-     * @throws DomainException {@code INVALID_PLATE} se nenhum formato corresponder
+     * @throws DomainException {@code INVALID_PLATE} se nenhum formato corresponder ou se o valor
+     *                         normalizado tiver mais de {@value #MAX_NORMALIZED_LENGTH} caracteres
      */
     public Matricula parse(String raw) {
         if (raw == null) {
             throw invalid();
         }
         String normalized = SEPARATORS.matcher(raw).replaceAll("").toUpperCase(Locale.ROOT);
+        if (normalized.length() > MAX_NORMALIZED_LENGTH) {
+            throw invalid();
+        }
         for (PlateFormat format : formats.activeFormats()) {
             if (!format.active()) {
                 continue;

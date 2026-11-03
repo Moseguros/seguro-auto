@@ -22,6 +22,15 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>pt</string>
+		<string>en</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>A MoSeguros usa a câmara para fotografar o livrete e outros documentos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>A MoSeguros só acede às fotografias que escolher enviar.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

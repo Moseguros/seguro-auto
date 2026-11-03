@@ -86,6 +86,28 @@
   "errorContactAlreadyInUse": "This contact already belongs to another account.",
   "errorContactAlreadyVerified": "This contact is already confirmed on your account.",
   "errorLastContact": "The account must keep at least one confirmed contact.",
+  "errorFileNotFound": "The file does not exist or you do not have access to it.",
+  "errorFileEmpty": "The file is empty.",
+  "errorFileTooLarge": "The file is larger than 10 MB.",
+  "errorFileTypeNotAllowed": "File type not accepted. Use JPEG, PNG, HEIC or PDF.",
+  "errorFileStorageError": "The file could not be read. Please try again later.",
+  "errorReferenceDomainUnknown": "This reference list does not exist.",
+  "errorReferenceValueNotFound": "The value does not exist in this list.",
+  "errorReferenceCodeAlreadyExists": "A value with this code already exists in this list.",
+  "errorPlatformSettingNotFound": "This setting does not exist.",
+  "errorPlateFormatNotFound": "The plate format does not exist.",
+  "errorPlateFormatCodeAlreadyExists": "A plate format with this code already exists.",
+  "errorLastActivePlateFormat": "At least one plate format must stay active.",
+  "errorProductNotFound": "Product not found.",
+  "errorProductVersionNotFound": "Product version not found.",
+  "errorProductDocumentNotFound": "Document not found.",
+  "errorProductCodeAlreadyExists": "A product with this code already exists.",
+  "errorProductTypeLocked": "The type cannot change after the product has been published.",
+  "errorProductRetired": "This product was retired and can no longer be changed.",
+  "errorProductDraftExists": "There is already a version of this product being prepared.",
+  "errorProductVersionNotEditable": "This version has already been published and cannot be changed. Create a new version.",
+  "errorProductDocumentLimitReached": "Each version can have at most 10 documents.",
+  "errorProductVersionNotPublishable": "The version does not meet the publication rules yet.",
   "validationNotAllowed": "This field does not apply here.",
   "validationRequired": "This field is required.",
   "validationInvalidSort": "Unsupported sort order.",
@@ -100,6 +122,32 @@
   "validationUnderage": "You must be at least 18 years old.",
   "validationInvalidDate": "Invalid date.",
   "validationInvalidDocumentNumber": "Invalid document number (5 to 20 upper-case letters or digits).",
+  "validationInvalidCode": "Use only upper-case letters, digits and _.",
+  "validationParentNotFound": "The make does not exist.",
+  "validationInvalidValue": "Invalid value for this setting.",
+  "validationInvalidPattern": "The regular expression is not valid.",
+  "validationPatternNotAnchored": "The expression must start with ^ and end with $.",
+  "validationPatternWithoutGroups": "The expression needs at least one named group.",
+  "validationTemplateGroupUnknown": "The template uses a group that is not in the expression.",
+  "validationExampleDoesNotMatch": "The example does not match the format.",
+  "validationDuplicated": "Repeated value.",
+  "validationInvalidRequirement": "A coverage cannot require itself.",
+  "validationCapitalOptionsInvalid": "Enter 2 to 10 values, from lowest to highest.",
+  "validationInvalidCountryCode": "Invalid country code.",
+  "validationMzScopeRequired": "The scope must include Mozambique.",
+  "validationInvalidCapitalType": "Capital type not allowed for this coverage.",
+  "validationMtplRequired": "The product must include compulsory third-party liability.",
+  "validationMtplMustBeMandatory": "Compulsory third-party liability cannot be optional.",
+  "validationMtplCapitalBelowMinimum": "The capital is below the configured legal minimum capital.",
+  "validationBorderOnlyMtpl": "Border insurance can only have compulsory third-party liability.",
+  "validationOdNotAllowedForType": "This product type does not allow own damage coverages.",
+  "validationOdRequiredForComprehensive": "An own damage product needs at least one own damage coverage.",
+  "validationOdCapitalMustBeVehicleValue": "Own damage coverages use the vehicle value as capital.",
+  "validationOdTheftRequiresOdCoverages": "Theft requires collision, fire and natural events.",
+  "validationRequiredCoverageMissing": "A coverage required by this one is missing.",
+  "validationVtplCapitalTooLow": "The voluntary third-party liability capital must be higher than the legal minimum capital.",
+  "validationCrossBorderScopeRequired": "Enter at least one country besides Mozambique.",
+  "validationDocumentRequired": "This document in Portuguese is missing.",
   "provinceMaputoCity": "Maputo City",
   "provinceMaputo": "Maputo Province",
   "provinceGaza": "Gaza",
@@ -195,5 +243,185 @@
   "contactsRemoved": "Contact removed",
   "contactsConfirmRemoveTitle": "Remove contact?",
   "contactsConfirmRemoveText": "You will no longer be able to sign in or receive notices at {value}.",
-  "contactsConfirmRemove": "Remove"
+  "contactsConfirmRemove": "Remove",
+  "errorVehicleNotFound": "Vehicle not found.",
+  "errorVehicleAlreadyRegistered": "You already have a vehicle with this plate.",
+  "errorVehicleLimitReached": "You have reached the maximum of 20 vehicles.",
+  "errorVehicleRemovalBlocked": "This vehicle has a policy in force and cannot be removed.",
+  "errorVehicleRegistryNotFound": "We could not find this plate in the registry. Fill in the registration document details.",
+  "errorVehicleRegistryUnavailable": "The vehicle registry is not available. Fill in the registration document details.",
+  "errorDriverNotFound": "Driver not found.",
+  "errorDriverAlreadyRegistered": "You already have a driver with this licence.",
+  "errorDriverLimitReached": "You have reached the maximum of 10 drivers.",
+  "errorOwnerDriverAlreadyExists": "You are already registered as a driver.",
+  "errorDriverIsHabitual": "This driver is the habitual driver of a vehicle. Choose another habitual driver first.",
+  "validationInvalidChassis": "Invalid chassis number.",
+  "validationInvalidYear": "Invalid year.",
+  "validationInvalidLicenceNumber": "Invalid driving licence number.",
+  "validationLicenceCategoryUnknown": "Unknown licence category.",
+  "validationLicenceIssueDateInvalid": "The issue date must be after the birth date and not after today.",
+  "validationHabitualDriverRequired": "Choose the habitual driver.",
+  "validationMultipleHabitualDrivers": "There can only be one habitual driver.",
+  "save": "Save",
+  "close": "Close",
+  "reload": "Reload",
+  "yes": "Yes",
+  "no": "No",
+  "valueMissing": "—",
+  "moreOptions": "More options",
+  "navHome": "Home",
+  "navVehicles": "Vehicles",
+  "navProfile": "Profile",
+  "validationInvalidMoney": "Invalid amount. Use at most 2 decimal places.",
+  "vehicleCategoryLightPassenger": "Light passenger car",
+  "vehicleCategoryLightMixed": "Light mixed-use vehicle",
+  "vehicleCategoryHeavy": "Heavy vehicle",
+  "vehicleCategoryMotorcycle": "Motorcycle",
+  "vehicleCategoryTrailer": "Trailer",
+  "vehicleCategoryBus": "Bus",
+  "vehicleUsagePrivate": "Private",
+  "vehicleUsageRental": "Rental",
+  "vehicleUsagePassengerTransport": "Passenger transport",
+  "vehicleUsageGoods": "Goods transport",
+  "vehicleUsageTaxi": "Taxi",
+  "vehicleUsageDrivingSchool": "Driving school",
+  "vehiclesAddButton": "Add vehicle",
+  "vehiclesEmpty": "You have not registered any vehicles yet.",
+  "vehiclesBackToList": "See my vehicles",
+  "vehicleMakeModelYear": "{make} {model} · {year}",
+  "@vehicleMakeModelYear": {
+    "placeholders": {
+      "make": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleHabitualDriver": "Usual driver: {name}",
+  "@vehicleHabitualDriver": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleNoHabitualDriver": "No usual driver",
+  "vehicleDocMissing": "Registration document missing",
+  "vehicleRegistryVerified": "Confirmed in the registry",
+  "vehicleRegistryNotVerified": "Not confirmed in the registry",
+  "vehicleNewTitle": "Add vehicle",
+  "vehicleEditTitle": "Edit vehicle",
+  "vehicleFieldPlate": "Number plate",
+  "vehiclePlateHelper": "E.g. {examples}",
+  "@vehiclePlateHelper": {
+    "placeholders": {
+      "examples": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleOr": " or ",
+  "vehicleRegistryLookup": "Look up in the registry",
+  "vehicleRegistryFilled": "We filled in the details from the vehicle registry. Check them against your registration document.",
+  "vehicleFieldChassis": "Chassis number",
+  "vehicleFieldMake": "Make",
+  "vehicleFieldModel": "Model",
+  "vehicleFieldYear": "Year",
+  "vehicleFieldCategory": "Category",
+  "vehicleFieldEngineCc": "Engine size (cc)",
+  "vehicleFieldSeats": "Seats",
+  "vehicleFieldGrossWeight": "Gross weight (kg)",
+  "vehicleFieldUsage": "Use",
+  "vehicleFieldProvince": "Province of circulation",
+  "vehicleFieldCommercialValue": "Market value",
+  "vehicleCommercialValueHelper": "Needed for own-damage insurance.",
+  "vehicleFieldHasTracker": "Has a tracker (GPS)",
+  "vehicleCreated": "Vehicle added. Now send a photo of the registration document.",
+  "vehicleConflict": "This vehicle was changed on another device",
+  "vehicleEdit": "Edit",
+  "vehicleRemove": "Remove vehicle",
+  "vehicleRemoveConfirmTitle": "Remove vehicle?",
+  "vehicleRemoveConfirmText": "The vehicle will no longer appear in your account.",
+  "vehicleRemoveConfirm": "Remove",
+  "vehicleRemoved": "Vehicle removed",
+  "vehicleSectionData": "Details",
+  "vehicleSectionDoc": "Registration document",
+  "vehicleSectionDrivers": "Drivers",
+  "vehicleDocNone": "You have not sent the registration document yet.",
+  "vehicleDocUpload": "Send registration document",
+  "vehicleDocReplace": "Replace",
+  "vehicleDocOpen": "Open",
+  "vehicleDocUploading": "Sending…",
+  "vehicleDocSaved": "Registration document saved",
+  "fileOpenFailed": "There is no app to open this file.",
+  "vehicleNoDrivers": "No drivers assigned.",
+  "vehicleDriverHabitual": "Usual",
+  "vehicleManageDrivers": "Manage drivers",
+  "manageDriversHelp": "Tick up to {max} drivers and choose the usual one.",
+  "@manageDriversHelp": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "docSourceCamera": "Take photo",
+  "docSourceGallery": "Choose from gallery",
+  "docSourcePdf": "Choose PDF",
+  "cameraFrameHint": "Fit the registration document inside the frame, in good light and without glare.",
+  "cameraPermissionDenied": "We need the camera to photograph the registration document.",
+  "cameraOpenSettings": "Open settings",
+  "cameraUnavailable": "The camera could not be opened. Choose a photo from the gallery.",
+  "cameraCapture": "Take photo",
+  "cameraFlashOff": "Flash off",
+  "cameraFlashAuto": "Flash auto",
+  "cameraFlashOn": "Flash always on",
+  "photoRetake": "Retake",
+  "photoUse": "Use photo",
+  "driversTitle": "Drivers",
+  "driversAddButton": "Register driver",
+  "driversEmpty": "You have not registered any drivers yet.",
+  "driversBackToList": "See my drivers",
+  "driverEditTitle": "Edit driver",
+  "driverOwnerTag": "Me",
+  "driverCategories": "Categories: {categories}",
+  "@driverCategories": {
+    "placeholders": {
+      "categories": {
+        "type": "String"
+      }
+    }
+  },
+  "driverLicenceMasked": "Licence: {masked}",
+  "@driverLicenceMasked": {
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "driverVehicleCount": "{count, plural, =0{No vehicles} =1{1 vehicle} other{{count} vehicles}}",
+  "@driverVehicleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driverEdit": "Edit",
+  "driverRemove": "Remove",
+  "driverRemoveConfirmTitle": "Remove driver?",
+  "driverRemoveConfirmText": "The driver will no longer appear in your account.",
+  "driverRemoved": "Driver removed",
+  "driverFieldIsMe": "This is me",
+  "driverFieldLicenceNumber": "Licence number",
+  "driverChangeLicence": "Change the licence number",
+  "driverFieldLicenceCategories": "Categories",
+  "driverFieldLicenceIssueDate": "Licence issue date",
+  "driverConflict": "This driver was changed on another device"
 }

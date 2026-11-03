@@ -13,10 +13,13 @@ import org.springframework.validation.annotation.Validated;
  *
  * @param dataKeys          versão → chave AES de 32 bytes em Base64
  * @param currentKeyVersion versão usada para cifrar valores novos (1–255)
+ * @param blindIndexKey     chave HMAC-SHA256 do {@link BlindIndex} (32 bytes em Base64), diferente das
+ *                          chaves de cifra ({@code MOSEGUROS_BLIND_INDEX_KEY}; S2-03 §6)
  */
 @Validated
 @ConfigurationProperties(prefix = "moseguros.crypto")
-public record CryptoProperties(@NotEmpty Map<Integer, String> dataKeys, @NotNull Integer currentKeyVersion) {
+public record CryptoProperties(@NotEmpty Map<Integer, String> dataKeys, @NotNull Integer currentKeyVersion,
+                               String blindIndexKey) {
 
     static final int KEY_BYTES = 32;
 
@@ -35,6 +38,12 @@ public record CryptoProperties(@NotEmpty Map<Integer, String> dataKeys, @NotNull
             }
         }
         return true;
+    }
+
+    /** A chave do índice cego existe e é Base64 válido de 32 bytes. */
+    @AssertTrue(message = "moseguros.crypto.blind-index-key (MOSEGUROS_BLIND_INDEX_KEY) must be 32 bytes in Base64")
+    public boolean isBlindIndexKeyValid() {
+        return decode(blindIndexKey) != null;
     }
 
     static byte[] decode(String base64) {

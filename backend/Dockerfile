@@ -17,11 +17,14 @@ RUN --mount=type=cache,target=/root/.m2 \
 # --- runtime ---
 FROM eclipse-temurin:17-jre
 
+# Pasta dos ficheiros (S2-01): o volume "files" do compose monta-a e herda o dono app na 1.ª montagem.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system --gid 10001 app \
-    && useradd --system --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app
+    && useradd --system --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app \
+    && mkdir -p /var/lib/moseguros/files \
+    && chown app:app /var/lib/moseguros/files
 
 WORKDIR /app
 COPY --from=build --chown=app:app /workspace/app.jar app.jar

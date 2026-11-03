@@ -92,6 +92,28 @@
   "errorContactAlreadyInUse": "Este contacto já está associado a outra conta.",
   "errorContactAlreadyVerified": "Este contacto já está confirmado na sua conta.",
   "errorLastContact": "A conta tem de ficar com pelo menos um contacto confirmado.",
+  "errorFileNotFound": "O ficheiro não existe ou não tem acesso a ele.",
+  "errorFileEmpty": "O ficheiro está vazio.",
+  "errorFileTooLarge": "O ficheiro tem mais de 10 MB.",
+  "errorFileTypeNotAllowed": "Tipo de ficheiro não aceite. Use JPEG, PNG, HEIC ou PDF.",
+  "errorFileStorageError": "Não foi possível ler o ficheiro. Tente mais tarde.",
+  "errorReferenceDomainUnknown": "Esta lista de referência não existe.",
+  "errorReferenceValueNotFound": "O valor não existe nesta lista.",
+  "errorReferenceCodeAlreadyExists": "Já existe um valor com este código nesta lista.",
+  "errorPlatformSettingNotFound": "Este parâmetro não existe.",
+  "errorPlateFormatNotFound": "O formato de matrícula não existe.",
+  "errorPlateFormatCodeAlreadyExists": "Já existe um formato de matrícula com este código.",
+  "errorLastActivePlateFormat": "Tem de ficar pelo menos um formato de matrícula activo.",
+  "errorProductNotFound": "Produto não encontrado.",
+  "errorProductVersionNotFound": "Versão do produto não encontrada.",
+  "errorProductDocumentNotFound": "Documento não encontrado.",
+  "errorProductCodeAlreadyExists": "Já existe um produto com este código.",
+  "errorProductTypeLocked": "O tipo não pode mudar depois de o produto ter sido publicado.",
+  "errorProductRetired": "Este produto foi retirado e já não pode ser alterado.",
+  "errorProductDraftExists": "Já existe uma versão em preparação deste produto.",
+  "errorProductVersionNotEditable": "Esta versão já foi publicada e não pode ser alterada. Crie uma nova versão.",
+  "errorProductDocumentLimitReached": "Cada versão pode ter no máximo 10 documentos.",
+  "errorProductVersionNotPublishable": "A versão ainda não cumpre as regras de publicação.",
   "validationNotAllowed": "Este campo não se aplica neste caso.",
   "validationRequired": "Campo obrigatório.",
   "validationInvalidSort": "Ordenação não suportada.",
@@ -106,6 +128,32 @@
   "validationUnderage": "Tem de ter pelo menos 18 anos.",
   "validationInvalidDate": "Data inválida.",
   "validationInvalidDocumentNumber": "Número de documento inválido (5 a 20 letras maiúsculas ou dígitos).",
+  "validationInvalidCode": "Use só maiúsculas, algarismos e _.",
+  "validationParentNotFound": "A marca indicada não existe.",
+  "validationInvalidValue": "Valor inválido para este parâmetro.",
+  "validationInvalidPattern": "A expressão regular não é válida.",
+  "validationPatternNotAnchored": "A expressão tem de começar por ^ e acabar em $.",
+  "validationPatternWithoutGroups": "A expressão precisa de pelo menos um grupo com nome.",
+  "validationTemplateGroupUnknown": "O modelo usa um grupo que não existe na expressão.",
+  "validationExampleDoesNotMatch": "O exemplo não corresponde ao formato.",
+  "validationDuplicated": "Valor repetido.",
+  "validationInvalidRequirement": "Uma cobertura não pode exigir-se a si própria.",
+  "validationCapitalOptionsInvalid": "Indique 2 a 10 valores, do menor para o maior.",
+  "validationInvalidCountryCode": "Código de país inválido.",
+  "validationMzScopeRequired": "O âmbito tem de incluir Moçambique.",
+  "validationInvalidCapitalType": "Tipo de capital não permitido para esta cobertura.",
+  "validationMtplRequired": "O produto tem de incluir a responsabilidade civil obrigatória.",
+  "validationMtplMustBeMandatory": "A responsabilidade civil obrigatória não pode ser opcional.",
+  "validationMtplCapitalBelowMinimum": "O capital é inferior ao capital mínimo legal configurado.",
+  "validationBorderOnlyMtpl": "O seguro de fronteira só pode ter a responsabilidade civil obrigatória.",
+  "validationOdNotAllowedForType": "Este tipo de produto não admite coberturas de danos próprios.",
+  "validationOdRequiredForComprehensive": "Um produto de danos próprios precisa de pelo menos uma cobertura de danos próprios.",
+  "validationOdCapitalMustBeVehicleValue": "As coberturas de danos próprios usam o valor do veículo como capital.",
+  "validationOdTheftRequiresOdCoverages": "Furto ou roubo exige choque, incêndio e fenómenos da natureza.",
+  "validationRequiredCoverageMissing": "Falta uma cobertura que esta exige.",
+  "validationVtplCapitalTooLow": "O capital da RC facultativa tem de ser superior ao capital mínimo legal.",
+  "validationCrossBorderScopeRequired": "Indique pelo menos um país além de Moçambique.",
+  "validationDocumentRequired": "Falta este documento em português.",
   "provinceMaputoCity": "Maputo Cidade",
   "provinceMaputo": "Maputo Província",
   "provinceGaza": "Gaza",
@@ -280,5 +328,209 @@
       }
     }
   },
-  "contactsConfirmRemove": "Remover"
+  "contactsConfirmRemove": "Remover",
+  "errorVehicleNotFound": "Veículo não encontrado.",
+  "errorVehicleAlreadyRegistered": "Já tem um veículo com esta matrícula.",
+  "errorVehicleLimitReached": "Atingiu o máximo de 20 veículos.",
+  "errorVehicleRemovalBlocked": "Este veículo tem uma apólice em vigor e não pode ser retirado.",
+  "errorVehicleRegistryNotFound": "Não encontrámos esta matrícula no registo. Preencha os dados do livrete.",
+  "errorVehicleRegistryUnavailable": "O registo automóvel não está disponível. Preencha os dados do livrete.",
+  "errorDriverNotFound": "Condutor não encontrado.",
+  "errorDriverAlreadyRegistered": "Já tem um condutor com esta carta.",
+  "errorDriverLimitReached": "Atingiu o máximo de 10 condutores.",
+  "errorOwnerDriverAlreadyExists": "Já se registou como condutor.",
+  "errorDriverIsHabitual": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.",
+  "validationInvalidChassis": "N.º de chassis inválido.",
+  "validationInvalidYear": "Ano inválido.",
+  "validationInvalidLicenceNumber": "N.º da carta inválido.",
+  "validationLicenceCategoryUnknown": "Categoria de carta desconhecida.",
+  "validationLicenceIssueDateInvalid": "A data de emissão tem de ser depois do nascimento e até hoje.",
+  "validationHabitualDriverRequired": "Escolha o condutor habitual.",
+  "validationMultipleHabitualDrivers": "Só pode haver um condutor habitual.",
+  "save": "Guardar",
+  "close": "Fechar",
+  "reload": "Recarregar",
+  "yes": "Sim",
+  "no": "Não",
+  "valueMissing": "—",
+  "@valueMissing": {
+    "description": "Valor em falta numa lista de dados."
+  },
+  "moreOptions": "Mais opções",
+  "navHome": "Início",
+  "@navHome": {
+    "description": "Destino da barra inferior."
+  },
+  "navVehicles": "Veículos",
+  "@navVehicles": {
+    "description": "Destino da barra inferior e segmento \"Veículos\"."
+  },
+  "navProfile": "Perfil",
+  "@navProfile": {
+    "description": "Destino da barra inferior."
+  },
+  "validationInvalidMoney": "Valor inválido. Use no máximo 2 casas decimais.",
+  "@validationInvalidMoney": {
+    "description": "Só nos ecrãs (MoneyField, S2-05 §2); não é um código da API."
+  },
+  "vehicleCategoryLightPassenger": "Ligeiro de passageiros",
+  "@vehicleCategoryLightPassenger": {
+    "description": "vehicleCategory.LIGHT_PASSENGER (S2-02 §8)."
+  },
+  "vehicleCategoryLightMixed": "Ligeiro misto",
+  "vehicleCategoryHeavy": "Pesado",
+  "vehicleCategoryMotorcycle": "Motociclo",
+  "vehicleCategoryTrailer": "Reboque",
+  "vehicleCategoryBus": "Autocarro",
+  "vehicleUsagePrivate": "Particular",
+  "@vehicleUsagePrivate": {
+    "description": "vehicleUsage.PRIVATE (S2-02 §8)."
+  },
+  "vehicleUsageRental": "Aluguer sem condutor",
+  "vehicleUsagePassengerTransport": "Transporte de passageiros",
+  "vehicleUsageGoods": "Transporte de mercadorias",
+  "vehicleUsageTaxi": "Táxi",
+  "vehicleUsageDrivingSchool": "Escola de condução",
+  "vehiclesAddButton": "Acrescentar veículo",
+  "vehiclesEmpty": "Ainda não registou nenhum veículo.",
+  "vehiclesBackToList": "Ver os meus veículos",
+  "vehicleMakeModelYear": "{make} {model} · {year}",
+  "@vehicleMakeModelYear": {
+    "placeholders": {
+      "make": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleHabitualDriver": "Condutor habitual: {name}",
+  "@vehicleHabitualDriver": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleNoHabitualDriver": "Sem condutor habitual",
+  "vehicleDocMissing": "Livrete em falta",
+  "vehicleRegistryVerified": "Confirmado no registo",
+  "vehicleRegistryNotVerified": "Não confirmado no registo",
+  "vehicleNewTitle": "Acrescentar veículo",
+  "vehicleEditTitle": "Alterar veículo",
+  "vehicleFieldPlate": "Matrícula",
+  "vehiclePlateHelper": "Ex.: {examples}",
+  "@vehiclePlateHelper": {
+    "placeholders": {
+      "examples": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleOr": " ou ",
+  "@vehicleOr": {
+    "description": "Separador dos exemplos de matrícula."
+  },
+  "vehicleRegistryLookup": "Procurar no registo",
+  "vehicleRegistryFilled": "Preenchemos os dados a partir do registo automóvel. Confirme-os com o seu livrete.",
+  "vehicleFieldChassis": "N.º de chassis",
+  "vehicleFieldMake": "Marca",
+  "vehicleFieldModel": "Modelo",
+  "vehicleFieldYear": "Ano",
+  "vehicleFieldCategory": "Categoria",
+  "vehicleFieldEngineCc": "Cilindrada (cm³)",
+  "vehicleFieldSeats": "Lugares",
+  "vehicleFieldGrossWeight": "Peso bruto (kg)",
+  "vehicleFieldUsage": "Uso",
+  "vehicleFieldProvince": "Província de circulação",
+  "vehicleFieldCommercialValue": "Valor comercial",
+  "vehicleCommercialValueHelper": "Necessário para seguros de danos próprios.",
+  "vehicleFieldHasTracker": "Tem localizador (GPS)",
+  "vehicleCreated": "Veículo acrescentado. Envie agora a foto do livrete.",
+  "vehicleConflict": "Este veículo foi alterado noutro dispositivo",
+  "vehicleEdit": "Alterar",
+  "vehicleRemove": "Retirar veículo",
+  "vehicleRemoveConfirmTitle": "Retirar veículo?",
+  "vehicleRemoveConfirmText": "O veículo deixa de aparecer na sua conta.",
+  "vehicleRemoveConfirm": "Retirar",
+  "vehicleRemoved": "Veículo retirado",
+  "vehicleSectionData": "Dados",
+  "vehicleSectionDoc": "Livrete",
+  "vehicleSectionDrivers": "Condutores",
+  "vehicleDocNone": "Ainda não enviou o livrete.",
+  "vehicleDocUpload": "Enviar livrete",
+  "vehicleDocReplace": "Substituir",
+  "vehicleDocOpen": "Abrir",
+  "vehicleDocUploading": "A enviar…",
+  "vehicleDocSaved": "Livrete guardado",
+  "fileOpenFailed": "Não há nenhuma aplicação para abrir este ficheiro.",
+  "vehicleNoDrivers": "Nenhum condutor associado.",
+  "vehicleDriverHabitual": "Habitual",
+  "vehicleManageDrivers": "Gerir condutores",
+  "manageDriversHelp": "Marque até {max} condutores e escolha o habitual.",
+  "@manageDriversHelp": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "docSourceCamera": "Tirar foto",
+  "docSourceGallery": "Escolher da galeria",
+  "docSourcePdf": "Escolher PDF",
+  "cameraFrameHint": "Enquadre o livrete dentro do rectângulo, com boa luz e sem reflexos.",
+  "cameraPermissionDenied": "Precisamos da câmara para fotografar o livrete.",
+  "cameraOpenSettings": "Abrir definições",
+  "cameraUnavailable": "Não foi possível abrir a câmara. Escolha uma foto da galeria.",
+  "cameraCapture": "Tirar foto",
+  "cameraFlashOff": "Flash desligado",
+  "cameraFlashAuto": "Flash automático",
+  "cameraFlashOn": "Flash sempre ligado",
+  "photoRetake": "Repetir",
+  "photoUse": "Usar foto",
+  "driversTitle": "Condutores",
+  "driversAddButton": "Registar condutor",
+  "driversEmpty": "Ainda não registou condutores.",
+  "driversBackToList": "Ver os meus condutores",
+  "driverEditTitle": "Alterar condutor",
+  "driverOwnerTag": "Eu",
+  "driverCategories": "Categorias: {categories}",
+  "@driverCategories": {
+    "placeholders": {
+      "categories": {
+        "type": "String"
+      }
+    }
+  },
+  "driverLicenceMasked": "Carta: {masked}",
+  "@driverLicenceMasked": {
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "driverVehicleCount": "{count, plural, =0{Sem veículos} =1{1 veículo} other{{count} veículos}}",
+  "@driverVehicleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driverEdit": "Alterar",
+  "driverRemove": "Retirar",
+  "driverRemoveConfirmTitle": "Retirar condutor?",
+  "driverRemoveConfirmText": "O condutor deixa de aparecer na sua conta.",
+  "driverRemoved": "Condutor retirado",
+  "driverFieldIsMe": "Sou eu",
+  "driverFieldLicenceNumber": "N.º da carta",
+  "driverChangeLicence": "Alterar o n.º da carta",
+  "driverFieldLicenceCategories": "Categorias",
+  "driverFieldLicenceIssueDate": "Data de emissão da carta",
+  "driverConflict": "Este condutor foi alterado noutro dispositivo"
 }

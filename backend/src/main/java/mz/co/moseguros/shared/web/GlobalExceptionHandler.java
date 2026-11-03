@@ -28,6 +28,9 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
@@ -93,6 +96,20 @@ public class GlobalExceptionHandler {
     ProblemDetail handleMissingParameter(MissingServletRequestParameterException ex) {
         return Problems.validation("Request validation failed",
                 List.of(new FieldError(ex.getParameterName(), FieldErrorCodes.NOT_NULL, "Parameter is required")));
+    }
+
+    /** Envio acima de {@code spring.servlet.multipart.max-file-size} (10 MB): 413 {@code FILE_TOO_LARGE}. */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ProblemDetail handleUploadTooLarge(MaxUploadSizeExceededException ex) {
+        return Problems.of(HttpStatus.PAYLOAD_TOO_LARGE, ErrorCodes.FILE_TOO_LARGE, "The file is larger than 10 MB");
+    }
+
+    /** Pedido multipart mal formado ou sem a parte do ficheiro: erro do campo {@code file}. */
+    @ExceptionHandler({MultipartException.class, MissingServletRequestPartException.class})
+    ProblemDetail handleBadMultipart(Exception ex) {
+        String field = ex instanceof MissingServletRequestPartException missing ? missing.getRequestPartName() : "file";
+        return Problems.validation("Request validation failed",
+                List.of(new FieldError(field, FieldErrorCodes.REQUIRED, "A file is required")));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

@@ -311,6 +311,87 @@ class AppLocalizationsEn extends AppLocalizations {
       'The account must keep at least one confirmed contact.';
 
   @override
+  String get errorFileNotFound =>
+      'The file does not exist or you do not have access to it.';
+
+  @override
+  String get errorFileEmpty => 'The file is empty.';
+
+  @override
+  String get errorFileTooLarge => 'The file is larger than 10 MB.';
+
+  @override
+  String get errorFileTypeNotAllowed =>
+      'File type not accepted. Use JPEG, PNG, HEIC or PDF.';
+
+  @override
+  String get errorFileStorageError =>
+      'The file could not be read. Please try again later.';
+
+  @override
+  String get errorReferenceDomainUnknown =>
+      'This reference list does not exist.';
+
+  @override
+  String get errorReferenceValueNotFound =>
+      'The value does not exist in this list.';
+
+  @override
+  String get errorReferenceCodeAlreadyExists =>
+      'A value with this code already exists in this list.';
+
+  @override
+  String get errorPlatformSettingNotFound => 'This setting does not exist.';
+
+  @override
+  String get errorPlateFormatNotFound => 'The plate format does not exist.';
+
+  @override
+  String get errorPlateFormatCodeAlreadyExists =>
+      'A plate format with this code already exists.';
+
+  @override
+  String get errorLastActivePlateFormat =>
+      'At least one plate format must stay active.';
+
+  @override
+  String get errorProductNotFound => 'Product not found.';
+
+  @override
+  String get errorProductVersionNotFound => 'Product version not found.';
+
+  @override
+  String get errorProductDocumentNotFound => 'Document not found.';
+
+  @override
+  String get errorProductCodeAlreadyExists =>
+      'A product with this code already exists.';
+
+  @override
+  String get errorProductTypeLocked =>
+      'The type cannot change after the product has been published.';
+
+  @override
+  String get errorProductRetired =>
+      'This product was retired and can no longer be changed.';
+
+  @override
+  String get errorProductDraftExists =>
+      'There is already a version of this product being prepared.';
+
+  @override
+  String get errorProductVersionNotEditable =>
+      'This version has already been published and cannot be changed. Create a new version.';
+
+  @override
+  String get errorProductDocumentLimitReached =>
+      'Each version can have at most 10 documents.';
+
+  @override
+  String get errorProductVersionNotPublishable =>
+      'The version does not meet the publication rules yet.';
+
+  @override
   String get validationNotAllowed => 'This field does not apply here.';
 
   @override
@@ -357,6 +438,104 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get validationInvalidDocumentNumber =>
       'Invalid document number (5 to 20 upper-case letters or digits).';
+
+  @override
+  String get validationInvalidCode =>
+      'Use only upper-case letters, digits and _.';
+
+  @override
+  String get validationParentNotFound => 'The make does not exist.';
+
+  @override
+  String get validationInvalidValue => 'Invalid value for this setting.';
+
+  @override
+  String get validationInvalidPattern => 'The regular expression is not valid.';
+
+  @override
+  String get validationPatternNotAnchored =>
+      'The expression must start with ^ and end with \$.';
+
+  @override
+  String get validationPatternWithoutGroups =>
+      'The expression needs at least one named group.';
+
+  @override
+  String get validationTemplateGroupUnknown =>
+      'The template uses a group that is not in the expression.';
+
+  @override
+  String get validationExampleDoesNotMatch =>
+      'The example does not match the format.';
+
+  @override
+  String get validationDuplicated => 'Repeated value.';
+
+  @override
+  String get validationInvalidRequirement =>
+      'A coverage cannot require itself.';
+
+  @override
+  String get validationCapitalOptionsInvalid =>
+      'Enter 2 to 10 values, from lowest to highest.';
+
+  @override
+  String get validationInvalidCountryCode => 'Invalid country code.';
+
+  @override
+  String get validationMzScopeRequired => 'The scope must include Mozambique.';
+
+  @override
+  String get validationInvalidCapitalType =>
+      'Capital type not allowed for this coverage.';
+
+  @override
+  String get validationMtplRequired =>
+      'The product must include compulsory third-party liability.';
+
+  @override
+  String get validationMtplMustBeMandatory =>
+      'Compulsory third-party liability cannot be optional.';
+
+  @override
+  String get validationMtplCapitalBelowMinimum =>
+      'The capital is below the configured legal minimum capital.';
+
+  @override
+  String get validationBorderOnlyMtpl =>
+      'Border insurance can only have compulsory third-party liability.';
+
+  @override
+  String get validationOdNotAllowedForType =>
+      'This product type does not allow own damage coverages.';
+
+  @override
+  String get validationOdRequiredForComprehensive =>
+      'An own damage product needs at least one own damage coverage.';
+
+  @override
+  String get validationOdCapitalMustBeVehicleValue =>
+      'Own damage coverages use the vehicle value as capital.';
+
+  @override
+  String get validationOdTheftRequiresOdCoverages =>
+      'Theft requires collision, fire and natural events.';
+
+  @override
+  String get validationRequiredCoverageMissing =>
+      'A coverage required by this one is missing.';
+
+  @override
+  String get validationVtplCapitalTooLow =>
+      'The voluntary third-party liability capital must be higher than the legal minimum capital.';
+
+  @override
+  String get validationCrossBorderScopeRequired =>
+      'Enter at least one country besides Mozambique.';
+
+  @override
+  String get validationDocumentRequired =>
+      'This document in Portuguese is missing.';
 
   @override
   String get provinceMaputoCity => 'Maputo City';
@@ -673,4 +852,421 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactsConfirmRemove => 'Remove';
+
+  @override
+  String get errorVehicleNotFound => 'Vehicle not found.';
+
+  @override
+  String get errorVehicleAlreadyRegistered =>
+      'You already have a vehicle with this plate.';
+
+  @override
+  String get errorVehicleLimitReached =>
+      'You have reached the maximum of 20 vehicles.';
+
+  @override
+  String get errorVehicleRemovalBlocked =>
+      'This vehicle has a policy in force and cannot be removed.';
+
+  @override
+  String get errorVehicleRegistryNotFound =>
+      'We could not find this plate in the registry. Fill in the registration document details.';
+
+  @override
+  String get errorVehicleRegistryUnavailable =>
+      'The vehicle registry is not available. Fill in the registration document details.';
+
+  @override
+  String get errorDriverNotFound => 'Driver not found.';
+
+  @override
+  String get errorDriverAlreadyRegistered =>
+      'You already have a driver with this licence.';
+
+  @override
+  String get errorDriverLimitReached =>
+      'You have reached the maximum of 10 drivers.';
+
+  @override
+  String get errorOwnerDriverAlreadyExists =>
+      'You are already registered as a driver.';
+
+  @override
+  String get errorDriverIsHabitual =>
+      'This driver is the habitual driver of a vehicle. Choose another habitual driver first.';
+
+  @override
+  String get validationInvalidChassis => 'Invalid chassis number.';
+
+  @override
+  String get validationInvalidYear => 'Invalid year.';
+
+  @override
+  String get validationInvalidLicenceNumber =>
+      'Invalid driving licence number.';
+
+  @override
+  String get validationLicenceCategoryUnknown => 'Unknown licence category.';
+
+  @override
+  String get validationLicenceIssueDateInvalid =>
+      'The issue date must be after the birth date and not after today.';
+
+  @override
+  String get validationHabitualDriverRequired => 'Choose the habitual driver.';
+
+  @override
+  String get validationMultipleHabitualDrivers =>
+      'There can only be one habitual driver.';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get reload => 'Reload';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get valueMissing => '—';
+
+  @override
+  String get moreOptions => 'More options';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navVehicles => 'Vehicles';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get validationInvalidMoney =>
+      'Invalid amount. Use at most 2 decimal places.';
+
+  @override
+  String get vehicleCategoryLightPassenger => 'Light passenger car';
+
+  @override
+  String get vehicleCategoryLightMixed => 'Light mixed-use vehicle';
+
+  @override
+  String get vehicleCategoryHeavy => 'Heavy vehicle';
+
+  @override
+  String get vehicleCategoryMotorcycle => 'Motorcycle';
+
+  @override
+  String get vehicleCategoryTrailer => 'Trailer';
+
+  @override
+  String get vehicleCategoryBus => 'Bus';
+
+  @override
+  String get vehicleUsagePrivate => 'Private';
+
+  @override
+  String get vehicleUsageRental => 'Rental';
+
+  @override
+  String get vehicleUsagePassengerTransport => 'Passenger transport';
+
+  @override
+  String get vehicleUsageGoods => 'Goods transport';
+
+  @override
+  String get vehicleUsageTaxi => 'Taxi';
+
+  @override
+  String get vehicleUsageDrivingSchool => 'Driving school';
+
+  @override
+  String get vehiclesAddButton => 'Add vehicle';
+
+  @override
+  String get vehiclesEmpty => 'You have not registered any vehicles yet.';
+
+  @override
+  String get vehiclesBackToList => 'See my vehicles';
+
+  @override
+  String vehicleMakeModelYear(String make, String model, String year) {
+    return '$make $model · $year';
+  }
+
+  @override
+  String vehicleHabitualDriver(String name) {
+    return 'Usual driver: $name';
+  }
+
+  @override
+  String get vehicleNoHabitualDriver => 'No usual driver';
+
+  @override
+  String get vehicleDocMissing => 'Registration document missing';
+
+  @override
+  String get vehicleRegistryVerified => 'Confirmed in the registry';
+
+  @override
+  String get vehicleRegistryNotVerified => 'Not confirmed in the registry';
+
+  @override
+  String get vehicleNewTitle => 'Add vehicle';
+
+  @override
+  String get vehicleEditTitle => 'Edit vehicle';
+
+  @override
+  String get vehicleFieldPlate => 'Number plate';
+
+  @override
+  String vehiclePlateHelper(String examples) {
+    return 'E.g. $examples';
+  }
+
+  @override
+  String get vehicleOr => ' or ';
+
+  @override
+  String get vehicleRegistryLookup => 'Look up in the registry';
+
+  @override
+  String get vehicleRegistryFilled =>
+      'We filled in the details from the vehicle registry. Check them against your registration document.';
+
+  @override
+  String get vehicleFieldChassis => 'Chassis number';
+
+  @override
+  String get vehicleFieldMake => 'Make';
+
+  @override
+  String get vehicleFieldModel => 'Model';
+
+  @override
+  String get vehicleFieldYear => 'Year';
+
+  @override
+  String get vehicleFieldCategory => 'Category';
+
+  @override
+  String get vehicleFieldEngineCc => 'Engine size (cc)';
+
+  @override
+  String get vehicleFieldSeats => 'Seats';
+
+  @override
+  String get vehicleFieldGrossWeight => 'Gross weight (kg)';
+
+  @override
+  String get vehicleFieldUsage => 'Use';
+
+  @override
+  String get vehicleFieldProvince => 'Province of circulation';
+
+  @override
+  String get vehicleFieldCommercialValue => 'Market value';
+
+  @override
+  String get vehicleCommercialValueHelper => 'Needed for own-damage insurance.';
+
+  @override
+  String get vehicleFieldHasTracker => 'Has a tracker (GPS)';
+
+  @override
+  String get vehicleCreated =>
+      'Vehicle added. Now send a photo of the registration document.';
+
+  @override
+  String get vehicleConflict => 'This vehicle was changed on another device';
+
+  @override
+  String get vehicleEdit => 'Edit';
+
+  @override
+  String get vehicleRemove => 'Remove vehicle';
+
+  @override
+  String get vehicleRemoveConfirmTitle => 'Remove vehicle?';
+
+  @override
+  String get vehicleRemoveConfirmText =>
+      'The vehicle will no longer appear in your account.';
+
+  @override
+  String get vehicleRemoveConfirm => 'Remove';
+
+  @override
+  String get vehicleRemoved => 'Vehicle removed';
+
+  @override
+  String get vehicleSectionData => 'Details';
+
+  @override
+  String get vehicleSectionDoc => 'Registration document';
+
+  @override
+  String get vehicleSectionDrivers => 'Drivers';
+
+  @override
+  String get vehicleDocNone =>
+      'You have not sent the registration document yet.';
+
+  @override
+  String get vehicleDocUpload => 'Send registration document';
+
+  @override
+  String get vehicleDocReplace => 'Replace';
+
+  @override
+  String get vehicleDocOpen => 'Open';
+
+  @override
+  String get vehicleDocUploading => 'Sending…';
+
+  @override
+  String get vehicleDocSaved => 'Registration document saved';
+
+  @override
+  String get fileOpenFailed => 'There is no app to open this file.';
+
+  @override
+  String get vehicleNoDrivers => 'No drivers assigned.';
+
+  @override
+  String get vehicleDriverHabitual => 'Usual';
+
+  @override
+  String get vehicleManageDrivers => 'Manage drivers';
+
+  @override
+  String manageDriversHelp(int max) {
+    return 'Tick up to $max drivers and choose the usual one.';
+  }
+
+  @override
+  String get docSourceCamera => 'Take photo';
+
+  @override
+  String get docSourceGallery => 'Choose from gallery';
+
+  @override
+  String get docSourcePdf => 'Choose PDF';
+
+  @override
+  String get cameraFrameHint =>
+      'Fit the registration document inside the frame, in good light and without glare.';
+
+  @override
+  String get cameraPermissionDenied =>
+      'We need the camera to photograph the registration document.';
+
+  @override
+  String get cameraOpenSettings => 'Open settings';
+
+  @override
+  String get cameraUnavailable =>
+      'The camera could not be opened. Choose a photo from the gallery.';
+
+  @override
+  String get cameraCapture => 'Take photo';
+
+  @override
+  String get cameraFlashOff => 'Flash off';
+
+  @override
+  String get cameraFlashAuto => 'Flash auto';
+
+  @override
+  String get cameraFlashOn => 'Flash always on';
+
+  @override
+  String get photoRetake => 'Retake';
+
+  @override
+  String get photoUse => 'Use photo';
+
+  @override
+  String get driversTitle => 'Drivers';
+
+  @override
+  String get driversAddButton => 'Register driver';
+
+  @override
+  String get driversEmpty => 'You have not registered any drivers yet.';
+
+  @override
+  String get driversBackToList => 'See my drivers';
+
+  @override
+  String get driverEditTitle => 'Edit driver';
+
+  @override
+  String get driverOwnerTag => 'Me';
+
+  @override
+  String driverCategories(String categories) {
+    return 'Categories: $categories';
+  }
+
+  @override
+  String driverLicenceMasked(String masked) {
+    return 'Licence: $masked';
+  }
+
+  @override
+  String driverVehicleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count vehicles',
+      one: '1 vehicle',
+      zero: 'No vehicles',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get driverEdit => 'Edit';
+
+  @override
+  String get driverRemove => 'Remove';
+
+  @override
+  String get driverRemoveConfirmTitle => 'Remove driver?';
+
+  @override
+  String get driverRemoveConfirmText =>
+      'The driver will no longer appear in your account.';
+
+  @override
+  String get driverRemoved => 'Driver removed';
+
+  @override
+  String get driverFieldIsMe => 'This is me';
+
+  @override
+  String get driverFieldLicenceNumber => 'Licence number';
+
+  @override
+  String get driverChangeLicence => 'Change the licence number';
+
+  @override
+  String get driverFieldLicenceCategories => 'Categories';
+
+  @override
+  String get driverFieldLicenceIssueDate => 'Licence issue date';
+
+  @override
+  String get driverConflict => 'This driver was changed on another device';
 }

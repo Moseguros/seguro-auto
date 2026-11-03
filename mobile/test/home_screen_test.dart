@@ -88,32 +88,33 @@ void main() {
     );
   });
 
-  testWidgets('o ícone de perfil abre o perfil, com "Sobre" no fundo', (
-    tester,
-  ) async {
-    api.on('GET', '/api/v1/me', 200, Fixtures.me());
-    await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
+  testWidgets(
+    'o destino "Perfil" da barra inferior abre o perfil, com "Sobre" no fundo',
+    (tester) async {
+      api.on('GET', '/api/v1/me', 200, Fixtures.me());
+      await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
 
-    await tester.tap(find.byKey(const Key('open-profile')));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('nav-profile')));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Perfil'), findsWidgets);
-    expect(find.text('Dados pessoais'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('api-commit')),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('Sobre'), findsOneWidget);
-    expect(
-      tester.widget<Text>(find.byKey(const Key('api-version'))).data,
-      '1.2.3',
-    );
-    expect(
-      tester.widget<Text>(find.byKey(const Key('api-commit'))).data,
-      'abc1234',
-    );
-  });
+      expect(find.text('Perfil'), findsWidgets);
+      expect(find.text('Dados pessoais'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('api-commit')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Sobre'), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.byKey(const Key('api-version'))).data,
+        '1.2.3',
+      );
+      expect(
+        tester.widget<Text>(find.byKey(const Key('api-commit'))).data,
+        'abc1234',
+      );
+    },
+  );
 
   testWidgets('"Sobre": erro com "Tentar de novo"', (tester) async {
     api
@@ -125,7 +126,7 @@ void main() {
         MockApi.problem(500, 'INTERNAL_ERROR'),
       );
     await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
-    await tester.tap(find.byKey(const Key('open-profile')));
+    await tester.tap(find.byKey(const Key('nav-profile')));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Tentar de novo'),

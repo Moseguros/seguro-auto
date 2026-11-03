@@ -50,6 +50,20 @@ export type MenuItem = {
   permission?: string;
 };
 
+/**
+ * Caminhos sem item próprio no menu e o item (`key`) que fica marcado quando se está neles (o
+ * próprio caminho e os que começam por ele).
+ */
+export const menuAliases: Record<string, string> = { '/cliente/condutores': 'vehicles' };
+
+/** Item marcado por um alias para o caminho, se houver. */
+export function aliasedMenuKey(pathname: string): string | undefined {
+  const match = Object.keys(menuAliases).find(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+  return match ? menuAliases[match] : undefined;
+}
+
 export const menus: Record<Area, MenuItem[]> = {
   cliente: [
     { key: 'home', path: '/cliente', icon: Home },
@@ -71,12 +85,22 @@ export const menus: Record<Area, MenuItem[]> = {
     },
     { key: 'users', path: '/admin/utilizadores', icon: Group, permission: 'org-user:read' },
     { key: 'auth', path: '/admin/autenticacao', icon: Key, permission: 'otp-settings:read' },
-    { key: 'references', path: '/admin/referencias', icon: ListAlt },
+    {
+      key: 'references',
+      path: '/admin/referencias',
+      icon: ListAlt,
+      permission: 'reference:manage',
+    },
     { key: 'audit', path: '/admin/auditoria', icon: History },
   ],
   seguradora: [
     { key: 'home', path: '/seguradora', icon: Dashboard },
-    { key: 'products', path: '/seguradora/produtos', icon: Inventory },
+    {
+      key: 'products',
+      path: '/seguradora/produtos',
+      icon: Inventory,
+      permission: 'product:read',
+    },
     { key: 'tariffs', path: '/seguradora/tarifas', icon: PriceChange },
     { key: 'proposals', path: '/seguradora/propostas', icon: Assignment },
     { key: 'policies', path: '/seguradora/apolices', icon: Description },
