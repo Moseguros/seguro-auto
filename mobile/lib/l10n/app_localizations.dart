@@ -686,6 +686,72 @@ abstract class AppLocalizations {
   /// **'Tem de ficar pelo menos um formato de matrícula activo.'**
   String get errorLastActivePlateFormat;
 
+  /// No description provided for @errorVehicleNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículo não encontrado.'**
+  String get errorVehicleNotFound;
+
+  /// No description provided for @errorVehicleAlreadyRegistered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tem um veículo com esta matrícula.'**
+  String get errorVehicleAlreadyRegistered;
+
+  /// No description provided for @errorVehicleLimitReached.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atingiu o máximo de 20 veículos.'**
+  String get errorVehicleLimitReached;
+
+  /// No description provided for @errorVehicleRemovalBlocked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este veículo tem uma apólice em vigor e não pode ser retirado.'**
+  String get errorVehicleRemovalBlocked;
+
+  /// No description provided for @errorVehicleRegistryNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não encontrámos esta matrícula no registo. Preencha os dados do livrete.'**
+  String get errorVehicleRegistryNotFound;
+
+  /// No description provided for @errorVehicleRegistryUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'O registo automóvel não está disponível. Preencha os dados do livrete.'**
+  String get errorVehicleRegistryUnavailable;
+
+  /// No description provided for @errorDriverNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutor não encontrado.'**
+  String get errorDriverNotFound;
+
+  /// No description provided for @errorDriverAlreadyRegistered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tem um condutor com esta carta.'**
+  String get errorDriverAlreadyRegistered;
+
+  /// No description provided for @errorDriverLimitReached.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atingiu o máximo de 10 condutores.'**
+  String get errorDriverLimitReached;
+
+  /// No description provided for @errorOwnerDriverAlreadyExists.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já se registou como condutor.'**
+  String get errorOwnerDriverAlreadyExists;
+
+  /// No description provided for @errorDriverIsHabitual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.'**
+  String get errorDriverIsHabitual;
+
   /// No description provided for @validationNotAllowed.
   ///
   /// In pt, this message translates to:
@@ -817,6 +883,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'O exemplo não corresponde ao formato.'**
   String get validationExampleDoesNotMatch;
+
+  /// No description provided for @validationInvalidChassis.
+  ///
+  /// In pt, this message translates to:
+  /// **'N.º de chassis inválido.'**
+  String get validationInvalidChassis;
+
+  /// No description provided for @validationInvalidYear.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ano inválido.'**
+  String get validationInvalidYear;
+
+  /// No description provided for @validationInvalidLicenceNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'N.º da carta inválido.'**
+  String get validationInvalidLicenceNumber;
+
+  /// No description provided for @validationLicenceCategoryUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria de carta desconhecida.'**
+  String get validationLicenceCategoryUnknown;
+
+  /// No description provided for @validationLicenceIssueDateInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'A data de emissão tem de ser depois do nascimento e até hoje.'**
+  String get validationLicenceIssueDateInvalid;
+
+  /// No description provided for @validationHabitualDriverRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha o condutor habitual.'**
+  String get validationHabitualDriverRequired;
+
+  /// No description provided for @validationMultipleHabitualDrivers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Só pode haver um condutor habitual.'**
+  String get validationMultipleHabitualDrivers;
+
+  /// No description provided for @validationDuplicated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor repetido.'**
+  String get validationDuplicated;
 
   /// province.MAPUTO_CITY (Province no backend).
   ///
