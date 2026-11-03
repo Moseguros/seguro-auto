@@ -10,6 +10,10 @@ import { ProfilePage } from './features/customer-profile/ProfilePage';
 import { OrganizationCreatePage } from './features/organizations/OrganizationCreatePage';
 import { OrganizationDetailPage } from './features/organizations/OrganizationDetailPage';
 import { OrganizationListPage } from './features/organizations/OrganizationListPage';
+import { ProductDetailPage } from './features/products/ProductDetailPage';
+import { ProductListPage } from './features/products/ProductListPage';
+import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
+import { ReferenceTablesPage } from './features/references/ReferenceTablesPage';
 import { ForgotPasswordPage } from './features/staff-auth/ForgotPasswordPage';
 import { InvitationPage } from './features/staff-auth/InvitationPage';
 import { ResetPasswordPage } from './features/staff-auth/ResetPasswordPage';
@@ -74,12 +78,45 @@ const adminRoutes: RouteObject[] = [
     path: 'utilizadores',
     element: withPermission(Permissions.orgUserRead, <UsersPage platform />),
   },
+  {
+    path: 'referencias',
+    element: withPermission(Permissions.referenceManage, <ReferenceTablesPage />),
+  },
 ];
 
 /** Páginas comuns às áreas das organizações. */
 const organizationRoutes: RouteObject[] = [
   { path: 'utilizadores', element: withPermission(Permissions.orgUserRead, <UsersPage />) },
 ];
+
+/** Páginas próprias da área das seguradoras. */
+const insurerRoutes: RouteObject[] = [
+  {
+    path: 'produtos',
+    element: withPermission(Permissions.productRead, <ProductListPage />),
+  },
+  {
+    path: 'produtos/:productId',
+    element: withPermission(Permissions.productRead, <ProductDetailPage />),
+  },
+  {
+    path: 'produtos/:productId/versoes/:versionId',
+    element: withPermission(Permissions.productRead, <ProductVersionEditorPage />),
+  },
+];
+
+/** Páginas próprias de cada área de staff, além das comuns. */
+const areaExtraRoutes: Record<StaffArea, RouteObject[]> = {
+  admin: [],
+  seguradora: insurerRoutes,
+  mediador: [],
+  perito: [],
+  oficina: [],
+  assistencia: [],
+  provedor: [],
+  supervisao: [],
+  frota: [],
+};
 
 /**
  * Cada área de staff: só com sessão de staff da própria área. `/<área>` mostra a página da área
@@ -97,6 +134,7 @@ const areaRoutes: RouteObject[] = (Object.keys(areaPages) as StaffArea[]).map((a
     children: [
       { index: true, element: <Page /> },
       ...(area === 'admin' ? adminRoutes : organizationRoutes),
+      ...areaExtraRoutes[area],
       { path: '*', element: <Page /> },
     ],
   };

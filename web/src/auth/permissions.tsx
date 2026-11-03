@@ -12,6 +12,9 @@ export const Permissions = {
   organizationManage: 'organization:manage',
   orgUserRead: 'org-user:read',
   orgUserManage: 'org-user:manage',
+  productRead: 'product:read',
+  productManage: 'product:manage',
+  referenceManage: 'reference:manage',
 } as const;
 
 export type Permission = (typeof Permissions)[keyof typeof Permissions];
