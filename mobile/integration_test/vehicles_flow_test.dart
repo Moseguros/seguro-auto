@@ -26,6 +26,14 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
   await tester.pumpAndSettle();
 }
 
+/// Traz para o ecrã um widget já construído mas fora da área visível da lista.
+/// Num emulador o arrastar sintético do `scrollUntilVisible` não rola o detalhe
+/// depois do fluxo da câmara; o `ensureVisible` rola sem gesto.
+Future<void> scrollIntoView(WidgetTester tester, String key) async {
+  await tester.ensureVisible(find.byKey(Key(key), skipOffstage: false));
+  await tester.pumpAndSettle();
+}
+
 Future<void> choose(WidgetTester tester, String key, String option) async {
   await tapVisible(tester, find.byKey(Key(key)));
   await tester.tap(find.text(option).last);
@@ -175,11 +183,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Gerir condutores → sem condutores → registar "Sou eu".
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('manage-drivers')),
-        300,
-        scrollable: find.byType(Scrollable).last,
-      );
+      await scrollIntoView(tester, 'manage-drivers');
       await tapVisible(tester, find.byKey(const Key('manage-drivers')));
       await tapVisible(
         tester,
@@ -191,6 +195,10 @@ void main() {
         find.byKey(const Key('driver-licenceNumber')),
         'MAP1234567',
       );
+      // Num emulador o teclado real fica aberto e muda a disposição a meio dos
+      // toques seguintes: fecha-o, como faria quem usa a app.
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
       await tapVisible(tester, find.byKey(const Key('licence-category-B')));
       await tapVisible(
         tester,
