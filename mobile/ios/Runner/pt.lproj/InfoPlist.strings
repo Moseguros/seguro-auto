@@ -1,0 +1,3 @@
+/* Textos dos pedidos de permissão (pt). */
+"NSCameraUsageDescription" = "A MoSeguros usa a câmara para fotografar o livrete e outros documentos.";
+"NSPhotoLibraryUsageDescription" = "A MoSeguros só acede às fotografias que escolher enviar.";
