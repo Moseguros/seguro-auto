@@ -197,6 +197,9 @@ public final class ErrorCodes {
     public static final String OWNER_DRIVER_ALREADY_EXISTS = "OWNER_DRIVER_ALREADY_EXISTS";
     /** O condutor é o habitual de um veículo activo (409). */
     public static final String DRIVER_IS_HABITUAL = "DRIVER_IS_HABITUAL";
+    // Tarifa interna (S3-01)
+    /** Tarifa (ou pedido com a tarifa) com mais de 262 144 bytes (400). */
+    public static final String RATING_RULES_TOO_LARGE = "RATING_RULES_TOO_LARGE";
 
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
@@ -283,7 +286,8 @@ public final class ErrorCodes {
             Map.entry(DRIVER_ALREADY_REGISTERED, 409),
             Map.entry(DRIVER_LIMIT_REACHED, 409),
             Map.entry(OWNER_DRIVER_ALREADY_EXISTS, 409),
-            Map.entry(DRIVER_IS_HABITUAL, 409));
+            Map.entry(DRIVER_IS_HABITUAL, 409),
+            Map.entry(RATING_RULES_TOO_LARGE, 400));
 
     private ErrorCodes() {
     }
