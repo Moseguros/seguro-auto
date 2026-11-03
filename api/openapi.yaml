@@ -1266,26 +1266,12 @@ paths:
         name: vehicleCategory
         required: false
         schema:
-          type: string
-          enum:
-          - LIGHT_PASSENGER
-          - LIGHT_MIXED
-          - HEAVY
-          - MOTORCYCLE
-          - TRAILER
-          - BUS
+          $ref: "#/components/schemas/VehicleCategory"
       - in: query
         name: usage
         required: false
         schema:
-          type: string
-          enum:
-          - PRIVATE
-          - RENTAL
-          - PASSENGER_TRANSPORT
-          - GOODS
-          - TAXI
-          - DRIVING_SCHOOL
+          $ref: "#/components/schemas/VehicleUsage"
       - in: query
         name: type
         required: false
@@ -3263,14 +3249,7 @@ components:
         usages:
           type: array
           items:
-            type: string
-            enum:
-            - PRIVATE
-            - RENTAL
-            - PASSENGER_TRANSPORT
-            - GOODS
-            - TAXI
-            - DRIVING_SCHOOL
+            $ref: "#/components/schemas/VehicleUsage"
         validFrom:
           type: string
           format: date
@@ -3280,14 +3259,7 @@ components:
         vehicleCategories:
           type: array
           items:
-            type: string
-            enum:
-            - LIGHT_PASSENGER
-            - LIGHT_MIXED
-            - HEAVY
-            - MOTORCYCLE
-            - TRAILER
-            - BUS
+            $ref: "#/components/schemas/VehicleCategory"
         versionNo:
           type: integer
           format: int32
@@ -4901,14 +4873,7 @@ components:
         usages:
           type: array
           items:
-            type: string
-            enum:
-            - PRIVATE
-            - RENTAL
-            - PASSENGER_TRANSPORT
-            - GOODS
-            - TAXI
-            - DRIVING_SCHOOL
+            $ref: "#/components/schemas/VehicleUsage"
         validFrom:
           type: string
           format: date
@@ -4918,14 +4883,7 @@ components:
         vehicleCategories:
           type: array
           items:
-            type: string
-            enum:
-            - LIGHT_PASSENGER
-            - LIGHT_MIXED
-            - HEAVY
-            - MOTORCYCLE
-            - TRAILER
-            - BUS
+            $ref: "#/components/schemas/VehicleCategory"
         version:
           type: integer
           format: int64
@@ -5614,25 +5572,11 @@ components:
         usages:
           type: array
           items:
-            type: string
-            enum:
-            - PRIVATE
-            - RENTAL
-            - PASSENGER_TRANSPORT
-            - GOODS
-            - TAXI
-            - DRIVING_SCHOOL
+            $ref: "#/components/schemas/VehicleUsage"
         vehicleCategories:
           type: array
           items:
-            type: string
-            enum:
-            - LIGHT_PASSENGER
-            - LIGHT_MIXED
-            - HEAVY
-            - MOTORCYCLE
-            - TRAILER
-            - BUS
+            $ref: "#/components/schemas/VehicleCategory"
         version:
           type: integer
           format: int64
@@ -5681,6 +5625,24 @@ components:
       required:
       - roleCodes
       - version
+    VehicleCategory:
+      type: string
+      enum:
+      - LIGHT_PASSENGER
+      - LIGHT_MIXED
+      - HEAVY
+      - MOTORCYCLE
+      - TRAILER
+      - BUS
+    VehicleUsage:
+      type: string
+      enum:
+      - PRIVATE
+      - RENTAL
+      - PASSENGER_TRANSPORT
+      - GOODS
+      - TAXI
+      - DRIVING_SCHOOL
     VerifyContactRequest:
       type: object
       properties:
