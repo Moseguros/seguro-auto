@@ -137,6 +137,22 @@ public final class ErrorCodes {
     /** O conteúdo de um ficheiro registado não pôde ser lido do armazenamento (500). */
     public static final String FILE_STORAGE_ERROR = "FILE_STORAGE_ERROR";
 
+    // Tabelas de referência, parâmetros e formatos de matrícula (S2-02)
+    /** Domínio de valores de referência desconhecido (404). */
+    public static final String REFERENCE_DOMAIN_UNKNOWN = "REFERENCE_DOMAIN_UNKNOWN";
+    /** Valor de referência inexistente ou de outro domínio (404). */
+    public static final String REFERENCE_VALUE_NOT_FOUND = "REFERENCE_VALUE_NOT_FOUND";
+    /** Código já usado no mesmo domínio (409). */
+    public static final String REFERENCE_CODE_ALREADY_EXISTS = "REFERENCE_CODE_ALREADY_EXISTS";
+    /** Parâmetro da plataforma inexistente (404). */
+    public static final String PLATFORM_SETTING_NOT_FOUND = "PLATFORM_SETTING_NOT_FOUND";
+    /** Formato de matrícula inexistente (404). */
+    public static final String PLATE_FORMAT_NOT_FOUND = "PLATE_FORMAT_NOT_FOUND";
+    /** Código de formato de matrícula já usado (409). */
+    public static final String PLATE_FORMAT_CODE_ALREADY_EXISTS = "PLATE_FORMAT_CODE_ALREADY_EXISTS";
+    /** Desactivar o último formato de matrícula activo (409). */
+    public static final String LAST_ACTIVE_PLATE_FORMAT = "LAST_ACTIVE_PLATE_FORMAT";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -194,7 +210,14 @@ public final class ErrorCodes {
             Map.entry(FILE_EMPTY, 400),
             Map.entry(FILE_TOO_LARGE, 413),
             Map.entry(FILE_TYPE_NOT_ALLOWED, 415),
-            Map.entry(FILE_STORAGE_ERROR, 500));
+            Map.entry(FILE_STORAGE_ERROR, 500),
+            Map.entry(REFERENCE_DOMAIN_UNKNOWN, 404),
+            Map.entry(REFERENCE_VALUE_NOT_FOUND, 404),
+            Map.entry(REFERENCE_CODE_ALREADY_EXISTS, 409),
+            Map.entry(PLATFORM_SETTING_NOT_FOUND, 404),
+            Map.entry(PLATE_FORMAT_NOT_FOUND, 404),
+            Map.entry(PLATE_FORMAT_CODE_ALREADY_EXISTS, 409),
+            Map.entry(LAST_ACTIVE_PLATE_FORMAT, 409));
 
     private ErrorCodes() {
     }

@@ -54,6 +54,24 @@ public final class FieldErrorCodes {
     /** Número de documento fora de {@code ^[A-Z0-9]{5,20}$}. */
     public static final String INVALID_DOCUMENT_NUMBER = "INVALID_DOCUMENT_NUMBER";
 
+    // Tabelas de referência, parâmetros e formatos de matrícula (S2-02)
+    /** Código fora do formato permitido (maiúsculas, algarismos e {@code _}). */
+    public static final String INVALID_CODE = "INVALID_CODE";
+    /** A marca indicada em {@code parentCode} não existe. */
+    public static final String PARENT_NOT_FOUND = "PARENT_NOT_FOUND";
+    /** Valor de um parâmetro da plataforma inválido para o seu tipo. */
+    public static final String INVALID_VALUE = "INVALID_VALUE";
+    /** Expressão regular que não compila. */
+    public static final String INVALID_PATTERN = "INVALID_PATTERN";
+    /** Expressão regular que não começa por {@code ^} ou não acaba em {@code $}. */
+    public static final String PATTERN_NOT_ANCHORED = "PATTERN_NOT_ANCHORED";
+    /** Expressão regular sem nenhum grupo nomeado. */
+    public static final String PATTERN_WITHOUT_GROUPS = "PATTERN_WITHOUT_GROUPS";
+    /** Modelo de apresentação com um grupo que não existe na expressão, ou com caracteres não permitidos. */
+    public static final String TEMPLATE_GROUP_UNKNOWN = "TEMPLATE_GROUP_UNKNOWN";
+    /** O exemplo não corresponde ao formato, ou formatado dá outro valor. */
+    public static final String EXAMPLE_DOES_NOT_MATCH = "EXAMPLE_DOES_NOT_MATCH";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";
