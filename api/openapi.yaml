@@ -11,13 +11,13 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
-- description: "Catálogo: tabelas de referência, parâmetros da plataforma e formatos\
-    \ de matrícula"
-  name: Catalog
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
 - description: Envio de mensagens e recibos de entrega
   name: Notification
+- description: "Catálogo: tabelas de referência, parâmetros da plataforma, formatos\
+    \ de matrícula, produtos das seguradoras e catálogo público"
+  name: Catalog
 - description: "Organizações: seguradoras, mediadores, oficinas e outras"
   name: Organization
 - description: "Identidade, sessões e utilizador autenticado"
@@ -1218,6 +1218,120 @@ paths:
       summary: Renova a sessão
       tags:
       - Identity
+  /api/v1/catalog/product-versions/{id}:
+    get:
+      description: "Público. Qualquer versão que foi publicada (também SUPERSEDED\
+        \ e RETIRED, para quem tem uma apólice antiga), de uma seguradora activa,\
+        \ com as coberturas completas; senão 404 PRODUCT_VERSION_NOT_FOUND."
+      operationId: getCatalogProductVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogProductResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Consulta uma versão publicada
+      tags:
+      - Catalog
+  /api/v1/catalog/products:
+    get:
+      description: "Público. Versões em vigor de produtos não retirados de seguradoras\
+        \ activas, por nome da seguradora e depois do produto (ordem fixa). Com vehicleCategory\
+        \ ou usage, só as versões que os incluem. As coberturas levam só capital e\
+        \ franquia."
+      operationId: listCatalogProducts
+      parameters:
+      - in: query
+        name: vehicleCategory
+        required: false
+        schema:
+          type: string
+          enum:
+          - LIGHT_PASSENGER
+          - LIGHT_MIXED
+          - HEAVY
+          - MOTORCYCLE
+          - TRAILER
+          - BUS
+      - in: query
+        name: usage
+        required: false
+        schema:
+          type: string
+          enum:
+          - PRIVATE
+          - RENTAL
+          - PASSENGER_TRANSPORT
+          - GOODS
+          - TAXI
+          - DRIVING_SCHOOL
+      - in: query
+        name: type
+        required: false
+        schema:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseCatalogProductResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Lista os produtos publicados
+      tags:
+      - Catalog
   /api/v1/files/{id}:
     get:
       description: "Público ou autenticado: sem token o pedido é anónimo; com token\
@@ -1265,6 +1379,628 @@ paths:
       summary: Descarrega um ficheiro
       tags:
       - Document
+  /api/v1/insurer/branding:
+    get:
+      description: "Permissão product:read. logoFileId é null sem logótipo; o ficheiro\
+        \ é público (GET /api/v1/files/{logoFileId})."
+      operationId: getInsurerBranding
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerBrandingResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta o logótipo da seguradora
+      tags:
+      - Catalog
+  /api/v1/insurer/branding/logo:
+    delete:
+      description: Permissão product:manage. Sem logótipo → 204 na mesma (idempotente).
+      operationId: removeInsurerLogo
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Retira o logótipo da seguradora
+      tags:
+      - Catalog
+    post:
+      description: "Permissão product:manage. PNG ou JPEG (senão 415 FILE_TYPE_NOT_ALLOWED)\
+        \ até 1 MB (senão 400 VALIDATION_ERROR com errors[0] = { field: file, code:\
+        \ OUT_OF_RANGE }). O ficheiro anterior fica guardado."
+      operationId: uploadInsurerLogo
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerBrandingResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia o logótipo da seguradora
+      tags:
+      - Catalog
+  /api/v1/insurer/product-versions/{id}:
+    get:
+      description: Permissão product:read. Inclui as coberturas e os documentos.
+      operationId: getProductVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductVersionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma versão de um produto
+      tags:
+      - Catalog
+    put:
+      description: Permissão product:manage. Versão que não está DRAFT → 409 PRODUCT_VERSION_NOT_EDITABLE;
+        produto retirado → 409 PRODUCT_RETIRED; version diferente → 409 CONCURRENT_MODIFICATION.
+      operationId: updateProductVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProductVersionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductVersionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera a elegibilidade de uma versão
+      tags:
+      - Catalog
+  /api/v1/insurer/product-versions/{id}/coverages:
+    put:
+      description: "Permissão product:manage. Até 12 coberturas; a ordem da lista\
+        \ é a ordem de apresentação. Erros de validação → 400 VALIDATION_ERROR com\
+        \ errors[].field = coverages[i].<campo>. 409 como em updateProductVersion."
+      operationId: replaceProductVersionCoverages
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReplaceCoveragesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductVersionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Substitui as coberturas de uma versão
+      tags:
+      - Catalog
+  /api/v1/insurer/product-versions/{id}/documents:
+    post:
+      description: "Permissão product:manage. Só PDF (senão 415 FILE_TYPE_NOT_ALLOWED),\
+        \ até 10 MB. GENERAL_CONDITIONS e PRE_CONTRACT_INFO substituem o ficheiro\
+        \ do documento com o mesmo tipo e língua. Mais de 10 documentos → 409 PRODUCT_DOCUMENT_LIMIT_REACHED.\
+        \ 409 como em updateProductVersion."
+      operationId: uploadProductVersionDocument
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docType:
+                  type: string
+                  enum:
+                  - GENERAL_CONDITIONS
+                  - PRE_CONTRACT_INFO
+                  - SPECIAL_CONDITIONS
+                  - OTHER
+                file:
+                  type: string
+                  format: binary
+                language:
+                  type: string
+                  default: pt
+                  enum:
+                  - pt
+                  - en
+                title:
+                  type: string
+                  maxLength: 120
+              required:
+              - docType
+              - file
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDocumentResponse"
+          description: Created
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia um documento de uma versão
+      tags:
+      - Catalog
+  /api/v1/insurer/product-versions/{id}/documents/{documentId}:
+    delete:
+      description: Permissão product:manage. O ficheiro fica guardado. Documento desconhecido
+        → 404 PRODUCT_DOCUMENT_NOT_FOUND; 409 como em updateProductVersion.
+      operationId: deleteProductVersionDocument
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: documentId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Retira um documento de uma versão
+      tags:
+      - Catalog
+  /api/v1/insurer/product-versions/{id}/publish:
+    post:
+      description: "Permissão product:manage. Entra em vigor hoje (Africa/Maputo);\
+        \ a versão em vigor passa a SUPERSEDED. Regras por cumprir → 400 PRODUCT_VERSION_NOT_PUBLISHABLE\
+        \ com todas as falhas em errors[]; 409 como em updateProductVersion."
+      operationId: publishProductVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublishProductVersionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductVersionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Publica uma versão
+      tags:
+      - Catalog
+  /api/v1/insurer/product-versions/{id}/validate:
+    post:
+      description: "Permissão product:read. As mesmas regras da publicação, sem gravar;\
+        \ todas as falhas em errors[]."
+      operationId: validateProductVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductVersionValidationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Verifica as regras de publicação
+      tags:
+      - Catalog
+  /api/v1/insurer/products:
+    get:
+      description: "Permissão product:read. q procura no nome ou no código (sem diferenciar\
+        \ maiúsculas). Ordenação por name (defeito, asc), code ou createdAt."
+      operationId: listInsurerProducts
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: string
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - RETIRED
+      - in: query
+        name: type
+        required: false
+        schema:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "name, code ou createdAt, com ,asc ou ,desc"
+        example: "name,asc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseProductSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os produtos da seguradora
+      tags:
+      - Catalog
+    post:
+      description: Permissão product:manage. Cria o produto em DRAFT e a versão 1
+        DRAFT vazia. Código repetido na seguradora → 409 PRODUCT_CODE_ALREADY_EXISTS.
+      operationId: createInsurerProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProductRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: Created
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Cria um produto
+      tags:
+      - Catalog
+  /api/v1/insurer/products/{id}:
+    get:
+      description: "Permissão product:read. Inclui as versões, da mais recente para\
+        \ a mais antiga."
+      operationId: getInsurerProduct
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um produto
+      tags:
+      - Catalog
+    put:
+      description: Permissão product:manage. Mudar type depois de o produto ter sido
+        publicado → 409 PRODUCT_TYPE_LOCKED; produto retirado → 409 PRODUCT_RETIRED;
+        version diferente → 409 CONCURRENT_MODIFICATION.
+      operationId: updateInsurerProduct
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProductRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera um produto
+      tags:
+      - Catalog
+  /api/v1/insurer/products/{id}/retire:
+    post:
+      description: "Permissão product:manage. Irreversível: o produto passa a RETIRED\
+        \ e a versão em vigor a RETIRED (valid_to = hoje). Já retirado → 409 PRODUCT_RETIRED."
+      operationId: retireInsurerProduct
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Retira um produto
+      tags:
+      - Catalog
+  /api/v1/insurer/products/{id}/versions:
+    post:
+      description: "Permissão product:manage. Copia a última versão não-DRAFT (categorias,\
+        \ usos, regras, coberturas e documentos). Já existe uma DRAFT → 409 PRODUCT_DRAFT_EXISTS;\
+        \ produto retirado → 409 PRODUCT_RETIRED."
+      operationId: createProductVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductVersionResponse"
+          description: Created
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Cria uma nova versão do produto
+      tags:
+      - Catalog
   /api/v1/integrations/delivery-receipts/{provider}:
     post:
       description: Actualiza o estado da mensagem. Segredo errado → 401 UNAUTHORIZED;
@@ -2471,6 +3207,105 @@ components:
       - managerInviteRoles
       - managerRoles
       - roles
+    CatalogInsurerResponse:
+      type: object
+      properties:
+        displayName:
+          type: string
+          example: Seguradora Demo
+        id:
+          type: string
+          format: uuid
+      required:
+      - displayName
+      - id
+    CatalogProductResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: AUTO-COMPLETO
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoverageResponse"
+        description:
+          type: string
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDocumentResponse"
+        insurer:
+          $ref: "#/components/schemas/CatalogInsurerResponse"
+        name:
+          type: string
+          example: Auto Completo
+        productId:
+          type: string
+          format: uuid
+        productVersionId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - PUBLISHED
+          - SUPERSEDED
+          - RETIRED
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        usages:
+          type: array
+          items:
+            type: string
+            enum:
+            - PRIVATE
+            - RENTAL
+            - PASSENGER_TRANSPORT
+            - GOODS
+            - TAXI
+            - DRIVING_SCHOOL
+        validFrom:
+          type: string
+          format: date
+        validTo:
+          type: string
+          format: date
+        vehicleCategories:
+          type: array
+          items:
+            type: string
+            enum:
+            - LIGHT_PASSENGER
+            - LIGHT_MIXED
+            - HEAVY
+            - MOTORCYCLE
+            - TRAILER
+            - BUS
+        versionNo:
+          type: integer
+          format: int32
+          example: 2
+      required:
+      - code
+      - coverages
+      - documents
+      - insurer
+      - name
+      - productId
+      - productVersionId
+      - status
+      - type
+      - usages
+      - validFrom
+      - vehicleCategories
+      - versionNo
     ContactResponse:
       type: object
       properties:
@@ -2498,6 +3333,173 @@ components:
             $ref: "#/components/schemas/ContactResponse"
       required:
       - contacts
+    CoverageRequest:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        capitalOptions:
+          type: array
+          description: "Obrigatório em OPTIONS, proibido nos outros; 2 a 10 valores\
+            \ > 0 em ordem estritamente crescente (CAPITAL_OPTIONS_INVALID)"
+          items:
+            $ref: "#/components/schemas/Money"
+        capitalType:
+          type: string
+          enum:
+          - FIXED
+          - VEHICLE_VALUE
+          - OPTIONS
+          - PER_PERSON
+        code:
+          type: string
+          description: Sem repetidos na lista (DUPLICATED)
+          enum:
+          - MTPL
+          - VTPL
+          - OD_COLLISION
+          - OD_GLASS
+          - OD_FIRE
+          - OD_NATURE
+          - OD_THEFT
+          - OCCUPANTS
+          - ASSISTANCE
+          - LEGAL
+          - SRCC
+          - CROSS_BORDER
+        deductibleAmount:
+          $ref: "#/components/schemas/Money"
+        deductibleMinAmount:
+          $ref: "#/components/schemas/Money"
+        deductiblePercent:
+          type: number
+          description: "Obrigatório em PERCENT, proibido nos outros; > 0 e <= 100,\
+            \ até 2 casas decimais"
+          example: 10.0
+        deductibleType:
+          type: string
+          enum:
+          - NONE
+          - FIXED
+          - PERCENT
+        description:
+          type: string
+          maxLength: 1000
+        exclusions:
+          type: string
+          description: Exclusões resumidas; o texto legal está nas condições gerais
+          maxLength: 4000
+        mandatory:
+          type: boolean
+          description: O cliente não pode retirar esta cobertura
+        requiresCodes:
+          type: array
+          description: Coberturas que têm de existir e ser escolhidas com esta; sem
+            repetidos nem o próprio código (INVALID_REQUIREMENT)
+          items:
+            type: string
+            description: Coberturas que têm de existir e ser escolhidas com esta;
+              sem repetidos nem o próprio código (INVALID_REQUIREMENT)
+            enum:
+            - MTPL
+            - VTPL
+            - OD_COLLISION
+            - OD_GLASS
+            - OD_FIRE
+            - OD_NATURE
+            - OD_THEFT
+            - OCCUPANTS
+            - ASSISTANCE
+            - LEGAL
+            - SRCC
+            - CROSS_BORDER
+        territorialScope:
+          type: array
+          description: 1 a 20 códigos ISO 3166-1 alfa-2 sem repetidos; inclui MZ
+          items:
+            type: string
+            example: MZ
+      required:
+      - capitalType
+      - code
+      - deductibleType
+      - mandatory
+    CoverageResponse:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        capitalOptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Money"
+        capitalType:
+          type: string
+          enum:
+          - FIXED
+          - VEHICLE_VALUE
+          - OPTIONS
+          - PER_PERSON
+        code:
+          type: string
+          enum:
+          - MTPL
+          - VTPL
+          - OD_COLLISION
+          - OD_GLASS
+          - OD_FIRE
+          - OD_NATURE
+          - OD_THEFT
+          - OCCUPANTS
+          - ASSISTANCE
+          - LEGAL
+          - SRCC
+          - CROSS_BORDER
+        deductibleAmount:
+          $ref: "#/components/schemas/Money"
+        deductibleMinAmount:
+          $ref: "#/components/schemas/Money"
+        deductiblePercent:
+          type: number
+          example: 10.0
+        deductibleType:
+          type: string
+          enum:
+          - NONE
+          - FIXED
+          - PERCENT
+        description:
+          type: string
+        exclusions:
+          type: string
+        mandatory:
+          type: boolean
+        requiresCodes:
+          type: array
+          items:
+            type: string
+            enum:
+            - MTPL
+            - VTPL
+            - OD_COLLISION
+            - OD_GLASS
+            - OD_FIRE
+            - OD_NATURE
+            - OD_THEFT
+            - OCCUPANTS
+            - ASSISTANCE
+            - LEGAL
+            - SRCC
+            - CROSS_BORDER
+        territorialScope:
+          type: array
+          items:
+            type: string
+      required:
+      - capitalType
+      - code
+      - deductibleType
+      - mandatory
     CreateOrganizationRequest:
       type: object
       properties:
@@ -2606,6 +3608,36 @@ components:
       - label
       - pattern
       - sortOrder
+    CreateProductRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: "^[A-Z0-9][A-Z0-9_-]{1,29}$; único na seguradora; não muda\
+            \ depois de criado"
+          example: AUTO-COMPLETO
+          pattern: "^[A-Z0-9][A-Z0-9_-]{1,29}$"
+        description:
+          type: string
+          maxLength: 1000
+          minLength: 0
+        name:
+          type: string
+          example: Auto Completo
+          maxLength: 120
+          minLength: 2
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+      required:
+      - code
+      - name
+      - type
     CreateReferenceValueRequest:
       type: object
       properties:
@@ -2732,6 +3764,15 @@ components:
           minLength: 0
       required:
       - email
+    InsurerBrandingResponse:
+      type: object
+      properties:
+        logoFileId:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - logoFileId
     InsurerProfileRequest:
       type: object
       properties:
@@ -3375,6 +4416,29 @@ components:
       - expiresIn
       - isNewUser
       - refreshToken
+    PageResponseCatalogProductResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogProductResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInvitationResponse:
       type: object
       properties:
@@ -3405,6 +4469,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrganizationSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseProductSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductSummaryResponse"
         page:
           type: integer
           format: int32
@@ -3592,6 +4679,288 @@ components:
       - title
       - status
       - code
+    ProductDocumentResponse:
+      type: object
+      properties:
+        docType:
+          type: string
+          enum:
+          - GENERAL_CONDITIONS
+          - PRE_CONTRACT_INFO
+          - SPECIAL_CONDITIONS
+          - OTHER
+        fileId:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+        language:
+          type: string
+          enum:
+          - pt
+          - en
+          example: pt
+        title:
+          type: string
+      required:
+      - docType
+      - fileId
+      - id
+      - language
+    ProductResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: AUTO-COMPLETO
+        createdAt:
+          type: string
+          format: date-time
+        currentVersion:
+          $ref: "#/components/schemas/ProductVersionRefResponse"
+        description:
+          type: string
+        draftVersion:
+          $ref: "#/components/schemas/ProductVersionRefResponse"
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Auto Completo
+        retiredAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - RETIRED
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        updatedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int64
+        versions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductVersionRefResponse"
+      required:
+      - code
+      - createdAt
+      - id
+      - name
+      - status
+      - type
+      - updatedAt
+      - version
+      - versions
+    ProductSummaryResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: AUTO-COMPLETO
+        currentVersionNo:
+          type: integer
+          format: int32
+        hasDraft:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Auto Completo
+        status:
+          type: string
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - RETIRED
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+      - code
+      - hasDraft
+      - id
+      - name
+      - status
+      - type
+      - updatedAt
+    ProductVersionRefResponse:
+      type: object
+      properties:
+        changeNotes:
+          type: string
+        id:
+          type: string
+          format: uuid
+        publishedAt:
+          type: string
+          format: date-time
+        publishedBy:
+          type: string
+        status:
+          type: string
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - SUPERSEDED
+          - RETIRED
+        validFrom:
+          type: string
+          format: date
+        validTo:
+          type: string
+          format: date
+        versionNo:
+          type: integer
+          format: int32
+          example: 2
+      required:
+      - id
+      - status
+      - versionNo
+    ProductVersionResponse:
+      type: object
+      properties:
+        basedOnVersionId:
+          type: string
+          format: uuid
+        changeNotes:
+          type: string
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoverageResponse"
+        createdAt:
+          type: string
+          format: date-time
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductDocumentResponse"
+        editable:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        productCode:
+          type: string
+          example: AUTO-COMPLETO
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+          example: Auto Completo
+        productType:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        publishedAt:
+          type: string
+          format: date-time
+        publishedBy:
+          type: string
+        status:
+          type: string
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - SUPERSEDED
+          - RETIRED
+        updatedAt:
+          type: string
+          format: date-time
+        usages:
+          type: array
+          items:
+            type: string
+            enum:
+            - PRIVATE
+            - RENTAL
+            - PASSENGER_TRANSPORT
+            - GOODS
+            - TAXI
+            - DRIVING_SCHOOL
+        validFrom:
+          type: string
+          format: date
+        validTo:
+          type: string
+          format: date
+        vehicleCategories:
+          type: array
+          items:
+            type: string
+            enum:
+            - LIGHT_PASSENGER
+            - LIGHT_MIXED
+            - HEAVY
+            - MOTORCYCLE
+            - TRAILER
+            - BUS
+        version:
+          type: integer
+          format: int64
+        versionNo:
+          type: integer
+          format: int32
+          example: 3
+      required:
+      - coverages
+      - createdAt
+      - documents
+      - editable
+      - id
+      - productCode
+      - productId
+      - productName
+      - productType
+      - status
+      - updatedAt
+      - usages
+      - vehicleCategories
+      - version
+      - versionNo
+    ProductVersionValidationResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuleError"
+        publishable:
+          type: boolean
+      required:
+      - errors
+      - publishable
     PublicPlateFormatResponse:
       type: object
       properties:
@@ -3672,6 +5041,14 @@ components:
             $ref: "#/components/schemas/PublicReferenceValueResponse"
       required:
       - values
+    PublishProductVersionRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+      required:
+      - version
     ReferenceValueResponse:
       type: object
       properties:
@@ -3724,6 +5101,19 @@ components:
           description: Refresh token recebido no login ou na última renovação
       required:
       - refreshToken
+    ReplaceCoveragesRequest:
+      type: object
+      properties:
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/CoverageRequest"
+        version:
+          type: integer
+          format: int64
+      required:
+      - coverages
+      - version
     RequestOtpRequest:
       type: object
       properties:
@@ -3765,6 +5155,18 @@ components:
       required:
       - newPassword
       - token
+    RuleError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: MTPL_REQUIRED
+        field:
+          type: string
+          example: coverages
+      required:
+      - code
+      - field
     StaffLoginRequest:
       type: object
       properties:
@@ -4173,6 +5575,70 @@ components:
           description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
       required:
       - value
+      - version
+    UpdateProductRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 1000
+          minLength: 0
+        name:
+          type: string
+          example: Auto Completo
+          maxLength: 120
+          minLength: 2
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        version:
+          type: integer
+          format: int64
+      required:
+      - name
+      - type
+      - version
+    UpdateProductVersionRequest:
+      type: object
+      properties:
+        changeNotes:
+          type: string
+          description: O que mudou nesta versão
+          maxLength: 1000
+          minLength: 0
+        usages:
+          type: array
+          items:
+            type: string
+            enum:
+            - PRIVATE
+            - RENTAL
+            - PASSENGER_TRANSPORT
+            - GOODS
+            - TAXI
+            - DRIVING_SCHOOL
+        vehicleCategories:
+          type: array
+          items:
+            type: string
+            enum:
+            - LIGHT_PASSENGER
+            - LIGHT_MIXED
+            - HEAVY
+            - MOTORCYCLE
+            - TRAILER
+            - BUS
+        version:
+          type: integer
+          format: int64
+      required:
+      - usages
+      - vehicleCategories
       - version
     UpdateReferenceValueRequest:
       type: object

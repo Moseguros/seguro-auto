@@ -201,6 +201,46 @@
       "status" : 404
     },
     {
+      "code" : "PRODUCT_CODE_ALREADY_EXISTS",
+      "status" : 409
+    },
+    {
+      "code" : "PRODUCT_DOCUMENT_LIMIT_REACHED",
+      "status" : 409
+    },
+    {
+      "code" : "PRODUCT_DOCUMENT_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PRODUCT_DRAFT_EXISTS",
+      "status" : 409
+    },
+    {
+      "code" : "PRODUCT_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PRODUCT_RETIRED",
+      "status" : 409
+    },
+    {
+      "code" : "PRODUCT_TYPE_LOCKED",
+      "status" : 409
+    },
+    {
+      "code" : "PRODUCT_VERSION_NOT_EDITABLE",
+      "status" : 409
+    },
+    {
+      "code" : "PRODUCT_VERSION_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PRODUCT_VERSION_NOT_PUBLISHABLE",
+      "status" : 400
+    },
+    {
       "code" : "REFERENCE_CODE_ALREADY_EXISTS",
       "status" : 409
     },
@@ -254,13 +294,20 @@
     }
   ],
   "validation" : [
+    "BORDER_ONLY_MTPL",
+    "CAPITAL_OPTIONS_INVALID",
     "CHANNELS_DUPLICATED",
     "CHANNELS_EMPTY",
     "CONTAINS_EMAIL",
+    "CROSS_BORDER_SCOPE_REQUIRED",
     "DEFAULT_CHANNEL_NOT_ENABLED",
+    "DOCUMENT_REQUIRED",
+    "DUPLICATED",
     "EXAMPLE_DOES_NOT_MATCH",
     "FALLBACK_ORDER_MISMATCH",
+    "INVALID_CAPITAL_TYPE",
     "INVALID_CODE",
+    "INVALID_COUNTRY_CODE",
     "INVALID_CURRENCY",
     "INVALID_DATE",
     "INVALID_DOCUMENT_NUMBER",
@@ -271,23 +318,34 @@
     "INVALID_PATTERN",
     "INVALID_PHONE",
     "INVALID_PLATE",
+    "INVALID_REQUIREMENT",
     "INVALID_SORT",
     "INVALID_VALUE",
+    "MTPL_CAPITAL_BELOW_MINIMUM",
+    "MTPL_MUST_BE_MANDATORY",
+    "MTPL_REQUIRED",
+    "MZ_SCOPE_REQUIRED",
     "NOT_ALLOWED",
     "NOT_BLANK",
     "NOT_NULL",
+    "OD_CAPITAL_MUST_BE_VEHICLE_VALUE",
+    "OD_NOT_ALLOWED_FOR_TYPE",
+    "OD_REQUIRED_FOR_COMPREHENSIVE",
+    "OD_THEFT_REQUIRES_OD_COVERAGES",
     "OUT_OF_RANGE",
     "PARENT_NOT_FOUND",
     "PATTERN",
     "PATTERN_NOT_ANCHORED",
     "PATTERN_WITHOUT_GROUPS",
     "REQUIRED",
+    "REQUIRED_COVERAGE_MISSING",
     "SIZE",
     "TEMPLATE_GROUP_UNKNOWN",
     "TOO_COMMON",
     "TOO_LONG",
     "TOO_SHORT",
     "TYPE_MISMATCH",
-    "UNDERAGE"
+    "UNDERAGE",
+    "VTPL_CAPITAL_TOO_LOW"
   ]
 }

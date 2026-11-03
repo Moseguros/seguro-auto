@@ -96,6 +96,13 @@ class ProductDocumentIT {
                 .multiPart("docType", "OTHER").multiPart("language", "fr")
                 .post(VERSIONS + "/{id}/documents", p.versionId()).then().statusCode(400)
                 .body("errors[0].field", equalTo("language"));
+        given().auth().oauth2(t).multiPart("file", "x.pdf", support.pdf(), "application/pdf")
+                .multiPart("docType", "CONTRACT")
+                .post(VERSIONS + "/{id}/documents", p.versionId()).then().statusCode(400)
+                .body("errors[0].field", equalTo("docType")).body("errors[0].code", equalTo("INVALID_VALUE"));
+        given().auth().oauth2(t).multiPart("file", "x.pdf", support.pdf(), "application/pdf")
+                .post(VERSIONS + "/{id}/documents", p.versionId()).then().statusCode(400)
+                .body("errors[0].field", equalTo("docType")).body("errors[0].code", equalTo("REQUIRED"));
         assertThat(support.version(t, p.versionId())).isEqualTo(before + 1);
         assertThat(fixtures.owner().queryForObject("""
                 select count(*) from audit.audit_event where action = 'PRODUCT_VERSION.DOCUMENT_ADD' and entity_id = ?""",

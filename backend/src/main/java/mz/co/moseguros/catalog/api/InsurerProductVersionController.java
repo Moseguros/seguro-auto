@@ -5,7 +5,6 @@ import java.net.URI;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,6 +14,9 @@ import mz.co.moseguros.catalog.application.ProductDocumentService;
 import mz.co.moseguros.catalog.application.ProductDocumentService.Upload;
 import mz.co.moseguros.catalog.application.ProductVersionService;
 import mz.co.moseguros.catalog.application.PublicationService;
+import mz.co.moseguros.shared.error.FieldErrorCodes;
+import mz.co.moseguros.shared.error.FieldValidationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,27 +85,38 @@ public class InsurerProductVersionController {
                     + "GENERAL_CONDITIONS e PRE_CONTRACT_INFO substituem o ficheiro do documento com o mesmo tipo e "
                     + "língua. Mais de 10 documentos → 409 PRODUCT_DOCUMENT_LIMIT_REACHED. 409 como em "
                     + "updateProductVersion.")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ProductDocumentResponse> uploadDocument(
             @PathVariable UUID id,
             @RequestPart("file") MultipartFile file,
-            @RequestParam("docType") ProductDocumentType docType,
-            @Parameter(schema = @Schema(allowableValues = {"pt", "en"}, defaultValue = "pt"))
-            @RequestParam(value = "language", required = false) String language,
-            @Parameter(schema = @Schema(maxLength = 120))
-            @RequestParam(value = "title", required = false) String title) throws IOException {
+            @Schema(implementation = ProductDocumentType.class)
+            @RequestPart("docType") String docType,
+            @Schema(allowableValues = {"pt", "en"}, defaultValue = "pt")
+            @RequestPart(value = "language", required = false) String language,
+            @Schema(maxLength = 120)
+            @RequestPart(value = "title", required = false) String title) throws IOException {
         ProductDocumentResponse body = ProductDocumentResponse.from(CatalogViews.document(documents.upload(id,
-                new Upload(file.getBytes(), file.getOriginalFilename(), file.getContentType()), docType, language,
-                title)));
+                new Upload(file.getBytes(), file.getOriginalFilename(), file.getContentType()), docType(docType),
+                language, title)));
         return ResponseEntity.created(URI.create("/api/v1/files/" + body.fileId())).body(body);
+    }
+
+    /** Tipo de documento da parte {@code docType}; desconhecido → erro do campo ({@code INVALID_VALUE}). */
+    static ProductDocumentType docType(String value) {
+        try {
+            return ProductDocumentType.valueOf(value.trim());
+        } catch (IllegalArgumentException e) {
+            throw new FieldValidationException("docType", FieldErrorCodes.INVALID_VALUE, "Unknown document type");
+        }
     }
 
     @DeleteMapping("/{id}/documents/{documentId}")
     @Operation(operationId = "deleteProductVersionDocument", summary = "Retira um documento de uma versão",
             description = "Permissão product:manage. O ficheiro fica guardado. Documento desconhecido → 404 "
                     + "PRODUCT_DOCUMENT_NOT_FOUND; 409 como em updateProductVersion.")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id, @PathVariable UUID documentId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDocument(@PathVariable UUID id, @PathVariable UUID documentId) {
         documents.delete(id, documentId);
-        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/validate")

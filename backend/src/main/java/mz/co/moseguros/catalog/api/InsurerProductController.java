@@ -15,6 +15,7 @@ import mz.co.moseguros.catalog.domain.ProductStatus;
 import mz.co.moseguros.shared.web.PageRequests;
 import mz.co.moseguros.shared.web.PageResponse;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -65,6 +67,7 @@ public class InsurerProductController {
     @Operation(operationId = "createInsurerProduct", summary = "Cria um produto",
             description = "Permissão product:manage. Cria o produto em DRAFT e a versão 1 DRAFT vazia. Código "
                     + "repetido na seguradora → 409 PRODUCT_CODE_ALREADY_EXISTS.")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody CreateProductRequest request) {
         ProductResponse body = ProductResponse.from(products.create(request.code(), request.name(), request.type(),
                 request.description()));
@@ -101,6 +104,7 @@ public class InsurerProductController {
             description = "Permissão product:manage. Copia a última versão não-DRAFT (categorias, usos, regras, "
                     + "coberturas e documentos). Já existe uma DRAFT → 409 PRODUCT_DRAFT_EXISTS; produto retirado → "
                     + "409 PRODUCT_RETIRED.")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ProductVersionResponse> createVersion(@PathVariable UUID id) {
         ProductVersionResponse body = ProductVersionResponse.from(versions.create(id));
         return ResponseEntity.created(URI.create("/api/v1/insurer/product-versions/" + body.id())).body(body);
