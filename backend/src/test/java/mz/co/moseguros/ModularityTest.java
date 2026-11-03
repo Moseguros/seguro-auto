@@ -41,6 +41,18 @@ class ModularityTest {
         assertThat(dependenciesOf("document")).isSubsetOf("shared");
     }
 
+    /**
+     * S2-02: catalog só depende de shared nesta fase; os outros módulos usam as tabelas de
+     * referência e os formatos de matrícula pelas interfaces de shared ({@code ReferenceValueLookup},
+     * {@code PlateFormatProvider}), sem dependerem do catalog.
+     */
+    @Test
+    void catalogDependsOnSharedOnly() {
+        assertThat(dependenciesOf("catalog")).isSubsetOf("shared");
+        assertThat(ApplicationModules.class.getClassLoader()
+                .getResource("mz/co/moseguros/shared/config/ConfigPlateFormatProvider.class")).isNull();
+    }
+
     private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
         return module.getDependencies(modules).stream()

@@ -45,6 +45,10 @@ public class SecurityConfig {
         "/api/v1/meta/**",
         "/api/v1/auth/**",
         "/api/v1/integrations/delivery-receipts/**",
+        // listas de referência para os ecrãs (S2-02); a administração fica em /api/v1/admin/**
+        "/api/v1/reference-domains/*/values",
+        "/api/v1/platform-settings",
+        "/api/v1/plate-formats",
         "/.well-known/jwks.json",
         "/v3/api-docs/**",
         "/v3/api-docs.yaml",
