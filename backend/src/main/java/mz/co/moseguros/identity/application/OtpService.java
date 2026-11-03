@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import mz.co.moseguros.identity.TokenPair;
 import mz.co.moseguros.identity.domain.AccountType;
-import mz.co.moseguros.identity.domain.CustomerProfile;
 import mz.co.moseguros.identity.domain.CustomerProfileRepository;
 import mz.co.moseguros.identity.domain.OtpChallenge;
 import mz.co.moseguros.identity.domain.OtpChallenge.DeliveryStatus;
@@ -28,12 +27,9 @@ import mz.co.moseguros.identity.domain.OtpSettings;
 import mz.co.moseguros.identity.domain.OtpSettingsRepository;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.identity.domain.UserAccountRepository;
-import mz.co.moseguros.identity.domain.UserRole;
 import mz.co.moseguros.identity.domain.UserRoleRepository;
 import mz.co.moseguros.notification.DeliveryResult;
 import mz.co.moseguros.notification.NotificationApi;
-import mz.co.moseguros.shared.audit.ActorType;
-import mz.co.moseguros.shared.audit.AuditRecord;
 import mz.co.moseguros.shared.audit.AuditService;
 import mz.co.moseguros.shared.domain.Channel;
 import mz.co.moseguros.shared.error.DomainException;
@@ -41,6 +37,7 @@ import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -82,12 +79,25 @@ public class OtpService {
     private final OtpProperties properties;
     private final TransactionTemplate tx;
     private final Clock clock;
+    private final CustomerAccountFactory accountFactory;
 
     public OtpService(OtpSettingsRepository settingsRepository, OtpChallengeRepository challenges,
                       UserAccountRepository accounts, CustomerProfileRepository profiles,
                       UserRoleRepository userRoles, TokenService tokenService, AuditService audit,
                       NotificationApi notifications, OtpCodeHasher hasher, OtpProperties properties,
                       TransactionTemplate tx, Clock clock) {
+        this(settingsRepository, challenges, accounts, profiles, userRoles, tokenService, audit, notifications, hasher,
+                properties, tx, clock, new CustomerAccountFactory(accounts, profiles, userRoles, audit));
+    }
+
+    /** As contas novas criam-se pela {@link CustomerAccountFactory} (a mesma do S3-02 §6.1). */
+    @Autowired
+    public OtpService(OtpSettingsRepository settingsRepository, OtpChallengeRepository challenges,
+                      UserAccountRepository accounts, CustomerProfileRepository profiles,
+                      UserRoleRepository userRoles, TokenService tokenService, AuditService audit,
+                      NotificationApi notifications, OtpCodeHasher hasher, OtpProperties properties,
+                      TransactionTemplate tx, Clock clock, CustomerAccountFactory accountFactory) {
+        this.accountFactory = accountFactory;
         this.settingsRepository = settingsRepository;
         this.challenges = challenges;
         this.accounts = accounts;
@@ -472,20 +482,7 @@ public class OtpService {
     }
 
     private UserAccount register(OtpIdentifier identifier, Channel channel) {
-        UserAccount account = identifier.type() == IdentifierType.MSISDN
-                ? UserAccount.newCustomer(identifier.msisdn())
-                : UserAccount.newCustomer(identifier.email());
-        accounts.save(account);
-        profiles.save(CustomerProfile.emptyFor(account));
-        userRoles.save(new UserRole(account.getId(), CUSTOMER_ROLE));
-        Map<String, Object> after = new LinkedHashMap<>();
-        after.put("type", AccountType.CUSTOMER.name());
-        after.put("identifierType", identifier.type().name());
-        after.put("identifier", identifier.masked());
-        after.put("channel", channel.name());
-        audit.record(new AuditRecord(ActorType.CUSTOMER, account.getId().toString(), null, "CUSTOMER.REGISTER",
-                "UserAccount", account.getId().toString(), null, after));
-        return account;
+        return accountFactory.createVerified(identifier, channel);
     }
 
     private static void markVerified(UserAccount account, OtpIdentifier identifier) {
