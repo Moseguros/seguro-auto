@@ -164,5 +164,7 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'LICENCE_ISSUE_DATE_INVALID' => l10n.validationLicenceIssueDateInvalid,
   'HABITUAL_DRIVER_REQUIRED' => l10n.validationHabitualDriverRequired,
   'MULTIPLE_HABITUAL_DRIVERS' => l10n.validationMultipleHabitualDrivers,
+  // Só nos ecrãs (MoneyField); a API não o devolve.
+  'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,
 };

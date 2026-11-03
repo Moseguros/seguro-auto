@@ -25,7 +25,7 @@ void main() {
 
   Future<void> openContacts(WidgetTester tester) async {
     await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
-    await tester.tap(find.byKey(const Key('open-profile')));
+    await tester.tap(find.byKey(const Key('nav-profile')));
     await tester.pumpAndSettle();
     // Até ao fim da secção (o botão de e-mail ou o e-mail confirmado).
     await tester.scrollUntilVisible(

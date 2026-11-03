@@ -451,10 +451,12 @@ void main() {
           MockApi.problem(409, 'CONCURRENT_MODIFICATION'),
         );
       await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
-      await tester.tap(find.byKey(const Key('open-profile')));
+      await tester.tap(find.byKey(const Key('nav-profile')));
       await tester.pumpAndSettle();
 
       await tester.ensureVisible(find.byKey(const Key('profile-save')));
+      // Com a barra inferior, o botão só fica visível depois de deslocar a lista.
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('profile-save')));
       await tester.pumpAndSettle();
 
@@ -477,7 +479,7 @@ void main() {
         ..on('POST', '/api/v1/auth/logout', 204)
         ..on('GET', '/api/v1/auth/otp/options', 200, Fixtures.otpOptions());
       await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
-      await tester.tap(find.byKey(const Key('open-profile')));
+      await tester.tap(find.byKey(const Key('nav-profile')));
       await tester.pumpAndSettle();
 
       await tester.scrollUntilVisible(

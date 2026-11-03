@@ -261,5 +261,167 @@
   "validationLicenceCategoryUnknown": "Unknown licence category.",
   "validationLicenceIssueDateInvalid": "The issue date must be after the birth date and not after today.",
   "validationHabitualDriverRequired": "Choose the habitual driver.",
-  "validationMultipleHabitualDrivers": "There can only be one habitual driver."
+  "validationMultipleHabitualDrivers": "There can only be one habitual driver.",
+  "save": "Save",
+  "close": "Close",
+  "reload": "Reload",
+  "yes": "Yes",
+  "no": "No",
+  "valueMissing": "—",
+  "moreOptions": "More options",
+  "navHome": "Home",
+  "navVehicles": "Vehicles",
+  "navProfile": "Profile",
+  "validationInvalidMoney": "Invalid amount. Use at most 2 decimal places.",
+  "vehicleCategoryLightPassenger": "Light passenger car",
+  "vehicleCategoryLightMixed": "Light mixed-use vehicle",
+  "vehicleCategoryHeavy": "Heavy vehicle",
+  "vehicleCategoryMotorcycle": "Motorcycle",
+  "vehicleCategoryTrailer": "Trailer",
+  "vehicleCategoryBus": "Bus",
+  "vehicleUsagePrivate": "Private",
+  "vehicleUsageRental": "Rental",
+  "vehicleUsagePassengerTransport": "Passenger transport",
+  "vehicleUsageGoods": "Goods transport",
+  "vehicleUsageTaxi": "Taxi",
+  "vehicleUsageDrivingSchool": "Driving school",
+  "vehiclesAddButton": "Add vehicle",
+  "vehiclesEmpty": "You have not registered any vehicles yet.",
+  "vehiclesBackToList": "See my vehicles",
+  "vehicleMakeModelYear": "{make} {model} · {year}",
+  "@vehicleMakeModelYear": {
+    "placeholders": {
+      "make": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleHabitualDriver": "Usual driver: {name}",
+  "@vehicleHabitualDriver": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleNoHabitualDriver": "No usual driver",
+  "vehicleDocMissing": "Registration document missing",
+  "vehicleRegistryVerified": "Confirmed in the registry",
+  "vehicleRegistryNotVerified": "Not confirmed in the registry",
+  "vehicleNewTitle": "Add vehicle",
+  "vehicleEditTitle": "Edit vehicle",
+  "vehicleFieldPlate": "Number plate",
+  "vehiclePlateHelper": "E.g. {examples}",
+  "@vehiclePlateHelper": {
+    "placeholders": {
+      "examples": {
+        "type": "String"
+      }
+    }
+  },
+  "vehicleOr": " or ",
+  "vehicleRegistryLookup": "Look up in the registry",
+  "vehicleRegistryFilled": "We filled in the details from the vehicle registry. Check them against your registration document.",
+  "vehicleFieldChassis": "Chassis number",
+  "vehicleFieldMake": "Make",
+  "vehicleFieldModel": "Model",
+  "vehicleFieldYear": "Year",
+  "vehicleFieldCategory": "Category",
+  "vehicleFieldEngineCc": "Engine size (cc)",
+  "vehicleFieldSeats": "Seats",
+  "vehicleFieldGrossWeight": "Gross weight (kg)",
+  "vehicleFieldUsage": "Use",
+  "vehicleFieldProvince": "Province of circulation",
+  "vehicleFieldCommercialValue": "Market value",
+  "vehicleCommercialValueHelper": "Needed for own-damage insurance.",
+  "vehicleFieldHasTracker": "Has a tracker (GPS)",
+  "vehicleCreated": "Vehicle added. Now send a photo of the registration document.",
+  "vehicleConflict": "This vehicle was changed on another device",
+  "vehicleEdit": "Edit",
+  "vehicleRemove": "Remove vehicle",
+  "vehicleRemoveConfirmTitle": "Remove vehicle?",
+  "vehicleRemoveConfirmText": "The vehicle will no longer appear in your account.",
+  "vehicleRemoveConfirm": "Remove",
+  "vehicleRemoved": "Vehicle removed",
+  "vehicleSectionData": "Details",
+  "vehicleSectionDoc": "Registration document",
+  "vehicleSectionDrivers": "Drivers",
+  "vehicleDocNone": "You have not sent the registration document yet.",
+  "vehicleDocUpload": "Send registration document",
+  "vehicleDocReplace": "Replace",
+  "vehicleDocOpen": "Open",
+  "vehicleDocUploading": "Sending…",
+  "vehicleDocSaved": "Registration document saved",
+  "fileOpenFailed": "There is no app to open this file.",
+  "vehicleNoDrivers": "No drivers assigned.",
+  "vehicleDriverHabitual": "Usual",
+  "vehicleManageDrivers": "Manage drivers",
+  "manageDriversHelp": "Tick up to {max} drivers and choose the usual one.",
+  "@manageDriversHelp": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "docSourceCamera": "Take photo",
+  "docSourceGallery": "Choose from gallery",
+  "docSourcePdf": "Choose PDF",
+  "cameraFrameHint": "Fit the registration document inside the frame, in good light and without glare.",
+  "cameraPermissionDenied": "We need the camera to photograph the registration document.",
+  "cameraOpenSettings": "Open settings",
+  "cameraUnavailable": "The camera could not be opened. Choose a photo from the gallery.",
+  "cameraCapture": "Take photo",
+  "cameraFlashOff": "Flash off",
+  "cameraFlashAuto": "Flash auto",
+  "cameraFlashOn": "Flash always on",
+  "photoRetake": "Retake",
+  "photoUse": "Use photo",
+  "driversTitle": "Drivers",
+  "driversAddButton": "Register driver",
+  "driversEmpty": "You have not registered any drivers yet.",
+  "driversBackToList": "See my drivers",
+  "driverEditTitle": "Edit driver",
+  "driverOwnerTag": "Me",
+  "driverCategories": "Categories: {categories}",
+  "@driverCategories": {
+    "placeholders": {
+      "categories": {
+        "type": "String"
+      }
+    }
+  },
+  "driverLicenceMasked": "Licence: {masked}",
+  "@driverLicenceMasked": {
+    "placeholders": {
+      "masked": {
+        "type": "String"
+      }
+    }
+  },
+  "driverVehicleCount": "{count, plural, =0{No vehicles} =1{1 vehicle} other{{count} vehicles}}",
+  "@driverVehicleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "driverEdit": "Edit",
+  "driverRemove": "Remove",
+  "driverRemoveConfirmTitle": "Remove driver?",
+  "driverRemoveConfirmText": "The driver will no longer appear in your account.",
+  "driverRemoved": "Driver removed",
+  "driverFieldIsMe": "This is me",
+  "driverFieldLicenceNumber": "Licence number",
+  "driverChangeLicence": "Change the licence number",
+  "driverFieldLicenceCategories": "Categories",
+  "driverFieldLicenceIssueDate": "Licence issue date",
+  "driverConflict": "This driver was changed on another device"
 }

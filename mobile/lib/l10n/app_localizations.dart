@@ -1669,6 +1669,648 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Só pode haver um condutor habitual.'**
   String get validationMultipleHabitualDrivers;
+
+  /// No description provided for @save.
+  ///
+  /// In pt, this message translates to:
+  /// **'Guardar'**
+  String get save;
+
+  /// No description provided for @close.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fechar'**
+  String get close;
+
+  /// No description provided for @reload.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recarregar'**
+  String get reload;
+
+  /// No description provided for @yes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get no;
+
+  /// Valor em falta numa lista de dados.
+  ///
+  /// In pt, this message translates to:
+  /// **'—'**
+  String get valueMissing;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais opções'**
+  String get moreOptions;
+
+  /// Destino da barra inferior.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início'**
+  String get navHome;
+
+  /// Destino da barra inferior e segmento "Veículos".
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículos'**
+  String get navVehicles;
+
+  /// Destino da barra inferior.
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil'**
+  String get navProfile;
+
+  /// Só nos ecrãs (MoneyField, S2-05 §2); não é um código da API.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor inválido. Use no máximo 2 casas decimais.'**
+  String get validationInvalidMoney;
+
+  /// vehicleCategory.LIGHT_PASSENGER (S2-02 §8).
+  ///
+  /// In pt, this message translates to:
+  /// **'Ligeiro de passageiros'**
+  String get vehicleCategoryLightPassenger;
+
+  /// No description provided for @vehicleCategoryLightMixed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ligeiro misto'**
+  String get vehicleCategoryLightMixed;
+
+  /// No description provided for @vehicleCategoryHeavy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesado'**
+  String get vehicleCategoryHeavy;
+
+  /// No description provided for @vehicleCategoryMotorcycle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Motociclo'**
+  String get vehicleCategoryMotorcycle;
+
+  /// No description provided for @vehicleCategoryTrailer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reboque'**
+  String get vehicleCategoryTrailer;
+
+  /// No description provided for @vehicleCategoryBus.
+  ///
+  /// In pt, this message translates to:
+  /// **'Autocarro'**
+  String get vehicleCategoryBus;
+
+  /// vehicleUsage.PRIVATE (S2-02 §8).
+  ///
+  /// In pt, this message translates to:
+  /// **'Particular'**
+  String get vehicleUsagePrivate;
+
+  /// No description provided for @vehicleUsageRental.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aluguer sem condutor'**
+  String get vehicleUsageRental;
+
+  /// No description provided for @vehicleUsagePassengerTransport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transporte de passageiros'**
+  String get vehicleUsagePassengerTransport;
+
+  /// No description provided for @vehicleUsageGoods.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transporte de mercadorias'**
+  String get vehicleUsageGoods;
+
+  /// No description provided for @vehicleUsageTaxi.
+  ///
+  /// In pt, this message translates to:
+  /// **'Táxi'**
+  String get vehicleUsageTaxi;
+
+  /// No description provided for @vehicleUsageDrivingSchool.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escola de condução'**
+  String get vehicleUsageDrivingSchool;
+
+  /// No description provided for @vehiclesAddButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar veículo'**
+  String get vehiclesAddButton;
+
+  /// No description provided for @vehiclesEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não registou nenhum veículo.'**
+  String get vehiclesEmpty;
+
+  /// No description provided for @vehiclesBackToList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver os meus veículos'**
+  String get vehiclesBackToList;
+
+  /// No description provided for @vehicleMakeModelYear.
+  ///
+  /// In pt, this message translates to:
+  /// **'{make} {model} · {year}'**
+  String vehicleMakeModelYear(String make, String model, String year);
+
+  /// No description provided for @vehicleHabitualDriver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutor habitual: {name}'**
+  String vehicleHabitualDriver(String name);
+
+  /// No description provided for @vehicleNoHabitualDriver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem condutor habitual'**
+  String get vehicleNoHabitualDriver;
+
+  /// No description provided for @vehicleDocMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livrete em falta'**
+  String get vehicleDocMissing;
+
+  /// No description provided for @vehicleRegistryVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmado no registo'**
+  String get vehicleRegistryVerified;
+
+  /// No description provided for @vehicleRegistryNotVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não confirmado no registo'**
+  String get vehicleRegistryNotVerified;
+
+  /// No description provided for @vehicleNewTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar veículo'**
+  String get vehicleNewTitle;
+
+  /// No description provided for @vehicleEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar veículo'**
+  String get vehicleEditTitle;
+
+  /// No description provided for @vehicleFieldPlate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Matrícula'**
+  String get vehicleFieldPlate;
+
+  /// No description provided for @vehiclePlateHelper.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex.: {examples}'**
+  String vehiclePlateHelper(String examples);
+
+  /// Separador dos exemplos de matrícula.
+  ///
+  /// In pt, this message translates to:
+  /// **' ou '**
+  String get vehicleOr;
+
+  /// No description provided for @vehicleRegistryLookup.
+  ///
+  /// In pt, this message translates to:
+  /// **'Procurar no registo'**
+  String get vehicleRegistryLookup;
+
+  /// No description provided for @vehicleRegistryFilled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preenchemos os dados a partir do registo automóvel. Confirme-os com o seu livrete.'**
+  String get vehicleRegistryFilled;
+
+  /// No description provided for @vehicleFieldChassis.
+  ///
+  /// In pt, this message translates to:
+  /// **'N.º de chassis'**
+  String get vehicleFieldChassis;
+
+  /// No description provided for @vehicleFieldMake.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marca'**
+  String get vehicleFieldMake;
+
+  /// No description provided for @vehicleFieldModel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modelo'**
+  String get vehicleFieldModel;
+
+  /// No description provided for @vehicleFieldYear.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ano'**
+  String get vehicleFieldYear;
+
+  /// No description provided for @vehicleFieldCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get vehicleFieldCategory;
+
+  /// No description provided for @vehicleFieldEngineCc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cilindrada (cm³)'**
+  String get vehicleFieldEngineCc;
+
+  /// No description provided for @vehicleFieldSeats.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lugares'**
+  String get vehicleFieldSeats;
+
+  /// No description provided for @vehicleFieldGrossWeight.
+  ///
+  /// In pt, this message translates to:
+  /// **'Peso bruto (kg)'**
+  String get vehicleFieldGrossWeight;
+
+  /// No description provided for @vehicleFieldUsage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Uso'**
+  String get vehicleFieldUsage;
+
+  /// No description provided for @vehicleFieldProvince.
+  ///
+  /// In pt, this message translates to:
+  /// **'Província de circulação'**
+  String get vehicleFieldProvince;
+
+  /// No description provided for @vehicleFieldCommercialValue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor comercial'**
+  String get vehicleFieldCommercialValue;
+
+  /// No description provided for @vehicleCommercialValueHelper.
+  ///
+  /// In pt, this message translates to:
+  /// **'Necessário para seguros de danos próprios.'**
+  String get vehicleCommercialValueHelper;
+
+  /// No description provided for @vehicleFieldHasTracker.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tem localizador (GPS)'**
+  String get vehicleFieldHasTracker;
+
+  /// No description provided for @vehicleCreated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículo acrescentado. Envie agora a foto do livrete.'**
+  String get vehicleCreated;
+
+  /// No description provided for @vehicleConflict.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este veículo foi alterado noutro dispositivo'**
+  String get vehicleConflict;
+
+  /// No description provided for @vehicleEdit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar'**
+  String get vehicleEdit;
+
+  /// No description provided for @vehicleRemove.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar veículo'**
+  String get vehicleRemove;
+
+  /// No description provided for @vehicleRemoveConfirmTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar veículo?'**
+  String get vehicleRemoveConfirmTitle;
+
+  /// No description provided for @vehicleRemoveConfirmText.
+  ///
+  /// In pt, this message translates to:
+  /// **'O veículo deixa de aparecer na sua conta.'**
+  String get vehicleRemoveConfirmText;
+
+  /// No description provided for @vehicleRemoveConfirm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar'**
+  String get vehicleRemoveConfirm;
+
+  /// No description provided for @vehicleRemoved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículo retirado'**
+  String get vehicleRemoved;
+
+  /// No description provided for @vehicleSectionData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados'**
+  String get vehicleSectionData;
+
+  /// No description provided for @vehicleSectionDoc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livrete'**
+  String get vehicleSectionDoc;
+
+  /// No description provided for @vehicleSectionDrivers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutores'**
+  String get vehicleSectionDrivers;
+
+  /// No description provided for @vehicleDocNone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não enviou o livrete.'**
+  String get vehicleDocNone;
+
+  /// No description provided for @vehicleDocUpload.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar livrete'**
+  String get vehicleDocUpload;
+
+  /// No description provided for @vehicleDocReplace.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituir'**
+  String get vehicleDocReplace;
+
+  /// No description provided for @vehicleDocOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir'**
+  String get vehicleDocOpen;
+
+  /// No description provided for @vehicleDocUploading.
+  ///
+  /// In pt, this message translates to:
+  /// **'A enviar…'**
+  String get vehicleDocUploading;
+
+  /// No description provided for @vehicleDocSaved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Livrete guardado'**
+  String get vehicleDocSaved;
+
+  /// No description provided for @fileOpenFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não há nenhuma aplicação para abrir este ficheiro.'**
+  String get fileOpenFailed;
+
+  /// No description provided for @vehicleNoDrivers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum condutor associado.'**
+  String get vehicleNoDrivers;
+
+  /// No description provided for @vehicleDriverHabitual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Habitual'**
+  String get vehicleDriverHabitual;
+
+  /// No description provided for @vehicleManageDrivers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gerir condutores'**
+  String get vehicleManageDrivers;
+
+  /// No description provided for @manageDriversHelp.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marque até {max} condutores e escolha o habitual.'**
+  String manageDriversHelp(int max);
+
+  /// No description provided for @docSourceCamera.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tirar foto'**
+  String get docSourceCamera;
+
+  /// No description provided for @docSourceGallery.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher da galeria'**
+  String get docSourceGallery;
+
+  /// No description provided for @docSourcePdf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher PDF'**
+  String get docSourcePdf;
+
+  /// No description provided for @cameraFrameHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enquadre o livrete dentro do rectângulo, com boa luz e sem reflexos.'**
+  String get cameraFrameHint;
+
+  /// No description provided for @cameraPermissionDenied.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisamos da câmara para fotografar o livrete.'**
+  String get cameraPermissionDenied;
+
+  /// No description provided for @cameraOpenSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir definições'**
+  String get cameraOpenSettings;
+
+  /// No description provided for @cameraUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a câmara. Escolha uma foto da galeria.'**
+  String get cameraUnavailable;
+
+  /// No description provided for @cameraCapture.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tirar foto'**
+  String get cameraCapture;
+
+  /// No description provided for @cameraFlashOff.
+  ///
+  /// In pt, this message translates to:
+  /// **'Flash desligado'**
+  String get cameraFlashOff;
+
+  /// No description provided for @cameraFlashAuto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Flash automático'**
+  String get cameraFlashAuto;
+
+  /// No description provided for @cameraFlashOn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Flash sempre ligado'**
+  String get cameraFlashOn;
+
+  /// No description provided for @photoRetake.
+  ///
+  /// In pt, this message translates to:
+  /// **'Repetir'**
+  String get photoRetake;
+
+  /// No description provided for @photoUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar foto'**
+  String get photoUse;
+
+  /// No description provided for @driversTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutores'**
+  String get driversTitle;
+
+  /// No description provided for @driversAddButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Registar condutor'**
+  String get driversAddButton;
+
+  /// No description provided for @driversEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não registou condutores.'**
+  String get driversEmpty;
+
+  /// No description provided for @driversBackToList.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver os meus condutores'**
+  String get driversBackToList;
+
+  /// No description provided for @driverEditTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar condutor'**
+  String get driverEditTitle;
+
+  /// No description provided for @driverOwnerTag.
+  ///
+  /// In pt, this message translates to:
+  /// **'Eu'**
+  String get driverOwnerTag;
+
+  /// No description provided for @driverCategories.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias: {categories}'**
+  String driverCategories(String categories);
+
+  /// No description provided for @driverLicenceMasked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carta: {masked}'**
+  String driverLicenceMasked(String masked);
+
+  /// No description provided for @driverVehicleCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Sem veículos} =1{1 veículo} other{{count} veículos}}'**
+  String driverVehicleCount(int count);
+
+  /// No description provided for @driverEdit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar'**
+  String get driverEdit;
+
+  /// No description provided for @driverRemove.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar'**
+  String get driverRemove;
+
+  /// No description provided for @driverRemoveConfirmTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar condutor?'**
+  String get driverRemoveConfirmTitle;
+
+  /// No description provided for @driverRemoveConfirmText.
+  ///
+  /// In pt, this message translates to:
+  /// **'O condutor deixa de aparecer na sua conta.'**
+  String get driverRemoveConfirmText;
+
+  /// No description provided for @driverRemoved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutor retirado'**
+  String get driverRemoved;
+
+  /// No description provided for @driverFieldIsMe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sou eu'**
+  String get driverFieldIsMe;
+
+  /// No description provided for @driverFieldLicenceNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'N.º da carta'**
+  String get driverFieldLicenceNumber;
+
+  /// No description provided for @driverChangeLicence.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar o n.º da carta'**
+  String get driverChangeLicence;
+
+  /// No description provided for @driverFieldLicenceCategories.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
+  String get driverFieldLicenceCategories;
+
+  /// No description provided for @driverFieldLicenceIssueDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de emissão da carta'**
+  String get driverFieldLicenceIssueDate;
+
+  /// No description provided for @driverConflict.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este condutor foi alterado noutro dispositivo'**
+  String get driverConflict;
 }
 
 class _AppLocalizationsDelegate
