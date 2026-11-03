@@ -2401,6 +2401,240 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Este condutor foi alterado noutro dispositivo'**
   String get driverConflict;
+
+  /// No description provided for @errorQuoteRequestNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cotação não encontrada.'**
+  String get errorQuoteRequestNotFound;
+
+  /// No description provided for @errorQuoteNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cotação não encontrada.'**
+  String get errorQuoteNotFound;
+
+  /// No description provided for @errorQuoteExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cotação já expirou. Faça uma nova simulação.'**
+  String get errorQuoteExpired;
+
+  /// No description provided for @errorQuoteNotAvailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta seguradora não apresentou proposta.'**
+  String get errorQuoteNotAvailable;
+
+  /// No description provided for @errorQuoteAlreadyUsed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cotação já foi usada numa proposta.'**
+  String get errorQuoteAlreadyUsed;
+
+  /// No description provided for @errorQuoteRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fez muitas simulações na última hora. Tente mais tarde.'**
+  String get errorQuoteRateLimited;
+
+  /// No description provided for @errorVehicleValueRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para danos próprios, indique o valor comercial do veículo.'**
+  String get errorVehicleValueRequired;
+
+  /// No description provided for @errorOrganizationNotInsurer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta organização não é uma seguradora.'**
+  String get errorOrganizationNotInsurer;
+
+  /// No description provided for @validationStartDateOutOfRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'A data de início tem de ser entre hoje e daqui a 60 dias.'**
+  String get validationStartDateOutOfRange;
+
+  /// No description provided for @validationCoverageNotAllowedForType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta cobertura não existe neste tipo de seguro.'**
+  String get validationCoverageNotAllowedForType;
+
+  /// No description provided for @validationOwnDamageRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha pelo menos uma cobertura de danos próprios.'**
+  String get validationOwnDamageRequired;
+
+  /// No description provided for @validationCoverageRequires.
+  ///
+  /// In pt, this message translates to:
+  /// **'Furto ou roubo exige choque, incêndio e fenómenos da natureza.'**
+  String get validationCoverageRequires;
+
+  /// No description provided for @validationInvalidUrl.
+  ///
+  /// In pt, this message translates to:
+  /// **'Endereço inválido (tem de começar por https://).'**
+  String get validationInvalidUrl;
+
+  /// No description provided for @validationInvalidSecretRef.
+  ///
+  /// In pt, this message translates to:
+  /// **'Referência do segredo inválida.'**
+  String get validationInvalidSecretRef;
+
+  /// No description provided for @quoteUnavailableTariffMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta seguradora ainda não tem preço para este produto.'**
+  String get quoteUnavailableTariffMissing;
+
+  /// No description provided for @quoteUnavailableTariffInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível calcular o preço deste produto.'**
+  String get quoteUnavailableTariffInvalid;
+
+  /// No description provided for @quoteUnavailableCoverageNotOffered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este produto não inclui todas as coberturas escolhidas.'**
+  String get quoteUnavailableCoverageNotOffered;
+
+  /// No description provided for @quoteUnavailableCoverageRequirementsNotMet.
+  ///
+  /// In pt, this message translates to:
+  /// **'Neste produto, as coberturas escolhidas exigem outras que não escolheu.'**
+  String get quoteUnavailableCoverageRequirementsNotMet;
+
+  /// No description provided for @quoteUnavailableCapitalNotOffered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este produto não oferece o capital escolhido.'**
+  String get quoteUnavailableCapitalNotOffered;
+
+  /// No description provided for @quoteUnavailableVehicleValueRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'É preciso indicar o valor comercial do veículo.'**
+  String get quoteUnavailableVehicleValueRequired;
+
+  /// No description provided for @quoteUnavailableDurationNotRated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este produto não está disponível para a duração escolhida.'**
+  String get quoteUnavailableDurationNotRated;
+
+  /// No description provided for @quoteUnavailableNoMatchingRow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta seguradora não cobre este veículo ou condutor nestas condições.'**
+  String get quoteUnavailableNoMatchingRow;
+
+  /// No description provided for @quoteUnavailableInsurerTimeout.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora não respondeu a tempo.'**
+  String get quoteUnavailableInsurerTimeout;
+
+  /// No description provided for @quoteUnavailableInsurerUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora está indisponível neste momento.'**
+  String get quoteUnavailableInsurerUnavailable;
+
+  /// No description provided for @quoteUnavailableInsurerDeclined.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora não apresentou proposta.'**
+  String get quoteUnavailableInsurerDeclined;
+
+  /// No description provided for @quoteUnavailableExternalInvalidResponse.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora devolveu uma resposta inválida.'**
+  String get quoteUnavailableExternalInvalidResponse;
+
+  /// No description provided for @quoteUnavailableEvaluationError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível calcular o preço.'**
+  String get quoteUnavailableEvaluationError;
+
+  /// No description provided for @coverageMtpl.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsabilidade civil obrigatória'**
+  String get coverageMtpl;
+
+  /// No description provided for @coverageVtpl.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsabilidade civil facultativa'**
+  String get coverageVtpl;
+
+  /// No description provided for @coverageOdCollision.
+  ///
+  /// In pt, this message translates to:
+  /// **'Choque, colisão e capotamento'**
+  String get coverageOdCollision;
+
+  /// No description provided for @coverageOdGlass.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quebra isolada de vidros'**
+  String get coverageOdGlass;
+
+  /// No description provided for @coverageOdFire.
+  ///
+  /// In pt, this message translates to:
+  /// **'Incêndio, raio e explosão'**
+  String get coverageOdFire;
+
+  /// No description provided for @coverageOdNature.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fenómenos da natureza'**
+  String get coverageOdNature;
+
+  /// No description provided for @coverageOdTheft.
+  ///
+  /// In pt, this message translates to:
+  /// **'Furto ou roubo'**
+  String get coverageOdTheft;
+
+  /// No description provided for @coverageOccupants.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocupantes'**
+  String get coverageOccupants;
+
+  /// No description provided for @coverageAssistance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assistência em viagem'**
+  String get coverageAssistance;
+
+  /// No description provided for @coverageLegal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Protecção jurídica'**
+  String get coverageLegal;
+
+  /// No description provided for @coverageSrcc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Greves, tumultos e alterações da ordem pública'**
+  String get coverageSrcc;
+
+  /// No description provided for @coverageCrossBorder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Circulação no estrangeiro'**
+  String get coverageCrossBorder;
 }
 
 class _AppLocalizationsDelegate

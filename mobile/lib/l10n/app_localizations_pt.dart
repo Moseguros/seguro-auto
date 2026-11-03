@@ -1320,4 +1320,145 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get driverConflict => 'Este condutor foi alterado noutro dispositivo';
+
+  @override
+  String get errorQuoteRequestNotFound => 'Cotação não encontrada.';
+
+  @override
+  String get errorQuoteNotFound => 'Cotação não encontrada.';
+
+  @override
+  String get errorQuoteExpired =>
+      'Esta cotação já expirou. Faça uma nova simulação.';
+
+  @override
+  String get errorQuoteNotAvailable =>
+      'Esta seguradora não apresentou proposta.';
+
+  @override
+  String get errorQuoteAlreadyUsed =>
+      'Esta cotação já foi usada numa proposta.';
+
+  @override
+  String get errorQuoteRateLimited =>
+      'Fez muitas simulações na última hora. Tente mais tarde.';
+
+  @override
+  String get errorVehicleValueRequired =>
+      'Para danos próprios, indique o valor comercial do veículo.';
+
+  @override
+  String get errorOrganizationNotInsurer =>
+      'Esta organização não é uma seguradora.';
+
+  @override
+  String get validationStartDateOutOfRange =>
+      'A data de início tem de ser entre hoje e daqui a 60 dias.';
+
+  @override
+  String get validationCoverageNotAllowedForType =>
+      'Esta cobertura não existe neste tipo de seguro.';
+
+  @override
+  String get validationOwnDamageRequired =>
+      'Escolha pelo menos uma cobertura de danos próprios.';
+
+  @override
+  String get validationCoverageRequires =>
+      'Furto ou roubo exige choque, incêndio e fenómenos da natureza.';
+
+  @override
+  String get validationInvalidUrl =>
+      'Endereço inválido (tem de começar por https://).';
+
+  @override
+  String get validationInvalidSecretRef => 'Referência do segredo inválida.';
+
+  @override
+  String get quoteUnavailableTariffMissing =>
+      'Esta seguradora ainda não tem preço para este produto.';
+
+  @override
+  String get quoteUnavailableTariffInvalid =>
+      'Não foi possível calcular o preço deste produto.';
+
+  @override
+  String get quoteUnavailableCoverageNotOffered =>
+      'Este produto não inclui todas as coberturas escolhidas.';
+
+  @override
+  String get quoteUnavailableCoverageRequirementsNotMet =>
+      'Neste produto, as coberturas escolhidas exigem outras que não escolheu.';
+
+  @override
+  String get quoteUnavailableCapitalNotOffered =>
+      'Este produto não oferece o capital escolhido.';
+
+  @override
+  String get quoteUnavailableVehicleValueRequired =>
+      'É preciso indicar o valor comercial do veículo.';
+
+  @override
+  String get quoteUnavailableDurationNotRated =>
+      'Este produto não está disponível para a duração escolhida.';
+
+  @override
+  String get quoteUnavailableNoMatchingRow =>
+      'Esta seguradora não cobre este veículo ou condutor nestas condições.';
+
+  @override
+  String get quoteUnavailableInsurerTimeout =>
+      'A seguradora não respondeu a tempo.';
+
+  @override
+  String get quoteUnavailableInsurerUnavailable =>
+      'A seguradora está indisponível neste momento.';
+
+  @override
+  String get quoteUnavailableInsurerDeclined =>
+      'A seguradora não apresentou proposta.';
+
+  @override
+  String get quoteUnavailableExternalInvalidResponse =>
+      'A seguradora devolveu uma resposta inválida.';
+
+  @override
+  String get quoteUnavailableEvaluationError =>
+      'Não foi possível calcular o preço.';
+
+  @override
+  String get coverageMtpl => 'Responsabilidade civil obrigatória';
+
+  @override
+  String get coverageVtpl => 'Responsabilidade civil facultativa';
+
+  @override
+  String get coverageOdCollision => 'Choque, colisão e capotamento';
+
+  @override
+  String get coverageOdGlass => 'Quebra isolada de vidros';
+
+  @override
+  String get coverageOdFire => 'Incêndio, raio e explosão';
+
+  @override
+  String get coverageOdNature => 'Fenómenos da natureza';
+
+  @override
+  String get coverageOdTheft => 'Furto ou roubo';
+
+  @override
+  String get coverageOccupants => 'Ocupantes';
+
+  @override
+  String get coverageAssistance => 'Assistência em viagem';
+
+  @override
+  String get coverageLegal => 'Protecção jurídica';
+
+  @override
+  String get coverageSrcc => 'Greves, tumultos e alterações da ordem pública';
+
+  @override
+  String get coverageCrossBorder => 'Circulação no estrangeiro';
 }

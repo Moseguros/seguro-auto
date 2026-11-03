@@ -1322,4 +1322,144 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get driverConflict => 'This driver was changed on another device';
+
+  @override
+  String get errorQuoteRequestNotFound => 'Quote not found.';
+
+  @override
+  String get errorQuoteNotFound => 'Quote not found.';
+
+  @override
+  String get errorQuoteExpired =>
+      'This quote has expired. Run a new simulation.';
+
+  @override
+  String get errorQuoteNotAvailable => 'This insurer did not make an offer.';
+
+  @override
+  String get errorQuoteAlreadyUsed =>
+      'This quote has already been used in a proposal.';
+
+  @override
+  String get errorQuoteRateLimited =>
+      'You ran too many simulations in the last hour. Try again later.';
+
+  @override
+  String get errorVehicleValueRequired =>
+      'For own damage, enter the commercial value of the vehicle.';
+
+  @override
+  String get errorOrganizationNotInsurer =>
+      'This organization is not an insurer.';
+
+  @override
+  String get validationStartDateOutOfRange =>
+      'The start date must be between today and 60 days from now.';
+
+  @override
+  String get validationCoverageNotAllowedForType =>
+      'This coverage does not exist in this type of insurance.';
+
+  @override
+  String get validationOwnDamageRequired =>
+      'Choose at least one own damage coverage.';
+
+  @override
+  String get validationCoverageRequires =>
+      'Theft or robbery requires collision, fire and natural events.';
+
+  @override
+  String get validationInvalidUrl =>
+      'Invalid address (it must start with https://).';
+
+  @override
+  String get validationInvalidSecretRef => 'Invalid secret reference.';
+
+  @override
+  String get quoteUnavailableTariffMissing =>
+      'This insurer does not have a price for this product yet.';
+
+  @override
+  String get quoteUnavailableTariffInvalid =>
+      'The price of this product could not be calculated.';
+
+  @override
+  String get quoteUnavailableCoverageNotOffered =>
+      'This product does not include all the chosen coverages.';
+
+  @override
+  String get quoteUnavailableCoverageRequirementsNotMet =>
+      'In this product, the chosen coverages require others you did not choose.';
+
+  @override
+  String get quoteUnavailableCapitalNotOffered =>
+      'This product does not offer the chosen capital.';
+
+  @override
+  String get quoteUnavailableVehicleValueRequired =>
+      'The commercial value of the vehicle is required.';
+
+  @override
+  String get quoteUnavailableDurationNotRated =>
+      'This product is not available for the chosen duration.';
+
+  @override
+  String get quoteUnavailableNoMatchingRow =>
+      'This insurer does not cover this vehicle or driver under these conditions.';
+
+  @override
+  String get quoteUnavailableInsurerTimeout =>
+      'The insurer did not answer in time.';
+
+  @override
+  String get quoteUnavailableInsurerUnavailable =>
+      'The insurer is unavailable at the moment.';
+
+  @override
+  String get quoteUnavailableInsurerDeclined =>
+      'The insurer did not make an offer.';
+
+  @override
+  String get quoteUnavailableExternalInvalidResponse =>
+      'The insurer returned an invalid answer.';
+
+  @override
+  String get quoteUnavailableEvaluationError =>
+      'The price could not be calculated.';
+
+  @override
+  String get coverageMtpl => 'Compulsory third-party liability';
+
+  @override
+  String get coverageVtpl => 'Voluntary third-party liability';
+
+  @override
+  String get coverageOdCollision => 'Collision and overturning';
+
+  @override
+  String get coverageOdGlass => 'Glass breakage';
+
+  @override
+  String get coverageOdFire => 'Fire, lightning and explosion';
+
+  @override
+  String get coverageOdNature => 'Natural events';
+
+  @override
+  String get coverageOdTheft => 'Theft or robbery';
+
+  @override
+  String get coverageOccupants => 'Occupants';
+
+  @override
+  String get coverageAssistance => 'Roadside assistance';
+
+  @override
+  String get coverageLegal => 'Legal protection';
+
+  @override
+  String get coverageSrcc => 'Strikes, riots and civil commotion';
+
+  @override
+  String get coverageCrossBorder => 'Driving abroad';
 }

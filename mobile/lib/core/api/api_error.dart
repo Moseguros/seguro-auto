@@ -99,6 +99,14 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'OWNER_DRIVER_ALREADY_EXISTS' => l10n.errorOwnerDriverAlreadyExists,
   'DRIVER_IS_HABITUAL' => l10n.errorDriverIsHabitual,
   'RATING_RULES_TOO_LARGE' => l10n.errorRatingRulesTooLarge,
+  'QUOTE_REQUEST_NOT_FOUND' => l10n.errorQuoteRequestNotFound,
+  'QUOTE_NOT_FOUND' => l10n.errorQuoteNotFound,
+  'QUOTE_EXPIRED' => l10n.errorQuoteExpired,
+  'QUOTE_NOT_AVAILABLE' => l10n.errorQuoteNotAvailable,
+  'QUOTE_ALREADY_USED' => l10n.errorQuoteAlreadyUsed,
+  'QUOTE_RATE_LIMITED' => l10n.errorQuoteRateLimited,
+  'VEHICLE_VALUE_REQUIRED' => l10n.errorVehicleValueRequired,
+  'ORGANIZATION_NOT_INSURER' => l10n.errorOrganizationNotInsurer,
   _ => l10n.errorUnknown,
 };
 
@@ -179,6 +187,12 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'DURATION_FACTORS_REQUIRED' => l10n.validationDurationFactorsRequired,
   'DURATION_NOT_ALLOWED' => l10n.validationDurationNotAllowed,
   'DUPLICATE_CHARGE' => l10n.validationDuplicateCharge,
+  'START_DATE_OUT_OF_RANGE' => l10n.validationStartDateOutOfRange,
+  'COVERAGE_NOT_ALLOWED_FOR_TYPE' => l10n.validationCoverageNotAllowedForType,
+  'OWN_DAMAGE_REQUIRED' => l10n.validationOwnDamageRequired,
+  'COVERAGE_REQUIRES' => l10n.validationCoverageRequires,
+  'INVALID_URL' => l10n.validationInvalidUrl,
+  'INVALID_SECRET_REF' => l10n.validationInvalidSecretRef,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,
