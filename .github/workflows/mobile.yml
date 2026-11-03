@@ -25,6 +25,14 @@ jobs:
       run:
         working-directory: mobile
     steps:
+      # O APK de debug com os plugins de câmara (S2-07) esgota o disco do runner:
+      # remove ferramentas pré-instaladas que este build não usa.
+      - name: Libertar espaço em disco
+        working-directory: /
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /opt/hostedtoolcache/CodeQL
+          df -h /
+
       - uses: actions/checkout@v4
 
       # Versão do Flutter fixada em environment.flutter do mobile/pubspec.yaml (S0-06).
