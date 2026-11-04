@@ -4,8 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:moseguros/app.dart';
 import 'package:moseguros/core/config/env.dart';
+import 'package:moseguros/core/network/connectivity.dart';
 import 'package:moseguros/features/onboarding/onboarding_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../test/support/mock_api.dart';
 
 /// Abre a app (flavor dev) pela primeira vez e confirma que a apresentação aparece.
 ///
@@ -24,6 +27,9 @@ void main() {
             const Env(apiBaseUrl: 'http://10.0.2.2:8080', name: 'dev'),
           ),
           sharedPreferencesProvider.overrideWithValue(preferences),
+          // Sem o plugin connectivity_plus no flutter-tester (S4-09): a fila de
+          // envio da vistoria escuta a rede desde o arranque.
+          connectivityMonitorProvider.overrideWithValue(AlwaysOnline()),
         ],
         child: const MoSegurosApp(locale: Locale('pt')),
       ),
