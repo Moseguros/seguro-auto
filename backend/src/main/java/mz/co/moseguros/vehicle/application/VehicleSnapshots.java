@@ -1,10 +1,13 @@
 package mz.co.moseguros.vehicle.application;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import mz.co.moseguros.vehicle.DriverSnapshot;
+import mz.co.moseguros.vehicle.VehicleSnapshot;
 import mz.co.moseguros.vehicle.domain.Driver;
 import mz.co.moseguros.vehicle.domain.DriverRepository;
 import mz.co.moseguros.vehicle.domain.RecordStatus;
@@ -54,5 +57,20 @@ public class VehicleSnapshots {
         return drivers.findByIdInAndStatus(habitual, RecordStatus.ACTIVE).stream()
                 .map(Driver::getId)
                 .findFirst();
+    }
+
+    /** Cópia dos dados do veículo (com o condutor habitual activo, se houver). */
+    public VehicleSnapshot vehicleSnapshot(Vehicle v, Instant takenAt) {
+        return new VehicleSnapshot(v.getId(), v.getOwnerUserId(), v.getPlate().value(), v.getChassisNumber(),
+                v.getMake(), v.getModel(), v.getYear(), v.getEngineCc(), v.getCategory(), v.getSeats(),
+                v.getGrossWeightKg(), v.getUsage(), v.getProvinceOfCirculation(), v.getCommercialValue(),
+                v.hasTracker(), v.isInatroVerified(), habitualDriver(v.getId()).orElse(null), takenAt);
+    }
+
+    /** Cópia dos dados do condutor, sem o número da carta em claro. */
+    public DriverSnapshot driverSnapshot(Driver d, Instant takenAt) {
+        return new DriverSnapshot(d.getId(), d.getOwnerUserId(), d.getFullName(), d.getBirthDate(),
+                d.licenceNumberMasked(), d.getLicenceNumberHash(), List.copyOf(d.getLicenceCategories()),
+                d.getLicenceIssueDate(), d.isOwner(), takenAt);
     }
 }
