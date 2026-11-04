@@ -1392,6 +1392,44 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationInvalidInsurer => 'Seguradora inválida.';
 
   @override
+  String get errorQuoteDataChanged =>
+      'Os dados do veículo ou do condutor mudaram depois da simulação. Faça uma nova simulação.';
+
+  @override
+  String get errorProposalAlreadyExists =>
+      'Já existe uma proposta para esta cotação.';
+
+  @override
+  String get errorProposalNotFound => 'Proposta não encontrada.';
+
+  @override
+  String get errorProposalNotEditable =>
+      'Esta proposta já não pode ser alterada.';
+
+  @override
+  String get errorInsurerNotActive =>
+      'Esta seguradora não está a aceitar propostas neste momento.';
+
+  @override
+  String get errorSuitabilityNotWarned =>
+      'Não há avisos de adequação para confirmar.';
+
+  @override
+  String get validationAnswersIncomplete => 'Responda a todas as perguntas.';
+
+  @override
+  String get validationAnswerDuplicated => 'Pergunta repetida.';
+
+  @override
+  String get validationUnknownQuestion => 'Pergunta desconhecida.';
+
+  @override
+  String get validationInvalidAnswer => 'Resposta inválida.';
+
+  @override
+  String get validationMustBeTrue => 'Tem de confirmar para continuar.';
+
+  @override
   String get quoteUnavailableTariffMissing =>
       'Esta seguradora ainda não tem preço para este produto.';
 

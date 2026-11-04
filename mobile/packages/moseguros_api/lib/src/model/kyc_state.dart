@@ -11,19 +11,14 @@ part 'kyc_state.g.dart';
 
 class KycState extends EnumClass {
 
-  /// OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
   @BuiltValueEnumConst(wireName: r'NONE')
   static const KycState NONE = _$NONE;
-  /// OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
   @BuiltValueEnumConst(wireName: r'PENDING')
   static const KycState PENDING = _$PENDING;
-  /// OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
   @BuiltValueEnumConst(wireName: r'VERIFIED')
   static const KycState VERIFIED = _$VERIFIED;
-  /// OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
   @BuiltValueEnumConst(wireName: r'REJECTED')
   static const KycState REJECTED = _$REJECTED;
-  /// OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
   @BuiltValueEnumConst(wireName: r'OUTDATED')
   static const KycState OUTDATED = _$OUTDATED;
 

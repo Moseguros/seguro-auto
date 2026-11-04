@@ -1393,6 +1393,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationInvalidInsurer => 'Invalid insurer.';
 
   @override
+  String get errorQuoteDataChanged =>
+      'The vehicle or driver details changed after the quote. Request a new quote.';
+
+  @override
+  String get errorProposalAlreadyExists =>
+      'A proposal already exists for this quote.';
+
+  @override
+  String get errorProposalNotFound => 'Proposal not found.';
+
+  @override
+  String get errorProposalNotEditable =>
+      'This proposal can no longer be changed.';
+
+  @override
+  String get errorInsurerNotActive =>
+      'This insurer is not accepting proposals at the moment.';
+
+  @override
+  String get errorSuitabilityNotWarned =>
+      'There are no suitability warnings to confirm.';
+
+  @override
+  String get validationAnswersIncomplete => 'Answer all the questions.';
+
+  @override
+  String get validationAnswerDuplicated => 'Duplicated question.';
+
+  @override
+  String get validationUnknownQuestion => 'Unknown question.';
+
+  @override
+  String get validationInvalidAnswer => 'Invalid answer.';
+
+  @override
+  String get validationMustBeTrue => 'You must confirm to continue.';
+
+  @override
   String get quoteUnavailableTariffMissing =>
       'This insurer does not have a price for this product yet.';
 

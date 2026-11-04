@@ -2516,6 +2516,72 @@ abstract class AppLocalizations {
   /// **'Seguradora inválida.'**
   String get validationInvalidInsurer;
 
+  /// No description provided for @errorQuoteDataChanged.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os dados do veículo ou do condutor mudaram depois da simulação. Faça uma nova simulação.'**
+  String get errorQuoteDataChanged;
+
+  /// No description provided for @errorProposalAlreadyExists.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe uma proposta para esta cotação.'**
+  String get errorProposalAlreadyExists;
+
+  /// No description provided for @errorProposalNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta não encontrada.'**
+  String get errorProposalNotFound;
+
+  /// No description provided for @errorProposalNotEditable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já não pode ser alterada.'**
+  String get errorProposalNotEditable;
+
+  /// No description provided for @errorInsurerNotActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta seguradora não está a aceitar propostas neste momento.'**
+  String get errorInsurerNotActive;
+
+  /// No description provided for @errorSuitabilityNotWarned.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não há avisos de adequação para confirmar.'**
+  String get errorSuitabilityNotWarned;
+
+  /// No description provided for @validationAnswersIncomplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responda a todas as perguntas.'**
+  String get validationAnswersIncomplete;
+
+  /// No description provided for @validationAnswerDuplicated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta repetida.'**
+  String get validationAnswerDuplicated;
+
+  /// No description provided for @validationUnknownQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pergunta desconhecida.'**
+  String get validationUnknownQuestion;
+
+  /// No description provided for @validationInvalidAnswer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resposta inválida.'**
+  String get validationInvalidAnswer;
+
+  /// No description provided for @validationMustBeTrue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tem de confirmar para continuar.'**
+  String get validationMustBeTrue;
+
   /// No description provided for @quoteUnavailableTariffMissing.
   ///
   /// In pt, this message translates to:

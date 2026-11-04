@@ -15,6 +15,7 @@ import 'package:moseguros_api/src/date_serializer.dart';
 import 'package:moseguros_api/src/model/date.dart';
 
 import 'package:moseguros_api/src/model/accept_invitation_request.dart';
+import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/activate_invitation_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
 import 'package:moseguros_api/src/model/broker_vehicle_request.dart';
@@ -31,10 +32,14 @@ import 'package:moseguros_api/src/model/create_driver_request.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
 import 'package:moseguros_api/src/model/create_plate_format_request.dart';
 import 'package:moseguros_api/src/model/create_product_request.dart';
+import 'package:moseguros_api/src/model/create_proposal_request.dart';
 import 'package:moseguros_api/src/model/create_quote_request.dart';
 import 'package:moseguros_api/src/model/create_reference_value_request.dart';
 import 'package:moseguros_api/src/model/create_vehicle_request.dart';
 import 'package:moseguros_api/src/model/customer_profile_response.dart';
+import 'package:moseguros_api/src/model/declaration_answer_request.dart';
+import 'package:moseguros_api/src/model/declaration_answer_response.dart';
+import 'package:moseguros_api/src/model/declaration_question.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
 import 'package:moseguros_api/src/model/driver_response.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
@@ -78,6 +83,7 @@ import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_kyc_check_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_quote_request_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
@@ -93,6 +99,24 @@ import 'package:moseguros_api/src/model/product_summary_response.dart';
 import 'package:moseguros_api/src/model/product_version_ref_response.dart';
 import 'package:moseguros_api/src/model/product_version_response.dart';
 import 'package:moseguros_api/src/model/product_version_validation_response.dart';
+import 'package:moseguros_api/src/model/proposal_channel.dart';
+import 'package:moseguros_api/src/model/proposal_charge.dart';
+import 'package:moseguros_api/src/model/proposal_checklist.dart';
+import 'package:moseguros_api/src/model/proposal_coverage.dart';
+import 'package:moseguros_api/src/model/proposal_declarations.dart';
+import 'package:moseguros_api/src/model/proposal_deductible.dart';
+import 'package:moseguros_api/src/model/proposal_driver.dart';
+import 'package:moseguros_api/src/model/proposal_inspection.dart';
+import 'package:moseguros_api/src/model/proposal_kyc.dart';
+import 'package:moseguros_api/src/model/proposal_organization.dart';
+import 'package:moseguros_api/src/model/proposal_policyholder.dart';
+import 'package:moseguros_api/src/model/proposal_premium.dart';
+import 'package:moseguros_api/src/model/proposal_product.dart';
+import 'package:moseguros_api/src/model/proposal_response.dart';
+import 'package:moseguros_api/src/model/proposal_status.dart';
+import 'package:moseguros_api/src/model/proposal_suitability.dart';
+import 'package:moseguros_api/src/model/proposal_summary_response.dart';
+import 'package:moseguros_api/src/model/proposal_vehicle.dart';
 import 'package:moseguros_api/src/model/public_plate_format_response.dart';
 import 'package:moseguros_api/src/model/public_plate_formats_response.dart';
 import 'package:moseguros_api/src/model/public_platform_setting_response.dart';
@@ -129,11 +153,18 @@ import 'package:moseguros_api/src/model/requested_coverage_response.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
 import 'package:moseguros_api/src/model/risk_driver_request.dart';
 import 'package:moseguros_api/src/model/rule_error.dart';
+import 'package:moseguros_api/src/model/save_declarations_request.dart';
+import 'package:moseguros_api/src/model/save_suitability_request.dart';
 import 'package:moseguros_api/src/model/simulate_rating_request.dart';
 import 'package:moseguros_api/src/model/simulation_vehicle_request.dart';
 import 'package:moseguros_api/src/model/staff_login_request.dart';
 import 'package:moseguros_api/src/model/staff_user_response.dart';
 import 'package:moseguros_api/src/model/start_contact_verification_request.dart';
+import 'package:moseguros_api/src/model/suitability_answer_request.dart';
+import 'package:moseguros_api/src/model/suitability_answer_response.dart';
+import 'package:moseguros_api/src/model/suitability_question.dart';
+import 'package:moseguros_api/src/model/suitability_reason.dart';
+import 'package:moseguros_api/src/model/suitability_result.dart';
 import 'package:moseguros_api/src/model/suspend_organization_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_response.dart';
@@ -150,6 +181,7 @@ import 'package:moseguros_api/src/model/update_plate_format_request.dart';
 import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
 import 'package:moseguros_api/src/model/update_product_request.dart';
 import 'package:moseguros_api/src/model/update_product_version_request.dart';
+import 'package:moseguros_api/src/model/update_proposal_request.dart';
 import 'package:moseguros_api/src/model/update_rating_integration_request.dart';
 import 'package:moseguros_api/src/model/update_rating_rules_request.dart';
 import 'package:moseguros_api/src/model/update_reference_value_request.dart';
@@ -171,6 +203,7 @@ part 'serializers.g.dart';
 
 @SerializersFor([
   AcceptInvitationRequest,
+  AcknowledgeSuitabilityRequest,
   ActivateInvitationRequest,
   AssignableRolesResponse,
   BrokerVehicleRequest,
@@ -187,10 +220,14 @@ part 'serializers.g.dart';
   CreateOrganizationRequest,
   CreatePlateFormatRequest,
   CreateProductRequest,
+  CreateProposalRequest,
   CreateQuoteRequest,
   CreateReferenceValueRequest,
   CreateVehicleRequest,
   CustomerProfileResponse,
+  DeclarationAnswerRequest,
+  DeclarationAnswerResponse,
+  DeclarationQuestion,
   DeliveryReceiptRequest,
   DriverResponse,
   FieldError,
@@ -234,6 +271,7 @@ part 'serializers.g.dart';
   PageResponseKycCheckSummaryResponse,
   PageResponseOrganizationSummaryResponse,
   PageResponseProductSummaryResponse,
+  PageResponseProposalSummaryResponse,
   PageResponseQuoteRequestSummaryResponse,
   PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
@@ -249,6 +287,24 @@ part 'serializers.g.dart';
   ProductVersionRefResponse,
   ProductVersionResponse,
   ProductVersionValidationResponse,
+  ProposalChannel,
+  ProposalCharge,
+  ProposalChecklist,
+  ProposalCoverage,
+  ProposalDeclarations,
+  ProposalDeductible,
+  ProposalDriver,
+  ProposalInspection,
+  ProposalKyc,
+  ProposalOrganization,
+  ProposalPolicyholder,
+  ProposalPremium,
+  ProposalProduct,
+  ProposalResponse,
+  ProposalStatus,
+  ProposalSuitability,
+  ProposalSummaryResponse,
+  ProposalVehicle,
   PublicPlateFormatResponse,
   PublicPlateFormatsResponse,
   PublicPlatformSettingResponse,
@@ -285,11 +341,18 @@ part 'serializers.g.dart';
   ResetPasswordRequest,
   RiskDriverRequest,
   RuleError,
+  SaveDeclarationsRequest,
+  SaveSuitabilityRequest,
   SimulateRatingRequest,
   SimulationVehicleRequest,
   StaffLoginRequest,
   StaffUserResponse,
   StartContactVerificationRequest,
+  SuitabilityAnswerRequest,
+  SuitabilityAnswerResponse,
+  SuitabilityQuestion,
+  SuitabilityReason,
+  SuitabilityResult,
   SuspendOrganizationRequest,
   TestPlateFormatRequest,
   TestPlateFormatResponse,
@@ -306,6 +369,7 @@ part 'serializers.g.dart';
   UpdatePlatformSettingRequest,
   UpdateProductRequest,
   UpdateProductVersionRequest,
+  UpdateProposalRequest,
   UpdateRatingIntegrationRequest,
   UpdateRatingRulesRequest,
   UpdateReferenceValueRequest,
@@ -324,6 +388,10 @@ part 'serializers.g.dart';
   VersionResponse,
 ])
 Serializers serializers = (_$serializers.toBuilder()
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(ProposalStatus)]),
+        () => ListBuilder<ProposalStatus>(),
+      )
       ..add(const OneOfSerializer())
       ..add(const AnyOfSerializer())
       ..add(const DateSerializer())

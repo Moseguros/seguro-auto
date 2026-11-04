@@ -157,6 +157,13 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateInsurerRatingSettings**](doc/OrganizationApi.md#updateinsurerratingsettings) | **PUT** /api/v1/insurer/rating-settings | Altera os encargos da seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
+[*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
+[*ProposalApi*](doc/ProposalApi.md) | [**saveProposalDeclarations**](doc/ProposalApi.md#saveproposaldeclarations) | **POST** /api/v1/proposals/{id}/declarations | Grava as declarações de risco
+[*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**updateProposal**](doc/ProposalApi.md#updateproposal) | **PUT** /api/v1/proposals/{id} | Altera a data de início da proposta
 [*RatingApi*](doc/RatingApi.md) | [**createBrokerQuoteRequest**](doc/RatingApi.md#createbrokerquoterequest) | **POST** /api/v1/broker/quotes | Pede cotações em nome de um cliente
 [*RatingApi*](doc/RatingApi.md) | [**createQuoteRequest**](doc/RatingApi.md#createquoterequest) | **POST** /api/v1/quotes | Pede cotações para um veículo do cliente
 [*RatingApi*](doc/RatingApi.md) | [**getQuoteRequest**](doc/RatingApi.md#getquoterequest) | **GET** /api/v1/quotes/{id} | Consulta um pedido de cotações
@@ -184,6 +191,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
+ - [AcknowledgeSuitabilityRequest](doc/AcknowledgeSuitabilityRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
@@ -200,10 +208,14 @@ Class | Method | HTTP request | Description
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
  - [CreateProductRequest](doc/CreateProductRequest.md)
+ - [CreateProposalRequest](doc/CreateProposalRequest.md)
  - [CreateQuoteRequest](doc/CreateQuoteRequest.md)
  - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
  - [CreateVehicleRequest](doc/CreateVehicleRequest.md)
  - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
+ - [DeclarationAnswerRequest](doc/DeclarationAnswerRequest.md)
+ - [DeclarationAnswerResponse](doc/DeclarationAnswerResponse.md)
+ - [DeclarationQuestion](doc/DeclarationQuestion.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [DriverResponse](doc/DriverResponse.md)
  - [FieldError](doc/FieldError.md)
@@ -247,6 +259,7 @@ Class | Method | HTTP request | Description
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
+ - [PageResponseProposalSummaryResponse](doc/PageResponseProposalSummaryResponse.md)
  - [PageResponseQuoteRequestSummaryResponse](doc/PageResponseQuoteRequestSummaryResponse.md)
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
@@ -262,6 +275,24 @@ Class | Method | HTTP request | Description
  - [ProductVersionRefResponse](doc/ProductVersionRefResponse.md)
  - [ProductVersionResponse](doc/ProductVersionResponse.md)
  - [ProductVersionValidationResponse](doc/ProductVersionValidationResponse.md)
+ - [ProposalChannel](doc/ProposalChannel.md)
+ - [ProposalCharge](doc/ProposalCharge.md)
+ - [ProposalChecklist](doc/ProposalChecklist.md)
+ - [ProposalCoverage](doc/ProposalCoverage.md)
+ - [ProposalDeclarations](doc/ProposalDeclarations.md)
+ - [ProposalDeductible](doc/ProposalDeductible.md)
+ - [ProposalDriver](doc/ProposalDriver.md)
+ - [ProposalInspection](doc/ProposalInspection.md)
+ - [ProposalKyc](doc/ProposalKyc.md)
+ - [ProposalOrganization](doc/ProposalOrganization.md)
+ - [ProposalPolicyholder](doc/ProposalPolicyholder.md)
+ - [ProposalPremium](doc/ProposalPremium.md)
+ - [ProposalProduct](doc/ProposalProduct.md)
+ - [ProposalResponse](doc/ProposalResponse.md)
+ - [ProposalStatus](doc/ProposalStatus.md)
+ - [ProposalSuitability](doc/ProposalSuitability.md)
+ - [ProposalSummaryResponse](doc/ProposalSummaryResponse.md)
+ - [ProposalVehicle](doc/ProposalVehicle.md)
  - [PublicPlateFormatResponse](doc/PublicPlateFormatResponse.md)
  - [PublicPlateFormatsResponse](doc/PublicPlateFormatsResponse.md)
  - [PublicPlatformSettingResponse](doc/PublicPlatformSettingResponse.md)
@@ -298,11 +329,18 @@ Class | Method | HTTP request | Description
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
  - [RiskDriverRequest](doc/RiskDriverRequest.md)
  - [RuleError](doc/RuleError.md)
+ - [SaveDeclarationsRequest](doc/SaveDeclarationsRequest.md)
+ - [SaveSuitabilityRequest](doc/SaveSuitabilityRequest.md)
  - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
  - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
+ - [SuitabilityAnswerRequest](doc/SuitabilityAnswerRequest.md)
+ - [SuitabilityAnswerResponse](doc/SuitabilityAnswerResponse.md)
+ - [SuitabilityQuestion](doc/SuitabilityQuestion.md)
+ - [SuitabilityReason](doc/SuitabilityReason.md)
+ - [SuitabilityResult](doc/SuitabilityResult.md)
  - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
  - [TestPlateFormatRequest](doc/TestPlateFormatRequest.md)
  - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
@@ -319,6 +357,7 @@ Class | Method | HTTP request | Description
  - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
  - [UpdateProductRequest](doc/UpdateProductRequest.md)
  - [UpdateProductVersionRequest](doc/UpdateProductVersionRequest.md)
+ - [UpdateProposalRequest](doc/UpdateProposalRequest.md)
  - [UpdateRatingIntegrationRequest](doc/UpdateRatingIntegrationRequest.md)
  - [UpdateRatingRulesRequest](doc/UpdateRatingRulesRequest.md)
  - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)

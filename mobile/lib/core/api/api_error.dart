@@ -111,6 +111,12 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'KYC_ALREADY_PENDING' => l10n.errorKycAlreadyPending,
   'KYC_ALREADY_VERIFIED' => l10n.errorKycAlreadyVerified,
   'KYC_NOT_FOUND' => l10n.errorKycNotFound,
+  'QUOTE_DATA_CHANGED' => l10n.errorQuoteDataChanged,
+  'PROPOSAL_ALREADY_EXISTS' => l10n.errorProposalAlreadyExists,
+  'PROPOSAL_NOT_FOUND' => l10n.errorProposalNotFound,
+  'PROPOSAL_NOT_EDITABLE' => l10n.errorProposalNotEditable,
+  'INSURER_NOT_ACTIVE' => l10n.errorInsurerNotActive,
+  'SUITABILITY_NOT_WARNED' => l10n.errorSuitabilityNotWarned,
   _ => l10n.errorUnknown,
 };
 
@@ -198,6 +204,11 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'INVALID_URL' => l10n.validationInvalidUrl,
   'INVALID_SECRET_REF' => l10n.validationInvalidSecretRef,
   'INVALID_INSURER' => l10n.validationInvalidInsurer,
+  'ANSWERS_INCOMPLETE' => l10n.validationAnswersIncomplete,
+  'ANSWER_DUPLICATED' => l10n.validationAnswerDuplicated,
+  'UNKNOWN_QUESTION' => l10n.validationUnknownQuestion,
+  'INVALID_ANSWER' => l10n.validationInvalidAnswer,
+  'MUST_BE_TRUE' => l10n.validationMustBeTrue,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,
