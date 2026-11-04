@@ -4,6 +4,13 @@ import { AuthRoot } from './auth/AuthProvider';
 import { Permissions, RequirePermission, type Permission } from './auth/permissions';
 import { RequireAuth } from './auth/RequireAuth';
 import { OtpSettingsPage } from './features/admin-auth/OtpSettingsPage';
+import {
+  InspectionQueuePage,
+  KycQueuePage,
+  KycReviewPage,
+  ProposalDetailRoute,
+  ProposalQueueRoute,
+} from './features/insurer-proposals/lazyPages';
 import { CustomerLoginPage } from './features/customer-auth/CustomerLoginPage';
 import { CustomerHomePage } from './features/customer-profile/CustomerHomePage';
 import { DriverFormPage } from './features/drivers/DriverFormPage';
@@ -124,6 +131,19 @@ const insurerRoutes: RouteObject[] = [
     path: 'tarifas/:versionId',
     element: withPermission(Permissions.productRead, <TariffEditorPage />),
   },
+  // Propostas, KYC e vistorias (S4-07): cada fila com a sua permissão; o detalhe com
+  // `proposal:read` ou, só a vistoria, com `inspection:review`.
+  { path: 'propostas', element: <ProposalQueueRoute /> },
+  { path: 'propostas/kyc', element: withPermission(Permissions.kycReview, <KycQueuePage />) },
+  {
+    path: 'propostas/kyc/:id',
+    element: withPermission(Permissions.kycReview, <KycReviewPage />),
+  },
+  {
+    path: 'propostas/vistorias',
+    element: withPermission(Permissions.inspectionReview, <InspectionQueuePage />),
+  },
+  { path: 'propostas/:id', element: <ProposalDetailRoute /> },
 ];
 
 /** Cotações do mediador (S3-04): só com `quote:create-for-client`. */

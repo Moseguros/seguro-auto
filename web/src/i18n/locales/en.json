@@ -761,10 +761,19 @@
   },
   "common": {
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "close": "Close",
+    "retry": "Try again",
+    "yes": "Yes",
+    "no": "No",
+    "copy": "Copy",
+    "copied": "Copied",
+    "reload": "Reload"
   },
   "files": {
-    "open": "View"
+    "open": "View",
+    "loadError": "The file could not be opened.",
+    "download": "Download"
   },
   "productType": {
     "MTPL_ONLY": "Third-party liability",
@@ -1754,47 +1763,6 @@
       "INSPECTION": "Vehicle inspection",
       "START_DATE": "Start date",
       "SIGNATURE": "Signature"
-    },
-    "underwriting": {
-      "failure": {
-        "AUTO_ACCEPT_DISABLED": "Automatic acceptance is turned off for the product",
-        "KYC_REQUIRED": "Identity not verified and premium above the simplified KYC limit",
-        "DECLARATION_POSITIVE": "Some risk declarations were answered \"yes\"",
-        "INSPECTION_NOT_APPROVED": "Inspection not approved yet",
-        "VEHICLE_VALUE_MISSING": "Vehicle value not declared",
-        "VEHICLE_VALUE_ABOVE_LIMIT": "Vehicle value above the automatic acceptance limit"
-      }
-    },
-    "rejectionReason": {
-      "RISK_NOT_ACCEPTED": "Risk not accepted",
-      "KYC_FAILED": "Identity not confirmed",
-      "INSPECTION_FAILED": "Inspection not approved",
-      "FALSE_DECLARATION": "Incorrect declarations",
-      "DOCUMENTS_INVALID": "Invalid documents",
-      "OTHER": "Other reason"
-    },
-    "infoRequestItem": {
-      "DECLARATIONS": "Risk declarations",
-      "SUITABILITY": "Suitability questionnaire",
-      "INSPECTION": "Inspection",
-      "KYC": "Identity check",
-      "POLICYHOLDER": "Policyholder details",
-      "OTHER": "Other"
-    },
-    "slaStatus": {
-      "ON_TIME": "On time",
-      "ALERT": "Deadline approaching",
-      "OVERDUE": "Overdue"
-    },
-    "proposalStatus": {
-      "DRAFT": "Draft",
-      "UNDER_REVIEW": "Under review",
-      "INFO_REQUESTED": "Information requested",
-      "ACCEPTED": "Accepted",
-      "REJECTED": "Not accepted",
-      "EXPIRED": "Expired",
-      "PAID": "Paid",
-      "CONVERTED": "Policy issued"
     }
   },
   "inspection": {
@@ -1806,6 +1774,493 @@
       "ODOMETER": "Odometer",
       "CHASSIS": "Chassis number",
       "EXTRA": "Other photo"
+    },
+    "status": {
+      "PENDING": "Not submitted",
+      "SUBMITTED": "Submitted",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "mode": {
+      "SELF_PHOTOS": "Customer photos",
+      "ON_SITE": "On site"
     }
+  },
+  "proposalStatus": {
+    "DRAFT": "Draft",
+    "UNDER_REVIEW": "Under review",
+    "INFO_REQUESTED": "Information requested",
+    "ACCEPTED": "Accepted",
+    "REJECTED": "Not accepted",
+    "EXPIRED": "Expired",
+    "PAID": "Paid",
+    "CONVERTED": "Policy issued"
+  },
+  "slaStatus": {
+    "ON_TIME": "On time",
+    "ALERT": "Deadline approaching",
+    "OVERDUE": "Overdue"
+  },
+  "rejectionReason": {
+    "RISK_NOT_ACCEPTED": "Risk not accepted",
+    "KYC_FAILED": "Identity not confirmed",
+    "INSPECTION_FAILED": "Inspection not approved",
+    "FALSE_DECLARATION": "Incorrect declarations",
+    "DOCUMENTS_INVALID": "Invalid documents",
+    "OTHER": "Other reason"
+  },
+  "infoRequestItem": {
+    "DECLARATIONS": "Risk declarations",
+    "SUITABILITY": "Suitability questionnaire",
+    "INSPECTION": "Inspection",
+    "KYC": "Identity check",
+    "POLICYHOLDER": "Policyholder details",
+    "OTHER": "Other"
+  },
+  "underwriting": {
+    "failure": {
+      "AUTO_ACCEPT_DISABLED": "Automatic acceptance is turned off for the product",
+      "KYC_REQUIRED": "Identity not verified and premium above the simplified KYC limit",
+      "DECLARATION_POSITIVE": "Some risk declarations were answered \"yes\"",
+      "INSPECTION_NOT_APPROVED": "Inspection not approved yet",
+      "VEHICLE_VALUE_MISSING": "Vehicle value not declared",
+      "VEHICLE_VALUE_ABOVE_LIMIT": "Vehicle value above the automatic acceptance limit"
+    },
+    "outcome": {
+      "AUTOMATIC": "Automatic acceptance",
+      "MANUAL_REVIEW": "Manual review"
+    },
+    "rulesSource": {
+      "PRODUCT": "Product version rules",
+      "DEFAULT": "Platform default rules"
+    },
+    "input": {
+      "KYC_REQUIRED": "Premium {{total}} ≥ limit {{limit}}",
+      "DECLARATION_POSITIVE": "\"Yes\" answers: {{questions}}",
+      "INSPECTION_NOT_APPROVED": "Inspection status: {{status}}",
+      "VEHICLE_VALUE_ABOVE_LIMIT": "Vehicle value {{value}} > limit {{limit}}"
+    }
+  },
+  "proposalChannel": {
+    "APP": "App",
+    "WEB": "Web",
+    "BROKER": "Broker"
+  },
+  "declaration": {
+    "CLAIMS_LAST_3_YEARS": {
+      "question": "In the last 3 years, have you had any accident or claim involving a vehicle, as a driver or as an owner?",
+      "claimsCount": "How many?",
+      "details": "Briefly describe when, what happened and whether anyone was injured.",
+      "short": "Accidents or claims in the last 3 years"
+    },
+    "PREVIOUS_REFUSAL": {
+      "question": "Has any insurer ever refused, cancelled or declined to renew a motor insurance policy of yours?",
+      "details": "Which insurer and why?",
+      "short": "Insurance refused or cancelled"
+    },
+    "USAGE_DIFFERENT": {
+      "question": "Will the vehicle be used for any purpose other than \"{{usage}}\"? For example, carrying passengers or goods for payment.",
+      "details": "For what other purpose?",
+      "short": "Other vehicle use"
+    },
+    "VEHICLE_MODIFIED": {
+      "question": "Has the vehicle been modified from its factory specification (engine, suspension, bodywork, gas conversion or other)?",
+      "details": "What modifications?",
+      "short": "Vehicle modified"
+    },
+    "NOVICE_DRIVERS": {
+      "question": "Will anyone who has held a driving licence for less than 2 years drive this vehicle regularly?",
+      "details": "Who, and how long have they held a licence?",
+      "short": "Recently licensed drivers"
+    },
+    "truthfulness": "I declare that my answers are true and complete. I understand that false statements or omissions may lead to the contract being voided or claims being refused."
+  },
+  "suitability": {
+    "SUIT_NEED": {
+      "question": "What protection are you looking for for this vehicle?",
+      "option": {
+        "MANDATORY_ONLY": "Only the mandatory insurance: damage I cause to others",
+        "OWN_DAMAGE": "Also damage to my own vehicle in an accident",
+        "FULL": "Also theft, fire and natural events",
+        "UNSURE": "I'm not sure"
+      }
+    },
+    "SUIT_FINANCED": {
+      "question": "Are you still paying for the vehicle (loan or lease)?",
+      "option": {
+        "YES": "Yes",
+        "NO": "No"
+      }
+    },
+    "SUIT_CAN_AFFORD_REPAIR": {
+      "question": "If your vehicle were damaged in an accident you caused, could you pay for the repair without insurance?",
+      "option": {
+        "YES": "Yes",
+        "NO": "No",
+        "UNSURE": "I'm not sure"
+      }
+    },
+    "SUIT_CROSS_BORDER": {
+      "question": "Will you drive this vehicle outside Mozambique during the insurance period?",
+      "option": {
+        "YES": "Yes",
+        "NO": "No"
+      }
+    },
+    "SUIT_DEDUCTIBLE": {
+      "question": "Would you accept paying part of each repair (an excess) in exchange for a lower premium?",
+      "option": {
+        "YES": "Yes",
+        "NO": "No",
+        "UNSURE": "I'm not sure"
+      }
+    },
+    "reason": {
+      "NEED_NOT_COVERED_OWN_DAMAGE": "You said you want cover for your own vehicle, but this proposal does not cover damage to it.",
+      "NEED_NOT_COVERED_THEFT_FIRE": "You said you want cover against theft, fire and natural events, but this proposal does not include all of them.",
+      "COVER_ABOVE_NEED": "You said you only want the mandatory insurance, but this proposal includes own-damage cover, which increases the premium.",
+      "NEED_UNSURE": "You are not sure what cover you need. Read the cover summary and the pre-contract information before continuing.",
+      "FINANCED_WITHOUT_OWN_DAMAGE": "You are still paying for the vehicle and this proposal does not cover damage to it. Check whether your loan or lease requires that cover.",
+      "CANNOT_AFFORD_REPAIR": "You said you could not pay to repair your vehicle, but this proposal does not cover damage to it.",
+      "CROSS_BORDER_NOT_COVERED": "You will drive outside Mozambique, but this proposal does not include cover abroad.",
+      "DEDUCTIBLE_NOT_WANTED": "You said you do not want an excess, but at least one own-damage cover in this proposal has one."
+    },
+    "result": {
+      "SUITABLE": "Suitable",
+      "WARNED": "With warnings"
+    }
+  },
+  "kyc": {
+    "state": {
+      "NONE": "Not submitted",
+      "PENDING": "Pending",
+      "VERIFIED": "Verified",
+      "REJECTED": "Rejected",
+      "OUTDATED": "Outdated"
+    },
+    "checkStatus": {
+      "PENDING": "Pending",
+      "VERIFIED": "Verified",
+      "REJECTED": "Rejected"
+    },
+    "rejectionReason": {
+      "DOCUMENT_UNREADABLE": "Document unreadable",
+      "DOCUMENT_EXPIRED": "Document expired",
+      "DATA_MISMATCH": "Details differ from the profile",
+      "SELFIE_MISMATCH": "Selfie does not match",
+      "OTHER": "Other reason"
+    }
+  },
+  "insurerProposals": {
+    "title": "Proposals",
+    "tabs": {
+      "proposals": "Proposals",
+      "kyc": "Identity",
+      "inspections": "Inspections"
+    },
+    "filters": {
+      "open": "Filters",
+      "status": "Status",
+      "sla": "Deadline",
+      "productType": "Product type",
+      "channel": "Channel",
+      "search": "Number or name",
+      "from": "Submitted from",
+      "to": "Submitted to",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "number": "Number",
+      "policyholder": "Policyholder",
+      "product": "Product",
+      "plate": "Plate",
+      "total": "Total",
+      "channel": "Channel",
+      "submittedAt": "Submitted on",
+      "sla": "Deadline",
+      "kyc": "KYC",
+      "inspection": "Inspection"
+    },
+    "empty": "There are no proposals with these filters.",
+    "noInspection": "No inspection",
+    "slaDue": "Due by {{date}}",
+    "detail": {
+      "back": "Back to proposals",
+      "downloadPdf": "Download PDF",
+      "total": "Total",
+      "policyholder": "Policyholder",
+      "notFound": "Proposal not found.",
+      "reloaded": "The proposal changed in the meantime. The data has been refreshed.",
+      "inspectionOnly": "You can only see the inspection of this proposal."
+    },
+    "sections": {
+      "summary": "Summary",
+      "declarations": "Declarations",
+      "suitability": "Suitability",
+      "inspection": "Inspection",
+      "identity": "Identity",
+      "underwriting": "Automatic rules",
+      "signature": "Signature",
+      "decision": "Decision"
+    },
+    "summary": {
+      "product": "Product",
+      "insurer": "Insurer",
+      "productType": "Type",
+      "versionId": "Version",
+      "channel": "Channel",
+      "broker": "Broker",
+      "period": "Period",
+      "periodValue": "{{start}} to {{end}} ({{days}} days)",
+      "policyholder": "Policyholder",
+      "fullName": "Name",
+      "birthDate": "Date of birth",
+      "document": "Document",
+      "nuit": "NUIT",
+      "province": "Province",
+      "address": "Address",
+      "msisdn": "Mobile",
+      "email": "E-mail",
+      "vehicle": "Vehicle",
+      "plate": "Plate",
+      "makeModel": "Make and model",
+      "year": "Year",
+      "category": "Category",
+      "usage": "Use",
+      "chassis": "Chassis",
+      "seats": "Seats",
+      "commercialValue": "Market value",
+      "driver": "Driver",
+      "licence": "Driving licence",
+      "licenceIssueDate": "Issued on",
+      "licenceCategories": "Categories",
+      "coverages": "Covers",
+      "coverage": "Cover",
+      "capital": "Sum insured",
+      "deductible": "Excess",
+      "premium": "Premium",
+      "noDeductible": "No excess",
+      "premiumTitle": "Premium",
+      "commercial": "Commercial premium",
+      "rounding": "Rounding adjustment",
+      "total": "Total",
+      "none": "—"
+    },
+    "declarations": {
+      "none": "The customer has not answered the declarations yet.",
+      "confirmedAt": "Confirmed on {{date}}",
+      "answer": "Answer"
+    },
+    "suitability": {
+      "none": "The customer has not answered the questionnaire yet.",
+      "result": "Result",
+      "answeredAt": "Answered on {{date}}",
+      "acknowledgedAt": "Warnings confirmed by the customer on {{date}}",
+      "notAcknowledged": "The customer has not confirmed the warnings yet."
+    },
+    "identity": {
+      "state": "Status",
+      "otherInsurer": "Verified by another insurer on {{date}}",
+      "verifiedAt": "Verified on {{date}}",
+      "review": "Review identity",
+      "required": "Acceptance requires a verified identity.",
+      "pendingQueue": "Pending checks are in the \"Identity\" tab.",
+      "otherInsurerNoDate": "Verified by another insurer."
+    },
+    "underwriting": {
+      "none": "The rules have not been evaluated yet.",
+      "evaluatedAt": "Evaluated on {{date}}",
+      "noFailures": "All rules were met.",
+      "failures": "Rules not met"
+    },
+    "signature": {
+      "none": "No signatures.",
+      "signedAt": "Signed on",
+      "channel": "Channel",
+      "destination": "Destination",
+      "assisted": "Assisted",
+      "hash": "Document hash",
+      "copyHash": "Copy hash",
+      "valid": "Valid",
+      "invalidated": "Invalidated on {{date}}: {{reason}}",
+      "invalidatedReason": {
+        "CONTENT_CHANGED": "the proposal was changed",
+        "INFO_REQUESTED": "information was requested"
+      }
+    },
+    "decision": {
+      "mode": "Mode",
+      "decidedAt": "Date",
+      "reasonCode": "Reason",
+      "reason": "Text",
+      "note": "Note",
+      "infoRequest": "Information request",
+      "requestedAt": "Requested on {{date}}",
+      "none": "No decision recorded.",
+      "modeValue": {
+        "AUTOMATIC": "Automatic",
+        "MANUAL": "Manual"
+      }
+    },
+    "actions": {
+      "accept": "Accept",
+      "requestInfo": "Request information",
+      "reject": "Reject"
+    },
+    "accept": {
+      "title": "Accept proposal {{number}}",
+      "total": "Total",
+      "kyc": "Identity",
+      "inspection": "Inspection",
+      "note": "Note (optional)",
+      "confirm": "Accept",
+      "done": "Proposal accepted"
+    },
+    "reject": {
+      "title": "Reject proposal {{number}}",
+      "reasonCode": "Reason",
+      "reason": "Explanation for the customer",
+      "warning": "This decision is sent to the customer and cannot be undone.",
+      "confirm": "Reject",
+      "done": "Proposal rejected"
+    },
+    "requestInfo": {
+      "title": "Request information from the customer",
+      "items": "What should the customer review?",
+      "message": "Message for the customer",
+      "warning": "The customer's signature stops being valid and they will have to sign again.",
+      "confirm": "Send request",
+      "done": "Information request sent",
+      "itemsRequired": "Choose at least one item."
+    },
+    "counter": "{{count}}/{{max}}",
+    "textLength": "Between {{min}} and {{max}} characters.",
+    "required": "Required."
+  },
+  "insurerInspections": {
+    "title": "Inspections",
+    "filters": {
+      "status": "Status",
+      "mode": "Mode",
+      "all": "All"
+    },
+    "columns": {
+      "proposal": "Proposal",
+      "customer": "Policyholder",
+      "plate": "Plate",
+      "mode": "Mode",
+      "photos": "Photos",
+      "submittedAt": "Submitted on"
+    },
+    "empty": "There are no inspections with these filters.",
+    "panel": {
+      "mode": "Mode",
+      "status": "Status",
+      "odometer": "Mileage",
+      "odometerValue": "{{km}} km",
+      "submittedAt": "Submitted on",
+      "customerNotes": "Customer notes",
+      "reviewedAt": "Reviewed on {{date}}",
+      "reviewNotes": "Approval notes",
+      "rejectionReason": "Rejection reason",
+      "retakeSlots": "Angles to retake",
+      "notRequired": "This proposal does not need an inspection.",
+      "approve": "Approve inspection",
+      "reject": "Reject inspection",
+      "approved": "Inspection approved.",
+      "approvedAndAccepted": "Inspection approved. The proposal was accepted automatically.",
+      "rejected": "Inspection rejected."
+    },
+    "gallery": {
+      "noPhoto": "No photo",
+      "noPhotos": "No photos.",
+      "location": "See the location on the map",
+      "open": "Enlarge {{label}}"
+    },
+    "lightbox": {
+      "previous": "Previous",
+      "next": "Next",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "position": "{{index}} of {{total}}"
+    },
+    "approve": {
+      "title": "Approve the inspection",
+      "onSite": "Inspection done on site",
+      "notes": "Notes",
+      "notesRequired": "Describe the on-site inspection (required).",
+      "confirm": "Approve"
+    },
+    "reject": {
+      "title": "Reject the inspection",
+      "reason": "Reason",
+      "retakeSlots": "Angles to retake",
+      "note": "For the customer to redo the inspection, request information with the Inspection item.",
+      "confirm": "Reject"
+    }
+  },
+  "insurerKyc": {
+    "title": "Identity checks",
+    "filters": {
+      "status": "Status",
+      "search": "Name",
+      "all": "All"
+    },
+    "columns": {
+      "fullName": "Name",
+      "idDocType": "Document",
+      "submittedAt": "Submitted on",
+      "status": "Status"
+    },
+    "empty": "There are no checks with these filters.",
+    "review": {
+      "title": "Identity check",
+      "back": "Document (back)",
+      "compare": "Compare these details with the photos.",
+      "fullName": "Name",
+      "birthDate": "Date of birth",
+      "age": "{{date}} ({{age}} years)",
+      "idDocType": "Document type",
+      "idDocNumber": "Document number",
+      "msisdn": "Mobile",
+      "submittedAt": "Submitted on",
+      "status": "Status",
+      "front": "Document (front)",
+      "selfie": "Selfie",
+      "previous": "Previous checks",
+      "noPrevious": "No previous checks.",
+      "rejection": "Rejection reason",
+      "verify": "Confirm identity",
+      "verifyTitle": "Confirm the identity?",
+      "verifyText": "Do you confirm that the details match the document photos and the selfie?",
+      "reject": "Reject",
+      "verified": "Identity confirmed",
+      "rejected": "Check rejected",
+      "reloaded": "The check changed in the meantime. The data has been refreshed."
+    },
+    "rejectDialog": {
+      "title": "Reject the check",
+      "reasonCode": "Reason",
+      "reason": "Explanation",
+      "reasonOptional": "Explanation (optional)",
+      "confirm": "Reject"
+    }
+  },
+  "underwritingRules": {
+    "open": "Acceptance rules",
+    "title": "Acceptance rules",
+    "isDefault": "This version uses the platform default values.",
+    "readOnly": "Published versions cannot be changed.",
+    "noPermission": "You are not allowed to change these rules.",
+    "enabled": "Automatic acceptance",
+    "simplifiedKycMaxPremium": "Maximum premium with simplified KYC (MT)",
+    "liabilityRequireAllNegative": "Liability: require all declarations to be negative",
+    "ownDamageMaxVehicleValue": "Own damage: maximum vehicle value (MT)",
+    "ownDamageRequireAllNegative": "Own damage: require all declarations to be negative",
+    "positive": "Enter a value greater than zero.",
+    "notEditable": "This version can no longer be changed",
+    "conflict": "Someone else changed this version",
+    "saved": "Acceptance rules saved"
   }
 }

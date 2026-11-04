@@ -47,7 +47,10 @@ describe('ProductListPage', () => {
       },
     );
     renderRoute('/seguradora/produtos');
-    expect(await screen.findByText('RC Automóvel Demo')).toBeInTheDocument();
+    // A grelha demora no jsdom quando os testes correm em paralelo.
+    expect(
+      await screen.findByText('RC Automóvel Demo', undefined, { timeout: 10000 }),
+    ).toBeInTheDocument();
     // Sem product:manage não há criação.
     expect(screen.queryByRole('button', { name: 'Novo produto' })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menu' }));

@@ -1,4 +1,5 @@
 import ArrowBack from '@mui/icons-material/ArrowBack';
+import Gavel from '@mui/icons-material/Gavel';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import Alert from '@mui/material/Alert';
@@ -38,6 +39,7 @@ import { LoadingScreen } from '../../auth/RequireAuth';
 import { useAuth } from '../../auth/useAuth';
 import { getProblem, problemMessage, type Problem } from '../../errors/problem';
 import { mzn } from '../../format/money';
+import { UnderwritingRulesDialog } from './UnderwritingRulesDialog';
 import { formatDate } from '../../i18n/format';
 import {
   coverageFrom,
@@ -90,6 +92,7 @@ export function ProductVersionEditorPage() {
   const wide = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true });
   const canManage = usePermission(Permissions.productManage);
   const { me } = useAuth();
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   const passo = searchParams.get('passo');
   const step: EditorStep = isEditorStep(passo) ? passo : 'dados';
@@ -344,14 +347,29 @@ export function ProductVersionEditorPage() {
         <Typography variant="h4" component="h1" sx={{ wordBreak: 'break-word' }}>
           {t('products.editor.title', { name: version.productName, n: version.versionNo })}
         </Typography>
-        <div>
+        <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
           <Chip
             size="small"
             variant="outlined"
             label={t(`productVersionStatus.${version.status}`)}
           />
-        </div>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Gavel />}
+            onClick={() => setRulesOpen(true)}
+          >
+            {t('underwritingRules.open')}
+          </Button>
+        </Stack>
       </Stack>
+      {rulesOpen && (
+        <UnderwritingRulesDialog
+          versionId={version.id}
+          editable={version.editable}
+          onClose={() => setRulesOpen(false)}
+        />
+      )}
 
       {!version.editable && version.publishedAt && (
         <Alert
