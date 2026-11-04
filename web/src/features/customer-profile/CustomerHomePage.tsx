@@ -10,13 +10,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
+import { RecentQuotes } from '../quotes/RecentQuotes';
 
 export function firstName(displayName: string | undefined): string | undefined {
   const name = displayName?.trim();
   return name ? name.split(/\s+/)[0] : undefined;
 }
 
-/** `/cliente`: saudação, aviso de perfil incompleto e "Simular seguro". */
+/** `/cliente`: saudação, aviso de perfil incompleto, "Simular seguro" e as cotações recentes. */
 export function CustomerHomePage() {
   const { t } = useTranslation();
   const { me } = useAuth();
@@ -59,6 +60,8 @@ export function CustomerHomePage() {
             </Stack>
           </CardContent>
         </Card>
+
+        <RecentQuotes card />
       </Stack>
       <Snackbar
         open={saved}

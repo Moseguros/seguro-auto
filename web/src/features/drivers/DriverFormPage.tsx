@@ -13,6 +13,7 @@ import {
   listMyDrivers,
 } from '../../api/generated';
 import { LoadingScreen } from '../../auth/RequireAuth';
+import { customerReturnPath } from '../quotes/config';
 import { LoadError } from '../vehicles/LoadError';
 import type { VehicleDetailState } from '../vehicles/VehicleDetailPage';
 import { invalidateDrivers, invalidateVehicles } from '../vehicles/vehicleQueries';
@@ -21,7 +22,8 @@ import type { DriverListState } from './DriverListPage';
 
 /**
  * `/cliente/condutores/novo` e `/cliente/condutores/:id/editar`. Com `?veiculo={id}`, depois de
- * gravar volta ao veículo e abre "Gerir condutores".
+ * gravar volta ao veículo e abre "Gerir condutores"; com `?voltar=/cliente/…` (assistente de
+ * simulação), volta para lá.
  */
 export function DriverFormPage() {
   const { t } = useTranslation();
@@ -46,7 +48,10 @@ export function DriverFormPage() {
 
   const onSaved = async () => {
     await Promise.all([invalidateDrivers(queryClient), invalidateVehicles(queryClient)]);
-    if (vehicleId) {
+    const back = customerReturnPath(params.get('voltar'));
+    if (back) {
+      navigate(back);
+    } else if (vehicleId) {
       const state: VehicleDetailState = { openDrivers: true };
       navigate(`/cliente/veiculos/${vehicleId}`, { state });
     } else {
