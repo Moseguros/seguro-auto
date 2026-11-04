@@ -141,5 +141,4 @@ public class ProposalJson {
             throw new IllegalStateException("Unreadable proposal data (" + type.getSimpleName() + ")", e);
         }
     }
-
 }
