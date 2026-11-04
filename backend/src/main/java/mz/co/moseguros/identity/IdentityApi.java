@@ -1,8 +1,10 @@
 package mz.co.moseguros.identity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import mz.co.moseguros.identity.application.CustomerAccountFactory;
+import mz.co.moseguros.identity.application.CustomerViewService;
 import mz.co.moseguros.identity.application.TokenService;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.shared.domain.Msisdn;
@@ -11,17 +13,21 @@ import org.springframework.stereotype.Service;
 /**
  * Interface pública do módulo Identidade (modelo transversal §3): sessões ({@link #issueTokens},
  * login por OTP e de staff) e contas de cliente pelo telemóvel ({@link #findOrCreateCustomerByMsisdn},
- * usado pelo {@code rating} desde o S3-02).
+ * usado pelo {@code rating} desde o S3-02), dados e estado KYC de um cliente ({@link #customer},
+ * {@link #kycStatus}, S4-01).
  */
 @Service
 public class IdentityApi {
 
     private final TokenService tokenService;
     private final CustomerAccountFactory customerAccounts;
+    private final CustomerViewService customerViews;
 
-    public IdentityApi(TokenService tokenService, CustomerAccountFactory customerAccounts) {
+    public IdentityApi(TokenService tokenService, CustomerAccountFactory customerAccounts,
+                       CustomerViewService customerViews) {
         this.tokenService = tokenService;
         this.customerAccounts = customerAccounts;
+        this.customerViews = customerViews;
     }
 
     /**
@@ -45,5 +51,25 @@ public class IdentityApi {
      */
     public UUID findOrCreateCustomerByMsisdn(Msisdn msisdn) {
         return customerAccounts.findOrCreateByMsisdn(msisdn);
+    }
+
+    /**
+     * Dados do cliente (conta {@code CUSTOMER}; outra conta ou inexistente → vazio), com o número do
+     * documento e o NUIT em claro: nunca serializar nem registar em log.
+     *
+     * <p>Corre em {@code SYSTEM}: quem chama pode estar em âmbito {@code ORG}, em que o RLS esconde o
+     * perfil. <strong>Quem chama é responsável por só pedir clientes com quem tem uma relação
+     * legítima</strong> (ex.: o dono da proposta). Usado a partir do S4-02.
+     */
+    public Optional<CustomerView> customer(UUID userId) {
+        return customerViews.customer(userId);
+    }
+
+    /**
+     * Estado KYC actual do cliente (S4-01 §5), incluindo {@link KycState#OUTDATED} se o perfil mudou
+     * depois da verificação. Corre em {@code SYSTEM}; mesma responsabilidade de {@link #customer}.
+     */
+    public KycStatus kycStatus(UUID userId) {
+        return customerViews.kycStatus(userId);
     }
 }

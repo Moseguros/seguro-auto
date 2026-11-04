@@ -12,6 +12,8 @@ import mz.co.moseguros.identity.domain.InvitationRepository;
 import mz.co.moseguros.identity.domain.OtpChallenge.IdentifierType;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.identity.domain.UserAccountRepository;
+import mz.co.moseguros.organization.OrganizationApi;
+import mz.co.moseguros.organization.OrganizationType;
 import mz.co.moseguros.shared.domain.Msisdn;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
 import org.springframework.stereotype.Component;
@@ -28,10 +30,39 @@ public class IdentitySystemLookups {
 
     private final UserAccountRepository accounts;
     private final InvitationRepository invitations;
+    private final OrganizationApi organizations;
 
-    public IdentitySystemLookups(UserAccountRepository accounts, InvitationRepository invitations) {
+    public IdentitySystemLookups(UserAccountRepository accounts, InvitationRepository invitations,
+                                 OrganizationApi organizations) {
         this.accounts = accounts;
         this.invitations = invitations;
+        this.organizations = organizations;
+    }
+
+    /**
+     * A organização existe, é uma seguradora ({@code INSURER}) e está {@code ACTIVE} (S4-01 §3: o
+     * cliente, em âmbito {@code CUSTOMER}, não vê as organizações).
+     */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public boolean insurerActive(UUID insurerId) {
+        return organizations.findSummary(insurerId)
+                .filter(o -> o.type() == OrganizationType.INSURER && o.isActive())
+                .isPresent();
+    }
+
+    /**
+     * Contactos de uma conta {@code CUSTOMER} para a revisão do KYC (S4-01 §7 e §9): a seguradora, em
+     * âmbito {@code ORG}, não vê as contas dos clientes. Outra conta ou inexistente → vazio.
+     */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public Optional<CustomerContact> customerContact(UUID userId) {
+        return accounts.findById(userId)
+                .filter(UserAccount::isCustomer)
+                .map(a -> new CustomerContact(a.getMsisdn(),
+                        a.getEmail() != null && a.isEmailVerified() ? a.getEmail() : null,
+                        a.getPreferredLanguage()));
     }
 
     /** Conta de staff com o e-mail (normalizado), em qualquer organização ou na plataforma. */
@@ -67,6 +98,21 @@ public class IdentitySystemLookups {
         List<Invitation> pending = invitations.findByEmailAndRevokedAtIsNullAndAcceptedAtIsNull(email);
         pending.forEach(invitation -> invitation.revoke(now));
         return pending.size();
+    }
+
+    /**
+     * Contactos de um cliente.
+     *
+     * @param msisdn        {@code null} se a conta só tem e-mail
+     * @param verifiedEmail {@code null} sem e-mail verificado
+     * @param language      língua das mensagens ({@code pt} ou {@code en})
+     */
+    public record CustomerContact(Msisdn msisdn, String verifiedEmail, String language) {
+
+        @Override
+        public String toString() {
+            return "CustomerContact[msisdn=" + msisdn + ", language=" + language + "]";
+        }
     }
 
     /**
