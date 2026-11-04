@@ -7,7 +7,7 @@ import '../../../core/files/image_preparer.dart';
 import '../../../l10n/app_localizations.dart';
 import '../registration_doc_section.dart';
 import '../vehicles_controller.dart';
-import 'document_camera.dart';
+import '../../../core/camera/camera_service.dart';
 import 'document_frame_overlay.dart';
 import 'photo_review_screen.dart';
 
@@ -29,7 +29,7 @@ class DocumentCameraScreen extends ConsumerStatefulWidget {
 }
 
 class _DocumentCameraScreenState extends ConsumerState<DocumentCameraScreen> {
-  DocumentCamera? _camera;
+  CameraService? _camera;
   _Stage _stage = _Stage.permission;
   FlashMode _flash = FlashMode.off;
   Uint8List? _photo;
@@ -63,7 +63,7 @@ class _DocumentCameraScreenState extends ConsumerState<DocumentCameraScreen> {
       return;
     }
     setState(() => _stage = _Stage.starting);
-    final camera = ref.read(documentCameraProvider)();
+    final camera = ref.read(cameraServiceProvider)();
     _camera = camera;
     try {
       await camera.initialize();
@@ -203,7 +203,7 @@ class _Preview extends StatelessWidget {
     required this.onCapture,
   });
 
-  final DocumentCamera camera;
+  final CameraService camera;
   final FlashMode flash;
   final bool busy;
   final VoidCallback onClose;
@@ -331,7 +331,7 @@ class _PermissionDenied extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    message ?? l10n.cameraPermissionDenied,
+                    message ?? l10n.registrationDocCameraPermissionDenied,
                     key: const Key('camera-permission-denied'),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleMedium,

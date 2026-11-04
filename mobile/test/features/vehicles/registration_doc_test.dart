@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moseguros/core/files/file_pickers.dart';
 import 'package:moseguros/core/router.dart';
-import 'package:moseguros/features/vehicles/camera/document_camera.dart';
+import 'package:moseguros/core/camera/camera_service.dart';
 import 'package:moseguros/features/vehicles/camera/document_frame_overlay.dart';
 
 import '../../support/mock_api.dart';
