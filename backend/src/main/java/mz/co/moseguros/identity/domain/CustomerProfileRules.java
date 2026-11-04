@@ -57,6 +57,21 @@ public final class CustomerProfileRules {
      * @param today data de hoje em {@link #ZONE}
      */
     public static List<FieldError> validate(CustomerProfile current, Changes changes, LocalDate today) {
+        return validate(current.getIdDocType(), current.getIdDocNumber() != null, current.getNuit() != null, changes,
+                today);
+    }
+
+    /**
+     * Valida as alterações contra os dados actuais (o perfil, ou o tomador preenchido pelo mediador
+     * numa proposta, S4-06).
+     *
+     * @param currentIdDocType tipo de documento actual ou {@code null}
+     * @param hasIdDocNumber   já existe um número de documento (omitido mantém-no)
+     * @param hasNuit          já existe um NUIT (omitido mantém-no)
+     * @param today            data de hoje em {@link #ZONE}
+     */
+    public static List<FieldError> validate(IdDocType currentIdDocType, boolean hasIdDocNumber, boolean hasNuit,
+                                            Changes changes, LocalDate today) {
         List<FieldError> errors = new ArrayList<>();
 
         String fullName = normalizeName(changes.fullName());
@@ -82,9 +97,9 @@ public final class CustomerProfileRules {
 
         String idDocNumber = normalizeDocumentNumber(changes.idDocNumber());
         if (idDocNumber == null) {
-            boolean typeChanged = current.getIdDocType() != null && changes.idDocType() != null
-                    && current.getIdDocType() != changes.idDocType();
-            if (current.getIdDocNumber() == null || typeChanged) {
+            boolean typeChanged = currentIdDocType != null && changes.idDocType() != null
+                    && currentIdDocType != changes.idDocType();
+            if (!hasIdDocNumber || typeChanged) {
                 errors.add(required("idDocNumber"));
             }
         } else if (!DOCUMENT_NUMBER.matcher(idDocNumber).matches()) {
@@ -93,7 +108,7 @@ public final class CustomerProfileRules {
         }
 
         if (isBlank(changes.nuit())) {
-            if (current.getNuit() == null) {
+            if (!hasNuit) {
                 errors.add(required("nuit"));
             }
         } else {

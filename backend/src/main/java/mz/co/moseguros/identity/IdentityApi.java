@@ -1,6 +1,10 @@
 package mz.co.moseguros.identity;
 
+import java.time.Clock;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,8 +13,15 @@ import mz.co.moseguros.identity.application.CustomerViewService;
 import mz.co.moseguros.identity.application.IdentitySystemLookups;
 import mz.co.moseguros.identity.application.OtpService;
 import mz.co.moseguros.identity.application.TokenService;
+import mz.co.moseguros.identity.domain.CustomerProfileRules;
+import mz.co.moseguros.identity.domain.IdDocType;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.shared.domain.Msisdn;
+import mz.co.moseguros.shared.domain.Nuit;
+import mz.co.moseguros.shared.error.DomainException;
+import mz.co.moseguros.shared.error.ErrorCodes;
+import mz.co.moseguros.shared.error.FieldErrorCodes;
+import mz.co.moseguros.shared.error.Problems.FieldError;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,14 +40,63 @@ public class IdentityApi {
     private final CustomerViewService customerViews;
     private final OtpService otpService;
     private final IdentitySystemLookups lookups;
+    private final Clock clock;
 
     public IdentityApi(TokenService tokenService, CustomerAccountFactory customerAccounts,
-                       CustomerViewService customerViews, OtpService otpService, IdentitySystemLookups lookups) {
+                       CustomerViewService customerViews, OtpService otpService, IdentitySystemLookups lookups,
+                       Clock clock) {
         this.tokenService = tokenService;
         this.customerAccounts = customerAccounts;
         this.customerViews = customerViews;
         this.otpService = otpService;
         this.lookups = lookups;
+        this.clock = clock;
+    }
+
+    /**
+     * Valida e normaliza dados pessoais com as regras do perfil do cliente (S1-06 §2): {@code REQUIRED},
+     * {@code INVALID_NAME}, {@code UNDERAGE}, {@code INVALID_DATE}, {@code INVALID_DOCUMENT_NUMBER},
+     * {@code INVALID_NUIT}, {@code SIZE} (morada) e {@code INVALID_VALUE} (tipo de documento desconhecido).
+     * Não lê nem grava nada. Usado pelo {@code proposal} para o tomador preenchido pelo mediador (S4-06).
+     *
+     * @param currentIdDocType tipo de documento actual ou {@code null} (sem dados anteriores)
+     * @param hasIdDocNumber   já existe um número de documento (omitido mantém-no, se o tipo não mudar)
+     * @param hasNuit          já existe um NUIT (omitido mantém-no)
+     * @param fieldPrefix      prefixo de {@code errors[].field} (ex.: {@code policyholder.})
+     * @throws DomainException 400 {@code VALIDATION_ERROR} com um erro por campo em {@code errors}
+     */
+    public ValidPersonalData validatePersonalData(PersonalData data, String currentIdDocType, boolean hasIdDocNumber,
+                                                  boolean hasNuit, String fieldPrefix) {
+        String prefix = fieldPrefix == null ? "" : fieldPrefix;
+        IdDocType type = null;
+        FieldError typeError = null;
+        if (data.idDocType() != null) {
+            try {
+                type = IdDocType.valueOf(data.idDocType().strip().toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                typeError = new FieldError("idDocType", FieldErrorCodes.INVALID_VALUE, "Must be BI, PASSPORT or DIRE");
+            }
+        }
+        IdDocType current = currentIdDocType == null ? null : IdDocType.valueOf(currentIdDocType);
+        CustomerProfileRules.Changes changes = new CustomerProfileRules.Changes(data.fullName(), data.birthDate(),
+                type, data.idDocNumber(), data.nuit(), data.address(), data.province());
+        LocalDate today = LocalDate.ofInstant(clock.instant(), CustomerProfileRules.ZONE);
+        List<FieldError> errors = new ArrayList<>(CustomerProfileRules.validate(current, hasIdDocNumber,
+                hasNuit, changes, today));
+        if (typeError != null) {
+            errors.removeIf(e -> e.field().equals("idDocType"));
+            errors.add(typeError);
+        }
+        if (!errors.isEmpty()) {
+            throw DomainException.of(ErrorCodes.VALIDATION_ERROR, "Request validation failed")
+                    .withProperty("errors", errors.stream()
+                            .map(e -> new FieldError(prefix + e.field(), e.code(), e.message())).toList());
+        }
+        String address = data.address() == null || data.address().isBlank() ? null : data.address().trim();
+        String nuit = data.nuit() == null || data.nuit().isBlank() ? null : Nuit.of(data.nuit()).value();
+        return new ValidPersonalData(CustomerProfileRules.normalizeName(data.fullName()), data.birthDate(),
+                type.name(), CustomerProfileRules.normalizeDocumentNumber(data.idDocNumber()), nuit, address,
+                data.province());
     }
 
     /**
