@@ -227,7 +227,13 @@
     "PROPOSAL_NOT_FOUND": "Proposta não encontrada.",
     "PROPOSAL_NOT_EDITABLE": "Esta proposta já não pode ser alterada.",
     "INSURER_NOT_ACTIVE": "Esta seguradora não está a aceitar propostas neste momento.",
-    "SUITABILITY_NOT_WARNED": "Não há avisos de adequação para confirmar."
+    "SUITABILITY_NOT_WARNED": "Não há avisos de adequação para confirmar.",
+    "INSPECTION_NOT_REQUIRED": "Esta proposta não precisa de vistoria.",
+    "INSPECTION_NOT_FOUND": "Vistoria não encontrada.",
+    "INSPECTION_NOT_EDITABLE": "A vistoria já foi enviada e não pode ser alterada.",
+    "INSPECTION_PHOTOS_MISSING": "Faltam fotografias obrigatórias.",
+    "PHOTO_NOT_FOUND": "Fotografia não encontrada.",
+    "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -317,7 +323,12 @@
     "ANSWER_DUPLICATED": "Pergunta repetida.",
     "UNKNOWN_QUESTION": "Pergunta desconhecida.",
     "INVALID_ANSWER": "Resposta inválida.",
-    "MUST_BE_TRUE": "Tem de confirmar para continuar."
+    "MUST_BE_TRUE": "Tem de confirmar para continuar.",
+    "INVALID_SLOT": "Ângulo inválido.",
+    "EXTRA_PHOTOS_LIMIT": "Já enviou o número máximo de fotografias extra.",
+    "PHOTO_TOO_OLD": "Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.",
+    "PHOTO_IN_FUTURE": "A data da fotografia é inválida. Confirme a hora do telemóvel.",
+    "INVALID_COORDINATES": "Localização inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -1723,6 +1734,17 @@
       "offers": "Propostas",
       "best": "Melhor preço",
       "validity": "Validade"
+    }
+  },
+  "inspection": {
+    "slot": {
+      "FRONT": "Frente",
+      "REAR": "Traseira",
+      "LEFT": "Lado esquerdo",
+      "RIGHT": "Lado direito",
+      "ODOMETER": "Conta-quilómetros",
+      "CHASSIS": "Número do chassis",
+      "EXTRA": "Outra fotografia"
     }
   }
 }

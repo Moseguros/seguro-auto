@@ -227,7 +227,13 @@
     "PROPOSAL_NOT_FOUND": "Proposal not found.",
     "PROPOSAL_NOT_EDITABLE": "This proposal can no longer be changed.",
     "INSURER_NOT_ACTIVE": "This insurer is not accepting proposals at the moment.",
-    "SUITABILITY_NOT_WARNED": "There are no suitability warnings to confirm."
+    "SUITABILITY_NOT_WARNED": "There are no suitability warnings to confirm.",
+    "INSPECTION_NOT_REQUIRED": "This proposal does not need an inspection.",
+    "INSPECTION_NOT_FOUND": "Inspection not found.",
+    "INSPECTION_NOT_EDITABLE": "The inspection has been sent and cannot be changed.",
+    "INSPECTION_PHOTOS_MISSING": "Required photos are missing.",
+    "PHOTO_NOT_FOUND": "Photo not found.",
+    "PROPOSAL_NOT_UNDER_REVIEW": "The proposal is not under review."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -317,7 +323,12 @@
     "ANSWER_DUPLICATED": "Duplicated question.",
     "UNKNOWN_QUESTION": "Unknown question.",
     "INVALID_ANSWER": "Invalid answer.",
-    "MUST_BE_TRUE": "You must confirm to continue."
+    "MUST_BE_TRUE": "You must confirm to continue.",
+    "INVALID_SLOT": "Invalid angle.",
+    "EXTRA_PHOTOS_LIMIT": "You have already sent the maximum number of extra photos.",
+    "PHOTO_TOO_OLD": "This photo was taken more than 7 days ago. Take a new one.",
+    "PHOTO_IN_FUTURE": "The photo date is invalid. Check your phone's clock.",
+    "INVALID_COORDINATES": "Invalid location."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -1723,6 +1734,17 @@
       "offers": "Offers",
       "best": "Best price",
       "validity": "Validity"
+    }
+  },
+  "inspection": {
+    "slot": {
+      "FRONT": "Front",
+      "REAR": "Rear",
+      "LEFT": "Left side",
+      "RIGHT": "Right side",
+      "ODOMETER": "Odometer",
+      "CHASSIS": "Chassis number",
+      "EXTRA": "Other photo"
     }
   }
 }
