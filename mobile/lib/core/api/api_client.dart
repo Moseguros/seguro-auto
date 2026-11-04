@@ -81,6 +81,9 @@ class ApiClient {
   /// Listas de referência e formatos de matrícula (tag `Catalog`).
   CatalogApi get catalog => _api.getCatalogApi();
 
+  /// Pedidos de cotação e cotações (tag `Rating`).
+  RatingApi get rating => _api.getRatingApi();
+
   /// Descarga de ficheiros (tag `Document`).
   DocumentApi get document => _api.getDocumentApi();
 

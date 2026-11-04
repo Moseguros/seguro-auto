@@ -17,3 +17,15 @@ DateTime todayInMaputo([DateTime? now]) {
 
 /// Ano actual em `Africa/Maputo`.
 int currentYearInMaputo([DateTime? now]) => _maputoNow(now).year;
+
+/// Data de um instante no calendário de `Africa/Maputo`.
+DateTime dateInMaputo(DateTime instant) => todayInMaputo(instant);
+
+String _two(int value) => value.toString().padLeft(2, '0');
+
+/// Data no formato `dd/MM/yyyy` (só o ano, o mês e o dia de [date]).
+String formatDate(DateTime date) =>
+    '${_two(date.day)}/${_two(date.month)}/${date.year}';
+
+/// Instante apresentado como data `dd/MM/yyyy` em `Africa/Maputo`.
+String formatInstantDate(DateTime instant) => formatDate(dateInMaputo(instant));

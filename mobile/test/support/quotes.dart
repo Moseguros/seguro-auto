@@ -305,7 +305,10 @@ void stubQuoteBasics(
       '/api/v1/me/drivers',
       200,
       VehicleFixtures.page(
-        drivers ?? [VehicleFixtures.driver(vehicleIds: [vehicleId])],
+        drivers ??
+            [
+              VehicleFixtures.driver(vehicleIds: [vehicleId]),
+            ],
       ),
     )
     ..on('GET', '/api/v1/me/quotes', 200, QuoteFixtures.page(recent))

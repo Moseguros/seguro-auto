@@ -43,18 +43,17 @@ void main() {
       },
     );
     // Pela ordem dos códigos (S2-04), não pela dos produtos.
-    expect([for (final o in options.optional) o.code], [
-      'VTPL',
-      'OD_COLLISION',
-      'OD_GLASS',
-      'OD_FIRE',
-      'OD_NATURE',
-      'OD_THEFT',
-    ]);
+    expect(
+      [for (final o in options.optional) o.code],
+      ['VTPL', 'OD_COLLISION', 'OD_GLASS', 'OD_FIRE', 'OD_NATURE', 'OD_THEFT'],
+    );
   });
 
   test('OPTIONS: união dos capitais por ordem crescente, defeito o menor', () {
-    final vtpl = buildCoverageOptions(products(), 'COMPREHENSIVE').find('VTPL')!;
+    final vtpl = buildCoverageOptions(
+      products(),
+      'COMPREHENSIVE',
+    ).find('VTPL')!;
     expect(vtpl.hasCapitalChoice, isTrue);
     expect(vtpl.capitalOptions, [250000000, 500000000, 1000000000]);
     expect(vtpl.defaultCapital, 250000000);
