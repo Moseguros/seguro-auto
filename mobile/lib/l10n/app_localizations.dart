@@ -2635,6 +2635,556 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Circulação no estrangeiro'**
   String get coverageCrossBorder;
+
+  /// No description provided for @quoteWizardTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simular seguro'**
+  String get quoteWizardTitle;
+
+  /// No description provided for @quoteStepOf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Passo {step} de {total}'**
+  String quoteStepOf(int step, int total);
+
+  /// No description provided for @quoteStepVehicle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículo e condutor'**
+  String get quoteStepVehicle;
+
+  /// No description provided for @quoteStepType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de seguro'**
+  String get quoteStepType;
+
+  /// No description provided for @quoteStepCoverages.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coberturas'**
+  String get quoteStepCoverages;
+
+  /// No description provided for @quoteStepPeriod.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início e duração'**
+  String get quoteStepPeriod;
+
+  /// No description provided for @quoteStepSummary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo'**
+  String get quoteStepSummary;
+
+  /// No description provided for @quoteBack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get quoteBack;
+
+  /// No description provided for @quoteContinue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get quoteContinue;
+
+  /// No description provided for @quoteVehicleLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículo'**
+  String get quoteVehicleLabel;
+
+  /// No description provided for @quoteVehicleLine.
+  ///
+  /// In pt, this message translates to:
+  /// **'{make} {model} · {year}'**
+  String quoteVehicleLine(String make, String model, int year);
+
+  /// No description provided for @quoteNoVehicles.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não tem veículos registados.'**
+  String get quoteNoVehicles;
+
+  /// No description provided for @quoteAddVehicle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar veículo'**
+  String get quoteAddVehicle;
+
+  /// No description provided for @quoteDriverLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutor'**
+  String get quoteDriverLabel;
+
+  /// No description provided for @quoteNoDrivers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não tem condutores registados.'**
+  String get quoteNoDrivers;
+
+  /// No description provided for @quoteAddDriver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar condutor'**
+  String get quoteAddDriver;
+
+  /// No description provided for @quoteStartDateMoved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Actualizámos a data de início para hoje.'**
+  String get quoteStartDateMoved;
+
+  /// No description provided for @quoteTypeMtplOnly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Só responsabilidade civil'**
+  String get quoteTypeMtplOnly;
+
+  /// No description provided for @quoteTypeMtplOnlyText.
+  ///
+  /// In pt, this message translates to:
+  /// **'O seguro obrigatório: cobre os danos que causar a outros.'**
+  String get quoteTypeMtplOnlyText;
+
+  /// No description provided for @quoteTypeComprehensive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsabilidade civil + danos próprios'**
+  String get quoteTypeComprehensive;
+
+  /// No description provided for @quoteTypeComprehensiveText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cobre também os danos no seu veículo.'**
+  String get quoteTypeComprehensiveText;
+
+  /// No description provided for @quoteTypeTemporary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguro temporário'**
+  String get quoteTypeTemporary;
+
+  /// No description provided for @quoteTypeTemporaryText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsabilidade civil por 7 a 60 dias, ou um ano.'**
+  String get quoteTypeTemporaryText;
+
+  /// No description provided for @quoteNeedsCommercialValue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisa do valor comercial do veículo'**
+  String get quoteNeedsCommercialValue;
+
+  /// No description provided for @quoteSetCommercialValue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indicar valor'**
+  String get quoteSetCommercialValue;
+
+  /// No description provided for @quoteCoverageMandatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Obrigatória'**
+  String get quoteCoverageMandatory;
+
+  /// No description provided for @quoteCoverageAvailableIn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível em {count} de {total} produtos'**
+  String quoteCoverageAvailableIn(int count, int total);
+
+  /// No description provided for @quoteCoverageCapital.
+  ///
+  /// In pt, this message translates to:
+  /// **'Capital'**
+  String get quoteCoverageCapital;
+
+  /// No description provided for @quoteCapitalPerPerson.
+  ///
+  /// In pt, this message translates to:
+  /// **'{capital} por pessoa'**
+  String quoteCapitalPerPerson(String capital);
+
+  /// No description provided for @quoteTheftNotice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Furto ou roubo inclui obrigatoriamente choque, incêndio e fenómenos da natureza.'**
+  String get quoteTheftNotice;
+
+  /// No description provided for @quoteNoProducts.
+  ///
+  /// In pt, this message translates to:
+  /// **'De momento não há produtos deste tipo para este veículo.'**
+  String get quoteNoProducts;
+
+  /// No description provided for @quoteStartDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de início'**
+  String get quoteStartDate;
+
+  /// No description provided for @quoteDuration.
+  ///
+  /// In pt, this message translates to:
+  /// **'Duração'**
+  String get quoteDuration;
+
+  /// No description provided for @quoteDurationDays.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} dias'**
+  String quoteDurationDays(int count);
+
+  /// No description provided for @quoteDurationYear.
+  ///
+  /// In pt, this message translates to:
+  /// **'1 ano'**
+  String get quoteDurationYear;
+
+  /// No description provided for @quoteEndsOn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Termina a {date}'**
+  String quoteEndsOn(String date);
+
+  /// No description provided for @quoteChange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar'**
+  String get quoteChange;
+
+  /// No description provided for @quoteDriverAges.
+  ///
+  /// In pt, this message translates to:
+  /// **'{age} anos, carta há {years} anos'**
+  String quoteDriverAges(int age, int years);
+
+  /// No description provided for @quotePeriodRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'{start} a {end}'**
+  String quotePeriodRange(String start, String end);
+
+  /// No description provided for @quoteRequesting.
+  ///
+  /// In pt, this message translates to:
+  /// **'A pedir propostas às seguradoras…'**
+  String get quoteRequesting;
+
+  /// No description provided for @quoteRetryInMinutes.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{Tente de novo dentro de 1 minuto.} other{Tente de novo dentro de {count} minutos.}}'**
+  String quoteRetryInMinutes(int count);
+
+  /// No description provided for @quoteResultsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Propostas'**
+  String get quoteResultsTitle;
+
+  /// No description provided for @quoteChangeSimulation.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar simulação'**
+  String get quoteChangeSimulation;
+
+  /// No description provided for @quoteSavedUntil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta simulação fica guardada em As minhas cotações e é válida até {date}.'**
+  String quoteSavedUntil(String date);
+
+  /// No description provided for @quoteByBroker.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cotação preparada pelo seu mediador.'**
+  String get quoteByBroker;
+
+  /// No description provided for @quoteGoToMyQuotes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver as minhas cotações'**
+  String get quoteGoToMyQuotes;
+
+  /// No description provided for @quoteIncludesCharges.
+  ///
+  /// In pt, this message translates to:
+  /// **'Inclui {amount} de encargos'**
+  String quoteIncludesCharges(String amount);
+
+  /// No description provided for @quoteDeductible.
+  ///
+  /// In pt, this message translates to:
+  /// **'Franquia {value}'**
+  String quoteDeductible(String value);
+
+  /// No description provided for @quoteDeductiblePercent.
+  ///
+  /// In pt, this message translates to:
+  /// **'{percent} %'**
+  String quoteDeductiblePercent(String percent);
+
+  /// No description provided for @quoteDeductiblePercentMin.
+  ///
+  /// In pt, this message translates to:
+  /// **'{percent} % (mín. {min})'**
+  String quoteDeductiblePercentMin(String percent, String min);
+
+  /// No description provided for @quoteNoDeductible.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem franquia'**
+  String get quoteNoDeductible;
+
+  /// No description provided for @quoteValidUntil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Válida até {date}'**
+  String quoteValidUntil(String date);
+
+  /// No description provided for @quoteCheapest.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais barata'**
+  String get quoteCheapest;
+
+  /// No description provided for @quoteViewDetail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver detalhe'**
+  String get quoteViewDetail;
+
+  /// No description provided for @quoteCompare.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comparar'**
+  String get quoteCompare;
+
+  /// No description provided for @quoteUsed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usada numa proposta'**
+  String get quoteUsed;
+
+  /// No description provided for @quoteExpiredLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expirada'**
+  String get quoteExpiredLabel;
+
+  /// No description provided for @quoteNotAvailableLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem proposta'**
+  String get quoteNotAvailableLabel;
+
+  /// No description provided for @quoteCompareSelected.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count} seleccionadas (máximo 3)'**
+  String quoteCompareSelected(int count);
+
+  /// No description provided for @quoteCompareMax.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pode comparar até 3 propostas'**
+  String get quoteCompareMax;
+
+  /// No description provided for @quoteUnavailableTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem proposta ({count})'**
+  String quoteUnavailableTitle(int count);
+
+  /// No description provided for @quoteNoOffers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma seguradora apresentou proposta para estas condições.'**
+  String get quoteNoOffers;
+
+  /// No description provided for @quoteExpiredOn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta simulação expirou em {date}.'**
+  String quoteExpiredOn(String date);
+
+  /// No description provided for @quoteGeneralConditions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condições gerais'**
+  String get quoteGeneralConditions;
+
+  /// No description provided for @quotePreContractInfo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informação pré-contratual'**
+  String get quotePreContractInfo;
+
+  /// No description provided for @compareTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Comparar propostas'**
+  String get compareTitle;
+
+  /// No description provided for @compareInsurer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguradora'**
+  String get compareInsurer;
+
+  /// No description provided for @compareProduct.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto'**
+  String get compareProduct;
+
+  /// No description provided for @compareTotal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prémio total'**
+  String get compareTotal;
+
+  /// No description provided for @compareCommercialPremium.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prémio comercial'**
+  String get compareCommercialPremium;
+
+  /// No description provided for @compareNotIncluded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não incluída'**
+  String get compareNotIncluded;
+
+  /// No description provided for @compareValidUntil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Válida até'**
+  String get compareValidUntil;
+
+  /// No description provided for @compareDocuments.
+  ///
+  /// In pt, this message translates to:
+  /// **'Documentos'**
+  String get compareDocuments;
+
+  /// No description provided for @compareCoverageWithDeductible.
+  ///
+  /// In pt, this message translates to:
+  /// **'{capital} · franquia {deductible} · {premium}'**
+  String compareCoverageWithDeductible(
+    String capital,
+    String deductible,
+    String premium,
+  );
+
+  /// No description provided for @compareCoverageNoDeductible.
+  ///
+  /// In pt, this message translates to:
+  /// **'{capital} · {premium}'**
+  String compareCoverageNoDeductible(String capital, String premium);
+
+  /// No description provided for @quoteDetailTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Detalhe da proposta'**
+  String get quoteDetailTitle;
+
+  /// No description provided for @quoteProductVersion.
+  ///
+  /// In pt, this message translates to:
+  /// **'{product} · versão {version}'**
+  String quoteProductVersion(String product, int version);
+
+  /// No description provided for @quoteDetailCoverages.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coberturas'**
+  String get quoteDetailCoverages;
+
+  /// No description provided for @quoteDetailCapital.
+  ///
+  /// In pt, this message translates to:
+  /// **'Capital: {value}'**
+  String quoteDetailCapital(String value);
+
+  /// No description provided for @quoteDetailPremium.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prémio'**
+  String get quoteDetailPremium;
+
+  /// No description provided for @quoteRoundingAdjustment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajuste de arredondamento'**
+  String get quoteRoundingAdjustment;
+
+  /// No description provided for @quoteDetailPeriod.
+  ///
+  /// In pt, this message translates to:
+  /// **'Período'**
+  String get quoteDetailPeriod;
+
+  /// No description provided for @quoteDetailValidity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Validade'**
+  String get quoteDetailValidity;
+
+  /// No description provided for @quoteProposalSoon.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em breve vai poder avançar daqui para a proposta.'**
+  String get quoteProposalSoon;
+
+  /// No description provided for @myQuotesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'As minhas cotações'**
+  String get myQuotesTitle;
+
+  /// No description provided for @myQuotesEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não fez simulações.'**
+  String get myQuotesEmpty;
+
+  /// No description provided for @myQuotesByBroker.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pelo mediador'**
+  String get myQuotesByBroker;
+
+  /// No description provided for @myQuotesStart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início a {date}'**
+  String myQuotesStart(String date);
+
+  /// No description provided for @myQuotesOffers.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Sem propostas} =1{1 proposta} other{{count} propostas}}'**
+  String myQuotesOffers(int count);
+
+  /// No description provided for @myQuotesFrom.
+  ///
+  /// In pt, this message translates to:
+  /// **'desde {amount}'**
+  String myQuotesFrom(String amount);
+
+  /// No description provided for @myQuotesSeeAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todas'**
+  String get myQuotesSeeAll;
 }
 
 class _AppLocalizationsDelegate

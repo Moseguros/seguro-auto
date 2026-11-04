@@ -586,5 +586,304 @@
   "coverageAssistance": "Assistência em viagem",
   "coverageLegal": "Protecção jurídica",
   "coverageSrcc": "Greves, tumultos e alterações da ordem pública",
-  "coverageCrossBorder": "Circulação no estrangeiro"
+  "coverageCrossBorder": "Circulação no estrangeiro",
+  "quoteWizardTitle": "Simular seguro",
+  "quoteStepOf": "Passo {step} de {total}",
+  "@quoteStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteStepVehicle": "Veículo e condutor",
+  "quoteStepType": "Tipo de seguro",
+  "quoteStepCoverages": "Coberturas",
+  "quoteStepPeriod": "Início e duração",
+  "quoteStepSummary": "Resumo",
+  "quoteBack": "Voltar",
+  "quoteContinue": "Continuar",
+  "quoteVehicleLabel": "Veículo",
+  "quoteVehicleLine": "{make} {model} · {year}",
+  "@quoteVehicleLine": {
+    "placeholders": {
+      "make": {
+        "type": "String"
+      },
+      "model": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteNoVehicles": "Ainda não tem veículos registados.",
+  "quoteAddVehicle": "Acrescentar veículo",
+  "quoteDriverLabel": "Condutor",
+  "quoteNoDrivers": "Ainda não tem condutores registados.",
+  "quoteAddDriver": "Acrescentar condutor",
+  "quoteStartDateMoved": "Actualizámos a data de início para hoje.",
+  "quoteTypeMtplOnly": "Só responsabilidade civil",
+  "quoteTypeMtplOnlyText": "O seguro obrigatório: cobre os danos que causar a outros.",
+  "quoteTypeComprehensive": "Responsabilidade civil + danos próprios",
+  "quoteTypeComprehensiveText": "Cobre também os danos no seu veículo.",
+  "quoteTypeTemporary": "Seguro temporário",
+  "quoteTypeTemporaryText": "Responsabilidade civil por 7 a 60 dias, ou um ano.",
+  "quoteNeedsCommercialValue": "Precisa do valor comercial do veículo",
+  "quoteSetCommercialValue": "Indicar valor",
+  "quoteCoverageMandatory": "Obrigatória",
+  "quoteCoverageAvailableIn": "Disponível em {count} de {total} produtos",
+  "@quoteCoverageAvailableIn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteCoverageCapital": "Capital",
+  "quoteCapitalPerPerson": "{capital} por pessoa",
+  "@quoteCapitalPerPerson": {
+    "placeholders": {
+      "capital": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteTheftNotice": "Furto ou roubo inclui obrigatoriamente choque, incêndio e fenómenos da natureza.",
+  "quoteNoProducts": "De momento não há produtos deste tipo para este veículo.",
+  "quoteStartDate": "Data de início",
+  "quoteDuration": "Duração",
+  "quoteDurationDays": "{count} dias",
+  "@quoteDurationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteDurationYear": "1 ano",
+  "quoteEndsOn": "Termina a {date}",
+  "@quoteEndsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteChange": "Alterar",
+  "quoteDriverAges": "{age} anos, carta há {years} anos",
+  "@quoteDriverAges": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      },
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "quotePeriodRange": "{start} a {end}",
+  "@quotePeriodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteRequesting": "A pedir propostas às seguradoras…",
+  "quoteRetryInMinutes": "{count, plural, =1{Tente de novo dentro de 1 minuto.} other{Tente de novo dentro de {count} minutos.}}",
+  "@quoteRetryInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteResultsTitle": "Propostas",
+  "quoteChangeSimulation": "Alterar simulação",
+  "quoteSavedUntil": "Esta simulação fica guardada em As minhas cotações e é válida até {date}.",
+  "@quoteSavedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteByBroker": "Cotação preparada pelo seu mediador.",
+  "quoteGoToMyQuotes": "Ver as minhas cotações",
+  "quoteIncludesCharges": "Inclui {amount} de encargos",
+  "@quoteIncludesCharges": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteDeductible": "Franquia {value}",
+  "@quoteDeductible": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteDeductiblePercent": "{percent} %",
+  "@quoteDeductiblePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteDeductiblePercentMin": "{percent} % (mín. {min})",
+  "@quoteDeductiblePercentMin": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteNoDeductible": "Sem franquia",
+  "quoteValidUntil": "Válida até {date}",
+  "@quoteValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteCheapest": "Mais barata",
+  "quoteViewDetail": "Ver detalhe",
+  "quoteCompare": "Comparar",
+  "quoteUsed": "Usada numa proposta",
+  "quoteExpiredLabel": "Expirada",
+  "quoteNotAvailableLabel": "Sem proposta",
+  "quoteCompareSelected": "{count} seleccionadas (máximo 3)",
+  "@quoteCompareSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteCompareMax": "Pode comparar até 3 propostas",
+  "quoteUnavailableTitle": "Sem proposta ({count})",
+  "@quoteUnavailableTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteNoOffers": "Nenhuma seguradora apresentou proposta para estas condições.",
+  "quoteExpiredOn": "Esta simulação expirou em {date}.",
+  "@quoteExpiredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteGeneralConditions": "Condições gerais",
+  "quotePreContractInfo": "Informação pré-contratual",
+  "compareTitle": "Comparar propostas",
+  "compareInsurer": "Seguradora",
+  "compareProduct": "Produto",
+  "compareTotal": "Prémio total",
+  "compareCommercialPremium": "Prémio comercial",
+  "compareNotIncluded": "Não incluída",
+  "compareValidUntil": "Válida até",
+  "compareDocuments": "Documentos",
+  "compareCoverageWithDeductible": "{capital} · franquia {deductible} · {premium}",
+  "@compareCoverageWithDeductible": {
+    "placeholders": {
+      "capital": {
+        "type": "String"
+      },
+      "deductible": {
+        "type": "String"
+      },
+      "premium": {
+        "type": "String"
+      }
+    }
+  },
+  "compareCoverageNoDeductible": "{capital} · {premium}",
+  "@compareCoverageNoDeductible": {
+    "placeholders": {
+      "capital": {
+        "type": "String"
+      },
+      "premium": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteDetailTitle": "Detalhe da proposta",
+  "quoteProductVersion": "{product} · versão {version}",
+  "@quoteProductVersion": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      },
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "quoteDetailCoverages": "Coberturas",
+  "quoteDetailCapital": "Capital: {value}",
+  "@quoteDetailCapital": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteDetailPremium": "Prémio",
+  "quoteRoundingAdjustment": "Ajuste de arredondamento",
+  "quoteDetailPeriod": "Período",
+  "quoteDetailValidity": "Validade",
+  "quoteProposalSoon": "Em breve vai poder avançar daqui para a proposta.",
+  "myQuotesTitle": "As minhas cotações",
+  "myQuotesEmpty": "Ainda não fez simulações.",
+  "myQuotesByBroker": "Pelo mediador",
+  "myQuotesStart": "Início a {date}",
+  "@myQuotesStart": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "myQuotesOffers": "{count, plural, =0{Sem propostas} =1{1 proposta} other{{count} propostas}}",
+  "@myQuotesOffers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "myQuotesFrom": "desde {amount}",
+  "@myQuotesFrom": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "myQuotesSeeAll": "Ver todas"
 }

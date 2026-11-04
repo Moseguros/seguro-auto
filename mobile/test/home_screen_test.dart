@@ -3,8 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moseguros/core/router.dart';
 import 'package:moseguros/core/widgets/cta_button.dart';
 import 'package:moseguros/features/home/home_screen.dart';
+import 'package:moseguros/features/quote/screens/my_quotes_screen.dart';
+import 'package:moseguros/features/quote/screens/vehicle_step_screen.dart';
 
 import 'support/mock_api.dart';
+import 'support/quotes.dart';
+import 'support/vehicles.dart';
 
 void main() {
   late MockApi api;
@@ -43,13 +47,52 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('"Simular seguro" mostra "Disponível em breve"', (tester) async {
-    api.on('GET', '/api/v1/me', 200, Fixtures.me());
+  testWidgets('"Simular seguro" abre o assistente (/quote/vehicle)', (
+    tester,
+  ) async {
+    api
+      ..on('GET', '/api/v1/me', 200, Fixtures.me())
+      ..on('GET', '/api/v1/me/quotes', 200, QuoteFixtures.page([]))
+      ..on('GET', '/api/v1/me/vehicles', 200, VehicleFixtures.page([]))
+      ..on('GET', '/api/v1/me/drivers', 200, VehicleFixtures.page([]));
     await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
 
+    // Sem simulações, o cartão "As minhas cotações" não aparece.
+    expect(find.byKey(const Key('home-my-quotes')), findsNothing);
     await tester.tap(find.text('Simular seguro'));
-    await tester.pump();
-    expect(find.text('Disponível em breve'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Disponível em breve'), findsNothing);
+    expect(find.byType(VehicleStepScreen), findsOneWidget);
+    expect(find.text('Passo 1 de 5'), findsOneWidget);
+  });
+
+  testWidgets('"As minhas cotações" com as 3 mais recentes e "Ver todas"', (
+    tester,
+  ) async {
+    api
+      ..on('GET', '/api/v1/me', 200, Fixtures.me())
+      ..on(
+        'GET',
+        '/api/v1/me/quotes',
+        200,
+        QuoteFixtures.page([QuoteFixtures.summary()], total: 1),
+      );
+    await pumpMoSeguros(tester, api, refreshToken: 'refresh-0');
+
+    expect(find.byKey(const Key('home-my-quotes')), findsOneWidget);
+    expect(
+      api.calls('GET', '/api/v1/me/quotes').last.queryParameters['size'],
+      3,
+    );
+    expect(find.widgetWithText(OutlinedButton, 'Ver todas'), findsOneWidget);
+    // Continua a haver um só botão laranja.
+    expect(find.byType(CtaButton), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Ver todas'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ver todas'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MyQuotesScreen), findsOneWidget);
   });
 
   testWidgets('perfil incompleto: cartão "Completar perfil" (em inglês)', (

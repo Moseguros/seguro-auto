@@ -5,6 +5,23 @@ import 'package:go_router/go_router.dart';
 import '../../core/auth/session_controller.dart';
 import '../../core/widgets/cta_button.dart';
 import '../../l10n/app_localizations.dart';
+import '../quote/quote_repository.dart';
+import '../quote/widgets/recent_quotes.dart';
+import '../quote/widgets/step_scaffold.dart' show QuoteSteps;
+
+class _RecentQuotesCard extends ConsumerWidget {
+  const _RecentQuotesCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recent = ref.watch(recentQuotesProvider).value;
+    if (recent == null || recent.isEmpty) return const SizedBox.shrink();
+    return const Card(
+      key: Key('home-my-quotes'),
+      child: Padding(padding: EdgeInsets.all(16), child: RecentQuotes()),
+    );
+  }
+}
 
 /// Primeiro nome de um nome completo, ou `null` sem nome.
 String? firstName(String? displayName) {
@@ -76,19 +93,18 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // A simulação chega no Sprint 3.
                     CtaButton(
+                      key: const Key('home-quote'),
                       label: l10n.ctaQuote,
-                      onPressed: () => ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(
-                          SnackBar(content: Text(l10n.comingSoon)),
-                        ),
+                      onPressed: () => context.push(QuoteSteps.vehicle),
                     ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            // As 3 simulações mais recentes, só quando existem (S3-05 §7).
+            const _RecentQuotesCard(),
           ],
         ),
       ),
