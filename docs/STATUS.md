@@ -58,6 +58,8 @@ As sete tarefas juntas, com os conflitos resolvidos e os ficheiros gerados regen
 | S3-04 Web cliente `/cliente/simular` e web mediador `/mediador/cotacoes` | S3-02 | em revisão (branch `task/S3-04-web-cotacoes`) |
 | S3-05 Mobile: "Fazer seguro" até à comparação | S3-02 | em revisão (branch `task/S3-05-mobile-cotacoes`) |
 
+As cinco tarefas juntas, com os conflitos resolvidos, estão no branch local de verificação `task/S3-integracao` (S3-03 + S3-04 + S3-05).
+
 ### Sprint 4 — Proposta, KYC, adequação e aceitação
 
 | Tarefa | Depende de | Estado |
