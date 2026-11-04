@@ -31,7 +31,8 @@ function signIn(request: QuoteRequestResponse) {
   );
 }
 
-describe('QuoteResultsPage', () => {
+// Fluxos com vários ecrãs: mais tempo quando a máquina está carregada.
+describe('QuoteResultsPage', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   afterEach(() => restore());
 

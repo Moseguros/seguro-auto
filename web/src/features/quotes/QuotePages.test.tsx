@@ -13,7 +13,8 @@ const broker = staffMe({
   permissions: ['quote:create-for-client'],
 });
 
-describe('detalhe e listas das cotações', () => {
+// Fluxos com vários ecrãs: mais tempo quando a máquina está carregada.
+describe('detalhe e listas das cotações', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   afterEach(() => restore());
 

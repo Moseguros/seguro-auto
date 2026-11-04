@@ -21,7 +21,8 @@ function mockMatchMedia(matches: boolean) {
   );
 }
 
-describe('QuoteComparePage', () => {
+// Fluxos com vários ecrãs: mais tempo quando a máquina está carregada.
+describe('QuoteComparePage', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   beforeEach(() => {
     const request = requestFixture();

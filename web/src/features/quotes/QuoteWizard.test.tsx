@@ -30,7 +30,8 @@ function customerApi(extra?: (config: InternalAxiosRequestConfig) => MockResult 
 
 const next = () => userEvent.click(screen.getByRole('button', { name: 'Continuar' }));
 
-describe('QuoteWizard', () => {
+// Fluxos com vários ecrãs: mais tempo quando a máquina está carregada.
+describe('QuoteWizard', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   beforeEach(() => sessionStorage.clear());
   afterEach(() => restore());

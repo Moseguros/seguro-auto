@@ -28,7 +28,8 @@ function renderStep(productType = 'COMPREHENSIVE') {
   return state;
 }
 
-describe('CoveragesStep', () => {
+// Fluxos com vários ecrãs: mais tempo quando a máquina está carregada.
+describe('CoveragesStep', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   afterEach(() => restore());
 

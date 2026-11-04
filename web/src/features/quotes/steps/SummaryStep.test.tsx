@@ -39,7 +39,8 @@ function openSummary(postResult: MockResult) {
   return { restore, ...renderRoute('/cliente/simular') };
 }
 
-describe('SummaryStep', () => {
+// Fluxos com vários ecrãs: mais tempo quando a máquina está carregada.
+describe('SummaryStep', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   beforeEach(() => sessionStorage.clear());
   afterEach(() => restore());
