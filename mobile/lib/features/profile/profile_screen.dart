@@ -6,6 +6,7 @@ import '../../core/auth/session_controller.dart';
 import '../../core/errors/problem.dart';
 import '../../core/widgets/message_banner.dart';
 import '../../l10n/app_localizations.dart';
+import '../inspection/inspection_repository.dart';
 import 'about_card.dart';
 import 'contacts_section.dart';
 import 'profile_controller.dart';
@@ -14,18 +15,35 @@ import 'profile_form.dart';
 /// `/profile` (com `?complete=1` depois do primeiro login): dados pessoais,
 /// contactos, "Terminar sessão" e "Sobre".
 class ProfileScreen extends ConsumerWidget {
-  const ProfileScreen({super.key, this.completing = false});
+  const ProfileScreen({super.key, this.completing = false, this.returnTo});
 
-  /// Veio de `?complete=1`: mostra o aviso e, ao completar, vai para o início.
+  /// Veio de `?complete=1`: mostra o aviso e, ao completar, vai para [returnTo]
+  /// ou para o início.
   final bool completing;
+
+  /// Caminho interno de regresso (`?from=`, já validado pelo router).
+  final String? returnTo;
 
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
+    // Fotografias da vistoria por enviar perdem-se no logout (S4-09 §5).
+    var pending = 0;
+    try {
+      pending = await ref.read(inspectionRepositoryProvider).pendingCount();
+    } on Object {
+      // Sem base local: não há nada por enviar.
+    }
+    if (!context.mounted) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.logoutConfirmTitle),
-        content: Text(l10n.logoutConfirmText),
+        content: Text(
+          pending > 0
+              ? l10n.logoutPendingUploads(pending)
+              : l10n.logoutConfirmText,
+          key: const Key('logout-confirm-text'),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -34,7 +52,7 @@ class ProfileScreen extends ConsumerWidget {
           TextButton(
             key: const Key('confirm-logout'),
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.logout),
+            child: Text(pending > 0 ? l10n.logoutAnyway : l10n.logout),
           ),
         ],
       ),
@@ -62,8 +80,10 @@ class ProfileScreen extends ConsumerWidget {
         onSave: controller.save,
         onSaved: (saved) {
           if (!context.mounted) return;
-          if (completing && saved.complete) {
-            context.go('/');
+          // A completar o perfil: sai quando fica completo. Vindo de outro ecrã
+          // (`?from=`, ex.: "Editar perfil" da proposta): volta lá ao gravar.
+          if (completing ? saved.complete : returnTo != null) {
+            context.go(returnTo ?? '/');
           }
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()

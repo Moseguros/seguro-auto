@@ -7,9 +7,15 @@ import '../features/auth/login_screen.dart';
 import '../features/drivers/driver_form_screen.dart';
 import '../features/drivers/drivers_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/inspection/guided_camera_screen.dart';
+import '../features/inspection/inspection_screen.dart';
+import '../features/kyc/kyc_screen.dart';
 import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/proposals/new_proposal_screen.dart';
+import '../features/proposals/proposal_screen.dart';
+import '../features/proposals/proposals_screen.dart';
 import '../features/quote/screens/coverages_step_screen.dart';
 import '../features/quote/screens/my_quotes_screen.dart';
 import '../features/quote/screens/period_step_screen.dart';
@@ -31,37 +37,115 @@ import 'widgets/app_shell.dart';
 /// Ecrã enquanto a sessão guardada é renovada ao arrancar.
 const splashPath = '/splash';
 
-/// Ecrãs de entrada: com sessão, saem para o perfil (se incompleto) ou o início.
+/// Ecrãs de entrada: com sessão, saem para o destino pedido, o perfil (se
+/// incompleto) ou o início.
 bool _isEntry(String location) =>
     location == '/onboarding' ||
     location == splashPath ||
     location == '/login' ||
     location.startsWith('/login/');
 
+/// Esquema das ligações profundas da app.
+const deepLinkScheme = 'moseguros';
+
+/// Caminho interno de uma ligação profunda (S4-09 §1, formato do S6-07):
+///
+/// | Ligação | Rota |
+/// | --- | --- |
+/// | `moseguros://proposal/{id}/inspection` | `/proposals/{id}/inspection` |
+/// | `moseguros://proposal/{id}` | `/proposals/{id}` |
+///
+/// `null` se [uri] não for uma ligação `moseguros://`; `/` se for desconhecida.
+String? deepLinkLocation(Uri uri) {
+  if (uri.scheme != deepLinkScheme) return null;
+  final segments = [
+    if (uri.host.isNotEmpty) uri.host,
+    ...uri.pathSegments.where((segment) => segment.isNotEmpty),
+  ];
+  if (segments.length >= 2 && segments.first == 'proposal') {
+    final id = Uri.encodeComponent(segments[1]);
+    if (segments.length == 2) return '/proposals/$id';
+    if (segments.length == 3 && segments[2] == 'inspection') {
+      return '/proposals/$id/inspection';
+    }
+  }
+  return '/';
+}
+
+/// Um destino de regresso só vale se for um caminho interno (começa por `/`, sem
+/// esquema nem anfitrião) e não for um ecrã de entrada.
+String? safeReturnPath(String? value) {
+  if (value == null || value.isEmpty) return null;
+  if (!value.startsWith('/') || value.startsWith('//')) return null;
+  final uri = Uri.tryParse(value);
+  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
+  if (_isEntry(uri.path)) return null;
+  return value;
+}
+
+/// Destino pedido antes do login (ligação profunda ou rota protegida), guardado
+/// pelo router até a sessão abrir.
+class PendingDestination {
+  String? value;
+}
+
 /// Redirecção global:
 ///
 /// | Estado | Destino |
 /// | --- | --- |
+/// | ligação `moseguros://…` | a rota interna ([deepLinkLocation]) |
 /// | primeira abertura (`onboarding_done` ausente) | `/onboarding` |
 /// | sessão a carregar | `/splash` |
-/// | sem sessão | `/login` |
-/// | com sessão e perfil incompleto, à entrada | `/profile?complete=1` |
-/// | com sessão, à entrada | `/` |
+/// | sem sessão | `/login?from=<destino>` |
+/// | com sessão e perfil incompleto, à entrada | `/profile?complete=1&from=<destino>` |
+/// | com sessão, à entrada | o destino pedido, ou `/` |
+///
+/// O destino pedido (caminho e parâmetros) fica em [pending] enquanto não há
+/// sessão; o `?from=` do login também o define.
 String? appRedirect({
   required bool onboardingDone,
   required AsyncValue<Session?> session,
-  required String location,
+  required Uri uri,
+  PendingDestination? pending,
 }) {
+  final link = deepLinkLocation(uri);
+  if (link != null) return link;
+
+  final location = uri.path;
+  if (session.value == null && !_isEntry(location) && location != '/') {
+    // Guarda-se até haver sessão.
+    pending?.value = safeReturnPath(
+      Uri(
+        path: uri.path,
+        query: uri.query.isEmpty ? null : uri.query,
+      ).toString(),
+    );
+  }
+  if (location == '/login') {
+    final from = safeReturnPath(uri.queryParameters['from']);
+    if (from != null) pending?.value = from;
+  }
+
   if (!onboardingDone) return location == '/onboarding' ? null : '/onboarding';
   if (!session.hasValue) return location == splashPath ? null : splashPath;
   final current = session.value;
   if (current == null) {
-    return location == '/login' || location.startsWith('/login/')
-        ? null
-        : '/login';
+    if (location == '/login' || location.startsWith('/login/')) return null;
+    final from = pending?.value;
+    return from == null
+        ? '/login'
+        : Uri(path: '/login', queryParameters: {'from': from}).toString();
   }
   if (_isEntry(location)) {
-    return current.needsProfile ? '/profile?complete=1' : '/';
+    final destination = pending?.value;
+    pending?.value = null;
+    if (current.needsProfile) {
+      return Uri(
+        path: '/profile',
+        queryParameters: {'complete': '1', 'from': ?destination},
+      ).toString();
+    }
+    return destination ?? '/';
   }
   return null;
 }
@@ -70,7 +154,7 @@ String? appRedirect({
 /// (câmara do livrete).
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-/// Rotas da app. Deep links `moseguros://` chegam em sprints seguintes.
+/// Rotas da app. Ligações `moseguros://` em [deepLinkLocation].
 ///
 /// | Rota | Ecrã |
 /// | --- | --- |
@@ -81,10 +165,15 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// | `/vehicles`, `/vehicles/new`, `/vehicles/:id`, `/vehicles/:id/edit` | veículos (barra: Veículos) |
 /// | `/vehicles/:id/registration-doc/camera` | câmara guiada, sem a barra |
 /// | `/drivers`, `/drivers/new?vehicleId=`, `/drivers/:id/edit` | condutores (barra: Veículos) |
-/// | `/profile` (`?complete=1`) | perfil (barra: Perfil) |
+/// | `/proposals`, `/proposals/new?quoteId=`, `/proposals/:id` (`?step=`) | propostas (barra: Início) |
+/// | `/proposals/:id/inspection` | vistoria (barra: Início) |
+/// | `/proposals/:id/inspection/camera/:slot` (`?then=`) | câmara guiada, sem a barra |
+/// | `/identity` | verificação de identidade (barra: Início) |
+/// | `/profile` (`?complete=1&from=`) | perfil (barra: Perfil) |
 final routerProvider = Provider<GoRouter>((ref) {
   // Volta a avaliar a redirecção quando a sessão ou a apresentação mudam.
   final refresh = ValueNotifier<int>(0);
+  final pending = PendingDestination();
   ref.listen(sessionControllerProvider, (_, _) => refresh.value++);
   ref.listen(onboardingControllerProvider, (_, _) => refresh.value++);
 
@@ -95,7 +184,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) => appRedirect(
       onboardingDone: ref.read(onboardingControllerProvider),
       session: ref.read(sessionControllerProvider),
-      location: state.matchedLocation,
+      uri: state.uri,
+      pending: pending,
     ),
     routes: [
       StatefulShellRoute.indexedStack(
@@ -108,6 +198,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (context, state) => const HomeScreen(),
                 routes: _quoteRoutes,
               ),
+              ..._proposalRoutes,
             ],
           ),
           StatefulShellBranch(
@@ -168,6 +259,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: '/profile',
                 builder: (context, state) => ProfileScreen(
                   completing: state.uri.queryParameters['complete'] == '1',
+                  returnTo: safeReturnPath(state.uri.queryParameters['from']),
                 ),
               ),
             ],
@@ -198,6 +290,52 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+/// Propostas, vistoria e identidade (S4-09 §1), no ramo do início. A câmara
+/// guiada abre-se em ecrã inteiro, sem a barra inferior.
+final _proposalRoutes = <RouteBase>[
+  GoRoute(
+    path: '/proposals',
+    builder: (context, state) => const ProposalsScreen(),
+    routes: [
+      GoRoute(
+        path: 'new',
+        builder: (context, state) =>
+            NewProposalScreen(quoteId: state.uri.queryParameters['quoteId']),
+      ),
+      GoRoute(
+        path: ':id',
+        builder: (context, state) => ProposalScreen(
+          proposalId: state.pathParameters['id']!,
+          step: state.uri.queryParameters['step'],
+        ),
+        routes: [
+          GoRoute(
+            path: 'inspection',
+            builder: (context, state) =>
+                InspectionScreen(proposalId: state.pathParameters['id']!),
+            routes: [
+              GoRoute(
+                path: 'camera/:slot',
+                parentNavigatorKey: _rootNavigatorKey,
+                builder: (context, state) => GuidedCameraScreen(
+                  proposalId: state.pathParameters['id']!,
+                  slot: state.pathParameters['slot']!,
+                  then: [
+                    for (final slot
+                        in (state.uri.queryParameters['then'] ?? '').split(','))
+                      if (slot.isNotEmpty) slot,
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  ),
+  GoRoute(path: '/identity', builder: (context, state) => const KycScreen()),
+];
 
 /// "Fazer seguro" (S3-05 §1), no ramo do início: os passos do assistente são
 /// empilhados um a um (o "voltar" do Android é o "Voltar" do passo) e cada um

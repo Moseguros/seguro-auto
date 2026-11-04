@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/config/env.dart';
 import 'core/router.dart';
 import 'core/theme.dart';
+import 'features/inspection/upload_queue_runner.dart';
 import 'features/onboarding/onboarding_controller.dart';
 import 'l10n/app_localizations.dart';
 
@@ -34,6 +35,8 @@ class MoSegurosApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // O executor da fila da vistoria vive enquanto a app vive (S4-09 §5).
+    ref.watch(uploadQueueRunnerProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: false,

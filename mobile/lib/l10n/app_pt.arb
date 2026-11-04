@@ -498,7 +498,7 @@
   "docSourceGallery": "Escolher da galeria",
   "docSourcePdf": "Escolher PDF",
   "cameraFrameHint": "Enquadre o livrete dentro do rectângulo, com boa luz e sem reflexos.",
-  "cameraPermissionDenied": "Precisamos da câmara para fotografar o livrete.",
+  "cameraPermissionDenied": "Para fazer a vistoria, a MoSeguros precisa de acesso à câmara.",
   "cameraOpenSettings": "Abrir definições",
   "cameraUnavailable": "Não foi possível abrir a câmara. Escolha uma foto da galeria.",
   "cameraCapture": "Tirar foto",
@@ -903,7 +903,6 @@
   "quoteRoundingAdjustment": "Ajuste de arredondamento",
   "quoteDetailPeriod": "Período",
   "quoteDetailValidity": "Validade",
-  "quoteProposalSoon": "Em breve vai poder avançar daqui para a proposta.",
   "myQuotesTitle": "As minhas cotações",
   "myQuotesEmpty": "Ainda não fez simulações.",
   "myQuotesByBroker": "Pelo mediador",
@@ -964,5 +963,290 @@
   "proposalStatusRejected": "Não aceite",
   "proposalStatusExpired": "Expirada",
   "proposalStatusPaid": "Paga",
-  "proposalStatusConverted": "Apólice emitida"
+  "proposalStatusConverted": "Apólice emitida",
+  "homeProposalsTitle": "Propostas em curso",
+  "homeProposalsSeeAll": "Ver todas",
+  "inspectionPendingUploads": "{n, plural, =1{1 fotografia por enviar} other{{n} fotografias por enviar}}",
+  "@inspectionPendingUploads": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "proposalsTitle": "Propostas",
+  "proposalsEmpty": "Ainda não tem propostas.",
+  "proposalsFilterActive": "Em curso",
+  "proposalsFilterAll": "Todas",
+  "proposalExpiresOn": "Expira em {date}",
+  "@proposalExpiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalContinue": "Continuar",
+  "proposalView": "Ver",
+  "proposalCreating": "A preparar a proposta…",
+  "proposalTitle": "Proposta {number}",
+  "@proposalTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalChangedElsewhere": "A proposta foi alterada noutro lado.",
+  "quoteAcquire": "Adquirir apólice",
+  "proposalStepOf": "Passo {step} de {total} · {name}",
+  "@proposalStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalStepPolicyholder": "Tomador e data",
+  "proposalStepDeclarations": "Declarações",
+  "proposalStepSuitability": "Adequação",
+  "proposalStepInspection": "Vistoria",
+  "proposalStepIdentity": "Identidade",
+  "proposalStepReview": "Resumo",
+  "proposalBack": "Voltar",
+  "proposalNext": "Continuar",
+  "proposalCoverages": "Coberturas",
+  "proposalTotal": "Total",
+  "proposalPolicyholderTitle": "Tomador do seguro",
+  "proposalPolicyholderFromProfile": "Estes dados vêm do seu perfil.",
+  "proposalEditProfile": "Editar perfil",
+  "proposalRefreshFromProfile": "Actualizar com o perfil",
+  "proposalStartDate": "Data de início",
+  "proposalEndDate": "Fim: {date}",
+  "@proposalEndDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalVehicle": "Veículo",
+  "proposalDriver": "Condutor",
+  "declarationClaimsLast3YearsQuestion": "Nos últimos 3 anos, teve algum acidente ou sinistro com um veículo, como condutor ou como proprietário?",
+  "declarationClaimsLast3YearsClaimsCount": "Quantos?",
+  "declarationClaimsLast3YearsDetails": "Descreva brevemente: quando, o que aconteceu e se houve feridos.",
+  "declarationPreviousRefusalQuestion": "Alguma seguradora já recusou, anulou ou não quis renovar um seguro automóvel seu?",
+  "declarationPreviousRefusalDetails": "Que seguradora e porquê?",
+  "declarationUsageDifferentQuestion": "O veículo vai ser usado para outro fim além de «{usage}»? Por exemplo, transportar passageiros ou mercadorias a troco de pagamento.",
+  "@declarationUsageDifferentQuestion": {
+    "placeholders": {
+      "usage": {
+        "type": "String"
+      }
+    }
+  },
+  "declarationUsageDifferentDetails": "Para que outro fim?",
+  "declarationVehicleModifiedQuestion": "O veículo tem alterações às características de fábrica (motor, suspensão, carroçaria, gás ou outras)?",
+  "declarationVehicleModifiedDetails": "Que alterações?",
+  "declarationNoviceDriversQuestion": "Alguém com carta de condução há menos de 2 anos vai conduzir este veículo com regularidade?",
+  "declarationNoviceDriversDetails": "Quem, e há quanto tempo tem carta?",
+  "declarationTruthfulness": "Declaro que as respostas são verdadeiras e completas. Sei que declarações falsas ou omissões podem levar à anulação do contrato ou à recusa do pagamento de sinistros.",
+  "proposalAnswerRequired": "Escolha uma resposta.",
+  "proposalDetailsLength": "Escreva entre 10 e 500 caracteres.",
+  "proposalClaimsCountRange": "Indique um número de 1 a 20.",
+  "proposalTruthfulnessRequired": "Confirme a declaração para continuar.",
+  "suitabilityIntro": "Estas perguntas ajudam a confirmar se a proposta corresponde ao que procura.",
+  "suitabilityNeedQuestion": "Que protecção procura para este veículo?",
+  "suitabilityNeedOptionMandatoryOnly": "Só o seguro obrigatório: danos que eu cause a outras pessoas",
+  "suitabilityNeedOptionOwnDamage": "Também os danos no meu veículo num acidente",
+  "suitabilityNeedOptionFull": "Também roubo, incêndio e fenómenos da natureza",
+  "suitabilityNeedOptionUnsure": "Não sei",
+  "suitabilityFinancedQuestion": "O veículo ainda está a ser pago (crédito ou leasing)?",
+  "suitabilityCanAffordRepairQuestion": "Se o seu veículo ficasse danificado num acidente causado por si, conseguiria pagar a reparação sem a ajuda do seguro?",
+  "suitabilityCrossBorderQuestion": "Vai conduzir este veículo fora de Moçambique durante o período do seguro?",
+  "suitabilityDeductibleQuestion": "Aceita pagar uma parte de cada reparação (franquia) em troca de um prémio mais baixo?",
+  "suitabilityAnswerYes": "Sim",
+  "suitabilityAnswerNo": "Não",
+  "suitabilityAnswerUnsure": "Não sei",
+  "suitabilityReasonNeedNotCoveredOwnDamage": "Disse que quer protecção para o seu veículo, mas esta proposta não cobre danos no próprio veículo.",
+  "suitabilityReasonNeedNotCoveredTheftFire": "Disse que quer protecção contra roubo, incêndio e fenómenos da natureza, mas esta proposta não inclui todas essas coberturas.",
+  "suitabilityReasonCoverAboveNeed": "Disse que só quer o seguro obrigatório, mas esta proposta inclui coberturas de danos próprios, que aumentam o prémio.",
+  "suitabilityReasonNeedUnsure": "Não tem a certeza da protecção de que precisa. Leia o resumo das coberturas e a informação pré-contratual antes de continuar.",
+  "suitabilityReasonFinancedWithoutOwnDamage": "O veículo ainda está a ser pago e esta proposta não cobre danos no próprio veículo. Confirme se o contrato de crédito ou leasing exige essa cobertura.",
+  "suitabilityReasonCannotAffordRepair": "Disse que não conseguiria pagar a reparação do seu veículo, mas esta proposta não cobre danos no próprio veículo.",
+  "suitabilityReasonCrossBorderNotCovered": "Vai conduzir fora de Moçambique, mas esta proposta não inclui cobertura fora do país.",
+  "suitabilityReasonDeductibleNotWanted": "Disse que não quer franquia, mas pelo menos uma cobertura de danos próprios desta proposta tem franquia.",
+  "suitabilityAcknowledge": "Li os avisos e quero continuar com esta proposta",
+  "suitabilityRequestOtherQuote": "Pedir outra cotação",
+  "suitabilityAcknowledged": "Confirmou que leu os avisos.",
+  "inspectionTitle": "Vistoria",
+  "inspectionIntro": "Para os danos próprios, a seguradora precisa de fotografias do veículo. Tire-as de dia, com o veículo limpo e inteiro na imagem.",
+  "inspectionInstructionFront": "A frente do veículo inteira, com a matrícula legível.",
+  "inspectionInstructionRear": "A traseira inteira, com a matrícula legível.",
+  "inspectionInstructionLeft": "O lado esquerdo inteiro, de uma ponta à outra.",
+  "inspectionInstructionRight": "O lado direito inteiro, de uma ponta à outra.",
+  "inspectionInstructionOdometer": "O painel com o conta-quilómetros legível, com a ignição ligada.",
+  "inspectionInstructionChassis": "O número do chassis gravado no veículo (normalmente no pára-brisas ou na porta do condutor).",
+  "inspectionInstructionExtra": "Danos que o veículo já tenha, ou outros pormenores.",
+  "inspectionSideHint": "Afaste-se até o veículo caber inteiro",
+  "inspectionToTake": "Por tirar",
+  "inspectionQueued": "Na fila",
+  "inspectionUploading": "A enviar",
+  "inspectionUploaded": "Enviada",
+  "inspectionFailed": "Erro",
+  "inspectionStart": "Começar vistoria",
+  "inspectionOpen": "Fazer a vistoria",
+  "inspectionProgress": "{done} de {total} ângulos",
+  "@inspectionProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "inspectionOdometer": "Quilometragem actual",
+  "inspectionOdometerInvalid": "Indique um valor de 0 a 2 000 000.",
+  "inspectionSubmit": "Enviar vistoria",
+  "inspectionWillSubmitWhenOnline": "A vistoria será enviada quando houver ligação.",
+  "inspectionSubmitQueued": "A vistoria é enviada à seguradora logo que as fotografias acabem de ser enviadas.",
+  "inspectionStatusPending": "Por enviar",
+  "inspectionStatusSubmitted": "Enviada à seguradora",
+  "inspectionStatusApproved": "Aprovada",
+  "inspectionStatusRejected": "Novas fotografias pedidas",
+  "inspectionOnSiteRequested": "Pediu vistoria presencial. A seguradora vai contactá-lo.",
+  "inspectionRejectedBanner": "A seguradora pediu novas fotografias: {reason}",
+  "@inspectionRejectedBanner": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "inspectionRetakeMarker": "Tirar de novo",
+  "inspectionTakeAgain": "Tirar de novo",
+  "inspectionDiscard": "Descartar",
+  "inspectionExtras": "Fotografias extra",
+  "inspectionAddExtra": "Acrescentar fotografia",
+  "inspectionOnSiteLink": "Prefiro vistoria presencial",
+  "inspectionOnSiteTitle": "Vistoria presencial",
+  "inspectionOnSiteNotes": "Local e horas preferidas",
+  "inspectionOnSiteSend": "Pedir vistoria presencial",
+  "inspectionOfflineBanner": "Sem ligação. As fotografias ficam guardadas no telemóvel e são enviadas quando a ligação voltar.",
+  "inspectionMissingSlots": "Faltam fotografias: {slots}",
+  "@inspectionMissingSlots": {
+    "placeholders": {
+      "slots": {
+        "type": "String"
+      }
+    }
+  },
+  "inspectionUsePhoto": "Usar fotografia",
+  "inspectionNotEditable": "A vistoria já foi enviada à seguradora.",
+  "registrationDocCameraPermissionDenied": "Precisamos da câmara para fotografar o livrete.",
+  "locationRationale": "A localização ajuda a seguradora a confirmar onde as fotografias foram tiradas. É opcional.",
+  "locationContinue": "Continuar",
+  "kycTitle": "Verificação de identidade",
+  "kycStateVerified": "Identidade verificada",
+  "kycStatePending": "Em verificação",
+  "kycStateRejected": "Não foi possível verificar a sua identidade.",
+  "kycStateOutdated": "Os dados do seu perfil mudaram. Verifique de novo a sua identidade.",
+  "kycRequiredForAutoAcceptance": "Verifique a sua identidade para a proposta poder ser aceite logo. Sem isto, a seguradora analisa-a e pode demorar até 15 dias.",
+  "kycOptional": "Opcional: a verificação acelera propostas futuras.",
+  "kycReasonDocumentUnreadable": "As fotografias do documento não estão legíveis.",
+  "kycReasonDocumentExpired": "O documento está fora da validade.",
+  "kycReasonDataMismatch": "Os dados do documento não coincidem com os do seu perfil.",
+  "kycReasonSelfieMismatch": "A selfie não permite confirmar que é o titular do documento.",
+  "kycReasonOther": "Outro motivo.",
+  "kycDocFront": "Frente do documento",
+  "kycDocBack": "Verso do documento",
+  "kycSelfie": "Selfie",
+  "kycTakePhoto": "Tirar fotografia",
+  "kycRetakePhoto": "Repetir",
+  "kycSubmit": "Enviar",
+  "kycNotNow": "Agora não",
+  "kycNoProposal": "A verificação de identidade é pedida quando faz uma proposta.",
+  "kycDocumentInstruction": "Coloque o documento dentro da moldura, sem reflexos, com todos os cantos visíveis.",
+  "kycSelfieInstruction": "Olhe de frente para a câmara, sem óculos escuros nem chapéu, num sítio com boa luz.",
+  "kycCameraPermissionDenied": "Para verificar a sua identidade, a MoSeguros precisa de acesso à câmara.",
+  "kycPhotosMissing": "Tire as fotografias pedidas antes de enviar.",
+  "proposalDeclarationsAnswers": "Respostas às declarações",
+  "proposalSuitabilityAnswers": "Respostas de adequação",
+  "proposalDocuments": "Documentos do produto",
+  "proposalMissingTitle": "Falta completar:",
+  "proposalDocumentsAcknowledged": "Recebi e li as Condições Gerais e a Informação Pré-contratual.",
+  "proposalSignAndSend": "Assinar e enviar à seguradora",
+  "proposalSendOnly": "Enviar à seguradora",
+  "proposalWaitUploads": "Aguarde o envio das fotografias da vistoria.",
+  "errorNoConnection": "Sem ligação à internet.",
+  "signTitle": "Assinar a proposta",
+  "signCodeSent": "Enviámos um código por {channel} para {destination}.",
+  "@signCodeSent": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "signViewPdf": "Ver a proposta (PDF)",
+  "signFallback": "Não foi possível enviar pelo canal habitual. Enviámos o código por {channel}.",
+  "@signFallback": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "signSubmitting": "A enviar à seguradora…",
+  "proposalTimelineCreated": "Criada",
+  "proposalTimelineSubmitted": "Enviada à seguradora",
+  "proposalTimelineDecided": "Decisão",
+  "proposalUnderReviewText": "A {insurer} está a analisar a sua proposta. Tem até {date} para responder.",
+  "@proposalUnderReviewText": {
+    "placeholders": {
+      "insurer": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalUnderReviewNoDue": "A {insurer} está a analisar a sua proposta.",
+  "@proposalUnderReviewNoDue": {
+    "placeholders": {
+      "insurer": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalAcceptedText": "Proposta aceite.",
+  "proposalPaymentSoon": "O pagamento fica disponível em breve.",
+  "proposalRejectedText": "A proposta não foi aceite.",
+  "proposalExpiredText": "Esta proposta expirou.",
+  "proposalDownloadSigned": "Descarregar a proposta assinada (PDF)",
+  "proposalInfoRequestedTitle": "A seguradora pediu mais informação",
+  "logoutPendingUploads": "{n, plural, =1{Tem 1 fotografia por enviar. Se terminar a sessão, perde-a.} other{Tem {n} fotografias por enviar. Se terminar a sessão, perde-as.}}",
+  "@logoutPendingUploads": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "logoutAnyway": "Terminar na mesma",
+  "cameraUnavailableNoGallery": "Não foi possível abrir a câmara.",
+  "inspectionRemove": "Retirar",
+  "inspectionRemoveConfirm": "Retirar esta fotografia da vistoria?"
 }

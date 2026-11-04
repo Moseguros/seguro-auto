@@ -84,6 +84,9 @@ class ApiClient {
   /// Pedidos de cotação e cotações (tag `Rating`).
   RatingApi get rating => _api.getRatingApi();
 
+  /// Propostas, vistoria e assinatura (tag `Proposal`).
+  ProposalApi get proposal => _api.getProposalApi();
+
   /// Descarga de ficheiros (tag `Document`).
   DocumentApi get document => _api.getDocumentApi();
 

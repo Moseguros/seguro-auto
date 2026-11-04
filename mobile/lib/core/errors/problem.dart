@@ -24,6 +24,7 @@ class Problem {
     this.errors = const [],
     this.retryAfterSeconds,
     this.attemptsRemaining,
+    this.body = const {},
   });
 
   /// Lê o erro de um pedido: `NETWORK_ERROR` sem resposta do servidor,
@@ -56,6 +57,7 @@ class Problem {
           _asInt(body['retryAfterSeconds']) ??
           _asInt(response.headers.value('retry-after')),
       attemptsRemaining: _asInt(body['attemptsRemaining']),
+      body: body,
     );
   }
 
@@ -68,6 +70,10 @@ class Problem {
   final List<FieldProblem> errors;
   final int? retryAfterSeconds;
   final int? attemptsRemaining;
+
+  /// Corpo do ProblemDetail, com as propriedades extra (ex.: `proposalId` de
+  /// `PROPOSAL_ALREADY_EXISTS`, `missing` de `PROPOSAL_INCOMPLETE`).
+  final Map<String, dynamic> body;
 
   /// Mensagem para o utilizador: `error<Code>` do ARB, ou `errorUnknown`.
   String message(AppLocalizations l10n) => apiErrorMessage(l10n, code);

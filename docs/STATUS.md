@@ -52,13 +52,13 @@ As sete tarefas juntas, com os conflitos resolvidos e os ficheiros gerados regen
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S3-01 Modelo de tarifa (`rating-v1.json`), avaliador interno e casos de referência | S2 | em revisão (branch `task/S3-01-modelo-tarifa`) |
-| S3-02 Cotações: pedido, avaliação em paralelo, tarifação externa, validade, simulador | S3-01 | em revisão (branch `task/S3-02-cotacoes`) |
-| S3-03 Web seguradora: editor de tarifa, importação/exportação CSV, simulador | S3-02 | em revisão (branch `task/S3-03-web-tarifas`) |
-| S3-04 Web cliente `/cliente/simular` e web mediador `/mediador/cotacoes` | S3-02 | em revisão (branch `task/S3-04-web-cotacoes`) |
-| S3-05 Mobile: "Fazer seguro" até à comparação | S3-02 | em revisão (branch `task/S3-05-mobile-cotacoes`) |
+| S3-01 Modelo de tarifa (`rating-v1.json`), avaliador interno e casos de referência | S2 | concluída (no `main` pelo PR de integração #37) |
+| S3-02 Cotações: pedido, avaliação em paralelo, tarifação externa, validade, simulador | S3-01 | concluída (no `main` pelo PR de integração #37) |
+| S3-03 Web seguradora: editor de tarifa, importação/exportação CSV, simulador | S3-02 | concluída (no `main` pelo PR de integração #37) |
+| S3-04 Web cliente `/cliente/simular` e web mediador `/mediador/cotacoes` | S3-02 | concluída (no `main` pelo PR de integração #37) |
+| S3-05 Mobile: "Fazer seguro" até à comparação | S3-02 | concluída (no `main` pelo PR de integração #37) |
 
-As cinco tarefas juntas, com os conflitos resolvidos, estão no branch local de verificação `task/S3-integracao` (S3-03 + S3-04 + S3-05).
+As cinco tarefas entraram juntas no `main` pelo PR de integração #37 (`task/S3-integracao`: S3-03 + S3-04 + S3-05).
 
 ### Sprint 4 — Proposta, KYC, adequação e aceitação
 
@@ -72,7 +72,9 @@ As cinco tarefas juntas, com os conflitos resolvidos, estão no branch local de 
 | S4-06 Proposta criada pelo mediador em nome do cliente | S4-05 | em revisão (branch `task/S4-06-proposta-mediador`, empilhado sobre o S4-05) |
 | S4-07 Web seguradora: fila de propostas, KYC e vistorias | S4-05 | em revisão (branch `task/S4-07-web-seguradora-propostas`, empilhado no S4-05) |
 | S4-08 Web cliente `/cliente/propostas` e web mediador `/mediador/propostas` | S4-06 | em revisão (branch `task/S4-08-web-propostas`, empilhado no S4-06, com o S4-07 junto) |
-| S4-09 Mobile: proposta, vistoria guiada offline, assinatura | S4-05 | pronta |
+| S4-09 Mobile: proposta, vistoria guiada offline, assinatura | S4-05 | em revisão (branch `task/S4-09-mobile-proposta`, sobre o `task/S4-05-submissao-e-aceitacao`) |
+
+As nove tarefas juntas, com os conflitos resolvidos e os ficheiros gerados regenerados, estão no branch local de verificação `task/S4-integracao` (S4-08, que já contém S4-01 a S4-07, + S4-09).
 
 ### Sprint 5 — Pagamentos
 
