@@ -27,7 +27,7 @@ export function IdentityStep({ getUserMedia }: { getUserMedia?: GetUserMedia } =
   const state = proposal.kyc.state;
   const kyc = useMyKyc(customer && state === 'REJECTED');
   const profile = useMyProfileQuery(customer && kycFormAllowed(state));
-  const done = isStepDone('identidade', proposal);
+  const done = isStepDone('identidade', proposal, wizard.kycSkipped);
 
   function later() {
     wizard.skipKyc();
