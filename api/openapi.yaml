@@ -1546,6 +1546,182 @@ paths:
       summary: Envia o logótipo da seguradora
       tags:
       - Catalog
+  /api/v1/insurer/kyc:
+    get:
+      description: "Permissão kyc:review. status por defeito PENDING; q procura no\
+        \ nome (sem diferenciar maiúsculas). Ordenação por submittedAt (defeito, asc:\
+        \ mais antigas primeiro), reviewedAt ou fullName."
+      operationId: listInsurerKycChecks
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          $ref: "#/components/schemas/KycCheckStatus"
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "submittedAt, reviewedAt ou fullName, com ,asc ou ,desc"
+        example: "submittedAt,asc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseKycCheckSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as verificações de identidade da seguradora
+      tags:
+      - Identity
+  /api/v1/insurer/kyc/{id}:
+    get:
+      description: "Permissão kyc:review. Os dados do cliente são os do envio, com\
+        \ o número do documento em claro; files tem os ids para GET /api/v1/files/{id}.\
+        \ Fica registado na auditoria (KYC.VIEW)."
+      operationId: getInsurerKycCheck
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerKycCheckResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma verificação de identidade
+      tags:
+      - Identity
+  /api/v1/insurer/kyc/{id}/reject:
+    post:
+      description: "Permissão kyc:review. PENDING → REJECTED. reasonCode obrigató\
+        rio; reason 10–500 caracteres, obrigatório com OTHER (errors[].code REQUIRED,\
+        \ TOO_SHORT, TOO_LONG). 409 como em verifyKycCheck. O cliente recebe um e-mail\
+        \ com o motivo se tiver o e-mail verificado."
+      operationId: rejectKycCheck
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectKycCheckRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerKycCheckResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Recusa uma identidade
+      tags:
+      - Identity
+  /api/v1/insurer/kyc/{id}/verify:
+    post:
+      description: Permissão kyc:review. PENDING → VERIFIED. Outro estado → 409 INVALID_STATE_TRANSITION;
+        version diferente → 409 CONCURRENT_MODIFICATION. O cliente recebe um e-mail
+        se o tiver verificado.
+      operationId: verifyKycCheck
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyKycCheckRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerKycCheckResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Verifica uma identidade
+      tags:
+      - Identity
   /api/v1/insurer/product-versions/{id}:
     get:
       description: Permissão product:read. Inclui as coberturas e os documentos.
@@ -2771,6 +2947,84 @@ paths:
       summary: Altera um condutor
       tags:
       - Vehicle
+  /api/v1/me/kyc:
+    get:
+      description: "state: NONE (sem verificações; check omitido), PENDING, VERIFIED,\
+        \ REJECTED ou OUTDATED (verificada, mas o perfil mudou depois). check é a\
+        \ verificação mais recente."
+      operationId: getMyKyc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyKycResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Estado da verificação de identidade do cliente
+      tags:
+      - Identity
+    post:
+      description: "Os dados do documento vêm do perfil. Perfil incompleto → 409 PROFILE_INCOMPLETE;\
+        \ verificação em análise → 409 KYC_ALREADY_PENDING; identidade já verificada\
+        \ (e perfil sem alterações) → 409 KYC_ALREADY_VERIFIED. Partes em falta ou\
+        \ inválidas → 400 VALIDATION_ERROR (insurerId: REQUIRED ou INVALID_INSURER;\
+        \ docFront e selfie: REQUIRED; docBack: REQUIRED no BI e no DIRE, NOT_ALLOWED\
+        \ no passaporte). Cada ficheiro: JPEG, PNG ou HEIC até 10 MB (vazio → 400\
+        \ FILE_EMPTY; maior → 413 FILE_TOO_LARGE; outro tipo → 415 FILE_TYPE_NOT_ALLOWED)."
+      operationId: submitMyKyc
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docBack:
+                  type: string
+                  format: binary
+                docFront:
+                  type: string
+                  format: binary
+                insurerId:
+                  type: string
+                  format: uuid
+                  description: Seguradora a quem a verificação é enviada
+                selfie:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KycCheckResponse"
+          description: Created
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia o documento e a selfie para verificação
+      tags:
+      - Identity
   /api/v1/me/profile:
     get:
       description: O documento e o NUIT vêm mascarados; os campos por preencher são
@@ -5096,6 +5350,46 @@ components:
           nullable: true
       required:
       - logoFileId
+    InsurerKycCheckResponse:
+      type: object
+      properties:
+        customer:
+          $ref: "#/components/schemas/KycCustomerResponse"
+        files:
+          $ref: "#/components/schemas/KycFilesResponse"
+        id:
+          type: string
+          format: uuid
+        previousChecks:
+          type: array
+          description: "Outras verificações do mesmo cliente enviadas a esta seguradora,\
+            \ da mais recente para a mais antiga"
+          items:
+            $ref: "#/components/schemas/KycPreviousCheckResponse"
+        rejectionReason:
+          type: string
+        rejectionReasonCode:
+          $ref: "#/components/schemas/KycRejectionReason"
+        reviewedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/KycCheckStatus"
+        submittedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int64
+          description: Enviar em verify/reject
+      required:
+      - customer
+      - files
+      - id
+      - previousChecks
+      - status
+      - submittedAt
+      - version
     InsurerProfileRequest:
       type: object
       properties:
@@ -5286,6 +5580,171 @@ components:
             $ref: "#/components/schemas/Jwk"
       required:
       - keys
+    KycCheckResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        idDocNumberMasked:
+          type: string
+          description: Todos os caracteres menos os últimos 4 trocados por *
+          example: '*********345A'
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        insurerId:
+          type: string
+          format: uuid
+          description: Seguradora a quem foi enviada
+        rejectionReason:
+          type: string
+          description: "Texto livre do subscritor (só em REJECTED, se o escreveu)"
+          example: A fotografia da frente está desfocada.
+        rejectionReasonCode:
+          $ref: "#/components/schemas/KycRejectionReason"
+        reviewedAt:
+          type: string
+          format: date-time
+          description: Omitido enquanto PENDING
+        status:
+          $ref: "#/components/schemas/KycCheckStatus"
+        submittedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - idDocNumberMasked
+      - idDocType
+      - insurerId
+      - status
+      - submittedAt
+    KycCheckStatus:
+      type: string
+      enum:
+      - PENDING
+      - VERIFIED
+      - REJECTED
+    KycCheckSummaryResponse:
+      type: object
+      properties:
+        fullName:
+          type: string
+          description: Cópia do perfil no momento do envio
+          example: Ana Maria Mussa
+        id:
+          type: string
+          format: uuid
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        reviewedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/KycCheckStatus"
+        submittedAt:
+          type: string
+          format: date-time
+      required:
+      - fullName
+      - id
+      - idDocType
+      - status
+      - submittedAt
+    KycCustomerResponse:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          example: 1990-05-14
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+        idDocNumber:
+          type: string
+          description: "Em claro, para comparar com a fotografia"
+          example: 110100123456A
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+        msisdnMasked:
+          type: string
+          description: Omitido se a conta só tem e-mail
+          example: +258*****4567
+        userId:
+          type: string
+          format: uuid
+      required:
+      - birthDate
+      - fullName
+      - idDocNumber
+      - idDocType
+      - userId
+    KycFilesResponse:
+      type: object
+      properties:
+        docBackFileId:
+          type: string
+          format: uuid
+          description: Omitido no passaporte
+        docFrontFileId:
+          type: string
+          format: uuid
+        selfieFileId:
+          type: string
+          format: uuid
+      required:
+      - docFrontFileId
+      - selfieFileId
+    KycPreviousCheckResponse:
+      type: object
+      description: "Outras verificações do mesmo cliente enviadas a esta seguradora,\
+        \ da mais recente para a mais antiga"
+      properties:
+        id:
+          type: string
+          format: uuid
+        rejectionReasonCode:
+          $ref: "#/components/schemas/KycRejectionReason"
+        status:
+          $ref: "#/components/schemas/KycCheckStatus"
+        submittedAt:
+          type: string
+          format: date-time
+      required:
+      - id
+      - status
+      - submittedAt
+    KycRejectionReason:
+      type: string
+      description: Só em REJECTED
+      enum:
+      - DOCUMENT_UNREADABLE
+      - DOCUMENT_EXPIRED
+      - DATA_MISMATCH
+      - SELFIE_MISMATCH
+      - OTHER
+    KycState:
+      type: string
+      description: "OUTDATED: verificada, mas o nome, a data de nascimento ou o documento\
+        \ mudaram depois"
+      enum:
+      - NONE
+      - PENDING
+      - VERIFIED
+      - REJECTED
+      - OUTDATED
     LogoutRequest:
       type: object
       properties:
@@ -5390,6 +5849,15 @@ components:
       description: Telemóvel moçambicano em E.164
       example: "+258841234567"
       pattern: "^\\+2588[2-7]\\d{7}$"
+    MyKycResponse:
+      type: object
+      properties:
+        check:
+          $ref: "#/components/schemas/KycCheckResponse"
+        state:
+          $ref: "#/components/schemas/KycState"
+      required:
+      - state
     Nuit:
       type: string
       description: "NUIT: 9 dígitos"
@@ -5811,6 +6279,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/InvitationResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseKycCheckSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/KycCheckSummaryResponse"
         page:
           type: integer
           format: int32
@@ -7097,6 +7588,22 @@ components:
       - seats
       - source
       - year
+    RejectKycCheckRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: O nome no documento é diferente do perfil.
+          maxLength: 500
+          minLength: 10
+        reasonCode:
+          $ref: "#/components/schemas/KycRejectionReason"
+        version:
+          type: integer
+          format: int64
+      required:
+      - reasonCode
+      - version
     ReplaceCoveragesRequest:
       type: object
       properties:
@@ -8168,6 +8675,14 @@ components:
       required:
       - challengeId
       - code
+    VerifyKycCheckRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+      required:
+      - version
     VerifyOtpRequest:
       type: object
       properties:
