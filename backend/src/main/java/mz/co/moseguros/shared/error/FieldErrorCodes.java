@@ -177,6 +177,18 @@ public final class FieldErrorCodes {
     /** Confirmação obrigatória ({@code true}). */
     public static final String MUST_BE_TRUE = "MUST_BE_TRUE";
 
+    // Vistoria (S4-03)
+    /** Ângulo que não é um {@code PhotoSlot}. */
+    public static final String INVALID_SLOT = "INVALID_SLOT";
+    /** Já há {@code max-extra-photos} fotografias extra activas. */
+    public static final String EXTRA_PHOTOS_LIMIT = "EXTRA_PHOTOS_LIMIT";
+    /** {@code takenAt} anterior a agora − {@code max-photo-age-days}. */
+    public static final String PHOTO_TOO_OLD = "PHOTO_TOO_OLD";
+    /** {@code takenAt} posterior a agora + 5 minutos. */
+    public static final String PHOTO_IN_FUTURE = "PHOTO_IN_FUTURE";
+    /** Só uma das coordenadas, ou fora dos limites. */
+    public static final String INVALID_COORDINATES = "INVALID_COORDINATES";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

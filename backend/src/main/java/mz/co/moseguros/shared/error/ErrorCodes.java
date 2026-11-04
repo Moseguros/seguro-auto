@@ -243,6 +243,20 @@ public final class ErrorCodes {
     /** Dados do veículo ou do condutor usados na tarifa mudaram depois da cotação; propriedade {@code fields} (409). */
     public static final String QUOTE_DATA_CHANGED = "QUOTE_DATA_CHANGED";
 
+    // Vistoria de danos próprios (S4-03)
+    /** A proposta não tem coberturas de danos próprios: não há vistoria (409). */
+    public static final String INSPECTION_NOT_REQUIRED = "INSPECTION_NOT_REQUIRED";
+    /** Vistoria inexistente, de outra seguradora ou de uma proposta ainda não submetida (404). */
+    public static final String INSPECTION_NOT_FOUND = "INSPECTION_NOT_FOUND";
+    /** A vistoria não está em {@code PENDING} nem {@code REJECTED} (409). */
+    public static final String INSPECTION_NOT_EDITABLE = "INSPECTION_NOT_EDITABLE";
+    /** Faltam ângulos obrigatórios; propriedade {@code missingSlots} (409). */
+    public static final String INSPECTION_PHOTOS_MISSING = "INSPECTION_PHOTOS_MISSING";
+    /** Fotografia inexistente, de outra vistoria ou já retirada (404). */
+    public static final String PHOTO_NOT_FOUND = "PHOTO_NOT_FOUND";
+    /** A proposta não está em {@code UNDER_REVIEW} (409). */
+    public static final String PROPOSAL_NOT_UNDER_REVIEW = "PROPOSAL_NOT_UNDER_REVIEW";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -347,6 +361,12 @@ public final class ErrorCodes {
             Map.entry(PROPOSAL_NOT_EDITABLE, 409),
             Map.entry(INSURER_NOT_ACTIVE, 409),
             Map.entry(SUITABILITY_NOT_WARNED, 409),
+            Map.entry(INSPECTION_NOT_REQUIRED, 409),
+            Map.entry(INSPECTION_NOT_FOUND, 404),
+            Map.entry(INSPECTION_NOT_EDITABLE, 409),
+            Map.entry(INSPECTION_PHOTOS_MISSING, 409),
+            Map.entry(PHOTO_NOT_FOUND, 404),
+            Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409),
             Map.entry(QUOTE_DATA_CHANGED, 409));
 
     private ErrorCodes() {
