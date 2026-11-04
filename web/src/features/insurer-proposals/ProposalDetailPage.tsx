@@ -41,6 +41,7 @@ import {
   insurerKycKey,
   insurerProposalKey,
   insurerProposalsKey,
+  NavigationNotice,
   QueueError,
   type QueueNavigationState,
 } from './common';
@@ -344,6 +345,7 @@ export function ProposalDetailPage() {
         )}
       </Box>
       {narrow && decisionBar}
+      <NavigationNotice />
       <Snackbar
         open={!!toast}
         autoHideDuration={6000}
