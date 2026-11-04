@@ -1,15 +1,18 @@
 package mz.co.moseguros.document;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import mz.co.moseguros.document.application.FileStoreService;
+import mz.co.moseguros.document.application.PdfRenderService;
 import org.springframework.stereotype.Service;
 
 /**
  * Interface pública do módulo Documentos (modelo transversal §3): guarda ficheiros e devolve o
  * seu conteúdo ao módulo dono. Quem pode ler pelo download ({@code GET /api/v1/files/{id}}) é
  * decidido pela {@link FileAccessPolicy} do dono. Não há {@code delete}: os ficheiros nunca
- * ligados são limpos ao fim de 30 dias. ({@code renderPdf} chega no S4.)
+ * ligados são limpos ao fim de 30 dias. {@link #renderPdf} gera PDFs a partir de modelos (S4-04).
  *
  * <p>Todos os métodos correm no âmbito de quem chama (o RLS aplica-se).
  */
@@ -17,9 +20,34 @@ import org.springframework.stereotype.Service;
 public class DocumentApi {
 
     private final FileStoreService files;
+    private final PdfRenderService pdfs;
 
-    public DocumentApi(FileStoreService files) {
+    public DocumentApi(FileStoreService files, PdfRenderService pdfs) {
         this.files = files;
+        this.pdfs = pdfs;
+    }
+
+    /**
+     * Gera um PDF a partir do modelo {@code templateCode} (registado em {@code PdfTemplates}, textos em
+     * {@code messages/pdf_{pt,en}.properties}), guarda-o ({@code application/pdf}) e liga-o ao dono do
+     * {@code target}, tudo numa só chamada (S4-04 §1, decisão D5). Tem de correr numa transacção
+     * ({@code MANDATORY}): o {@code markLinked} é desfeito se ela fizer rollback (o ficheiro fica órfão
+     * e é limpo ao fim de 30 dias). O {@code sha256} do {@link FileRef} é o dos bytes guardados.
+     *
+     * <p>Variável {@code fmt} nos modelos: {@code money}, {@code date}, {@code dateTime}, {@code percent}.
+     *
+     * @param model  variáveis do modelo (nunca registadas em log)
+     * @param locale {@code pt} ou {@code en} (outra → {@code pt})
+     * @throws IllegalArgumentException {@code target} nulo (um PDF sem dono não teria
+     *                                  {@link FileAccessPolicy}) ou {@code ownerType} sem política
+     * @throws mz.co.moseguros.shared.error.DomainException 500 {@code PDF_TEMPLATE_NOT_FOUND} ou
+     *                                                      {@code PDF_RENDER_FAILED}
+     */
+    public FileRef renderPdf(String templateCode, Map<String, Object> model, Locale locale, PdfTarget target) {
+        if (target == null) {
+            throw new IllegalArgumentException("The PDF target (owner of the file) is required");
+        }
+        return pdfs.render(templateCode, model, locale, target);
     }
 
     /**

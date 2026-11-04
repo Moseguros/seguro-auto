@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Partes comuns dos PDF da MoSeguros (S4-04 §1): estilos (A4, margens de 18 mm, fonte Inter embebida,
+  azul da marca #142D4E nos títulos e nas linhas; sem laranja), cabeçalho com o logótipo e rodapé em
+  todas as páginas ("MoSeguros · {número} · Página n de total", com counter(page) e counter(pages)).
+  XHTML bem formado: o Flying Saucer exige XML. Os recursos relativos (fontes e logótipo) resolvem-se a
+  partir da raiz do classpath (FlyingSaucerPdfRenderer).
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <style th:fragment="styles" type="text/css">
+    @font-face {
+      font-family: 'Inter';
+      src: url('fonts/Inter-Regular.ttf');
+      font-weight: 400;
+      font-style: normal;
+      -fs-pdf-font-embed: embed;
+      -fs-pdf-font-encoding: Identity-H;
+    }
+    @font-face {
+      font-family: 'Inter';
+      src: url('fonts/Inter-SemiBold.ttf');
+      font-weight: 600;
+      font-style: normal;
+      -fs-pdf-font-embed: embed;
+      -fs-pdf-font-encoding: Identity-H;
+    }
+    @page {
+      size: A4;
+      margin: 18mm 18mm 22mm 18mm;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      line-height: 1.35;
+      color: #1B2733;
+    }
+    .header { border-bottom: 1.5pt solid #142D4E; padding-bottom: 6pt; margin-bottom: 10pt; }
+    .header table { width: 100%; border-collapse: collapse; }
+    .header td { vertical-align: middle; padding: 0; }
+    .logo { width: 46mm; }
+    .meta { text-align: right; font-size: 8.5pt; color: #4A5D75; }
+    h1 { font-size: 14pt; font-weight: 600; color: #142D4E; margin: 6pt 0 2pt 0; }
+    h2 {
+      font-size: 10.5pt; font-weight: 600; color: #142D4E;
+      border-bottom: 0.75pt solid #142D4E; padding-bottom: 2pt; margin: 12pt 0 5pt 0;
+      page-break-after: avoid;
+    }
+    table.fields { width: 100%; border-collapse: collapse; }
+    table.fields td { padding: 2pt 4pt 2pt 0; vertical-align: top; }
+    table.fields td.label { width: 34%; color: #4A5D75; }
+    table.grid { width: 100%; border-collapse: collapse; page-break-inside: auto; }
+    table.grid th {
+      text-align: left; font-weight: 600; color: #142D4E;
+      border-bottom: 0.75pt solid #142D4E; padding: 3pt 4pt 3pt 0;
+    }
+    table.grid td { border-bottom: 0.5pt solid #C9D5E3; padding: 3pt 4pt 3pt 0; vertical-align: top; }
+    table.grid tr { page-break-inside: avoid; }
+    .num { text-align: right; white-space: nowrap; }
+    .total td { font-weight: 600; color: #142D4E; border-bottom: none; }
+    .note { color: #4A5D75; }
+    .block { page-break-inside: avoid; }
+    .question { margin: 4pt 0 1pt 0; }
+    .answer { font-weight: 600; }
+    .follow { margin-left: 10pt; color: #4A5D75; }
+    p { margin: 3pt 0; }
+  </style>
+</head>
+<body>
+  <div th:fragment="header(number, generatedAt, revision)" class="header">
+    <table>
+      <tr>
+        <td><img class="logo" src="templates/pdf/logo.png" alt="MoSeguros"/></td>
+        <td class="meta">
+          <div th:text="${number}">PR-2027-000001</div>
+          <div><span th:text="#{pdf.header.generatedAt}">Gerada em</span> <span th:text="${fmt.dateTime(generatedAt)}">09/01/2027 14:05</span></div>
+          <div><span th:text="#{pdf.header.revision}">Revisão</span> <span th:text="${revision}">1</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Rodapé de todas as páginas: "MoSeguros · {número} · Página n de total". Os textos vêm das
+       mensagens; os números são counter(page) e counter(pages) do CSS. -->
+  <style th:fragment="footer(number)" type="text/css" th:inline="text">
+    @page {
+      @bottom-center {
+        content: "[[#{pdf.footer(${number})}]] " counter(page) " [[#{pdf.footer.of}]] " counter(pages);
+        font-family: 'Inter', sans-serif;
+        font-size: 8pt;
+        color: #4A5D75;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -243,6 +243,20 @@ public final class ErrorCodes {
     /** Dados do veículo ou do condutor usados na tarifa mudaram depois da cotação; propriedade {@code fields} (409). */
     public static final String QUOTE_DATA_CHANGED = "QUOTE_DATA_CHANGED";
 
+    // PDF e assinatura da proposta (S4-04)
+    /** Modelo de PDF desconhecido (erro de programação) (500). */
+    public static final String PDF_TEMPLATE_NOT_FOUND = "PDF_TEMPLATE_NOT_FOUND";
+    /** O PDF não pôde ser gerado (modelo inválido, texto em falta ou erro do renderizador) (500). */
+    public static final String PDF_RENDER_FAILED = "PDF_RENDER_FAILED";
+    /** A conta do signatário não tem telemóvel nem e-mail verificado para receber o código (409). */
+    public static final String SIGNER_CONTACT_MISSING = "SIGNER_CONTACT_MISSING";
+    /** Faltam passos da proposta; propriedade {@code missing} (lista de itens) (409). */
+    public static final String PROPOSAL_INCOMPLETE = "PROPOSAL_INCOMPLETE";
+    /** Não há pedido de assinatura em curso, ou é de outro código (409). */
+    public static final String SIGN_REQUEST_NOT_FOUND = "SIGN_REQUEST_NOT_FOUND";
+    /** A proposta mudou depois de o código de assinatura ter sido pedido (409). */
+    public static final String PROPOSAL_CHANGED_SINCE_SIGN_REQUEST = "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -347,7 +361,13 @@ public final class ErrorCodes {
             Map.entry(PROPOSAL_NOT_EDITABLE, 409),
             Map.entry(INSURER_NOT_ACTIVE, 409),
             Map.entry(SUITABILITY_NOT_WARNED, 409),
-            Map.entry(QUOTE_DATA_CHANGED, 409));
+            Map.entry(QUOTE_DATA_CHANGED, 409),
+            Map.entry(PDF_TEMPLATE_NOT_FOUND, 500),
+            Map.entry(PDF_RENDER_FAILED, 500),
+            Map.entry(SIGNER_CONTACT_MISSING, 409),
+            Map.entry(PROPOSAL_INCOMPLETE, 409),
+            Map.entry(SIGN_REQUEST_NOT_FOUND, 409),
+            Map.entry(PROPOSAL_CHANGED_SINCE_SIGN_REQUEST, 409));
 
     private ErrorCodes() {
     }
