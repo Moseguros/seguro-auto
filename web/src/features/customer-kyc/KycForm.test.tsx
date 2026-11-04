@@ -68,7 +68,8 @@ describe('KycForm', () => {
 
     await user.upload(screen.getByTestId('kyc-file-environment'), photo('passaporte.jpg'));
     await user.upload(selfieInput, photo('eu.jpg'));
-    await user.click(screen.getByRole('button', { name: 'Enviar' }));
+    // O diálogo da câmara fecha com transição; até lá o resto da página está aria-hidden.
+    await user.click(await screen.findByRole('button', { name: 'Enviar' }, { timeout: 5000 }));
 
     await waitFor(() => expect(onSubmitted).toHaveBeenCalled());
     const body = calls[0]!.data as FormData;
