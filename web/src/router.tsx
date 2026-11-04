@@ -4,11 +4,13 @@ import { AuthRoot } from './auth/AuthProvider';
 import { Permissions, RequirePermission, type Permission } from './auth/permissions';
 import { RequireAuth } from './auth/RequireAuth';
 import { OtpSettingsPage } from './features/admin-auth/OtpSettingsPage';
-import { InspectionQueuePage } from './features/insurer-inspections/InspectionQueuePage';
-import { KycQueuePage } from './features/insurer-kyc/KycQueuePage';
-import { KycReviewPage } from './features/insurer-kyc/KycReviewPage';
-import { ProposalDetailRoute } from './features/insurer-proposals/ProposalDetailPage';
-import { ProposalQueueRoute } from './features/insurer-proposals/ProposalQueuePage';
+import {
+  InspectionQueuePage,
+  KycQueuePage,
+  KycReviewPage,
+  ProposalDetailRoute,
+  ProposalQueueRoute,
+} from './features/insurer-proposals/lazyPages';
 import { CustomerLoginPage } from './features/customer-auth/CustomerLoginPage';
 import { CustomerHomePage } from './features/customer-profile/CustomerHomePage';
 import { DriverFormPage } from './features/drivers/DriverFormPage';
