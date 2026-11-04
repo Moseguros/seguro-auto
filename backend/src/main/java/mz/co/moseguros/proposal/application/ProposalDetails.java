@@ -8,12 +8,15 @@ import mz.co.moseguros.proposal.domain.Proposal;
 import mz.co.moseguros.proposal.domain.SuitabilityAnswer;
 
 /**
- * Proposta com as respostas e o estado KYC do cliente, para o {@code ProposalResponse} (S4-02 §10).
+ * Proposta com as respostas, a vistoria e o estado KYC do cliente, para o {@code ProposalResponse}
+ * (S4-02 §10, S4-03 §7).
  *
  * @param declarations       vazia até serem gravadas
  * @param suitabilityAnswers vazia até serem gravadas
+ * @param inspection         {@code null} sem vistoria exigida
  * @param kycState           {@code IdentityApi.kycStatus(customerUserId).state()}
  */
 public record ProposalDetails(Proposal proposal, List<Declaration> declarations,
-                              List<SuitabilityAnswer> suitabilityAnswers, KycState kycState) {
+                              List<SuitabilityAnswer> suitabilityAnswers, InspectionDetails inspection,
+                              KycState kycState) {
 }

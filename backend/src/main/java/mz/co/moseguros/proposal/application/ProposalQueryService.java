@@ -11,6 +11,9 @@ import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.ProposalView;
 import mz.co.moseguros.proposal.domain.Declaration;
 import mz.co.moseguros.proposal.domain.DeclarationRepository;
+import mz.co.moseguros.proposal.domain.Inspection;
+import mz.co.moseguros.proposal.domain.InspectionPhotoRepository;
+import mz.co.moseguros.proposal.domain.InspectionRepository;
 import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.Proposal;
 import mz.co.moseguros.proposal.domain.ProposalRepository;
@@ -41,16 +44,23 @@ public class ProposalQueryService {
     private final ProposalRepository proposals;
     private final DeclarationRepository declarations;
     private final SuitabilityAnswerRepository suitabilityAnswers;
+    private final InspectionRepository inspections;
+    private final InspectionPhotoRepository photos;
+    private final InspectionProperties inspectionProperties;
     private final IdentityApi identity;
     private final ProposalJson json;
     private final CurrentUser currentUser;
 
     public ProposalQueryService(ProposalRepository proposals, DeclarationRepository declarations,
-                                SuitabilityAnswerRepository suitabilityAnswers, IdentityApi identity,
-                                ProposalJson json, CurrentUser currentUser) {
+                                SuitabilityAnswerRepository suitabilityAnswers, InspectionRepository inspections,
+                                InspectionPhotoRepository photos, InspectionProperties inspectionProperties,
+                                IdentityApi identity, ProposalJson json, CurrentUser currentUser) {
         this.proposals = proposals;
         this.declarations = declarations;
         this.suitabilityAnswers = suitabilityAnswers;
+        this.inspections = inspections;
+        this.photos = photos;
+        this.inspectionProperties = inspectionProperties;
         this.identity = identity;
         this.json = json;
         this.currentUser = currentUser;
@@ -89,14 +99,25 @@ public class ProposalQueryService {
         return proposal;
     }
 
-    /** Proposta com as respostas e o estado KYC do cliente. */
+    /** Proposta com as respostas, a vistoria e o estado KYC do cliente. */
     @Transactional(readOnly = true)
     public ProposalDetails details(Proposal proposal) {
         List<Declaration> decl = declarations.findByProposalId(proposal.getId()).stream()
                 .sorted(Comparator.comparing(Declaration::getQuestionCode)).toList();
         List<SuitabilityAnswer> suit = suitabilityAnswers.findByProposalId(proposal.getId()).stream()
                 .sorted(Comparator.comparing(SuitabilityAnswer::getQuestionCode)).toList();
-        return new ProposalDetails(proposal, decl, suit, identity.kycStatus(proposal.getCustomerUserId()).state());
+        InspectionDetails inspection = proposal.isInspectionRequired()
+                ? inspections.findByProposalId(proposal.getId()).map(this::inspectionDetails).orElse(null)
+                : null;
+        return new ProposalDetails(proposal, decl, suit, inspection,
+                identity.kycStatus(proposal.getCustomerUserId()).state());
+    }
+
+    /** Vistoria com as fotografias activas (S4-03 §7). */
+    @Transactional(readOnly = true)
+    public InspectionDetails inspectionDetails(Inspection inspection) {
+        return InspectionDetails.of(inspection, photos.findActive(inspection.getId()),
+                inspectionProperties.maxExtraPhotos());
     }
 
     /** {@code ProposalApi.view}: no âmbito de quem chama, sem a verificação do serviço. */

@@ -18,6 +18,8 @@ import mz.co.moseguros.catalog.ProductVersionView;
 import mz.co.moseguros.identity.CustomerView;
 import mz.co.moseguros.identity.IdentityApi;
 import mz.co.moseguros.proposal.domain.CoverageLine;
+import mz.co.moseguros.proposal.domain.Inspection;
+import mz.co.moseguros.proposal.domain.InspectionRepository;
 import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.PremiumBreakdown;
 import mz.co.moseguros.proposal.domain.Proposal;
@@ -61,6 +63,7 @@ public class ProposalService {
     private static final Logger log = LoggerFactory.getLogger(ProposalService.class);
 
     private final ProposalRepository proposals;
+    private final InspectionRepository inspections;
     private final ProposalQueryService queries;
     private final ProposalSystemLookups lookups;
     private final ProposalJson json;
@@ -74,11 +77,13 @@ public class ProposalService {
     private final ProposalProperties properties;
     private final Clock clock;
 
-    public ProposalService(ProposalRepository proposals, ProposalQueryService queries, ProposalSystemLookups lookups,
+    public ProposalService(ProposalRepository proposals, InspectionRepository inspections,
+                           ProposalQueryService queries, ProposalSystemLookups lookups,
                            ProposalJson json, RatingApi rating, CatalogApi catalog, VehicleApi vehicles,
                            IdentityApi identity, BusinessNumberGenerator numbers, AuditService audit,
                            CurrentUser currentUser, ProposalProperties properties, Clock clock) {
         this.proposals = proposals;
+        this.inspections = inspections;
         this.queries = queries;
         this.lookups = lookups;
         this.json = json;
@@ -165,6 +170,7 @@ public class ProposalService {
             // Duas propostas em simultâneo para a mesma cotação: a unicidade de quote_id recusa a segunda.
             throw alreadyExists(null);
         }
+        createInspectionIfRequired(proposal);
         rating.markUsed(quoteId);
 
         // 9. Auditoria.
@@ -211,6 +217,13 @@ public class ProposalService {
         audit.record(new AuditRecord(actorType(), currentUser.id().toString(), proposal.getInsurerId(),
                 "PROPOSAL.UPDATE", "Proposal", proposal.getId().toString(), before, UpdateState.of(proposal)));
         return queries.details(proposal);
+    }
+
+    /** Vistoria {@code PENDING} na mesma transacção, se a proposta tiver danos próprios (S4-03 §3, regra 1). */
+    void createInspectionIfRequired(Proposal proposal) {
+        if (proposal.isInspectionRequired()) {
+            inspections.saveAndFlush(Inspection.pending(proposal));
+        }
     }
 
     /** Actor das escritas sobre a proposta: o cliente ou o utilizador do mediador (S4-06). */

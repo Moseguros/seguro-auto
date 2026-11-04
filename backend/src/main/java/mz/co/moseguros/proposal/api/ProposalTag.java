@@ -4,7 +4,7 @@ package mz.co.moseguros.proposal.api;
 final class ProposalTag {
 
     static final String NAME = "Proposal";
-    static final String DESCRIPTION = "Propostas: criação a partir de uma cotação, declarações de risco, adequação";
+    static final String DESCRIPTION = "Propostas: criação a partir de uma cotação, declarações de risco, adequação, vistoria";
 
     private ProposalTag() {
     }
