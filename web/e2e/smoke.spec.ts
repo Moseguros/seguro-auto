@@ -49,7 +49,7 @@ test('/seguradora mostra o menu da área (com sessão de staff)', async ({ page 
         id: '0192f0c4-0000-7000-8000-000000000002',
         type: 'STAFF',
         roles: ['UNDERWRITER'],
-        permissions: [],
+        permissions: ['product:read'],
         preferredLanguage: 'pt',
         emailVerified: true,
         msisdnVerified: false,
