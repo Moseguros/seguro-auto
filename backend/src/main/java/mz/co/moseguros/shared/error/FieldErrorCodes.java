@@ -161,6 +161,38 @@ public final class FieldErrorCodes {
     /** Referência de segredo fora do formato {@code config:<chave>}. */
     public static final String INVALID_SECRET_REF = "INVALID_SECRET_REF";
 
+    // KYC do cliente (S4-01)
+    /** Seguradora inexistente, que não é seguradora ou que não está activa. */
+    public static final String INVALID_INSURER = "INVALID_INSURER";
+
+    // Propostas: declarações e adequação (S4-02)
+    /** Falta resposta a alguma das perguntas fixas. */
+    public static final String ANSWERS_INCOMPLETE = "ANSWERS_INCOMPLETE";
+    /** A mesma pergunta respondida mais de uma vez. */
+    public static final String ANSWER_DUPLICATED = "ANSWER_DUPLICATED";
+    /** Código de pergunta desconhecido. */
+    public static final String UNKNOWN_QUESTION = "UNKNOWN_QUESTION";
+    /** Resposta fora das permitidas para o tipo da pergunta. */
+    public static final String INVALID_ANSWER = "INVALID_ANSWER";
+    /** Confirmação obrigatória ({@code true}). */
+    public static final String MUST_BE_TRUE = "MUST_BE_TRUE";
+
+    // Vistoria (S4-03)
+    /** Ângulo que não é um {@code PhotoSlot}. */
+    public static final String INVALID_SLOT = "INVALID_SLOT";
+    /** Já há {@code max-extra-photos} fotografias extra activas. */
+    public static final String EXTRA_PHOTOS_LIMIT = "EXTRA_PHOTOS_LIMIT";
+    /** {@code takenAt} anterior a agora − {@code max-photo-age-days}. */
+    public static final String PHOTO_TOO_OLD = "PHOTO_TOO_OLD";
+    /** {@code takenAt} posterior a agora + 5 minutos. */
+    public static final String PHOTO_IN_FUTURE = "PHOTO_IN_FUTURE";
+    /** Só uma das coordenadas, ou fora dos limites. */
+    public static final String INVALID_COORDINATES = "INVALID_COORDINATES";
+
+    // Regras de aceitação da versão do produto (S4-05)
+    /** As regras de aceitação não cumprem o {@code underwriting-v1.json} (um erro por violação). */
+    public static final String INVALID_RULES = "INVALID_RULES";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

@@ -14,6 +14,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import mz.co.moseguros.identity.SignOtpChallenge;
+import mz.co.moseguros.identity.SignOtpRequest;
+import mz.co.moseguros.identity.SignOtpVerification;
 import mz.co.moseguros.identity.TokenPair;
 import mz.co.moseguros.identity.domain.AccountType;
 import mz.co.moseguros.identity.domain.CustomerProfileRepository;
@@ -23,6 +26,7 @@ import mz.co.moseguros.identity.domain.OtpChallenge.IdentifierType;
 import mz.co.moseguros.identity.domain.OtpChallenge.Purpose;
 import mz.co.moseguros.identity.domain.OtpChallengeRepository;
 import mz.co.moseguros.identity.domain.OtpIdentifier;
+import mz.co.moseguros.identity.domain.OtpSignContext;
 import mz.co.moseguros.identity.domain.OtpSettings;
 import mz.co.moseguros.identity.domain.OtpSettingsRepository;
 import mz.co.moseguros.identity.domain.UserAccount;
@@ -30,10 +34,13 @@ import mz.co.moseguros.identity.domain.UserAccountRepository;
 import mz.co.moseguros.identity.domain.UserRoleRepository;
 import mz.co.moseguros.notification.DeliveryResult;
 import mz.co.moseguros.notification.NotificationApi;
+import mz.co.moseguros.notification.SignOtpText;
 import mz.co.moseguros.shared.audit.AuditService;
 import mz.co.moseguros.shared.domain.Channel;
+import mz.co.moseguros.shared.domain.Money;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;
+import mz.co.moseguros.shared.format.MoneyFormat;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +51,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * OTP do cliente (RF-01, ADR-003): opções, pedido de código com alternativa automática de canal,
- * consulta do desafio, validação com login (e registo) e envio de teste pelo administrador.
+ * consulta do desafio, validação com login (e registo), envio de teste pelo administrador e códigos
+ * de assinatura de documentos (S4-04: {@link #requestSign}, {@link #verifySign}).
  *
  * <p>Todos os métodos públicos correm em {@code SYSTEM} ({@code otp_challenge} só é visível
  * nesse âmbito) e são chamados a partir de outros beans. As definições lêem-se da BD em cada
@@ -62,8 +70,9 @@ public class OtpService {
     /** Um recibo de falha só gera alternativa se o código foi enviado há no máximo 30 s. */
     static final Duration RECEIPT_FALLBACK_WINDOW = Duration.ofSeconds(30);
     static final Duration RATE_LIMIT_WINDOW = Duration.ofHours(1);
-    /** Finalidades que contam para os limites de pedidos. */
-    static final Set<Purpose> RATE_LIMITED_PURPOSES = EnumSet.of(Purpose.LOGIN, Purpose.TEST, Purpose.VERIFY_CONTACT);
+    /** Finalidades que contam para os limites de pedidos (S1-03 passo 3; com {@code SIGN} desde o S4-04). */
+    static final Set<Purpose> RATE_LIMITED_PURPOSES = EnumSet.of(Purpose.LOGIN, Purpose.TEST, Purpose.VERIFY_CONTACT,
+            Purpose.SIGN);
     static final String CUSTOMER_ROLE = "CUSTOMER";
     static final String DEFAULT_LANGUAGE = UserAccount.DEFAULT_LANGUAGE;
 
@@ -169,13 +178,25 @@ public class OtpService {
      * @param owner conta que pede ({@code VERIFY_CONTACT}); no login a conta vem do identificador
      */
     private RequestResult send(OtpIdentifier identifier, Channel channel, Purpose purpose, UUID owner) {
+        return send(identifier, channel, purpose, owner, null);
+    }
+
+    /** Como {@link #send(OtpIdentifier, Channel, Purpose, UUID)}; {@code signContext} só com {@code SIGN}. */
+    private RequestResult send(OtpIdentifier identifier, Channel channel, Purpose purpose, UUID owner,
+                               OtpSignContext signContext) {
         OtpSettings settings = tx.execute(status -> settings());
         Channel chosen = chooseChannel(settings, identifier.type(), channel);
 
         Start start = tx.execute(status -> {
             Instant now = clock.instant();
             checkLimits(identifier, settings, now, true);
-            supersedeActive(identifier, purpose, now);
+            if (purpose == Purpose.SIGN) {
+                // S4-04 §4 regra 4: ficam substituídos os códigos de assinatura anteriores do utilizador.
+                challenges.findByUserIdAndPurposeAndConsumedAtIsNullAndSupersededAtIsNull(owner, Purpose.SIGN)
+                        .forEach(previous -> previous.supersede(now));
+            } else {
+                supersedeActive(identifier, purpose, now);
+            }
             UUID userId;
             String language;
             if (purpose == Purpose.LOGIN) {
@@ -186,7 +207,7 @@ public class OtpService {
                 userId = owner;
                 language = languageOf(owner);
             }
-            Issued issued = issue(identifier, chosen, purpose, userId, settings, now, null);
+            Issued issued = issue(identifier, chosen, purpose, userId, settings, now, null, signContext);
             return new Start(issued, language);
         });
         UUID rootId = start.issued().challenge().getId();
@@ -201,6 +222,84 @@ public class OtpService {
         return new RequestResult(rootId, effective.getChannel(), settings.getResendAfterSeconds(),
                 effective.getExpiresAt(), effective.getChannel() != chosen,
                 properties.debugHeader() ? delivery.issued().code() : null);
+    }
+
+    /**
+     * Pede um código para o cliente {@code signerUserId} assinar um documento (S4-04 §4): destino no
+     * telemóvel da conta (verificado ou não) ou, sem telemóvel, no e-mail verificado; canal, limites
+     * (contam com os de login) e alternativa automática como no {@link #request}; os códigos de
+     * assinatura anteriores do utilizador ficam substituídos. O hash do código inclui o hash do
+     * documento.
+     *
+     * @throws DomainException 409 {@code SIGNER_CONTACT_MISSING}, e os do {@link #request}
+     *                         ({@code OTP_CHANNEL_CHOICE_DISABLED}, {@code OTP_CHANNEL_NOT_AVAILABLE},
+     *                         {@code OTP_RATE_LIMITED}, {@code OTP_RESEND_TOO_SOON}, {@code OTP_DELIVERY_FAILED})
+     */
+    @RunAsSystem
+    public SignOtpChallenge requestSign(SignOtpRequest request) {
+        Objects.requireNonNull(request, "request");
+        OtpIdentifier identifier = tx.execute(status -> signerDestination(request.signerUserId()));
+        OtpSignContext context = new OtpSignContext(request.documentId(), request.documentHash(),
+                request.documentRef(), request.insurerName(), request.total().amount(), request.assistedByName());
+        RequestResult result = send(identifier, request.preferredChannel(), Purpose.SIGN, request.signerUserId(),
+                context);
+        log.info("OTP sign challenge {} for document {} ({}) sent via {}", result.challengeId(),
+                request.documentRef(), request.documentId(), result.channel());
+        return new SignOtpChallenge(result.challengeId(), result.channel(), identifier.masked(),
+                result.resendAfterSeconds(), result.expiresAt(), result.fallbackUsed(), result.debugCode());
+    }
+
+    /**
+     * Valida um código de assinatura (S4-04 §4, regra 6): as mesmas regras e erros do login; o
+     * desafio tem de ser {@code SIGN} e do utilizador {@code signerUserId} (senão
+     * {@code OTP_CHALLENGE_NOT_FOUND}) e o código só serve para o documento com {@code documentHash}
+     * (outro → {@code OTP_INVALID}). As tentativas erradas ficam gravadas mesmo com a resposta de erro.
+     * Se o destino era o telemóvel da conta ainda por verificar, passa a verificado.
+     */
+    @RunAsSystem
+    @Transactional(noRollbackFor = DomainException.class)
+    public SignOtpVerification verifySign(UUID signerUserId, UUID challengeId, String code, String documentHash) {
+        Instant now = clock.instant();
+        UUID rootId = challengeId == null ? null : challenges.findRootId(challengeId).orElse(null);
+        if (rootId == null) {
+            throw challengeNotFound();
+        }
+        OtpChallenge challenge = tail(challenges.findChainForUpdate(rootId));
+        if (challenge.getPurpose() != Purpose.SIGN || !Objects.equals(challenge.getUserId(), signerUserId)) {
+            throw challengeNotFound();
+        }
+        consumeIfValid(challenge, code, now, documentHash);
+        OtpIdentifier identifier = new OtpIdentifier(challenge.getIdentifierType(), challenge.getIdentifier());
+        if (identifier.type() == IdentifierType.MSISDN) {
+            accounts.findById(signerUserId)
+                    .filter(account -> account.getMsisdn() != null
+                            && account.getMsisdn().value().equals(identifier.value())
+                            && !account.isMsisdnVerified())
+                    .ifPresent(UserAccount::markMsisdnVerified);
+        }
+        log.info("OTP sign challenge {}: code confirmed by user {}", challenge.getId(), signerUserId);
+        return new SignOtpVerification(challenge.getId(), challenge.getChannel(), identifier.masked(), now);
+    }
+
+    /**
+     * Destino do código de assinatura: o telemóvel da conta (verificado ou não: a conta criada por
+     * um mediador pode ainda não o ter verificado) ou, sem telemóvel, o e-mail verificado.
+     */
+    private OtpIdentifier signerDestination(UUID userId) {
+        UserAccount account = accounts.findById(Objects.requireNonNull(userId, "signerUserId"))
+                .orElseThrow(OtpService::signerContactMissing);
+        if (account.getMsisdn() != null) {
+            return new OtpIdentifier(IdentifierType.MSISDN, account.getMsisdn().value());
+        }
+        if (account.getEmail() != null && account.isEmailVerified()) {
+            return new OtpIdentifier(IdentifierType.EMAIL, account.getEmail());
+        }
+        throw signerContactMissing();
+    }
+
+    private static DomainException signerContactMissing() {
+        return DomainException.of(ErrorCodes.SIGNER_CONTACT_MISSING,
+                "The signer has no mobile number or verified e-mail to receive the code");
     }
 
     /**
@@ -231,7 +330,7 @@ public class OtpService {
         if (challenge.getPurpose() != Purpose.LOGIN) {
             throw challengeNotFound();
         }
-        consumeIfValid(challenge, code, now);
+        consumeIfValid(challenge, code, now, null);
 
         OtpIdentifier identifier = new OtpIdentifier(challenge.getIdentifierType(), challenge.getIdentifier());
         Optional<UserAccount> existing = findCustomer(identifier);
@@ -269,7 +368,7 @@ public class OtpService {
         if (challenge.getPurpose() != Purpose.VERIFY_CONTACT || !Objects.equals(challenge.getUserId(), userId)) {
             throw challengeNotFound();
         }
-        consumeIfValid(challenge, code, now);
+        consumeIfValid(challenge, code, now, null);
         log.info("OTP challenge {}: contact confirmed for customer {}", challenge.getId(), userId);
         return new OtpIdentifier(challenge.getIdentifierType(), challenge.getIdentifier());
     }
@@ -292,7 +391,7 @@ public class OtpService {
             Instant now = clock.instant();
             checkLimits(identifier, settings, now, false);
             supersedeActive(identifier, Purpose.TEST, now);
-            return issue(identifier, channel, Purpose.TEST, null, settings, now, null);
+            return issue(identifier, channel, Purpose.TEST, null, settings, now, null, null);
         });
         log.info("OTP test challenge {} for {} via {}", issued.challenge().getId(), identifier, channel);
         Delivery delivery = deliver(identifier, issued, settings, DEFAULT_LANGUAGE, false);
@@ -332,7 +431,7 @@ public class OtpService {
             }
             failed.supersede(now);
             Issued issued = issue(identifier, next.get(), failed.getPurpose(), failed.getUserId(), settings, now,
-                    failed);
+                    failed, failed.getSignContext());
             log.info("OTP challenge {}: delivery failed on {} (receipt), falling back to {} (challenge {})",
                     failed.getId(), failed.getChannel(), next.get(), issued.challenge().getId());
             return new Fallback(identifier, issued, settings, languageOf(failed.getUserId()));
@@ -348,7 +447,7 @@ public class OtpService {
      * Valida o código do desafio (consumido, substituído, expirado, tentativas, código errado) e
      * consome-o. Um código errado conta uma tentativa.
      */
-    private void consumeIfValid(OtpChallenge challenge, String code, Instant now) {
+    private void consumeIfValid(OtpChallenge challenge, String code, Instant now, String documentHash) {
         OtpSettings settings = settings();
         if (challenge.getConsumedAt() != null) {
             throw DomainException.of(ErrorCodes.OTP_ALREADY_USED, "The code was already used");
@@ -362,7 +461,10 @@ public class OtpService {
         if (challenge.getAttempts() >= settings.getMaxAttempts()) {
             throw attemptsExceeded();
         }
-        if (!hasher.matches(challenge.getId(), code, challenge.getCodeHash())) {
+        boolean matches = challenge.getPurpose() == Purpose.SIGN
+                ? hasher.matches(challenge.getId(), code, documentHash, challenge.getCodeHash())
+                : hasher.matches(challenge.getId(), code, challenge.getCodeHash());
+        if (!matches) {
             challenge.registerFailedAttempt();
             int remaining = settings.getMaxAttempts() - challenge.getAttempts();
             log.info("OTP challenge {}: wrong code ({} attempts remaining)", challenge.getId(), Math.max(remaining, 0));
@@ -413,12 +515,23 @@ public class OtpService {
                 .forEach(previous -> previous.supersede(now));
     }
 
-    /** Grava um desafio novo com um código novo ({@code from} = desafio que este substitui, ou {@code null}). */
+    /**
+     * Grava um desafio novo com um código novo ({@code from} = desafio que este substitui, ou
+     * {@code null}). Um desafio {@code SIGN} leva o contexto do documento e o hash do código inclui
+     * o hash do documento.
+     */
     private Issued issue(OtpIdentifier identifier, Channel channel, Purpose purpose, UUID userId, OtpSettings settings,
-                         Instant now, OtpChallenge from) {
+                         Instant now, OtpChallenge from, OtpSignContext signContext) {
         String code = hasher.generate(settings.getCodeLength());
+        if (purpose == Purpose.SIGN && signContext == null) {
+            throw new IllegalStateException("A SIGN challenge needs the signed document");
+        }
         OtpChallenge challenge = OtpChallenge.issue(identifier.value(), identifier.type(), channel, purpose, userId,
-                id -> hasher.hash(id, code), now.plusSeconds(settings.getValiditySeconds()), from);
+                id -> purpose == Purpose.SIGN ? hasher.hash(id, code, signContext.documentHash()) : hasher.hash(id, code),
+                now.plusSeconds(settings.getValiditySeconds()), from);
+        if (purpose == Purpose.SIGN) {
+            challenge.attachSignContext(signContext);
+        }
         return new Issued(challenges.save(challenge), code);
     }
 
@@ -432,8 +545,7 @@ public class OtpService {
         Issued current = first;
         while (true) {
             OtpChallenge challenge = current.challenge();
-            DeliveryResult result = notifications.sendOtp(challenge.getChannel(), identifier.destination(),
-                    current.code(), validityMinutes(settings), language, challenge.getId());
+            DeliveryResult result = notify(challenge, identifier, current.code(), settings, language);
             Instant now = clock.instant();
             if (!result.failed()) {
                 OtpChallenge sent = tx.execute(status -> {
@@ -458,7 +570,7 @@ public class OtpService {
                 }
                 failed.supersede(now);
                 Issued issued = issue(identifier, nextChannel.get(), failed.getPurpose(), failed.getUserId(), settings,
-                        now, failed);
+                        now, failed, failed.getSignContext());
                 log.info("OTP challenge {}: falling back from {} to {} (challenge {})", failed.getId(),
                         failed.getChannel(), nextChannel.get(), issued.challenge().getId());
                 return issued;
@@ -468,6 +580,20 @@ public class OtpService {
             }
             current = next;
         }
+    }
+
+    /** Envia o código: a mensagem de login/contacto ou, num desafio {@code SIGN}, a de assinatura (S4-04). */
+    private DeliveryResult notify(OtpChallenge challenge, OtpIdentifier identifier, String code, OtpSettings settings,
+                                  String language) {
+        OtpSignContext sign = challenge.getSignContext();
+        if (challenge.getPurpose() == Purpose.SIGN && sign != null) {
+            SignOtpText text = new SignOtpText(sign.documentRef(), sign.insurerName(),
+                    MoneyFormat.format(Money.ofCentavos(sign.totalAmount()), language), sign.assistedByName());
+            return notifications.sendSignOtp(challenge.getChannel(), identifier.destination(), code,
+                    validityMinutes(settings), text, language, challenge.getId());
+        }
+        return notifications.sendOtp(challenge.getChannel(), identifier.destination(), code,
+                validityMinutes(settings), language, challenge.getId());
     }
 
     /** Primeiro canal activo e compatível, pela ordem de {@code fallbackOrder}, ainda não tentado na cadeia. */

@@ -1,0 +1,91 @@
+{
+  "declarations" : [
+    {
+      "code" : "CLAIMS_LAST_3_YEARS",
+      "followUp" : [
+        "claimsCount",
+        "details"
+      ]
+    },
+    {
+      "code" : "PREVIOUS_REFUSAL",
+      "followUp" : [
+        "details"
+      ]
+    },
+    {
+      "code" : "USAGE_DIFFERENT",
+      "followUp" : [
+        "details"
+      ]
+    },
+    {
+      "code" : "VEHICLE_MODIFIED",
+      "followUp" : [
+        "details"
+      ]
+    },
+    {
+      "code" : "NOVICE_DRIVERS",
+      "followUp" : [
+        "details"
+      ]
+    }
+  ],
+  "suitability" : [
+    {
+      "code" : "SUIT_NEED",
+      "type" : "SINGLE_CHOICE",
+      "options" : [
+        "MANDATORY_ONLY",
+        "OWN_DAMAGE",
+        "FULL",
+        "UNSURE"
+      ]
+    },
+    {
+      "code" : "SUIT_FINANCED",
+      "type" : "YES_NO",
+      "options" : [
+        "YES",
+        "NO"
+      ]
+    },
+    {
+      "code" : "SUIT_CAN_AFFORD_REPAIR",
+      "type" : "YES_NO_UNSURE",
+      "options" : [
+        "YES",
+        "NO",
+        "UNSURE"
+      ]
+    },
+    {
+      "code" : "SUIT_CROSS_BORDER",
+      "type" : "YES_NO",
+      "options" : [
+        "YES",
+        "NO"
+      ]
+    },
+    {
+      "code" : "SUIT_DEDUCTIBLE",
+      "type" : "YES_NO_UNSURE",
+      "options" : [
+        "YES",
+        "NO",
+        "UNSURE"
+      ]
+    }
+  ],
+  "suitabilityReasons" : [
+    "NEED_NOT_COVERED_OWN_DAMAGE",
+    "NEED_NOT_COVERED_THEFT_FIRE",
+    "COVER_ABOVE_NEED",
+    "NEED_UNSURE",
+    "FINANCED_WITHOUT_OWN_DAMAGE",
+    "CANNOT_AFFORD_REPAIR",
+    "CROSS_BORDER_NOT_COVERED",
+    "DEDUCTIBLE_NOT_WANTED"
+  ]
+}

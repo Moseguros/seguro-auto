@@ -85,7 +85,9 @@ class AuditServiceIT {
         UUID insurerId = UUID.randomUUID();
         String masked = Msisdn.of("841234567").masked();
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("X-Forwarded-For", "41.220.1.10, 10.0.0.1");
+        // Sem moseguros.web.trusted-proxies o X-Forwarded-For é ignorado (ClientIpResolver, D15).
+        request.setRemoteAddr("41.220.1.10");
+        request.addHeader("X-Forwarded-For", "6.6.6.6");
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         MDC.put("traceId", "4bf92f3577b34da6a3ce929d0e0e4736");
 

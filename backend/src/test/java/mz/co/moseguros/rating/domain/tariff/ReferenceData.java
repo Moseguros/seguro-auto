@@ -16,6 +16,8 @@ import mz.co.moseguros.catalog.CoverageCode;
 import mz.co.moseguros.catalog.DeductibleType;
 import mz.co.moseguros.catalog.ProductType;
 import mz.co.moseguros.organization.ChargeRule;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.rating.domain.tariff.RatingInput.RequestedCoverage;
 import mz.co.moseguros.shared.domain.Province;
 import mz.co.moseguros.shared.domain.VehicleCategory;

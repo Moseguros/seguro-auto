@@ -18,7 +18,7 @@ describe('detalhe e listas das cotações', { timeout: 60_000 }, () => {
   let restore: () => void = () => {};
   afterEach(() => restore());
 
-  it('detalhe: coberturas, encargos, total, documentos e sem botão laranja', async () => {
+  it('detalhe: coberturas, encargos, total, documentos e um só laranja "Adquirir apólice"', async () => {
     restore = signInCustomer(customerMe(), (config) =>
       is(config, 'GET', '/api/v1/quotes/r1') ? { status: 200, data: requestFixture() } : undefined,
     );
@@ -28,10 +28,10 @@ describe('detalhe e listas das cotações', { timeout: 60_000 }, () => {
     expect(screen.getByText('Imposto de selo (provisório)')).toBeInTheDocument();
     expect(screen.getByText('Ajuste de arredondamento')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Informação pré-contratual' })).toBeEnabled();
-    expect(
-      screen.getByText('Em breve vai poder avançar daqui para a proposta.'),
-    ).toBeInTheDocument();
-    expect(ctaButtons()).toHaveLength(0);
+    // S4-08: "Adquirir apólice" leva à criação da proposta e é o único laranja do detalhe.
+    const acquire = screen.getByRole('link', { name: 'Adquirir apólice' });
+    expect(acquire).toHaveAttribute('href', '/cliente/propostas/nova?cotacao=q1');
+    expect(ctaButtons()).toEqual([acquire]);
   });
 
   it('detalhe de uma sem proposta: só o motivo', async () => {

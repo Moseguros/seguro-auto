@@ -107,8 +107,102 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'QUOTE_RATE_LIMITED' => l10n.errorQuoteRateLimited,
   'VEHICLE_VALUE_REQUIRED' => l10n.errorVehicleValueRequired,
   'ORGANIZATION_NOT_INSURER' => l10n.errorOrganizationNotInsurer,
+  'PROFILE_INCOMPLETE' => l10n.errorProfileIncomplete,
+  'KYC_ALREADY_PENDING' => l10n.errorKycAlreadyPending,
+  'KYC_ALREADY_VERIFIED' => l10n.errorKycAlreadyVerified,
+  'KYC_NOT_FOUND' => l10n.errorKycNotFound,
+  'QUOTE_DATA_CHANGED' => l10n.errorQuoteDataChanged,
+  'PROPOSAL_ALREADY_EXISTS' => l10n.errorProposalAlreadyExists,
+  'PROPOSAL_NOT_FOUND' => l10n.errorProposalNotFound,
+  'PROPOSAL_NOT_EDITABLE' => l10n.errorProposalNotEditable,
+  'INSURER_NOT_ACTIVE' => l10n.errorInsurerNotActive,
+  'SUITABILITY_NOT_WARNED' => l10n.errorSuitabilityNotWarned,
+  'PDF_TEMPLATE_NOT_FOUND' => l10n.errorPdfTemplateNotFound,
+  'PDF_RENDER_FAILED' => l10n.errorPdfRenderFailed,
+  'SIGNER_CONTACT_MISSING' => l10n.errorSignerContactMissing,
+  'PROPOSAL_INCOMPLETE' => l10n.errorProposalIncomplete,
+  'SIGN_REQUEST_NOT_FOUND' => l10n.errorSignRequestNotFound,
+  'PROPOSAL_CHANGED_SINCE_SIGN_REQUEST' =>
+    l10n.errorProposalChangedSinceSignRequest,
+  'INSPECTION_NOT_REQUIRED' => l10n.errorInspectionNotRequired,
+  'INSPECTION_NOT_FOUND' => l10n.errorInspectionNotFound,
+  'INSPECTION_NOT_EDITABLE' => l10n.errorInspectionNotEditable,
+  'INSPECTION_PHOTOS_MISSING' => l10n.errorInspectionPhotosMissing,
+  'PHOTO_NOT_FOUND' => l10n.errorPhotoNotFound,
+  'PROPOSAL_NOT_UNDER_REVIEW' => l10n.errorProposalNotUnderReview,
+  'KYC_NOT_VERIFIED' => l10n.errorKycNotVerified,
+  'INSPECTION_NOT_APPROVED' => l10n.errorInspectionNotApproved,
+  'CLIENT_ACCOUNT_DISABLED' => l10n.errorClientAccountDisabled,
   _ => l10n.errorUnknown,
 };
+
+/// Nome de um passo em falta da proposta (`missing` do erro `PROPOSAL_INCOMPLETE`, S4-04 §10).
+String proposalMissingItem(AppLocalizations l10n, String item) =>
+    switch (item) {
+      'DECLARATIONS' => l10n.proposalMissingDeclarations,
+      'SUITABILITY' => l10n.proposalMissingSuitability,
+      'SUITABILITY_ACKNOWLEDGEMENT' =>
+        l10n.proposalMissingSuitabilityAcknowledgement,
+      'INSPECTION' => l10n.proposalMissingInspection,
+      'START_DATE' => l10n.proposalMissingStartDate,
+      'SIGNATURE' => l10n.proposalMissingSignature,
+      _ => item,
+    };
+
+/// Motivo da aceitação manual (`underwriting.failures`, S4-05 §3).
+String proposalUnderwritingFailure(
+  AppLocalizations l10n,
+  String code,
+) => switch (code) {
+  'AUTO_ACCEPT_DISABLED' => l10n.proposalUnderwritingFailureAutoAcceptDisabled,
+  'KYC_REQUIRED' => l10n.proposalUnderwritingFailureKycRequired,
+  'DECLARATION_POSITIVE' => l10n.proposalUnderwritingFailureDeclarationPositive,
+  'INSPECTION_NOT_APPROVED' =>
+    l10n.proposalUnderwritingFailureInspectionNotApproved,
+  'VEHICLE_VALUE_MISSING' =>
+    l10n.proposalUnderwritingFailureVehicleValueMissing,
+  'VEHICLE_VALUE_ABOVE_LIMIT' =>
+    l10n.proposalUnderwritingFailureVehicleValueAboveLimit,
+  _ => code,
+};
+
+/// Motivo da recusa da proposta (`decision.rejectionReasonCode`, S4-05 §7).
+String proposalRejectionReason(AppLocalizations l10n, String code) =>
+    switch (code) {
+      'RISK_NOT_ACCEPTED' => l10n.proposalRejectionReasonRiskNotAccepted,
+      'KYC_FAILED' => l10n.proposalRejectionReasonKycFailed,
+      'INSPECTION_FAILED' => l10n.proposalRejectionReasonInspectionFailed,
+      'FALSE_DECLARATION' => l10n.proposalRejectionReasonFalseDeclaration,
+      'DOCUMENTS_INVALID' => l10n.proposalRejectionReasonDocumentsInvalid,
+      'OTHER' => l10n.proposalRejectionReasonOther,
+      _ => code,
+    };
+
+/// Item pedido pela seguradora (`decision.infoRequest.items`, S4-05 §7).
+String proposalInfoRequestItem(AppLocalizations l10n, String code) =>
+    switch (code) {
+      'DECLARATIONS' => l10n.proposalInfoRequestItemDeclarations,
+      'SUITABILITY' => l10n.proposalInfoRequestItemSuitability,
+      'INSPECTION' => l10n.proposalInfoRequestItemInspection,
+      'KYC' => l10n.proposalInfoRequestItemKyc,
+      'POLICYHOLDER' => l10n.proposalInfoRequestItemPolicyholder,
+      'OTHER' => l10n.proposalInfoRequestItemOther,
+      _ => code,
+    };
+
+/// Estado da proposta (S4-05 §13).
+String proposalStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'DRAFT' => l10n.proposalStatusDraft,
+      'UNDER_REVIEW' => l10n.proposalStatusUnderReview,
+      'INFO_REQUESTED' => l10n.proposalStatusInfoRequested,
+      'ACCEPTED' => l10n.proposalStatusAccepted,
+      'REJECTED' => l10n.proposalStatusRejected,
+      'EXPIRED' => l10n.proposalStatusExpired,
+      'PAID' => l10n.proposalStatusPaid,
+      'CONVERTED' => l10n.proposalStatusConverted,
+      _ => status,
+    };
 
 /// Mensagem traduzida para um erro de campo (`FieldErrorCodes`, em `errors[].code`).
 String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
@@ -160,7 +254,8 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'BORDER_ONLY_MTPL' => l10n.validationBorderOnlyMtpl,
   'OD_NOT_ALLOWED_FOR_TYPE' => l10n.validationOdNotAllowedForType,
   'OD_REQUIRED_FOR_COMPREHENSIVE' => l10n.validationOdRequiredForComprehensive,
-  'OD_CAPITAL_MUST_BE_VEHICLE_VALUE' => l10n.validationOdCapitalMustBeVehicleValue,
+  'OD_CAPITAL_MUST_BE_VEHICLE_VALUE' =>
+    l10n.validationOdCapitalMustBeVehicleValue,
   'OD_THEFT_REQUIRES_OD_COVERAGES' => l10n.validationOdTheftRequiresOdCoverages,
   'REQUIRED_COVERAGE_MISSING' => l10n.validationRequiredCoverageMissing,
   'VTPL_CAPITAL_TOO_LOW' => l10n.validationVtplCapitalTooLow,
@@ -193,6 +288,18 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'COVERAGE_REQUIRES' => l10n.validationCoverageRequires,
   'INVALID_URL' => l10n.validationInvalidUrl,
   'INVALID_SECRET_REF' => l10n.validationInvalidSecretRef,
+  'INVALID_INSURER' => l10n.validationInvalidInsurer,
+  'ANSWERS_INCOMPLETE' => l10n.validationAnswersIncomplete,
+  'ANSWER_DUPLICATED' => l10n.validationAnswerDuplicated,
+  'UNKNOWN_QUESTION' => l10n.validationUnknownQuestion,
+  'INVALID_ANSWER' => l10n.validationInvalidAnswer,
+  'MUST_BE_TRUE' => l10n.validationMustBeTrue,
+  'INVALID_SLOT' => l10n.validationInvalidSlot,
+  'EXTRA_PHOTOS_LIMIT' => l10n.validationExtraPhotosLimit,
+  'PHOTO_TOO_OLD' => l10n.validationPhotoTooOld,
+  'PHOTO_IN_FUTURE' => l10n.validationPhotoInFuture,
+  'INVALID_COORDINATES' => l10n.validationInvalidCoordinates,
+  'INVALID_RULES' => l10n.validationInvalidRules,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,

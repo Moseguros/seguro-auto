@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PDF da proposta (S4-04 §3), assinado pelo tomador com um código OTP sobre o seu SHA-256. Modelo
+  montado pelo ProposalPdfModelBuilder (módulo proposal); textos em messages/pdf_{pt,en}.properties
+  (chaves pdf.*), na língua do tomador. Classificado SENSITIVE: tem o documento e o NUIT completos.
+  O hash não pode estar dentro do próprio documento.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="${fmt.language()}">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title th:text="#{pdf.proposal.title} + ' ' + ${number}">Proposta</title>
+  <style th:replace="~{_layout :: styles}"></style>
+  <style th:replace="~{_layout :: footer(${number})}"></style>
+</head>
+<body>
+
+  <!-- 1. Cabeçalho -->
+  <div th:replace="~{_layout :: header(${number}, ${generatedAt}, ${revision})}"></div>
+  <h1 th:text="#{pdf.proposal.title}">Proposta de seguro automóvel</h1>
+  <p class="note"><span th:text="#{pdf.proposal.number}">Número</span> <span th:text="${number}">PR</span></p>
+
+  <!-- 2. Seguradora e produto -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.insurer}">Seguradora e produto</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.proposal.insurer}">Seguradora</td><td th:text="${insurerName}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.proposal.product}">Produto</td><td th:text="${product.name}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.proposal.productVersion}">Versão do produto</td><td th:text="${product.versionId}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.proposal.productType}">Tipo</td><td th:text="#{pdf.productType.__${product.type}__}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.proposal.channel}">Canal</td><td th:text="#{pdf.channel.__${channel}__}">x</td></tr>
+      <tr th:if="${brokerName != null}"><td class="label" th:text="#{pdf.proposal.broker}">Mediador</td><td th:text="${brokerName}">x</td></tr>
+    </table>
+  </div>
+
+  <!-- 3. Tomador e segurado -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.holder}">Tomador e segurado</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.holder.fullName}">Nome</td><td th:text="${holder.fullName}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.birthDate}">Data de nascimento</td><td th:text="${fmt.date(holder.birthDate)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.idDoc}">Documento</td>
+          <td><span th:text="${holder.idDocType != null} ? #{pdf.idDocType.__${holder.idDocType}__} : '—'">BI</span> <span th:text="${holder.idDocNumber}">x</span></td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.nuit}">NUIT</td><td th:text="${holder.nuit}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.address}">Morada</td><td th:text="${fmt.text(holder.address)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.province}">Província</td>
+          <td th:text="${holder.province != null} ? #{pdf.province.__${holder.province}__} : '—'">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.msisdn}">Telemóvel</td><td th:text="${fmt.text(holder.msisdn)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.holder.email}">E-mail</td><td th:text="${fmt.text(holder.email)}">x</td></tr>
+    </table>
+    <p th:text="#{pdf.holder.insuredIsPolicyholder}">O segurado é o tomador.</p>
+  </div>
+
+  <!-- 4. Veículo -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.vehicle}">Veículo</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.vehicle.plate}">Matrícula</td><td th:text="${vehicle.plate}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.makeModel}">Marca e modelo</td><td th:text="${vehicle.make} + ' ' + ${vehicle.model}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.year}">Ano</td><td th:text="${vehicle.year}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.chassis}">Número do chassis</td><td th:text="${fmt.text(vehicle.chassisNumber)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.category}">Categoria</td><td th:text="#{pdf.vehicleCategory.__${vehicle.category}__}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.usage}">Uso</td><td th:text="#{pdf.vehicleUsage.__${vehicle.usage}__}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.seats}">Lugares</td><td th:text="${vehicle.seats}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.commercialValue}">Valor comercial declarado</td><td th:text="${fmt.money(vehicle.commercialValue)}">x</td></tr>
+    </table>
+  </div>
+
+  <!-- 5. Condutor habitual -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.driver}">Condutor habitual</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.driver.fullName}">Nome</td><td th:text="${driver.fullName}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.driver.birthDate}">Data de nascimento</td><td th:text="${fmt.date(driver.birthDate)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.driver.licence}">Carta de condução</td><td th:text="${fmt.text(driver.licenceNumberMasked)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.driver.categories}">Categorias</td><td th:text="${fmt.text(driver.licenceCategories)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.driver.issueDate}">Data de emissão</td><td th:text="${fmt.date(driver.licenceIssueDate)}">x</td></tr>
+    </table>
+  </div>
+
+  <!-- 6. Período -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.period}">Período do seguro</h2>
+    <p th:text="#{pdf.period.range(${fmt.date(period.startDate)}, ${fmt.date(period.endDate)})}">de a</p>
+    <p th:text="#{pdf.period.duration(${period.durationDays})}">365 dias</p>
+  </div>
+
+  <!-- 7. Coberturas -->
+  <h2 th:text="#{pdf.proposal.section.coverages}">Coberturas</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th th:text="#{pdf.coverages.name}">Cobertura</th>
+        <th class="num" th:text="#{pdf.coverages.capital}">Capital</th>
+        <th th:text="#{pdf.coverages.deductible}">Franquia</th>
+        <th class="num" th:text="#{pdf.coverages.premium}">Prémio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="c : ${coverages}">
+        <td th:text="#{pdf.coverage.__${c.code}__}">x</td>
+        <td class="num" th:text="${fmt.money(c.capital)}">x</td>
+        <td th:switch="${c.deductibleType}">
+          <span th:case="'FIXED'" th:text="${fmt.money(c.deductibleAmount)}">x</span>
+          <span th:case="'PERCENT'"><span th:text="${fmt.percent(c.deductiblePercent)}">x</span><span th:if="${c.deductibleMinAmount != null}" th:text="' ' + #{pdf.coverages.deductibleMin(${fmt.money(c.deductibleMinAmount)})}"> (mín.)</span></span>
+          <span th:case="*" th:text="#{pdf.coverages.noDeductible}">Sem franquia</span>
+        </td>
+        <td class="num" th:text="${fmt.money(c.premium)}">x</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 8. Prémio -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.premium}">Prémio</h2>
+    <table class="grid">
+      <tr><td th:text="#{pdf.premium.commercial}">Prémio comercial</td><td class="num" th:text="${fmt.money(premium.commercial)}">x</td></tr>
+      <tr th:each="ch : ${premium.charges}"><td th:text="${ch.label}">x</td><td class="num" th:text="${fmt.money(ch.amount)}">x</td></tr>
+      <tr th:if="${premium.roundingAdjustment != null}"><td th:text="#{pdf.premium.rounding}">Acerto de arredondamento</td><td class="num" th:text="${fmt.money(premium.roundingAdjustment)}">x</td></tr>
+      <tr class="total"><td th:text="#{pdf.premium.total}">Total</td><td class="num" th:text="${fmt.money(premium.total)}">x</td></tr>
+    </table>
+  </div>
+
+  <!-- 9. Declarações de risco -->
+  <h2 th:text="#{pdf.proposal.section.declarations}">Declarações de risco</h2>
+  <div th:with="usageLabel=#{pdf.vehicleUsage.__${vehicle.usage}__}">
+    <div th:each="d : ${declarations.answers}" class="block">
+      <p class="question" th:text="#{pdf.declaration.__${d.code}__(${usageLabel})}">Pergunta</p>
+      <p><span class="answer" th:text="${d.answer} ? #{pdf.answer.yes} : #{pdf.answer.no}">Não</span></p>
+      <p class="follow" th:if="${d.claimsCount != null}"><span th:text="#{pdf.declaration.claimsCount}">Quantos?</span> <span th:text="${d.claimsCount}">1</span></p>
+      <p class="follow" th:if="${d.details != null}"><span th:text="#{pdf.declaration.details}">Detalhes:</span> <span th:text="${d.details}">x</span></p>
+    </div>
+  </div>
+  <p th:text="#{pdf.declaration.truthfulness}">Declaro que…</p>
+  <p class="note" th:text="#{pdf.declaration.confirmedAt(${fmt.dateTime(declarations.confirmedAt)})}">Confirmadas em</p>
+
+  <!-- 10. Adequação -->
+  <h2 th:text="#{pdf.proposal.section.suitability}">Adequação</h2>
+  <div th:each="s : ${suitability.answers}" class="block">
+    <p class="question" th:text="#{pdf.suitability.__${s.code}__}">Pergunta</p>
+    <p class="answer" th:text="#{pdf.suitability.answer.__${s.answer}__}">Resposta</p>
+  </div>
+  <p><span th:text="#{pdf.suitability.result}">Resultado:</span> <span class="answer" th:text="#{pdf.suitability.result.__${suitability.result}__}">x</span></p>
+  <div th:if="${suitability.result == 'WARNED'}">
+    <p th:each="r : ${suitability.reasons}" th:text="'• ' + #{pdf.suitability.reason.__${r}__}">Aviso</p>
+    <p th:if="${suitability.acknowledgedAt != null}" th:text="#{pdf.suitability.acknowledged(${fmt.dateTime(suitability.acknowledgedAt)})}">O tomador leu os avisos…</p>
+  </div>
+
+  <!-- 11. Vistoria (só com inspection_required) -->
+  <div th:if="${inspection != null}" class="block">
+    <h2 th:text="#{pdf.proposal.section.inspection}">Vistoria</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.inspection.mode}">Modo</td><td th:text="#{pdf.inspection.mode.__${inspection.mode}__}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.inspection.status}">Estado</td><td th:text="#{pdf.inspection.status.__${inspection.status}__}">x</td></tr>
+      <tr th:if="${inspection.mode == 'SELF_PHOTOS'}"><td class="label" th:text="#{pdf.inspection.photos}">Fotografias</td><td th:text="${inspection.photoCount}">6</td></tr>
+      <tr th:if="${inspection.mode == 'SELF_PHOTOS'}"><td class="label" th:text="#{pdf.inspection.odometer}">Quilometragem</td><td th:text="${fmt.text(inspection.odometerKm)}">x</td></tr>
+      <tr th:if="${inspection.mode == 'ON_SITE'}"><td class="label" th:text="#{pdf.inspection.notes}">Notas</td><td th:text="${fmt.text(inspection.notes)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.inspection.submittedAt}">Enviada em</td><td th:text="${fmt.dateTime(inspection.submittedAt)}">x</td></tr>
+    </table>
+  </div>
+
+  <!-- 12. Documentos do produto -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.documents}">Documentos do produto</h2>
+    <p th:text="#{pdf.documents.received}">O tomador declara ter recebido e lido…</p>
+    <table class="fields">
+      <tr th:each="doc : ${documents}">
+        <td class="label" th:text="#{pdf.documents.type.__${doc.type}__}">Condições gerais</td>
+        <td th:text="${doc.fileId}">x</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 13. Assinatura -->
+  <div class="block">
+    <h2 th:text="#{pdf.proposal.section.signature}">Assinatura</h2>
+    <p th:text="#{pdf.signature.text(${signatureDestination})}">Esta proposta é assinada electronicamente…</p>
+  </div>
+</body>
+</html>

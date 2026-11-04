@@ -36,6 +36,21 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID>,
     @Query("select a.id from UserAccount a where a.organizationId = :organizationId")
     List<UUID> findIdsByOrganizationId(@Param("organizationId") UUID organizationId);
 
+    /**
+     * Contas de staff {@code ACTIVE} da organização com algum perfil que tenha a permissão (S4-05 §10),
+     * ordenadas pelo nome apresentado.
+     */
+    @Query("""
+            select a from UserAccount a
+             where a.type = mz.co.moseguros.identity.domain.AccountType.STAFF
+               and a.organizationId = :organizationId
+               and a.status = mz.co.moseguros.identity.domain.AccountStatus.ACTIVE
+               and exists (select 1 from UserRole r, RolePermission p
+                            where r.userId = a.id and p.roleCode = r.roleCode and p.permission = :permission)
+             order by a.displayName, a.id""")
+    List<UserAccount> findActiveStaffWithPermission(@Param("organizationId") UUID organizationId,
+                                                    @Param("permission") String permission);
+
     /** Há alguma conta {@code ACTIVE} com o perfil indicado. */
     @Query("""
             select count(a) > 0 from UserAccount a, UserRole r

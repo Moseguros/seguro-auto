@@ -78,6 +78,7 @@ Class | Method | HTTP request | Description
 [*CatalogApi*](doc/CatalogApi.md) | [**getInsurerBranding**](doc/CatalogApi.md#getinsurerbranding) | **GET** /api/v1/insurer/branding | Consulta o logótipo da seguradora
 [*CatalogApi*](doc/CatalogApi.md) | [**getInsurerProduct**](doc/CatalogApi.md#getinsurerproduct) | **GET** /api/v1/insurer/products/{id} | Consulta um produto
 [*CatalogApi*](doc/CatalogApi.md) | [**getProductVersion**](doc/CatalogApi.md#getproductversion) | **GET** /api/v1/insurer/product-versions/{id} | Consulta uma versão de um produto
+[*CatalogApi*](doc/CatalogApi.md) | [**getUnderwritingRules**](doc/CatalogApi.md#getunderwritingrules) | **GET** /api/v1/insurer/product-versions/{id}/underwriting-rules | Consulta as regras de aceitação de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**listActivePlateFormats**](doc/CatalogApi.md#listactiveplateformats) | **GET** /api/v1/plate-formats | Lista os formatos de matrícula aceites
 [*CatalogApi*](doc/CatalogApi.md) | [**listAdminReferenceValues**](doc/CatalogApi.md#listadminreferencevalues) | **GET** /api/v1/admin/reference-domains/{domain}/values | Lista os valores de um domínio (administração)
 [*CatalogApi*](doc/CatalogApi.md) | [**listCatalogProducts**](doc/CatalogApi.md#listcatalogproducts) | **GET** /api/v1/catalog/products | Lista os produtos publicados
@@ -96,6 +97,7 @@ Class | Method | HTTP request | Description
 [*CatalogApi*](doc/CatalogApi.md) | [**updatePlatformSetting**](doc/CatalogApi.md#updateplatformsetting) | **PUT** /api/v1/admin/platform-settings/{key} | Altera o valor de um parâmetro
 [*CatalogApi*](doc/CatalogApi.md) | [**updateProductVersion**](doc/CatalogApi.md#updateproductversion) | **PUT** /api/v1/insurer/product-versions/{id} | Altera a elegibilidade de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**updateReferenceValue**](doc/CatalogApi.md#updatereferencevalue) | **PUT** /api/v1/admin/reference-domains/{domain}/values/{id} | Altera um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**updateUnderwritingRules**](doc/CatalogApi.md#updateunderwritingrules) | **PUT** /api/v1/insurer/product-versions/{id}/underwriting-rules | Altera as regras de aceitação de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**uploadInsurerLogo**](doc/CatalogApi.md#uploadinsurerlogo) | **POST** /api/v1/insurer/branding/logo | Envia o logótipo da seguradora
 [*CatalogApi*](doc/CatalogApi.md) | [**uploadProductVersionDocument**](doc/CatalogApi.md#uploadproductversiondocument) | **POST** /api/v1/insurer/product-versions/{id}/documents | Envia um documento de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**validateProductVersion**](doc/CatalogApi.md#validateproductversion) | **POST** /api/v1/insurer/product-versions/{id}/validate | Verifica as regras de publicação
@@ -105,9 +107,11 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**disableUser**](doc/IdentityApi.md#disableuser) | **POST** /api/v1/users/{id}/disable | Desactiva um utilizador de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**enableUser**](doc/IdentityApi.md#enableuser) | **POST** /api/v1/users/{id}/enable | Reactiva um utilizador de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**forgotPassword**](doc/IdentityApi.md#forgotpassword) | **POST** /api/v1/auth/password/forgot | Pede a recuperação da palavra-passe de staff
+[*IdentityApi*](doc/IdentityApi.md) | [**getInsurerKycCheck**](doc/IdentityApi.md#getinsurerkyccheck) | **GET** /api/v1/insurer/kyc/{id} | Consulta uma verificação de identidade
 [*IdentityApi*](doc/IdentityApi.md) | [**getInvitationByToken**](doc/IdentityApi.md#getinvitationbytoken) | **GET** /api/v1/auth/invitations/{token} | Consulta um convite pelo token
 [*IdentityApi*](doc/IdentityApi.md) | [**getJwks**](doc/IdentityApi.md#getjwks) | **GET** /.well-known/jwks.json | Chaves públicas dos tokens (JWKS)
 [*IdentityApi*](doc/IdentityApi.md) | [**getMe**](doc/IdentityApi.md#getme) | **GET** /api/v1/me | Utilizador autenticado
+[*IdentityApi*](doc/IdentityApi.md) | [**getMyKyc**](doc/IdentityApi.md#getmykyc) | **GET** /api/v1/me/kyc | Estado da verificação de identidade do cliente
 [*IdentityApi*](doc/IdentityApi.md) | [**getMyProfile**](doc/IdentityApi.md#getmyprofile) | **GET** /api/v1/me/profile | Perfil do cliente
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpChallenge**](doc/IdentityApi.md#getotpchallenge) | **GET** /api/v1/auth/otp/challenges/{challengeId} | Estado do envio do código
 [*IdentityApi*](doc/IdentityApi.md) | [**getOtpOptions**](doc/IdentityApi.md#getotpoptions) | **GET** /api/v1/auth/otp/options | Opções do login por código
@@ -116,6 +120,7 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**inviteOrganizationUser**](doc/IdentityApi.md#inviteorganizationuser) | **POST** /api/v1/organizations/{orgId}/users | Convida staff de uma organização
 [*IdentityApi*](doc/IdentityApi.md) | [**invitePlatformUser**](doc/IdentityApi.md#inviteplatformuser) | **POST** /api/v1/admin/users | Convida staff da plataforma
 [*IdentityApi*](doc/IdentityApi.md) | [**listAssignableRoles**](doc/IdentityApi.md#listassignableroles) | **GET** /api/v1/roles | Perfis atribuíveis
+[*IdentityApi*](doc/IdentityApi.md) | [**listInsurerKycChecks**](doc/IdentityApi.md#listinsurerkycchecks) | **GET** /api/v1/insurer/kyc | Lista as verificações de identidade da seguradora
 [*IdentityApi*](doc/IdentityApi.md) | [**listMyContacts**](doc/IdentityApi.md#listmycontacts) | **GET** /api/v1/me/contacts | Contactos do cliente
 [*IdentityApi*](doc/IdentityApi.md) | [**listOrganizationInvitations**](doc/IdentityApi.md#listorganizationinvitations) | **GET** /api/v1/organizations/{orgId}/invitations | Lista os convites de uma organização
 [*IdentityApi*](doc/IdentityApi.md) | [**listOrganizationUsers**](doc/IdentityApi.md#listorganizationusers) | **GET** /api/v1/organizations/{orgId}/users | Lista o staff de uma organização
@@ -124,6 +129,7 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**loginStaff**](doc/IdentityApi.md#loginstaff) | **POST** /api/v1/auth/login | Login de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**logoutSession**](doc/IdentityApi.md#logoutsession) | **POST** /api/v1/auth/logout | Termina a sessão
 [*IdentityApi*](doc/IdentityApi.md) | [**refreshToken**](doc/IdentityApi.md#refreshtoken) | **POST** /api/v1/auth/refresh | Renova a sessão
+[*IdentityApi*](doc/IdentityApi.md) | [**rejectKycCheck**](doc/IdentityApi.md#rejectkyccheck) | **POST** /api/v1/insurer/kyc/{id}/reject | Recusa uma identidade
 [*IdentityApi*](doc/IdentityApi.md) | [**removeMyContact**](doc/IdentityApi.md#removemycontact) | **DELETE** /api/v1/me/contacts/{type} | Remove um contacto
 [*IdentityApi*](doc/IdentityApi.md) | [**requestOtp**](doc/IdentityApi.md#requestotp) | **POST** /api/v1/auth/otp/request | Pede um código
 [*IdentityApi*](doc/IdentityApi.md) | [**resendInvitation**](doc/IdentityApi.md#resendinvitation) | **POST** /api/v1/invitations/{id}/resend | Reenvia um convite
@@ -131,6 +137,7 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**resetUserAccess**](doc/IdentityApi.md#resetuseraccess) | **POST** /api/v1/users/{id}/reset-access | Repõe o acesso de um utilizador de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**revokeInvitation**](doc/IdentityApi.md#revokeinvitation) | **POST** /api/v1/invitations/{id}/revoke | Revoga um convite
 [*IdentityApi*](doc/IdentityApi.md) | [**startContactVerification**](doc/IdentityApi.md#startcontactverification) | **POST** /api/v1/me/contacts | Envia um código para um contacto novo
+[*IdentityApi*](doc/IdentityApi.md) | [**submitMyKyc**](doc/IdentityApi.md#submitmykyc) | **POST** /api/v1/me/kyc | Envia o documento e a selfie para verificação
 [*IdentityApi*](doc/IdentityApi.md) | [**testOtpDelivery**](doc/IdentityApi.md#testotpdelivery) | **POST** /api/v1/admin/otp-settings/test | Envia um código de teste
 [*IdentityApi*](doc/IdentityApi.md) | [**unlockUser**](doc/IdentityApi.md#unlockuser) | **POST** /api/v1/users/{id}/unlock | Desbloqueia um utilizador de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**updateMe**](doc/IdentityApi.md#updateme) | **PUT** /api/v1/me | Altera as preferências da conta
@@ -138,6 +145,7 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**updateOtpSettings**](doc/IdentityApi.md#updateotpsettings) | **PUT** /api/v1/admin/otp-settings | Altera as definições do OTP
 [*IdentityApi*](doc/IdentityApi.md) | [**updateUserRoles**](doc/IdentityApi.md#updateuserroles) | **PUT** /api/v1/users/{id}/roles | Altera os perfis de um utilizador de staff
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyContact**](doc/IdentityApi.md#verifycontact) | **POST** /api/v1/me/contacts/verify | Confirma o código e grava o contacto
+[*IdentityApi*](doc/IdentityApi.md) | [**verifyKycCheck**](doc/IdentityApi.md#verifykyccheck) | **POST** /api/v1/insurer/kyc/{id}/verify | Verifica uma identidade
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyOtp**](doc/IdentityApi.md#verifyotp) | **POST** /api/v1/auth/otp/verify | Valida o código e entra
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
 [*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
@@ -151,6 +159,32 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateInsurerRatingSettings**](doc/OrganizationApi.md#updateinsurerratingsettings) | **PUT** /api/v1/insurer/rating-settings | Altera os encargos da seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**acceptProposal**](doc/ProposalApi.md#acceptproposal) | **POST** /api/v1/insurer/proposals/{id}/accept | Aceita uma proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**confirmProposalSignature**](doc/ProposalApi.md#confirmproposalsignature) | **POST** /api/v1/proposals/{id}/sign/confirm | Confirma a assinatura com o código recebido
+[*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
+[*ProposalApi*](doc/ProposalApi.md) | [**createProposalForClient**](doc/ProposalApi.md#createproposalforclient) | **POST** /api/v1/broker/proposals | Cria uma proposta a partir da cotação do mediador
+[*ProposalApi*](doc/ProposalApi.md) | [**getInsurerInspection**](doc/ProposalApi.md#getinsurerinspection) | **GET** /api/v1/insurer/inspections/{id} | Consulta uma vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**getInsurerProposal**](doc/ProposalApi.md#getinsurerproposal) | **GET** /api/v1/insurer/proposals/{id} | Consulta uma proposta submetida
+[*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**listBrokerProposals**](doc/ProposalApi.md#listbrokerproposals) | **GET** /api/v1/broker/proposals | Lista as propostas da organização do mediador
+[*ProposalApi*](doc/ProposalApi.md) | [**listInsurerInspections**](doc/ProposalApi.md#listinsurerinspections) | **GET** /api/v1/insurer/inspections | Lista as vistorias da seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**listInsurerProposals**](doc/ProposalApi.md#listinsurerproposals) | **GET** /api/v1/insurer/proposals | Lista as propostas submetidas à seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
+[*ProposalApi*](doc/ProposalApi.md) | [**rejectInspection**](doc/ProposalApi.md#rejectinspection) | **POST** /api/v1/insurer/inspections/{id}/reject | Recusa uma vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**rejectProposal**](doc/ProposalApi.md#rejectproposal) | **POST** /api/v1/insurer/proposals/{id}/reject | Recusa uma proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**removeInspectionPhoto**](doc/ProposalApi.md#removeinspectionphoto) | **DELETE** /api/v1/proposals/{id}/inspection/photos/{photoId} | Retira uma fotografia da vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**requestOnSiteInspection**](doc/ProposalApi.md#requestonsiteinspection) | **POST** /api/v1/proposals/{id}/inspection/request-on-site | Pede uma vistoria presencial
+[*ProposalApi*](doc/ProposalApi.md) | [**requestProposalInfo**](doc/ProposalApi.md#requestproposalinfo) | **POST** /api/v1/insurer/proposals/{id}/request-info | Pede informação ao cliente
+[*ProposalApi*](doc/ProposalApi.md) | [**requestProposalSignature**](doc/ProposalApi.md#requestproposalsignature) | **POST** /api/v1/proposals/{id}/sign/request | Gera o PDF da proposta e envia o código de assinatura
+[*ProposalApi*](doc/ProposalApi.md) | [**saveProposalDeclarations**](doc/ProposalApi.md#saveproposaldeclarations) | **POST** /api/v1/proposals/{id}/declarations | Grava as declarações de risco
+[*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**submitInspection**](doc/ProposalApi.md#submitinspection) | **POST** /api/v1/proposals/{id}/inspection/submit | Submete a vistoria por fotografias
+[*ProposalApi*](doc/ProposalApi.md) | [**submitProposal**](doc/ProposalApi.md#submitproposal) | **POST** /api/v1/proposals/{id}/submit | Submete a proposta à seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**updateBrokerProposal**](doc/ProposalApi.md#updatebrokerproposal) | **PUT** /api/v1/broker/proposals/{id} | Altera a data de início ou o tomador
+[*ProposalApi*](doc/ProposalApi.md) | [**updateProposal**](doc/ProposalApi.md#updateproposal) | **PUT** /api/v1/proposals/{id} | Altera a data de início da proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**uploadInspectionPhoto**](doc/ProposalApi.md#uploadinspectionphoto) | **POST** /api/v1/proposals/{id}/inspection/photos | Envia uma fotografia da vistoria
 [*RatingApi*](doc/RatingApi.md) | [**createBrokerQuoteRequest**](doc/RatingApi.md#createbrokerquoterequest) | **POST** /api/v1/broker/quotes | Pede cotações em nome de um cliente
 [*RatingApi*](doc/RatingApi.md) | [**createQuoteRequest**](doc/RatingApi.md#createquoterequest) | **POST** /api/v1/quotes | Pede cotações para um veículo do cliente
 [*RatingApi*](doc/RatingApi.md) | [**getQuoteRequest**](doc/RatingApi.md#getquoterequest) | **GET** /api/v1/quotes/{id} | Consulta um pedido de cotações
@@ -178,33 +212,62 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
+ - [AcceptProposalRequest](doc/AcceptProposalRequest.md)
+ - [AcceptanceMode](doc/AcceptanceMode.md)
+ - [AcknowledgeSuitabilityRequest](doc/AcknowledgeSuitabilityRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
+ - [ApproveInspectionRequest](doc/ApproveInspectionRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
+ - [BrokerPolicyholderRequest](doc/BrokerPolicyholderRequest.md)
+ - [BrokerProposalDriverRequest](doc/BrokerProposalDriverRequest.md)
+ - [BrokerProposalSummaryResponse](doc/BrokerProposalSummaryResponse.md)
+ - [BrokerProposalVehicleRequest](doc/BrokerProposalVehicleRequest.md)
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
  - [Charge](doc/Charge.md)
  - [ChargeValue](doc/ChargeValue.md)
+ - [ConfirmSignatureRequest](doc/ConfirmSignatureRequest.md)
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
  - [CoverageRequest](doc/CoverageRequest.md)
  - [CoverageResponse](doc/CoverageResponse.md)
+ - [CreateBrokerProposalRequest](doc/CreateBrokerProposalRequest.md)
  - [CreateBrokerQuoteRequest](doc/CreateBrokerQuoteRequest.md)
  - [CreateDriverRequest](doc/CreateDriverRequest.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
  - [CreateProductRequest](doc/CreateProductRequest.md)
+ - [CreateProposalRequest](doc/CreateProposalRequest.md)
  - [CreateQuoteRequest](doc/CreateQuoteRequest.md)
  - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
  - [CreateVehicleRequest](doc/CreateVehicleRequest.md)
  - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
+ - [DeclarationAnswerRequest](doc/DeclarationAnswerRequest.md)
+ - [DeclarationAnswerResponse](doc/DeclarationAnswerResponse.md)
+ - [DeclarationQuestion](doc/DeclarationQuestion.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [DriverResponse](doc/DriverResponse.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
+ - [InfoRequestItem](doc/InfoRequestItem.md)
+ - [InspectionMode](doc/InspectionMode.md)
+ - [InspectionPhotoResponse](doc/InspectionPhotoResponse.md)
+ - [InspectionResponse](doc/InspectionResponse.md)
+ - [InspectionReview](doc/InspectionReview.md)
+ - [InspectionStatus](doc/InspectionStatus.md)
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
+ - [InsurerInspectionSummaryResponse](doc/InsurerInspectionSummaryResponse.md)
+ - [InsurerKycCheckResponse](doc/InsurerKycCheckResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
+ - [InsurerProposalDriver](doc/InsurerProposalDriver.md)
+ - [InsurerProposalKyc](doc/InsurerProposalKyc.md)
+ - [InsurerProposalResponse](doc/InsurerProposalResponse.md)
+ - [InsurerProposalSignature](doc/InsurerProposalSignature.md)
+ - [InsurerProposalSla](doc/InsurerProposalSla.md)
+ - [InsurerProposalSummaryResponse](doc/InsurerProposalSummaryResponse.md)
+ - [InsurerProposalVehicle](doc/InsurerProposalVehicle.md)
  - [InsurerRatingSettingsResponse](doc/InsurerRatingSettingsResponse.md)
  - [InvitationDetailsResponse](doc/InvitationDetailsResponse.md)
  - [InvitationOrganization](doc/InvitationOrganization.md)
@@ -212,10 +275,19 @@ Class | Method | HTTP request | Description
  - [InviteUserRequest](doc/InviteUserRequest.md)
  - [Jwk](doc/Jwk.md)
  - [JwksResponse](doc/JwksResponse.md)
+ - [KycCheckResponse](doc/KycCheckResponse.md)
+ - [KycCheckStatus](doc/KycCheckStatus.md)
+ - [KycCheckSummaryResponse](doc/KycCheckSummaryResponse.md)
+ - [KycCustomerResponse](doc/KycCustomerResponse.md)
+ - [KycFilesResponse](doc/KycFilesResponse.md)
+ - [KycPreviousCheckResponse](doc/KycPreviousCheckResponse.md)
+ - [KycRejectionReason](doc/KycRejectionReason.md)
+ - [KycState](doc/KycState.md)
  - [LogoutRequest](doc/LogoutRequest.md)
  - [MeOrganization](doc/MeOrganization.md)
  - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
+ - [MyKycResponse](doc/MyKycResponse.md)
  - [OrganizationResponse](doc/OrganizationResponse.md)
  - [OrganizationSummaryResponse](doc/OrganizationSummaryResponse.md)
  - [OtpChallengeResponse](doc/OtpChallengeResponse.md)
@@ -225,19 +297,27 @@ Class | Method | HTTP request | Description
  - [OtpTestRequest](doc/OtpTestRequest.md)
  - [OtpTestResponse](doc/OtpTestResponse.md)
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
+ - [PageResponseBrokerProposalSummaryResponse](doc/PageResponseBrokerProposalSummaryResponse.md)
  - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
+ - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
+ - [PageResponseInsurerProposalSummaryResponse](doc/PageResponseInsurerProposalSummaryResponse.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
+ - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
+ - [PageResponseProposalSummaryResponse](doc/PageResponseProposalSummaryResponse.md)
  - [PageResponseQuoteRequestSummaryResponse](doc/PageResponseQuoteRequestSummaryResponse.md)
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
  - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
+ - [PhotoSlot](doc/PhotoSlot.md)
+ - [PhotoSource](doc/PhotoSource.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
  - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
+ - [PolicyholderSource](doc/PolicyholderSource.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [ProductDocumentResponse](doc/ProductDocumentResponse.md)
  - [ProductResponse](doc/ProductResponse.md)
@@ -245,6 +325,27 @@ Class | Method | HTTP request | Description
  - [ProductVersionRefResponse](doc/ProductVersionRefResponse.md)
  - [ProductVersionResponse](doc/ProductVersionResponse.md)
  - [ProductVersionValidationResponse](doc/ProductVersionValidationResponse.md)
+ - [ProposalChannel](doc/ProposalChannel.md)
+ - [ProposalCharge](doc/ProposalCharge.md)
+ - [ProposalChecklist](doc/ProposalChecklist.md)
+ - [ProposalCoverage](doc/ProposalCoverage.md)
+ - [ProposalDecision](doc/ProposalDecision.md)
+ - [ProposalDeclarations](doc/ProposalDeclarations.md)
+ - [ProposalDeductible](doc/ProposalDeductible.md)
+ - [ProposalDriver](doc/ProposalDriver.md)
+ - [ProposalInfoRequest](doc/ProposalInfoRequest.md)
+ - [ProposalKyc](doc/ProposalKyc.md)
+ - [ProposalOrganization](doc/ProposalOrganization.md)
+ - [ProposalPolicyholder](doc/ProposalPolicyholder.md)
+ - [ProposalPremium](doc/ProposalPremium.md)
+ - [ProposalProduct](doc/ProposalProduct.md)
+ - [ProposalProductDocument](doc/ProposalProductDocument.md)
+ - [ProposalResponse](doc/ProposalResponse.md)
+ - [ProposalSignature](doc/ProposalSignature.md)
+ - [ProposalStatus](doc/ProposalStatus.md)
+ - [ProposalSuitability](doc/ProposalSuitability.md)
+ - [ProposalSummaryResponse](doc/ProposalSummaryResponse.md)
+ - [ProposalVehicle](doc/ProposalVehicle.md)
  - [PublicPlateFormatResponse](doc/PublicPlateFormatResponse.md)
  - [PublicPlateFormatsResponse](doc/PublicPlateFormatsResponse.md)
  - [PublicPlatformSettingResponse](doc/PublicPlatformSettingResponse.md)
@@ -273,24 +374,48 @@ Class | Method | HTTP request | Description
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
  - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
+ - [RejectInspectionRequest](doc/RejectInspectionRequest.md)
+ - [RejectKycCheckRequest](doc/RejectKycCheckRequest.md)
+ - [RejectProposalRequest](doc/RejectProposalRequest.md)
+ - [RejectionReasonCode](doc/RejectionReasonCode.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
+ - [RequestOnSiteInspectionRequest](doc/RequestOnSiteInspectionRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
+ - [RequestProposalInfoRequest](doc/RequestProposalInfoRequest.md)
+ - [RequestSignatureRequest](doc/RequestSignatureRequest.md)
  - [RequestedCoverageRequest](doc/RequestedCoverageRequest.md)
  - [RequestedCoverageResponse](doc/RequestedCoverageResponse.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
  - [RiskDriverRequest](doc/RiskDriverRequest.md)
  - [RuleError](doc/RuleError.md)
+ - [SaveDeclarationsRequest](doc/SaveDeclarationsRequest.md)
+ - [SaveSuitabilityRequest](doc/SaveSuitabilityRequest.md)
+ - [SignatureRequestResponse](doc/SignatureRequestResponse.md)
  - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
  - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
+ - [SlaStatus](doc/SlaStatus.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
+ - [SubmitInspectionRequest](doc/SubmitInspectionRequest.md)
+ - [SubmitProposalRequest](doc/SubmitProposalRequest.md)
+ - [SuitabilityAnswerRequest](doc/SuitabilityAnswerRequest.md)
+ - [SuitabilityAnswerResponse](doc/SuitabilityAnswerResponse.md)
+ - [SuitabilityQuestion](doc/SuitabilityQuestion.md)
+ - [SuitabilityReason](doc/SuitabilityReason.md)
+ - [SuitabilityResult](doc/SuitabilityResult.md)
  - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
  - [TestPlateFormatRequest](doc/TestPlateFormatRequest.md)
  - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
  - [TokenResponse](doc/TokenResponse.md)
  - [TotpSetupResponse](doc/TotpSetupResponse.md)
  - [UnavailableReason](doc/UnavailableReason.md)
+ - [UnderwritingFailure](doc/UnderwritingFailure.md)
+ - [UnderwritingInputs](doc/UnderwritingInputs.md)
+ - [UnderwritingOutcome](doc/UnderwritingOutcome.md)
+ - [UnderwritingResult](doc/UnderwritingResult.md)
+ - [UnderwritingRulesResponse](doc/UnderwritingRulesResponse.md)
+ - [UpdateBrokerProposalRequest](doc/UpdateBrokerProposalRequest.md)
  - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
  - [UpdateInsurerRatingSettingsRequest](doc/UpdateInsurerRatingSettingsRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
@@ -301,9 +426,11 @@ Class | Method | HTTP request | Description
  - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
  - [UpdateProductRequest](doc/UpdateProductRequest.md)
  - [UpdateProductVersionRequest](doc/UpdateProductVersionRequest.md)
+ - [UpdateProposalRequest](doc/UpdateProposalRequest.md)
  - [UpdateRatingIntegrationRequest](doc/UpdateRatingIntegrationRequest.md)
  - [UpdateRatingRulesRequest](doc/UpdateRatingRulesRequest.md)
  - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)
+ - [UpdateUnderwritingRulesRequest](doc/UpdateUnderwritingRulesRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
  - [UpdateVehicleDriversRequest](doc/UpdateVehicleDriversRequest.md)
  - [UpdateVehicleRequest](doc/UpdateVehicleRequest.md)
@@ -314,6 +441,7 @@ Class | Method | HTTP request | Description
  - [VehicleResponse](doc/VehicleResponse.md)
  - [VehicleUsage](doc/VehicleUsage.md)
  - [VerifyContactRequest](doc/VerifyContactRequest.md)
+ - [VerifyKycCheckRequest](doc/VerifyKycCheckRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)
  - [VersionResponse](doc/VersionResponse.md)
 

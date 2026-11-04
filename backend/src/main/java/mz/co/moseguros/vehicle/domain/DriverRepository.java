@@ -23,6 +23,10 @@ public interface DriverRepository extends JpaRepository<Driver, UUID> {
     boolean existsByOwnerUserIdAndLicenceNumberHashAndStatus(UUID ownerUserId, String licenceNumberHash,
                                                             RecordStatus status);
 
+    /** Condutor do cliente com a carta (índice cego) e o estado indicados (no máximo um {@code ACTIVE}). */
+    Optional<Driver> findFirstByOwnerUserIdAndLicenceNumberHashAndStatus(UUID ownerUserId, String licenceNumberHash,
+                                                                        RecordStatus status);
+
     boolean existsByOwnerUserIdAndLicenceNumberHashAndStatusAndIdNot(UUID ownerUserId, String licenceNumberHash,
                                                                     RecordStatus status, UUID id);
 

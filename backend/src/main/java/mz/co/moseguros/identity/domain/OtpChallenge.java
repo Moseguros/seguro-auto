@@ -12,6 +12,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import mz.co.moseguros.shared.domain.Channel;
 import mz.co.moseguros.shared.persistence.BaseEntity;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * Desafio OTP enviado a um telemóvel ou e-mail ({@code identity.otp_challenge}). Só visível em
@@ -78,6 +80,11 @@ public class OtpChallenge extends BaseEntity {
     @Column(name = "root_challenge_id", nullable = false, updatable = false)
     private UUID rootChallengeId;
 
+    /** Documento e textos de um código de assinatura (S4-04); só com {@link Purpose#SIGN}. */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "sign_context", updatable = false, columnDefinition = "jsonb")
+    private OtpSignContext signContext;
+
     protected OtpChallenge() {
     }
 
@@ -115,6 +122,18 @@ public class OtpChallenge extends BaseEntity {
             challenge.rootChallengeId = fallbackFrom.getRootChallengeId();
         }
         return challenge;
+    }
+
+    /**
+     * Liga um desafio {@link Purpose#SIGN} ao documento assinado, antes de o gravar.
+     *
+     * @throws IllegalStateException se o desafio não for {@code SIGN}
+     */
+    public void attachSignContext(OtpSignContext context) {
+        if (purpose != Purpose.SIGN) {
+            throw new IllegalStateException("Only SIGN challenges have a sign context");
+        }
+        this.signContext = Objects.requireNonNull(context, "context");
     }
 
     public void markSent(Instant at) {
@@ -208,5 +227,10 @@ public class OtpChallenge extends BaseEntity {
 
     public UUID getRootChallengeId() {
         return rootChallengeId;
+    }
+
+    /** {@code null} fora de {@link Purpose#SIGN}. */
+    public OtpSignContext getSignContext() {
+        return signContext;
     }
 }

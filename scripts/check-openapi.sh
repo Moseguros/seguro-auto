@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Gera api/openapi.yaml e api/error-codes.json a partir do backend e falha se algum for
-# diferente do versionado.
+# Gera api/openapi.yaml, api/error-codes.json e api/proposal-questions.json a partir do backend
+# e falha se algum for diferente do versionado.
 #
 # Uso:
 #   ./scripts/check-openapi.sh
 #
 # Precisa de JDK 17 e do Docker em execução (a aplicação arranca com Testcontainers,
 # perfil Maven "openapi" -> OpenApiExportIT). A lista de códigos de erro vem do
-# ErrorCodesExportTest (ErrorCodes e FieldErrorCodes). Sai com 1 se algum ficheiro estiver
+# ErrorCodesExportTest (ErrorCodes e FieldErrorCodes) e a das perguntas da proposta do
+# ProposalQuestionsExportTest (S4-02). Sai com 1 se algum ficheiro estiver
 # desactualizado: nesse caso corre o script, revê o diff e faz commit dos ficheiros gerados.
 
 set -euo pipefail
@@ -15,10 +16,11 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SPEC="api/openapi.yaml"
 CODES="api/error-codes.json"
+QUESTIONS="api/proposal-questions.json"
 
 cd "$ROOT"
 # Uma alteração local por gravar seria apagada pela geração sem ser detectada.
-for file in "$SPEC" "$CODES"; do
+for file in "$SPEC" "$CODES" "$QUESTIONS"; do
   if [ -f "$file" ] && ! git diff --quiet -- "$file"; then
     echo "ERRO: $file tem alterações locais por gravar (o ficheiro é gerado, não se edita à mão)." >&2
     echo "      Descarta-as com 'git checkout -- $file' ou faz commit do ficheiro gerado." >&2
@@ -42,8 +44,15 @@ if ! ./mvnw -B -q test -Dtest=ErrorCodesExportTest -Derror-codes.export=true    
   exit 1
 fi
 
+echo "A gerar $QUESTIONS (ProposalQuestionsExportTest)..."
+if ! ./mvnw -B -q test -Dtest=ProposalQuestionsExportTest -Dproposal-questions.export=true     > "$ROOT/backend/target/check-proposal-questions.log" 2>&1; then
+  echo "ERRO: a geração das perguntas da proposta falhou. Últimas linhas de backend/target/check-proposal-questions.log:" >&2
+  tail -n 40 "$ROOT/backend/target/check-proposal-questions.log" >&2
+  exit 1
+fi
+
 cd "$ROOT"
-for file in "$SPEC" "$CODES"; do
+for file in "$SPEC" "$CODES" "$QUESTIONS"; do
   if [ ! -f "$file" ]; then
     echo "ERRO: $file não foi gerado." >&2
     exit 1
@@ -62,4 +71,4 @@ for file in "$SPEC" "$CODES"; do
   fi
 done
 
-echo "OK: $SPEC e $CODES correspondem ao que o backend gera."
+echo "OK: $SPEC, $CODES e $QUESTIONS correspondem ao que o backend gera."

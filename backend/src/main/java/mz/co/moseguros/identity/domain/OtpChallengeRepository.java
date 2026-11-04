@@ -49,6 +49,9 @@ public interface OtpChallengeRepository extends JpaRepository<OtpChallenge, UUID
     Instant findLastRequestTime(@Param("identifier") String identifier,
                                 @Param("purposes") Collection<Purpose> purposes);
 
+    /** Desafios ainda válidos do utilizador e finalidade (códigos de assinatura, S4-04). */
+    List<OtpChallenge> findByUserIdAndPurposeAndConsumedAtIsNullAndSupersededAtIsNull(UUID userId, Purpose purpose);
+
     /** Desafios ainda válidos do identificador e finalidade (para os marcar como substituídos). */
     List<OtpChallenge> findByIdentifierAndPurposeAndConsumedAtIsNullAndSupersededAtIsNull(String identifier,
                                                                                           Purpose purpose);

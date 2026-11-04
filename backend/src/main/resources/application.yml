@@ -107,8 +107,11 @@ moseguros:
       provider: smtp
       from: ${MOSEGUROS_NOTIFICATION_EMAIL_FROM:MoSeguros <nao-responder@moseguros.co.mz>}
   # Endereço da web (links nos e-mails). Local: Vite em 5173; no compose: nginx em 3000.
+  # trusted-proxies (ClientIpResolver, D15): IPs ou CIDR dos proxies cujo X-Forwarded-For é aceite
+  # como IP do cliente (vazia = usa sempre o endereço remoto). Ex.: MOSEGUROS_WEB_TRUSTED_PROXIES=172.18.0.0/16.
   web:
     base-url: ${MOSEGUROS_WEB_BASE_URL:http://localhost:5173}
+    trusted-proxies: ${MOSEGUROS_WEB_TRUSTED_PROXIES:}
   # Convites de staff (S1-04): link {web.base-url}/convite/{token}, válido 7 dias; 5 códigos TOTP
   # errados revogam o convite.
   invitation:
@@ -181,3 +184,18 @@ moseguros:
       bulkhead:
         max-concurrent-calls: 20
     secrets: {}
+  # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
+  # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
+  # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada
+  # em UNDER_REVIEW; aos decision-alert-days os subscritores recebem um alerta. Sem aceitação tácita.
+  # decision-alert-days tem de ser menor que decision-sla-days (validado no arranque).
+  proposal:
+    expiry-days: 15
+    max-start-days: 60
+    decision-sla-days: 15
+    decision-alert-days: 10
+    # Vistoria (S4-03 §2): fotografias extra por vistoria e idade máxima da fotografia (takenAt; a app
+    # pode enviar mais tarde, sem rede).
+    inspection:
+      max-extra-photos: 6
+      max-photo-age-days: 7

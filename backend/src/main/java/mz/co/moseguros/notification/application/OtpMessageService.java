@@ -2,14 +2,17 @@ package mz.co.moseguros.notification.application;
 
 import java.time.Clock;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import mz.co.moseguros.notification.DeliveryResult;
 import mz.co.moseguros.notification.DeliveryStatus;
+import mz.co.moseguros.notification.SignOtpText;
 import mz.co.moseguros.notification.domain.Destinations;
 import mz.co.moseguros.notification.domain.OutboundMessage;
 import mz.co.moseguros.notification.domain.OutboundMessageRepository;
@@ -67,13 +70,28 @@ public class OtpMessageService {
     @RunAsSystem
     public DeliveryResult sendOtp(Channel channel, String destination, String code, int validityMinutes,
                                   String language, UUID correlationId) {
+        return send(channel, destination, code, OutboundMessage.Purpose.OTP, correlationId,
+                sender -> deliver(sender, channel, destination, code, validityMinutes, locale(language)));
+    }
+
+    /** Ver {@code NotificationApi.sendSignOtp}. */
+    @RunAsSystem
+    public DeliveryResult sendSignOtp(Channel channel, String destination, String code, int validityMinutes,
+                                      SignOtpText text, String language, UUID correlationId) {
+        return send(channel, destination, code, OutboundMessage.Purpose.SIGN_OTP, correlationId,
+                sender -> deliverSign(sender, channel, destination, code, validityMinutes, text, locale(language)));
+    }
+
+    private DeliveryResult send(Channel channel, String destination, String code, OutboundMessage.Purpose purpose,
+                                UUID correlationId, java.util.function.Function<OtpDeliveryChannel, ProviderResult> delivery) {
+        Objects.requireNonNull(code, "code");
         OtpDeliveryChannel sender = channels.get(channel);
         String provider = sender == null ? "none" : sender.provider();
         String masked = Destinations.mask(destination);
-        UUID messageId = tx.execute(status -> messages.save(OutboundMessage.pending(channel, OutboundMessage.Purpose.OTP,
+        UUID messageId = tx.execute(status -> messages.save(OutboundMessage.pending(channel, purpose,
                 masked, Destinations.hash(destination), correlationId, provider)).getId());
 
-        ProviderResult result = deliver(sender, channel, destination, code, validityMinutes, locale(language));
+        ProviderResult result = delivery.apply(sender);
 
         tx.executeWithoutResult(status -> {
             OutboundMessage message = messages.findById(messageId).orElseThrow();
@@ -98,11 +116,8 @@ public class OtpMessageService {
 
     private ProviderResult deliver(OtpDeliveryChannel sender, Channel channel, String destination, String code,
                                    int validityMinutes, Locale locale) {
-        if (sender == null) {
-            return ProviderResult.failed("channel not configured");
-        }
         String minutes = Integer.toString(validityMinutes);
-        try {
+        return guarded(sender, () -> {
             if (channel == Channel.EMAIL) {
                 String subject = texts.getMessage("otp.email.subject", null, locale);
                 String body = texts.getMessage("otp.email.body", new Object[] {code, minutes}, locale);
@@ -111,6 +126,44 @@ public class OtpMessageService {
             }
             String text = texts.getMessage("otp.sms", new Object[] {code, minutes}, locale);
             return sender.send(destination, text, Map.of(OtpDeliveryChannel.PARAM_CODE, code));
+        });
+    }
+
+    /**
+     * Código de assinatura (S4-04 §4): SMS {@code otp.sign.sms} (ou {@code otp.sign-assisted.sms}),
+     * e-mail {@code otp.sign[-assisted].email.*}, WhatsApp com o modelo {@code moseguros_sign_otp}
+     * ({@code code}, {@code ref}, {@code insurer}, {@code total}).
+     */
+    private ProviderResult deliverSign(OtpDeliveryChannel sender, Channel channel, String destination, String code,
+                                       int validityMinutes, SignOtpText text, Locale locale) {
+        Object[] args = {code, text.documentRef(), text.insurerName(), text.totalFormatted(),
+                Integer.toString(validityMinutes), text.assisted() ? text.assistedByName() : ""};
+        String prefix = text.assisted() ? "otp.sign-assisted" : "otp.sign";
+        return guarded(sender, () -> {
+            if (channel == Channel.EMAIL) {
+                String subject = texts.getMessage(prefix + ".email.subject", args, locale);
+                String body = texts.getMessage(prefix + ".email.body", args, locale);
+                return sender.send(destination, body,
+                        Map.of(OtpDeliveryChannel.PARAM_CODE, code, OtpDeliveryChannel.PARAM_SUBJECT, subject));
+            }
+            String sms = texts.getMessage(prefix + ".sms", args, locale);
+            Map<String, String> params = new LinkedHashMap<>();
+            params.put(OtpDeliveryChannel.PARAM_TEMPLATE, OtpDeliveryChannel.SIGN_TEMPLATE);
+            params.put(OtpDeliveryChannel.PARAM_CODE, code);
+            params.put(OtpDeliveryChannel.PARAM_REF, text.documentRef());
+            params.put(OtpDeliveryChannel.PARAM_INSURER, text.insurerName());
+            params.put(OtpDeliveryChannel.PARAM_TOTAL, text.totalFormatted());
+            return sender.send(destination, sms, params);
+        });
+    }
+
+    /** Converte as falhas do fornecedor em {@code FAILED} com um motivo curto (nunca lança). */
+    private ProviderResult guarded(OtpDeliveryChannel sender, java.util.function.Supplier<ProviderResult> send) {
+        if (sender == null) {
+            return ProviderResult.failed("channel not configured");
+        }
+        try {
+            return send.get();
         } catch (RestClientResponseException e) {
             return ProviderResult.failed("HTTP " + e.getStatusCode().value());
         } catch (ResourceAccessException e) {

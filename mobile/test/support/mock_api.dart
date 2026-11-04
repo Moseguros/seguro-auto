@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -10,6 +11,10 @@ import 'package:moseguros/app.dart';
 import 'package:moseguros/core/api/api_client.dart';
 import 'package:moseguros/core/auth/token_storage.dart';
 import 'package:moseguros/core/config/env.dart';
+import 'package:moseguros/core/db/app_database.dart';
+import 'package:moseguros/core/location/location_service.dart';
+import 'package:moseguros/core/network/connectivity.dart';
+import 'package:moseguros/features/inspection/upload_queue_runner.dart';
 import 'package:moseguros/features/onboarding/onboarding_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -206,6 +211,10 @@ void useSmallPhone(WidgetTester tester) {
 }
 
 /// Abre a app completa (router, sessão e apresentação) com a API simulada.
+///
+/// A base local é em memória (ou [database]), a rede é simulada ([connectivity],
+/// com rede por defeito), a localização não responde e o executor da fila não
+/// tem relógio (corre só quando é acordado).
 Future<ProviderContainer> pumpMoSeguros(
   WidgetTester tester,
   MockApi api, {
@@ -214,12 +223,21 @@ Future<ProviderContainer> pumpMoSeguros(
   TokenStorage? storage,
   Locale locale = const Locale('pt'),
   List<Override> overrides = const [],
+  AppDatabase? database,
+  ConnectivityMonitor? connectivity,
+  LocationService? location,
+  Directory? filesDirectory,
+  Map<String, Object> preferencesValues = const {},
 }) async {
   useSmallPhone(tester);
   SharedPreferences.setMockInitialValues({
     if (onboardingDone) OnboardingController.key: true,
+    ...preferencesValues,
   });
   final preferences = await SharedPreferences.getInstance();
+  final db = database ?? AppDatabase.memory();
+  if (database == null) addTearDown(db.close);
+  final files = filesDirectory ?? Directory.systemTemp.createTempSync('ms-');
   final container = ProviderContainer(
     overrides: [
       envProvider.overrideWithValue(testEnv),
@@ -228,6 +246,13 @@ Future<ProviderContainer> pumpMoSeguros(
         storage ?? MemoryTokenStorage(refreshToken),
       ),
       sharedPreferencesProvider.overrideWithValue(preferences),
+      appDatabaseProvider.overrideWithValue(db),
+      appFilesDirectoryProvider.overrideWith((ref) async => files),
+      connectivityMonitorProvider.overrideWithValue(
+        connectivity ?? AlwaysOnline(),
+      ),
+      locationServiceProvider.overrideWithValue(location ?? const NoLocation()),
+      uploadQueueTickProvider.overrideWithValue(null),
       ...overrides,
     ],
   );
@@ -240,6 +265,28 @@ Future<ProviderContainer> pumpMoSeguros(
   );
   await tester.pumpAndSettle();
   return container;
+}
+
+/// Rede sempre ligada.
+class AlwaysOnline implements ConnectivityMonitor {
+  @override
+  Future<bool> isOnline() async => true;
+
+  @override
+  Stream<bool> get changes => const Stream.empty();
+}
+
+/// Sem localização.
+class NoLocation implements LocationService {
+  const NoLocation();
+
+  @override
+  Future<bool> requestPermission() async => false;
+
+  @override
+  Future<GeoPoint?> current({
+    Duration timeout = const Duration(seconds: 5),
+  }) async => null;
 }
 
 /// Erro de um pedido com resposta [status] e [body] (para widgets testados sem a API).

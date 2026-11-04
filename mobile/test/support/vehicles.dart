@@ -6,7 +6,7 @@ import 'package:image/image.dart' as img;
 import 'package:moseguros/core/files/file_pickers.dart';
 import 'package:moseguros/core/files/file_viewer.dart';
 import 'package:moseguros/core/files/image_preparer.dart';
-import 'package:moseguros/features/vehicles/camera/document_camera.dart';
+import 'package:moseguros/core/camera/camera_service.dart';
 
 import 'mock_api.dart';
 
@@ -24,10 +24,16 @@ final Uint8List tinyPng = Uint8List.fromList([
 final Uint8List tinyJpeg = img.encodeJpg(img.Image(width: 4, height: 3));
 
 /// Câmara falsa: a pré-visualização é um rectângulo e a foto é [photo].
-class FakeDocumentCamera implements DocumentCamera {
-  FakeDocumentCamera({Uint8List? photo}) : photo = photo ?? tinyPng;
+class FakeCameraService implements CameraService {
+  FakeCameraService({
+    Uint8List? photo,
+    this.lens = CameraLens.back,
+    this.resolution = CameraResolution.veryHigh,
+  }) : photo = photo ?? tinyPng;
 
   final Uint8List photo;
+  final CameraLens lens;
+  final CameraResolution resolution;
   int captures = 0;
   bool initialized = false;
   bool disposed = false;
@@ -155,15 +161,19 @@ class FakeDevice {
     : permission = FakeCameraPermission(granted: cameraGranted);
 
   final FakeCameraPermission permission;
-  final cameras = <FakeDocumentCamera>[];
+  final cameras = <FakeCameraService>[];
   final compressor = RecordingCompressor();
   final gallery = FakeGalleryPicker();
   final pdf = FakePdfPicker();
   final opener = FakeFileOpener();
 
   List<Override> get overrides => [
-    documentCameraProvider.overrideWithValue(() {
-      final camera = FakeDocumentCamera();
+    cameraServiceProvider.overrideWithValue(({
+      CameraLens lens = CameraLens.back,
+      CameraResolution resolution = CameraResolution.veryHigh,
+      FlashMode initialFlash = FlashMode.off,
+    }) {
+      final camera = FakeCameraService(lens: lens, resolution: resolution);
       cameras.add(camera);
       return camera;
     }),

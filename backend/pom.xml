@@ -38,6 +38,10 @@
     <!-- Tarifação externa (S3-02): circuit breaker e bulkhead por seguradora; WireMock nos testes -->
     <resilience4j.version>2.2.0</resilience4j.version>
     <wiremock.version>3.9.2</wiremock.version>
+    <!-- PDF (S4-04): XHTML (Thymeleaf) → PDF com o Flying Saucer sobre o OpenPDF. 9.4.0 é a última
+         versão publicada do artefacto flying-saucer-pdf-openpdf. O PDFBox só lê PDFs nos testes. -->
+    <flying-saucer.version>9.4.0</flying-saucer.version>
+    <pdfbox.version>3.0.5</pdfbox.version>
   </properties>
 
   <dependencyManagement>
@@ -101,6 +105,18 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <!-- PDF (S4-04, DocumentApi.renderPdf): modelos Thymeleaf em XHTML (sem o starter, para não ligar
+         a resolução de vistas do MVC) renderizados pelo Flying Saucer (OpenPDF) -->
+    <dependency>
+      <groupId>org.thymeleaf</groupId>
+      <artifactId>thymeleaf-spring6</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xhtmlrenderer</groupId>
+      <artifactId>flying-saucer-pdf-openpdf</artifactId>
+      <version>${flying-saucer.version}</version>
     </dependency>
 
     <!-- E-mail (SMTP; localmente o Mailpit) -->
@@ -244,6 +260,12 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>${pdfbox.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

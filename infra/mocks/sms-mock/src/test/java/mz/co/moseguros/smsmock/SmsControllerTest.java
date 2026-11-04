@@ -72,6 +72,33 @@ class SmsControllerTest {
     }
 
     @Test
+    void acceptsTheProposalSigningTemplate() throws Exception {
+        mvc.perform(post("/whatsapp").contentType(MediaType.APPLICATION_JSON).content(
+                        "{\"to\":\"+258841234567\",\"template\":\"moseguros_sign_otp\",\"params\":"
+                                + "{\"code\":\"123456\",\"ref\":\"PR-2027-000123\",\"insurer\":\"Seguradora Demo\","
+                                + "\"total\":\"4 663,00 MT\"}}"))
+                .andExpect(status().isAccepted());
+
+        mvc.perform(get("/sms"))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].template").value("moseguros_sign_otp"))
+                .andExpect(jsonPath("$[0].params.ref").value("PR-2027-000123"))
+                .andExpect(jsonPath("$[0].params.total").value("4 663,00 MT"));
+    }
+
+    @Test
+    void rejectsUnknownTemplatesAndMissingParameters() throws Exception {
+        mvc.perform(post("/whatsapp").contentType(MediaType.APPLICATION_JSON).content(
+                        "{\"to\":\"+258841234567\",\"template\":\"other\",\"params\":{\"code\":\"1\"}}"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(post("/whatsapp").contentType(MediaType.APPLICATION_JSON).content(
+                        "{\"to\":\"+258841234567\",\"template\":\"moseguros_sign_otp\",\"params\":{\"code\":\"1\"}}"))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(get("/sms")).andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
     void failModeAnswers503AndStoresNothing() throws Exception {
         mvc.perform(put("/config").contentType(MediaType.APPLICATION_JSON).content("{\"sms\":\"FAIL\"}"))
                 .andExpect(status().isOk())

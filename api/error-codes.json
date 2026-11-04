@@ -13,6 +13,10 @@
       "status" : 400
     },
     {
+      "code" : "CLIENT_ACCOUNT_DISABLED",
+      "status" : 409
+    },
+    {
       "code" : "CONCURRENT_MODIFICATION",
       "status" : 409
     },
@@ -73,6 +77,30 @@
       "status" : 403
     },
     {
+      "code" : "INSPECTION_NOT_APPROVED",
+      "status" : 409
+    },
+    {
+      "code" : "INSPECTION_NOT_EDITABLE",
+      "status" : 409
+    },
+    {
+      "code" : "INSPECTION_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "INSPECTION_NOT_REQUIRED",
+      "status" : 409
+    },
+    {
+      "code" : "INSPECTION_PHOTOS_MISSING",
+      "status" : 409
+    },
+    {
+      "code" : "INSURER_NOT_ACTIVE",
+      "status" : 409
+    },
+    {
       "code" : "INTERNAL_ERROR",
       "status" : 500
     },
@@ -115,6 +143,22 @@
     {
       "code" : "INVITATION_NOT_ACCEPTED",
       "status" : 400
+    },
+    {
+      "code" : "KYC_ALREADY_PENDING",
+      "status" : 409
+    },
+    {
+      "code" : "KYC_ALREADY_VERIFIED",
+      "status" : 409
+    },
+    {
+      "code" : "KYC_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "KYC_NOT_VERIFIED",
+      "status" : 409
     },
     {
       "code" : "LAST_ACTIVE_PLATE_FORMAT",
@@ -213,6 +257,18 @@
       "status" : 400
     },
     {
+      "code" : "PDF_RENDER_FAILED",
+      "status" : 500
+    },
+    {
+      "code" : "PDF_TEMPLATE_NOT_FOUND",
+      "status" : 500
+    },
+    {
+      "code" : "PHOTO_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "PLATE_FORMAT_CODE_ALREADY_EXISTS",
       "status" : 409
     },
@@ -265,7 +321,39 @@
       "status" : 400
     },
     {
+      "code" : "PROFILE_INCOMPLETE",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_ALREADY_EXISTS",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_INCOMPLETE",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_NOT_EDITABLE",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PROPOSAL_NOT_UNDER_REVIEW",
+      "status" : 409
+    },
+    {
       "code" : "QUOTE_ALREADY_USED",
+      "status" : 409
+    },
+    {
+      "code" : "QUOTE_DATA_CHANGED",
       "status" : 409
     },
     {
@@ -325,6 +413,18 @@
       "status" : 409
     },
     {
+      "code" : "SIGNER_CONTACT_MISSING",
+      "status" : 409
+    },
+    {
+      "code" : "SIGN_REQUEST_NOT_FOUND",
+      "status" : 409
+    },
+    {
+      "code" : "SUITABILITY_NOT_WARNED",
+      "status" : 409
+    },
+    {
       "code" : "TENANT_REQUIRED",
       "status" : 500
     },
@@ -374,6 +474,8 @@
     }
   ],
   "validation" : [
+    "ANSWERS_INCOMPLETE",
+    "ANSWER_DUPLICATED",
     "BASE_TYPE_NOT_ALLOWED",
     "BORDER_ONLY_MTPL",
     "CAPITAL_OPTIONS_INVALID",
@@ -396,16 +498,20 @@
     "DURATION_FACTORS_REQUIRED",
     "DURATION_NOT_ALLOWED",
     "EXAMPLE_DOES_NOT_MATCH",
+    "EXTRA_PHOTOS_LIMIT",
     "FALLBACK_ORDER_MISMATCH",
     "HABITUAL_DRIVER_REQUIRED",
+    "INVALID_ANSWER",
     "INVALID_CAPITAL_TYPE",
     "INVALID_CHASSIS",
     "INVALID_CODE",
+    "INVALID_COORDINATES",
     "INVALID_COUNTRY_CODE",
     "INVALID_CURRENCY",
     "INVALID_DATE",
     "INVALID_DOCUMENT_NUMBER",
     "INVALID_EMAIL",
+    "INVALID_INSURER",
     "INVALID_LICENCE_NUMBER",
     "INVALID_MSISDN",
     "INVALID_NAME",
@@ -415,7 +521,9 @@
     "INVALID_PLATE",
     "INVALID_RANGE",
     "INVALID_REQUIREMENT",
+    "INVALID_RULES",
     "INVALID_SECRET_REF",
+    "INVALID_SLOT",
     "INVALID_SORT",
     "INVALID_URL",
     "INVALID_VALUE",
@@ -426,6 +534,7 @@
     "MTPL_MUST_BE_MANDATORY",
     "MTPL_REQUIRED",
     "MULTIPLE_HABITUAL_DRIVERS",
+    "MUST_BE_TRUE",
     "MZ_SCOPE_REQUIRED",
     "NOT_ALLOWED",
     "NOT_BLANK",
@@ -440,6 +549,8 @@
     "PATTERN",
     "PATTERN_NOT_ANCHORED",
     "PATTERN_WITHOUT_GROUPS",
+    "PHOTO_IN_FUTURE",
+    "PHOTO_TOO_OLD",
     "REQUIRED",
     "REQUIRED_COVERAGE_MISSING",
     "RESERVED_FACTOR_CODE",
@@ -452,6 +563,7 @@
     "TOO_SHORT",
     "TYPE_MISMATCH",
     "UNDERAGE",
+    "UNKNOWN_QUESTION",
     "VALUE_OUT_OF_RANGE",
     "VTPL_CAPITAL_TOO_LOW"
   ]

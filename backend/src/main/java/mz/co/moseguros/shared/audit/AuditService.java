@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import mz.co.moseguros.shared.domain.Ids;
+import mz.co.moseguros.shared.web.ClientIpResolver;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,16 +31,19 @@ public class AuditService {
     private final AuditEventRepository repository;
     private final ObjectMapper objectMapper;
     private final Clock clock;
+    private final ClientIpResolver clientIp;
 
-    public AuditService(AuditEventRepository repository, ObjectMapper objectMapper, Clock clock) {
+    public AuditService(AuditEventRepository repository, ObjectMapper objectMapper, Clock clock,
+                        ClientIpResolver clientIp) {
         this.repository = repository;
         this.objectMapper = objectMapper;
         this.clock = clock;
+        this.clientIp = clientIp;
     }
 
     /**
      * Grava o evento, preenchendo {@code id} (UUID v7), {@code occurred_at} (UTC),
-     * {@code ip} (do pedido HTTP actual) e {@code trace_id} (do MDC).
+     * {@code ip} (do pedido HTTP actual, pelo {@link ClientIpResolver}) e {@code trace_id} (do MDC).
      *
      * @return o id do evento gravado
      */
@@ -67,21 +70,13 @@ public class AuditService {
         return state == null ? null : objectMapper.valueToTree(state);
     }
 
-    /** Primeiro valor de {@code X-Forwarded-For}, ou o endereço remoto; {@code null} fora de um pedido HTTP. */
-    static String currentIp() {
+    /** IP do pedido HTTP actual ({@link ClientIpResolver}); {@code null} fora de um pedido HTTP. */
+    String currentIp() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         if (!(attributes instanceof ServletRequestAttributes servlet)) {
             return null;
         }
-        HttpServletRequest request = servlet.getRequest();
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            String first = forwarded.split(",", 2)[0].trim();
-            if (!first.isEmpty()) {
-                return first;
-            }
-        }
-        return request.getRemoteAddr();
+        return clientIp.resolve(servlet.getRequest());
     }
 
     private static String truncate(String value, int max) {

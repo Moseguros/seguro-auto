@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moseguros.co.mz/schemas/underwriting-v1.json",
+  "title": "MoSeguros - regras de aceitação da versão do produto v1 (S4-05)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "autoAccept"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "autoAccept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "simplifiedKycMaxPremium", "liability", "ownDamage"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "simplifiedKycMaxPremium": { "$ref": "#/$defs/positiveMoney" },
+        "liability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requireAllDeclarationsNegative"],
+          "properties": {
+            "requireAllDeclarationsNegative": { "type": "boolean" }
+          }
+        },
+        "ownDamage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maxVehicleValue", "requireAllDeclarationsNegative"],
+          "properties": {
+            "maxVehicleValue": { "$ref": "#/$defs/positiveMoney" },
+            "requireAllDeclarationsNegative": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "positiveMoney": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "integer", "minimum": 1, "maximum": 100000000000 },
+        "currency": { "const": "MZN" }
+      }
+    }
+  }
+}

@@ -21,6 +21,7 @@ import java.util.UUID;
 import mz.co.moseguros.notification.DeliveryResult;
 import mz.co.moseguros.notification.DeliveryStatus;
 import mz.co.moseguros.notification.OtpDeliveryFailed;
+import mz.co.moseguros.notification.SignOtpText;
 import mz.co.moseguros.notification.domain.Destinations;
 import mz.co.moseguros.notification.domain.OutboundMessage;
 import mz.co.moseguros.notification.domain.OutboundMessageRepository;
@@ -107,6 +108,32 @@ class OtpMessageServiceTest {
         assertThat(email.text).startsWith("Olá,\n\no seu código de acesso à MoSeguros é 123456. É válido durante 5 "
                 + "minutos.");
         assertThat(saved.get(0).getDestinationMasked()).isEqualTo("a***@exemplo.co.mz");
+    }
+
+    @Test
+    void signCodeTextsAreTranslatedAndStoredAsSignOtp() {
+        SignOtpText text = new SignOtpText("PR-2027-000123", "Seguradora Demo", "4\u00A0663,00 MT", null);
+        DeliveryResult result = service.sendSignOtp(Channel.SMS, "+258841234567", "012345", 5, text, "pt", null);
+
+        assertThat(result.status()).isEqualTo(DeliveryStatus.SENT);
+        assertThat(sms.text).isEqualTo("MoSeguros: o código 012345 assina a proposta PR-2027-000123 da Seguradora "
+                + "Demo, prémio 4\u00A0663,00 MT. Válido 5 min. Não o partilhe com ninguém.");
+        assertThat(sms.params).containsEntry("code", "012345").containsEntry("template", "moseguros_sign_otp")
+                .containsEntry("ref", "PR-2027-000123").containsEntry("insurer", "Seguradora Demo")
+                .containsEntry("total", "4\u00A0663,00 MT");
+        assertThat(saved.get(0).getPurpose()).isEqualTo(OutboundMessage.Purpose.SIGN_OTP);
+        assertThat(saved.get(0).isOtp()).isTrue();
+
+        service.sendSignOtp(Channel.SMS, "+258841234567", "999999", 5,
+                new SignOtpText("PR-2027-000123", "Demo", "MZN 4,663.00", "Corretora Demo"), "en", null);
+        assertThat(sms.text).isEqualTo("MoSeguros: code 999999 signs proposal PR-2027-000123 from Demo, premium "
+                + "MZN 4,663.00, prepared by Corretora Demo. Valid 5 min. Only tell it to Corretora Demo if you agree "
+                + "with the proposal. MoSeguros never asks for codes by phone.");
+
+        service.sendSignOtp(Channel.EMAIL, "ana@exemplo.co.mz", "123456", 5, text, "pt", null);
+        assertThat(email.params).containsEntry("subject", "Código para assinar a proposta PR-2027-000123");
+        assertThat(email.text).startsWith("Olá,\n\no código 123456 assina a proposta PR-2027-000123 da Seguradora "
+                + "Demo, com o prémio total de 4\u00A0663,00 MT.");
     }
 
     @Test

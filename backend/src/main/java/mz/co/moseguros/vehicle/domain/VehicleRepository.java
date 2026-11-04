@@ -18,6 +18,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 
     boolean existsByOwnerUserIdAndPlateAndStatus(UUID ownerUserId, String plate, RecordStatus status);
 
+    /** Veículo do cliente com a matrícula normalizada e o estado indicados (no máximo um {@code ACTIVE}). */
+    Optional<Vehicle> findFirstByOwnerUserIdAndPlateAndStatus(UUID ownerUserId, String plate, RecordStatus status);
+
     boolean existsByOwnerUserIdAndPlateAndStatusAndIdNot(UUID ownerUserId, String plate, RecordStatus status, UUID id);
 
     /** Qualquer estado (o livrete de um veículo retirado continua legível pelo dono). */

@@ -57,6 +57,7 @@ export type MenuItem = {
 export const menuAliases: Record<string, string> = {
   '/cliente/condutores': 'vehicles',
   '/cliente/cotacoes': 'quote',
+  '/cliente/identidade': 'profile',
 };
 
 /** Item marcado por um alias para o caminho, se houver. */
@@ -71,6 +72,7 @@ export const menus: Record<Area, MenuItem[]> = {
   cliente: [
     { key: 'home', path: '/cliente', icon: Home },
     { key: 'quote', path: '/cliente/simular', icon: Calculate },
+    { key: 'proposals', path: '/cliente/propostas', icon: Assignment },
     { key: 'policies', path: '/cliente/apolices', icon: Description },
     { key: 'vehicles', path: '/cliente/veiculos', icon: DirectionsCar },
     { key: 'payments', path: '/cliente/pagamentos', icon: Payments },
@@ -110,7 +112,12 @@ export const menus: Record<Area, MenuItem[]> = {
       icon: PriceChange,
       permission: 'product:read',
     },
-    { key: 'proposals', path: '/seguradora/propostas', icon: Assignment },
+    {
+      key: 'proposals',
+      path: '/seguradora/propostas',
+      icon: Assignment,
+      permission: 'proposal:read',
+    },
     { key: 'policies', path: '/seguradora/apolices', icon: Description },
     { key: 'payments', path: '/seguradora/pagamentos', icon: Payments },
     { key: 'claims', path: '/seguradora/sinistros', icon: CarCrash },
@@ -127,6 +134,12 @@ export const menus: Record<Area, MenuItem[]> = {
       path: '/mediador/cotacoes',
       icon: Calculate,
       permission: 'quote:create-for-client',
+    },
+    {
+      key: 'proposals',
+      path: '/mediador/propostas',
+      icon: Assignment,
+      permission: 'proposal:create-for-client',
     },
     { key: 'policies', path: '/mediador/apolices', icon: Description },
     { key: 'reports', path: '/mediador/relatorios', icon: BarChart },

@@ -22,7 +22,7 @@ import mz.co.moseguros.shared.persistence.BaseEntity;
 public class OutboundMessage extends BaseEntity {
 
     /** Para que serve a mensagem. */
-    public enum Purpose { OTP, INVITATION, PASSWORD_RESET }
+    public enum Purpose { OTP, INVITATION, PASSWORD_RESET, KYC, SIGN_OTP, PROPOSAL }
 
     static final int MAX_FAILURE_REASON = 200;
     static final int MAX_PROVIDER_MESSAGE_ID = 100;
@@ -99,8 +99,9 @@ public class OutboundMessage extends BaseEntity {
         this.failureReason = truncate(reason == null || reason.isBlank() ? "unknown" : reason, MAX_FAILURE_REASON);
     }
 
+    /** Código OTP (login, contacto, teste) ou código de assinatura (S4-04): um recibo de falha gera alternativa. */
     public boolean isOtp() {
-        return purpose == Purpose.OTP;
+        return purpose == Purpose.OTP || purpose == Purpose.SIGN_OTP;
     }
 
     public Channel getChannel() {

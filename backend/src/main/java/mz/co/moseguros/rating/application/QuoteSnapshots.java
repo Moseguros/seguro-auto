@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import mz.co.moseguros.catalog.CoverageCode;
-import mz.co.moseguros.rating.domain.tariff.RatedDriver;
-import mz.co.moseguros.rating.domain.tariff.RatedVehicle;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.rating.domain.tariff.RatingInput.RequestedCoverage;
 import org.springframework.stereotype.Component;
 

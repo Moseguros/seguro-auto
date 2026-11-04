@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moseguros/core/format/money.dart';
 import 'package:moseguros/core/widgets/cta_button.dart';
@@ -64,7 +65,6 @@ void main() {
     expect(find.text('Imposto de selo'), findsOneWidget);
     expect(find.text('Ajuste de arredondamento'), findsOneWidget);
     expect(find.text(formatMoney(5226200, 'pt')), findsOneWidget);
-    expect(find.byType(CtaButton), findsNothing);
 
     final button = find.text('Informação pré-contratual');
     await tester.scrollUntilVisible(button, 200);
@@ -74,11 +74,46 @@ void main() {
     expect(sent, contains('GET /api/v1/files/$preContractFileId'));
     expect(device.opener.opened.single.contentType, 'application/pdf');
     expect(device.opener.opened.single.name, 'informacao-pre-contratual.pdf');
+    // S4-09 §2: "Adquirir apólice" é o único botão laranja do ecrã.
+    await tester.scrollUntilVisible(find.text('Adquirir apólice'), 200);
+    expect(find.byType(CtaButton), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('"Adquirir apólice" abre /proposals/new?quoteId=', (
+    tester,
+  ) async {
+    api.on(
+      'POST',
+      '/api/v1/proposals',
+      409,
+      MockApi.problem(409, 'QUOTE_EXPIRED'),
+    );
+    final (_, router) = await openQuote(
+      tester,
+      api,
+      '/quote/results/$requestId/quotes/$quoteDemoId',
+    );
+    final button = find.byKey(const Key('quote-acquire'));
+    await tester.scrollUntilVisible(button, 200);
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pumpAndSettle();
+
     expect(
-      find.text('Em breve vai poder avançar daqui para a proposta.'),
+      router.routerDelegate.currentConfiguration.last.matchedLocation,
+      '/proposals/new',
+    );
+    final body = api.calls('POST', '/api/v1/proposals').single.data;
+    expect(body, {'quoteId': quoteDemoId, 'channel': 'APP'});
+    expect(
+      find.text('Esta cotação já expirou. Faça uma nova simulação.'),
       findsOneWidget,
     );
-    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('new-proposal-simulate')), findsOneWidget);
   });
 
   testWidgets('NOT_AVAILABLE mostra só o motivo', (tester) async {

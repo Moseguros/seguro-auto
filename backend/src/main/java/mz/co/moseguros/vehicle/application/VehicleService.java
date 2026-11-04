@@ -41,8 +41,6 @@ import mz.co.moseguros.vehicle.domain.VehicleRules;
 import mz.co.moseguros.vehicle.domain.VehicleRules.DriverAssignment;
 import mz.co.moseguros.vehicle.domain.VehicleRules.ValidVehicle;
 import mz.co.moseguros.vehicle.domain.VehicleRules.VehicleData;
-import mz.co.moseguros.vehicle.infrastructure.VehicleRegistryPort;
-import mz.co.moseguros.vehicle.infrastructure.VehicleRegistryUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.NestedExceptionUtils;
@@ -68,7 +66,7 @@ public class VehicleService {
     private final VehicleRepository vehicles;
     private final DriverRepository drivers;
     private final VehicleDriverRepository vehicleDrivers;
-    private final VehicleRegistryPort registry;
+    private final RegistryVerification registryVerification;
     private final PlateParser plates;
     private final DocumentApi documents;
     private final List<VehicleRemovalGuard> removalGuards;
@@ -77,14 +75,15 @@ public class VehicleService {
     private final EntityManager entityManager;
 
     public VehicleService(CurrentUser currentUser, VehicleRepository vehicles, DriverRepository drivers,
-                          VehicleDriverRepository vehicleDrivers, VehicleRegistryPort registry, PlateParser plates,
+                          VehicleDriverRepository vehicleDrivers, RegistryVerification registryVerification,
+                          PlateParser plates,
                           DocumentApi documents, List<VehicleRemovalGuard> removalGuards, AuditService audit,
                           Clock clock, EntityManager entityManager) {
         this.currentUser = currentUser;
         this.vehicles = vehicles;
         this.drivers = drivers;
         this.vehicleDrivers = vehicleDrivers;
-        this.registry = registry;
+        this.registryVerification = registryVerification;
         this.plates = plates;
         this.documents = documents;
         this.removalGuards = List.copyOf(removalGuards);
@@ -278,20 +277,8 @@ public class VehicleService {
         }
     }
 
-    /**
-     * Consulta o registo automóvel: o instante da verificação se a matrícula existe com o mesmo
-     * chassis; {@code null} se não existir, o chassis for diferente ou o registo não responder.
-     */
     private Instant registryVerification(ValidVehicle valid) {
-        try {
-            return registry.lookup(valid.plate())
-                    .filter(found -> valid.chassisNumber().equals(VehicleRules.normalizeChassis(found.chassisNumber())))
-                    .map(found -> clock.instant())
-                    .orElse(null);
-        } catch (VehicleRegistryUnavailableException e) {
-            log.warn("Vehicle registry unavailable; plate {} saved without verification", valid.plate().masked());
-            return null;
-        }
+        return registryVerification.verify(valid);
     }
 
     private void saveAndFlush(Vehicle vehicle) {

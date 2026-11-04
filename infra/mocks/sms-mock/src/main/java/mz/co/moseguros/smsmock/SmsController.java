@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * API do simulador: recebe SMS ({@code POST /sms}) e mensagens de WhatsApp com modelo
- * ({@code POST /whatsapp}), lista-as e limpa-as ({@code /sms}, os dois canais), e muda o modo de
+ * ({@code POST /whatsapp}; só os modelos de {@link WhatsAppTemplates}), lista-as e limpa-as ({@code /sms}, os dois canais), e muda o modo de
  * cada canal ({@code /config}). A página {@code GET /} é o {@code static/index.html}.
  */
 @RestController
@@ -49,6 +49,7 @@ public class SmsController {
     @PostMapping("/whatsapp")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public SendResponse sendWhatsApp(@Valid @RequestBody WhatsAppRequest request) {
+        WhatsAppTemplates.validate(request.template(), request.params());
         Mode mode = accept(modes.whatsapp());
         SmsMessage message = store.addWhatsApp(request.to(), request.template(), request.params());
         receipts.schedule(WHATSAPP_PROVIDER, message.id(), receiptStatus(mode));

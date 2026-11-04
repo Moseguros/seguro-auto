@@ -31,7 +31,8 @@
       "payments": "Pagamentos",
       "claims": "Sinistros",
       "complaints": "Reclamações",
-      "profile": "Perfil"
+      "profile": "Perfil",
+      "proposals": "Propostas"
     },
     "admin": {
       "home": "Painel",
@@ -60,7 +61,8 @@
       "quotes": "Cotações",
       "policies": "Apólices",
       "reports": "Relatórios",
-      "users": "Utilizadores"
+      "users": "Utilizadores",
+      "proposals": "Propostas"
     },
     "perito": {
       "home": "Painel",
@@ -217,7 +219,32 @@
     "QUOTE_ALREADY_USED": "Esta cotação já foi usada numa proposta.",
     "QUOTE_RATE_LIMITED": "Fez muitas simulações na última hora. Tente mais tarde.",
     "VEHICLE_VALUE_REQUIRED": "Para danos próprios, indique o valor comercial do veículo.",
-    "ORGANIZATION_NOT_INSURER": "Esta organização não é uma seguradora."
+    "ORGANIZATION_NOT_INSURER": "Esta organização não é uma seguradora.",
+    "PROFILE_INCOMPLETE": "Complete o seu perfil antes de continuar.",
+    "KYC_ALREADY_PENDING": "Já tem uma verificação de identidade em análise.",
+    "KYC_ALREADY_VERIFIED": "A sua identidade já está verificada.",
+    "KYC_NOT_FOUND": "Verificação de identidade não encontrada.",
+    "QUOTE_DATA_CHANGED": "Os dados do veículo ou do condutor mudaram depois da simulação. Faça uma nova simulação.",
+    "PROPOSAL_ALREADY_EXISTS": "Já existe uma proposta para esta cotação.",
+    "PROPOSAL_NOT_FOUND": "Proposta não encontrada.",
+    "PROPOSAL_NOT_EDITABLE": "Esta proposta já não pode ser alterada.",
+    "INSURER_NOT_ACTIVE": "Esta seguradora não está a aceitar propostas neste momento.",
+    "SUITABILITY_NOT_WARNED": "Não há avisos de adequação para confirmar.",
+    "PDF_TEMPLATE_NOT_FOUND": "Não foi possível gerar o documento. Tente de novo.",
+    "PDF_RENDER_FAILED": "Não foi possível gerar o documento. Tente de novo.",
+    "SIGNER_CONTACT_MISSING": "Não há telemóvel nem e-mail verificado para enviar o código.",
+    "PROPOSAL_INCOMPLETE": "Ainda faltam passos para concluir a proposta.",
+    "SIGN_REQUEST_NOT_FOUND": "Este código já não é válido. Peça um novo.",
+    "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST": "A proposta mudou depois de pedir o código. Peça um novo.",
+    "INSPECTION_NOT_REQUIRED": "Esta proposta não precisa de vistoria.",
+    "INSPECTION_NOT_FOUND": "Vistoria não encontrada.",
+    "INSPECTION_NOT_EDITABLE": "A vistoria já foi enviada e não pode ser alterada.",
+    "INSPECTION_PHOTOS_MISSING": "Faltam fotografias obrigatórias.",
+    "PHOTO_NOT_FOUND": "Fotografia não encontrada.",
+    "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise.",
+    "KYC_NOT_VERIFIED": "A identidade do cliente ainda não foi verificada.",
+    "INSPECTION_NOT_APPROVED": "A vistoria ainda não foi aprovada.",
+    "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -301,7 +328,19 @@
     "OWN_DAMAGE_REQUIRED": "Escolha pelo menos uma cobertura de danos próprios.",
     "COVERAGE_REQUIRES": "Furto ou roubo exige choque, incêndio e fenómenos da natureza.",
     "INVALID_URL": "Endereço inválido (tem de começar por https://).",
-    "INVALID_SECRET_REF": "Referência do segredo inválida."
+    "INVALID_SECRET_REF": "Referência do segredo inválida.",
+    "INVALID_INSURER": "Seguradora inválida.",
+    "ANSWERS_INCOMPLETE": "Responda a todas as perguntas.",
+    "ANSWER_DUPLICATED": "Pergunta repetida.",
+    "UNKNOWN_QUESTION": "Pergunta desconhecida.",
+    "INVALID_ANSWER": "Resposta inválida.",
+    "MUST_BE_TRUE": "Tem de confirmar para continuar.",
+    "INVALID_SLOT": "Ângulo inválido.",
+    "EXTRA_PHOTOS_LIMIT": "Já enviou o número máximo de fotografias extra.",
+    "PHOTO_TOO_OLD": "Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.",
+    "PHOTO_IN_FUTURE": "A data da fotografia é inválida. Confirme a hora do telemóvel.",
+    "INVALID_COORDINATES": "Localização inválida.",
+    "INVALID_RULES": "Regra inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -724,10 +763,19 @@
   },
   "common": {
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "close": "Fechar",
+    "retry": "Tentar de novo",
+    "yes": "Sim",
+    "no": "Não",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "reload": "Recarregar"
   },
   "files": {
-    "open": "Ver"
+    "open": "Ver",
+    "loadError": "Não foi possível abrir o ficheiro.",
+    "download": "Descarregar"
   },
   "productType": {
     "MTPL_ONLY": "Responsabilidade civil",
@@ -1584,7 +1632,7 @@
       "deductible": "Franquia",
       "premium": "Prémio",
       "period": "Período",
-      "comingSoon": "Em breve vai poder avançar daqui para a proposta."
+      "acquire": "Adquirir apólice"
     }
   },
   "quoteWizard": {
@@ -1707,6 +1755,748 @@
       "offers": "Propostas",
       "best": "Melhor preço",
       "validity": "Validade"
+    }
+  },
+  "proposal": {
+    "missing": {
+      "DECLARATIONS": "Declarações de risco",
+      "SUITABILITY": "Questionário de adequação",
+      "SUITABILITY_ACKNOWLEDGEMENT": "Confirmar os avisos de adequação",
+      "INSPECTION": "Vistoria do veículo",
+      "START_DATE": "Data de início",
+      "SIGNATURE": "Assinatura"
+    },
+    "steps": {
+      "tomador": "Tomador e data",
+      "declaracoes": "Declarações",
+      "adequacao": "Adequação",
+      "vistoria": "Vistoria",
+      "identidade": "Identidade",
+      "resumo": "Resumo e assinatura"
+    },
+    "wizard": {
+      "title": "Proposta {{number}}",
+      "stepOf": "Passo {{n}} de {{total}}",
+      "allSteps": "Passos",
+      "continue": "Continuar",
+      "back": "Voltar",
+      "concurrent": "A proposta foi alterada noutro lado."
+    },
+    "infoRequest": {
+      "title": "A {{insurer}} pediu mais informação",
+      "requestedAt": "Pedido em {{date}}"
+    },
+    "summary": {
+      "productTitle": "Seguro",
+      "insurer": "Seguradora",
+      "product": "Produto",
+      "productType": "Tipo",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "capital": "Capital: {{amount}}",
+      "deductible": "Franquia",
+      "noDeductible": "Sem franquia",
+      "premium": "Prémio",
+      "premiumTitle": "Prémio",
+      "commercial": "Prémio comercial",
+      "rounding": "Arredondamento",
+      "total": "Total",
+      "vehicle": "Veículo",
+      "plate": "Matrícula",
+      "makeModel": "Marca e modelo",
+      "year": "Ano",
+      "category": "Categoria",
+      "usage": "Uso",
+      "commercialValue": "Valor comercial",
+      "driver": "Condutor",
+      "fullName": "Nome",
+      "licenceIssueDate": "Data de emissão da carta",
+      "period": "Período",
+      "periodValue": "De {{start}} a {{end}}",
+      "broker": "Mediador",
+      "msisdn": "Telemóvel",
+      "email": "E-mail",
+      "photos_one": "{{count}} fotografia",
+      "photos_other": "{{count}} fotografias"
+    },
+    "policyholder": {
+      "title": "Tomador do seguro",
+      "fromProfile": "Estes dados vêm do seu perfil.",
+      "fromClientProfile": "Estes dados vêm do perfil do cliente.",
+      "filledByBroker": "O perfil do cliente estava incompleto: os dados do tomador foram preenchidos pelo mediador.",
+      "editProfile": "Editar perfil",
+      "refresh": "Actualizar com o perfil",
+      "startTitle": "Início do seguro",
+      "startDate": "Data de início",
+      "end": "Fim: {{date}}"
+    },
+    "declarations": {
+      "truthRequired": "Confirme que as respostas são verdadeiras para continuar."
+    },
+    "suitability": {
+      "warningsTitle": "Avisos sobre esta proposta",
+      "acknowledge": "Li os avisos e quero continuar com esta proposta",
+      "otherQuote": "Pedir outra cotação",
+      "reconfirm": "Mudou as respostas: vai ter de confirmar os avisos de novo."
+    },
+    "inspection": {
+      "intro": "Para os danos próprios, a seguradora precisa de fotografias do veículo. Tire-as de dia, com o veículo limpo e inteiro na imagem.",
+      "choose": "Escolher fotografia",
+      "replace": "Substituir",
+      "remove": "Retirar",
+      "removeConfirm": "Retirar esta fotografia da vistoria?",
+      "addExtra": "Acrescentar fotografia",
+      "extraTitle": "Fotografias extra",
+      "extraN": "Fotografia extra {{n}}",
+      "missing": "Falta esta fotografia.",
+      "retake": "A seguradora pediu para repetir esta fotografia.",
+      "retakeList": "Repita: {{slots}}.",
+      "uploading": "A enviar a fotografia ({{slot}})",
+      "uploadFailed": "Não foi possível enviar a fotografia.",
+      "odometer": "Quilometragem actual",
+      "odometerHelp": "Em quilómetros, como no conta-quilómetros.",
+      "submit": "Enviar vistoria",
+      "submitted": "Vistoria enviada. A seguradora vai analisar as fotografias.",
+      "approved": "Vistoria aprovada.",
+      "rejected": "A seguradora recusou a vistoria: {{reason}}",
+      "onSiteRequested": "Pediu uma vistoria presencial. A seguradora vai contactá-lo para marcar a visita.",
+      "qrText": "Leia este código com o telemóvel para fazer a vistoria guiada na aplicação MoSeguros.",
+      "qrLabel": "Código QR para abrir a vistoria na aplicação",
+      "appText": "Também pode fazer a vistoria guiada na aplicação MoSeguros.",
+      "openInApp": "Abrir na aplicação",
+      "preferOnSite": "Prefiro vistoria presencial",
+      "onSiteTitle": "Vistoria presencial",
+      "onSiteText": "Um perito da seguradora vai ver o veículo. Diga onde e quando lhe dá jeito.",
+      "onSiteNotes": "Local e horas preferidas",
+      "onSiteSubmit": "Pedir vistoria presencial"
+    },
+    "identity": {
+      "required": "Verifique a sua identidade para a proposta poder ser aceite logo. Sem isto, a seguradora analisa-a e pode demorar até 15 dias.",
+      "optional": "Opcional: a verificação acelera propostas futuras.",
+      "later": "Agora não",
+      "broker": "O cliente envia as fotografias na aplicação MoSeguros ou em /cliente/identidade."
+    },
+    "review": {
+      "documents": "Documentos do produto",
+      "document": {
+        "GENERAL_CONDITIONS": "Condições Gerais",
+        "PRE_CONTRACT_INFO": "Informação Pré-contratual"
+      },
+      "missingTitle": "Ainda falta:",
+      "acknowledge": "Recebi e li as Condições Gerais e a Informação Pré-contratual.",
+      "acknowledgeRequired": "Confirme que recebeu e leu os documentos.",
+      "signAndSubmit": "Assinar e enviar à seguradora",
+      "submitOnly": "Enviar à seguradora"
+    },
+    "sign": {
+      "title": "Assinar a proposta",
+      "sentCustomer": "Enviámos um código por {{channel}} para {{destination}}.",
+      "sentBroker": "Enviámos um código para o telemóvel do cliente ({{destination}}). Peça-lhe que o diga.",
+      "fallback": "O código foi enviado por outro canal porque o primeiro falhou.",
+      "downloadPdf": "Descarregar a proposta (PDF)",
+      "sendBy": "Enviar por {{channel}}"
+    },
+    "status": {
+      "underReview": "A {{insurer}} está a analisar a sua proposta. Tem até {{date}} para responder.",
+      "underReviewNoDate": "A {{insurer}} está a analisar a sua proposta.",
+      "accepted": "Proposta aceite.",
+      "paymentSoon": "O pagamento fica disponível em breve.",
+      "expiresAt": "Expira em {{date}}",
+      "rejected": "A proposta não foi aceite.",
+      "expired": "Esta proposta expirou.",
+      "simulate": "Simular seguro",
+      "downloadSigned": "Descarregar a proposta assinada (PDF)",
+      "timeline": "Linha temporal",
+      "backToList": "Ver todas as propostas",
+      "event": {
+        "created": "Criada",
+        "submitted": "Enviada à seguradora",
+        "accepted": "Aceite",
+        "rejected": "Não aceite",
+        "decided": "Decisão da seguradora"
+      }
+    },
+    "list": {
+      "title": "Propostas",
+      "filter": "Mostrar",
+      "open": "Em curso",
+      "all": "Todas",
+      "empty": "Ainda não tem propostas.",
+      "emptyOpen": "Não tem propostas em curso.",
+      "expiresAt": "Expira em {{date}}",
+      "continue": "Continuar",
+      "view": "Ver",
+      "loadMore": "Ver mais"
+    }
+  },
+  "inspection": {
+    "slot": {
+      "FRONT": "Frente",
+      "REAR": "Traseira",
+      "LEFT": "Lado esquerdo",
+      "RIGHT": "Lado direito",
+      "ODOMETER": "Conta-quilómetros",
+      "CHASSIS": "Número do chassis",
+      "EXTRA": "Outra fotografia"
+    },
+    "status": {
+      "PENDING": "Por enviar",
+      "SUBMITTED": "Enviada",
+      "APPROVED": "Aprovada",
+      "REJECTED": "Recusada"
+    },
+    "mode": {
+      "SELF_PHOTOS": "Fotografias do cliente",
+      "ON_SITE": "Presencial"
+    },
+    "instruction": {
+      "FRONT": "A frente do veículo inteira, com a matrícula legível.",
+      "REAR": "A traseira inteira, com a matrícula legível.",
+      "LEFT": "O lado esquerdo inteiro, de uma ponta à outra.",
+      "RIGHT": "O lado direito inteiro, de uma ponta à outra.",
+      "ODOMETER": "O painel com o conta-quilómetros legível, com a ignição ligada.",
+      "CHASSIS": "O número do chassis gravado no veículo (normalmente no pára-brisas ou na porta do condutor).",
+      "EXTRA": "Danos que o veículo já tenha, ou outros pormenores."
+    }
+  },
+  "proposalStatus": {
+    "DRAFT": "Rascunho",
+    "UNDER_REVIEW": "Em análise",
+    "INFO_REQUESTED": "Informação pedida",
+    "ACCEPTED": "Aceite",
+    "REJECTED": "Não aceite",
+    "EXPIRED": "Expirada",
+    "PAID": "Paga",
+    "CONVERTED": "Apólice emitida"
+  },
+  "slaStatus": {
+    "ON_TIME": "No prazo",
+    "ALERT": "Prazo a terminar",
+    "OVERDUE": "Prazo ultrapassado"
+  },
+  "rejectionReason": {
+    "RISK_NOT_ACCEPTED": "Risco não aceite",
+    "KYC_FAILED": "Identidade não confirmada",
+    "INSPECTION_FAILED": "Vistoria não aprovada",
+    "FALSE_DECLARATION": "Declarações incorrectas",
+    "DOCUMENTS_INVALID": "Documentos inválidos",
+    "OTHER": "Outro motivo"
+  },
+  "infoRequestItem": {
+    "DECLARATIONS": "Declarações de risco",
+    "SUITABILITY": "Questionário de adequação",
+    "INSPECTION": "Vistoria",
+    "KYC": "Verificação de identidade",
+    "POLICYHOLDER": "Dados do tomador",
+    "OTHER": "Outro"
+  },
+  "underwriting": {
+    "failure": {
+      "AUTO_ACCEPT_DISABLED": "Aceitação automática desligada no produto",
+      "KYC_REQUIRED": "Identidade por verificar e prémio acima do limite do KYC simplificado",
+      "DECLARATION_POSITIVE": "Há declarações de risco com resposta \"sim\"",
+      "INSPECTION_NOT_APPROVED": "Vistoria por aprovar",
+      "VEHICLE_VALUE_MISSING": "Valor do veículo não declarado",
+      "VEHICLE_VALUE_ABOVE_LIMIT": "Valor do veículo acima do limite de aceitação automática"
+    },
+    "outcome": {
+      "AUTOMATIC": "Aceitação automática",
+      "MANUAL_REVIEW": "Análise manual"
+    },
+    "rulesSource": {
+      "PRODUCT": "Regras da versão do produto",
+      "DEFAULT": "Regras por defeito da plataforma"
+    },
+    "input": {
+      "KYC_REQUIRED": "Prémio {{total}} ≥ limite {{limit}}",
+      "DECLARATION_POSITIVE": "Respostas \"sim\": {{questions}}",
+      "INSPECTION_NOT_APPROVED": "Estado da vistoria: {{status}}",
+      "VEHICLE_VALUE_ABOVE_LIMIT": "Valor do veículo {{value}} > limite {{limit}}"
+    }
+  },
+  "proposalChannel": {
+    "APP": "App",
+    "WEB": "Web",
+    "BROKER": "Mediador"
+  },
+  "declaration": {
+    "CLAIMS_LAST_3_YEARS": {
+      "question": "Nos últimos 3 anos, teve algum acidente ou sinistro com um veículo, como condutor ou como proprietário?",
+      "claimsCount": "Quantos?",
+      "details": "Descreva brevemente: quando, o que aconteceu e se houve feridos.",
+      "short": "Acidentes ou sinistros nos últimos 3 anos"
+    },
+    "PREVIOUS_REFUSAL": {
+      "question": "Alguma seguradora já recusou, anulou ou não quis renovar um seguro automóvel seu?",
+      "details": "Que seguradora e porquê?",
+      "short": "Seguro recusado ou anulado"
+    },
+    "USAGE_DIFFERENT": {
+      "question": "O veículo vai ser usado para outro fim além de «{{usage}}»? Por exemplo, transportar passageiros ou mercadorias a troco de pagamento.",
+      "details": "Para que outro fim?",
+      "short": "Outro uso do veículo"
+    },
+    "VEHICLE_MODIFIED": {
+      "question": "O veículo tem alterações às características de fábrica (motor, suspensão, carroçaria, gás ou outras)?",
+      "details": "Que alterações?",
+      "short": "Veículo alterado"
+    },
+    "NOVICE_DRIVERS": {
+      "question": "Alguém com carta de condução há menos de 2 anos vai conduzir este veículo com regularidade?",
+      "details": "Quem, e há quanto tempo tem carta?",
+      "short": "Condutores com carta recente"
+    },
+    "truthfulness": "Declaro que as respostas são verdadeiras e completas. Sei que declarações falsas ou omissões podem levar à anulação do contrato ou à recusa do pagamento de sinistros."
+  },
+  "suitability": {
+    "SUIT_NEED": {
+      "question": "Que protecção procura para este veículo?",
+      "option": {
+        "MANDATORY_ONLY": "Só o seguro obrigatório: danos que eu cause a outras pessoas",
+        "OWN_DAMAGE": "Também os danos no meu veículo num acidente",
+        "FULL": "Também roubo, incêndio e fenómenos da natureza",
+        "UNSURE": "Não sei"
+      }
+    },
+    "SUIT_FINANCED": {
+      "question": "O veículo ainda está a ser pago (crédito ou leasing)?",
+      "option": {
+        "YES": "Sim",
+        "NO": "Não"
+      }
+    },
+    "SUIT_CAN_AFFORD_REPAIR": {
+      "question": "Se o seu veículo ficasse danificado num acidente causado por si, conseguiria pagar a reparação sem a ajuda do seguro?",
+      "option": {
+        "YES": "Sim",
+        "NO": "Não",
+        "UNSURE": "Não sei"
+      }
+    },
+    "SUIT_CROSS_BORDER": {
+      "question": "Vai conduzir este veículo fora de Moçambique durante o período do seguro?",
+      "option": {
+        "YES": "Sim",
+        "NO": "Não"
+      }
+    },
+    "SUIT_DEDUCTIBLE": {
+      "question": "Aceita pagar uma parte de cada reparação (franquia) em troca de um prémio mais baixo?",
+      "option": {
+        "YES": "Sim",
+        "NO": "Não",
+        "UNSURE": "Não sei"
+      }
+    },
+    "reason": {
+      "NEED_NOT_COVERED_OWN_DAMAGE": "Disse que quer protecção para o seu veículo, mas esta proposta não cobre danos no próprio veículo.",
+      "NEED_NOT_COVERED_THEFT_FIRE": "Disse que quer protecção contra roubo, incêndio e fenómenos da natureza, mas esta proposta não inclui todas essas coberturas.",
+      "COVER_ABOVE_NEED": "Disse que só quer o seguro obrigatório, mas esta proposta inclui coberturas de danos próprios, que aumentam o prémio.",
+      "NEED_UNSURE": "Não tem a certeza da protecção de que precisa. Leia o resumo das coberturas e a informação pré-contratual antes de continuar.",
+      "FINANCED_WITHOUT_OWN_DAMAGE": "O veículo ainda está a ser pago e esta proposta não cobre danos no próprio veículo. Confirme se o contrato de crédito ou leasing exige essa cobertura.",
+      "CANNOT_AFFORD_REPAIR": "Disse que não conseguiria pagar a reparação do seu veículo, mas esta proposta não cobre danos no próprio veículo.",
+      "CROSS_BORDER_NOT_COVERED": "Vai conduzir fora de Moçambique, mas esta proposta não inclui cobertura fora do país.",
+      "DEDUCTIBLE_NOT_WANTED": "Disse que não quer franquia, mas pelo menos uma cobertura de danos próprios desta proposta tem franquia."
+    },
+    "result": {
+      "SUITABLE": "Adequada",
+      "WARNED": "Com avisos"
+    }
+  },
+  "kyc": {
+    "state": {
+      "NONE": "Não enviada",
+      "PENDING": "Por verificar",
+      "VERIFIED": "Verificada",
+      "REJECTED": "Recusada",
+      "OUTDATED": "Desactualizada"
+    },
+    "checkStatus": {
+      "PENDING": "Pendente",
+      "VERIFIED": "Confirmada",
+      "REJECTED": "Recusada"
+    },
+    "rejectionReason": {
+      "DOCUMENT_UNREADABLE": "Documento ilegível",
+      "DOCUMENT_EXPIRED": "Documento fora da validade",
+      "DATA_MISMATCH": "Dados diferentes do perfil",
+      "SELFIE_MISMATCH": "Selfie não corresponde",
+      "OTHER": "Outro motivo"
+    },
+    "view": {
+      "title": "Verificação de identidade",
+      "verified": "Identidade verificada",
+      "pending": "Em verificação",
+      "outdated": "Os dados do seu perfil mudaram. Verifique de novo a sua identidade.",
+      "rejected": "A verificação foi recusada. Envie de novo as fotografias.",
+      "rejectedWith": "A verificação foi recusada: {{reason}}. Envie de novo as fotografias.",
+      "noProposal": "A verificação de identidade é pedida quando faz uma proposta."
+    },
+    "form": {
+      "docFront": "Documento de identificação — frente",
+      "docBack": "Documento de identificação — verso",
+      "docHint": "O documento inteiro, sem reflexos e com o texto legível.",
+      "selfie": "Selfie",
+      "selfieTitle": "Tirar uma selfie",
+      "selfieInstruction": "Olhe de frente para a câmara, sem óculos escuros nem chapéu, num sítio com boa luz.",
+      "choose": "Escolher fotografia",
+      "replace": "Substituir",
+      "chosen": "Escolhida: {{name}}",
+      "takeSelfie": "Tirar selfie",
+      "retakeSelfie": "Tirar outra selfie",
+      "cameraPreview": "Imagem da câmara",
+      "take": "Tirar fotografia",
+      "retake": "Repetir",
+      "use": "Usar",
+      "cameraUnavailable": "Não foi possível usar a câmara. Escolha uma fotografia sua.",
+      "submit": "Enviar"
+    }
+  },
+  "insurerProposals": {
+    "title": "Propostas",
+    "tabs": {
+      "proposals": "Propostas",
+      "kyc": "Identidade",
+      "inspections": "Vistorias"
+    },
+    "filters": {
+      "open": "Filtros",
+      "status": "Estado",
+      "sla": "Prazo",
+      "productType": "Tipo de produto",
+      "channel": "Canal",
+      "search": "Número ou nome",
+      "from": "Submetida desde",
+      "to": "Submetida até",
+      "all": "Todos",
+      "clear": "Limpar filtros"
+    },
+    "columns": {
+      "number": "Número",
+      "policyholder": "Tomador",
+      "product": "Produto",
+      "plate": "Matrícula",
+      "total": "Total",
+      "channel": "Canal",
+      "submittedAt": "Submetida em",
+      "sla": "Prazo",
+      "kyc": "KYC",
+      "inspection": "Vistoria"
+    },
+    "empty": "Não há propostas com estes filtros.",
+    "noInspection": "Sem vistoria",
+    "slaDue": "Prazo até {{date}}",
+    "detail": {
+      "back": "Voltar às propostas",
+      "downloadPdf": "Descarregar PDF",
+      "total": "Total",
+      "policyholder": "Tomador",
+      "notFound": "Proposta não encontrada.",
+      "reloaded": "A proposta mudou entretanto. Os dados foram actualizados.",
+      "inspectionOnly": "Só pode ver a vistoria desta proposta."
+    },
+    "sections": {
+      "summary": "Resumo",
+      "declarations": "Declarações",
+      "suitability": "Adequação",
+      "inspection": "Vistoria",
+      "identity": "Identidade",
+      "underwriting": "Regras automáticas",
+      "signature": "Assinatura",
+      "decision": "Decisão"
+    },
+    "summary": {
+      "product": "Produto",
+      "insurer": "Seguradora",
+      "productType": "Tipo",
+      "versionId": "Versão",
+      "channel": "Canal",
+      "broker": "Mediador",
+      "period": "Período",
+      "periodValue": "{{start}} a {{end}} ({{days}} dias)",
+      "policyholder": "Tomador",
+      "fullName": "Nome",
+      "birthDate": "Data de nascimento",
+      "document": "Documento",
+      "nuit": "NUIT",
+      "province": "Província",
+      "address": "Morada",
+      "msisdn": "Telemóvel",
+      "email": "E-mail",
+      "vehicle": "Veículo",
+      "plate": "Matrícula",
+      "makeModel": "Marca e modelo",
+      "year": "Ano",
+      "category": "Categoria",
+      "usage": "Uso",
+      "chassis": "Chassis",
+      "seats": "Lugares",
+      "commercialValue": "Valor comercial",
+      "driver": "Condutor",
+      "licence": "Carta de condução",
+      "licenceIssueDate": "Emitida em",
+      "licenceCategories": "Categorias",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "premium": "Prémio",
+      "noDeductible": "Sem franquia",
+      "premiumTitle": "Prémio",
+      "commercial": "Prémio comercial",
+      "rounding": "Acerto de arredondamento",
+      "total": "Total",
+      "none": "—"
+    },
+    "declarations": {
+      "none": "O cliente ainda não respondeu às declarações.",
+      "confirmedAt": "Confirmadas em {{date}}",
+      "answer": "Resposta"
+    },
+    "suitability": {
+      "none": "O cliente ainda não respondeu ao questionário.",
+      "result": "Resultado",
+      "answeredAt": "Respondido em {{date}}",
+      "acknowledgedAt": "Avisos confirmados pelo cliente em {{date}}",
+      "notAcknowledged": "O cliente ainda não confirmou os avisos."
+    },
+    "identity": {
+      "state": "Estado",
+      "otherInsurer": "Verificada por outra seguradora em {{date}}",
+      "verifiedAt": "Verificada em {{date}}",
+      "review": "Rever identidade",
+      "required": "A aceitação exige a identidade verificada.",
+      "pendingQueue": "As verificações pendentes estão no separador \"Identidade\".",
+      "otherInsurerNoDate": "Verificada por outra seguradora."
+    },
+    "underwriting": {
+      "none": "As regras ainda não foram avaliadas.",
+      "evaluatedAt": "Avaliada em {{date}}",
+      "noFailures": "Todas as regras foram cumpridas.",
+      "failures": "Regras não cumpridas"
+    },
+    "signature": {
+      "none": "Sem assinaturas.",
+      "signedAt": "Assinada em",
+      "channel": "Canal",
+      "destination": "Destino",
+      "assisted": "Assistida",
+      "hash": "Hash do documento",
+      "copyHash": "Copiar o hash",
+      "valid": "Válida",
+      "invalidated": "Invalidada em {{date}}: {{reason}}",
+      "invalidatedReason": {
+        "CONTENT_CHANGED": "a proposta foi alterada",
+        "INFO_REQUESTED": "foi pedida informação"
+      }
+    },
+    "decision": {
+      "mode": "Modo",
+      "decidedAt": "Data",
+      "reasonCode": "Motivo",
+      "reason": "Texto",
+      "note": "Nota",
+      "infoRequest": "Pedido de informação",
+      "requestedAt": "Pedido em {{date}}",
+      "none": "Sem decisão registada.",
+      "modeValue": {
+        "AUTOMATIC": "Automática",
+        "MANUAL": "Manual"
+      }
+    },
+    "actions": {
+      "accept": "Aceitar",
+      "requestInfo": "Pedir informação",
+      "reject": "Recusar"
+    },
+    "accept": {
+      "title": "Aceitar a proposta {{number}}",
+      "total": "Total",
+      "kyc": "Identidade",
+      "inspection": "Vistoria",
+      "note": "Nota (opcional)",
+      "confirm": "Aceitar",
+      "done": "Proposta aceite"
+    },
+    "reject": {
+      "title": "Recusar a proposta {{number}}",
+      "reasonCode": "Motivo",
+      "reason": "Explicação para o cliente",
+      "warning": "Esta decisão é comunicada ao cliente e não pode ser desfeita.",
+      "confirm": "Recusar",
+      "done": "Proposta recusada"
+    },
+    "requestInfo": {
+      "title": "Pedir informação ao cliente",
+      "items": "O que deve o cliente rever?",
+      "message": "Mensagem para o cliente",
+      "warning": "A assinatura do cliente deixa de valer e ele terá de assinar de novo.",
+      "confirm": "Enviar pedido",
+      "done": "Pedido de informação enviado",
+      "itemsRequired": "Escolha pelo menos um item."
+    },
+    "counter": "{{count}}/{{max}}",
+    "textLength": "Entre {{min}} e {{max}} caracteres.",
+    "required": "Obrigatório."
+  },
+  "insurerInspections": {
+    "title": "Vistorias",
+    "filters": {
+      "status": "Estado",
+      "mode": "Modo",
+      "all": "Todos"
+    },
+    "columns": {
+      "proposal": "Proposta",
+      "customer": "Tomador",
+      "plate": "Matrícula",
+      "mode": "Modo",
+      "photos": "Fotografias",
+      "submittedAt": "Enviada em"
+    },
+    "empty": "Não há vistorias com estes filtros.",
+    "panel": {
+      "mode": "Modo",
+      "status": "Estado",
+      "odometer": "Quilometragem",
+      "odometerValue": "{{km}} km",
+      "submittedAt": "Enviada em",
+      "customerNotes": "Notas do cliente",
+      "reviewedAt": "Revista em {{date}}",
+      "reviewNotes": "Notas da aprovação",
+      "rejectionReason": "Motivo da recusa",
+      "retakeSlots": "Ângulos a repetir",
+      "notRequired": "Esta proposta não precisa de vistoria.",
+      "approve": "Aprovar vistoria",
+      "reject": "Recusar vistoria",
+      "approved": "Vistoria aprovada.",
+      "approvedAndAccepted": "Vistoria aprovada. A proposta foi aceite automaticamente.",
+      "rejected": "Vistoria recusada."
+    },
+    "gallery": {
+      "noPhoto": "Sem fotografia",
+      "noPhotos": "Sem fotografias.",
+      "location": "Ver a localização no mapa",
+      "open": "Ampliar {{label}}"
+    },
+    "lightbox": {
+      "previous": "Anterior",
+      "next": "Seguinte",
+      "zoomIn": "Aumentar",
+      "zoomOut": "Diminuir",
+      "position": "{{index}} de {{total}}"
+    },
+    "approve": {
+      "title": "Aprovar a vistoria",
+      "onSite": "Vistoria feita presencialmente",
+      "notes": "Notas",
+      "notesRequired": "Descreva a vistoria presencial (obrigatório).",
+      "confirm": "Aprovar"
+    },
+    "reject": {
+      "title": "Recusar a vistoria",
+      "reason": "Motivo",
+      "retakeSlots": "Ângulos a repetir",
+      "note": "Para o cliente refazer a vistoria, peça informação com o item Vistoria.",
+      "confirm": "Recusar"
+    }
+  },
+  "insurerKyc": {
+    "title": "Verificações de identidade",
+    "filters": {
+      "status": "Estado",
+      "search": "Nome",
+      "all": "Todos"
+    },
+    "columns": {
+      "fullName": "Nome",
+      "idDocType": "Documento",
+      "submittedAt": "Enviada em",
+      "status": "Estado"
+    },
+    "empty": "Não há verificações com estes filtros.",
+    "review": {
+      "title": "Verificação de identidade",
+      "back": "Documento (verso)",
+      "compare": "Compare estes dados com as fotografias.",
+      "fullName": "Nome",
+      "birthDate": "Data de nascimento",
+      "age": "{{date}} ({{age}} anos)",
+      "idDocType": "Tipo de documento",
+      "idDocNumber": "Número do documento",
+      "msisdn": "Telemóvel",
+      "submittedAt": "Enviada em",
+      "status": "Estado",
+      "front": "Documento (frente)",
+      "selfie": "Selfie",
+      "previous": "Verificações anteriores",
+      "noPrevious": "Sem verificações anteriores.",
+      "rejection": "Motivo da recusa",
+      "verify": "Confirmar identidade",
+      "verifyTitle": "Confirmar a identidade?",
+      "verifyText": "Confirma que os dados correspondem às fotografias do documento e à selfie?",
+      "reject": "Recusar",
+      "verified": "Identidade confirmada",
+      "rejected": "Verificação recusada",
+      "reloaded": "A verificação mudou entretanto. Os dados foram actualizados."
+    },
+    "rejectDialog": {
+      "title": "Recusar a verificação",
+      "reasonCode": "Motivo",
+      "reason": "Explicação",
+      "reasonOptional": "Explicação (opcional)",
+      "confirm": "Recusar"
+    }
+  },
+  "underwritingRules": {
+    "open": "Regras de aceitação",
+    "title": "Regras de aceitação",
+    "isDefault": "Esta versão usa os valores por defeito da plataforma.",
+    "readOnly": "As versões publicadas não podem ser alteradas.",
+    "noPermission": "Não tem permissão para alterar estas regras.",
+    "enabled": "Aceitação automática",
+    "simplifiedKycMaxPremium": "Prémio máximo com KYC simplificado (MT)",
+    "liabilityRequireAllNegative": "RC: exigir todas as declarações negativas",
+    "ownDamageMaxVehicleValue": "Danos próprios: valor máximo do veículo (MT)",
+    "ownDamageRequireAllNegative": "Danos próprios: exigir todas as declarações negativas",
+    "positive": "Indique um valor maior do que zero.",
+    "notEditable": "Esta versão já não pode ser alterada",
+    "conflict": "Outra pessoa alterou esta versão",
+    "saved": "Regras de aceitação guardadas"
+  },
+  "brokerProposals": {
+    "title": "Propostas",
+    "empty": "Ainda não há propostas. As propostas novas começam numa cotação.",
+    "filters": {
+      "status": "Estado",
+      "all": "Todos",
+      "search": "Número ou nome do cliente"
+    },
+    "columns": {
+      "number": "Número",
+      "customer": "Cliente",
+      "msisdn": "Telemóvel",
+      "insurer": "Seguradora",
+      "total": "Total",
+      "status": "Estado",
+      "expiresAt": "Expira em",
+      "missing": "Falta"
+    },
+    "missingValue": "Falta: {{items}}",
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "pageOf": "Página {{page}} de {{pages}}",
+    "new": {
+      "title": "Nova proposta"
+    },
+    "form": {
+      "lockedNote": "Estes dados foram usados na simulação. Para os mudar, faça uma nova simulação.",
+      "vehicle": "Veículo",
+      "driver": "Condutor",
+      "isOwner": "O condutor é o tomador",
+      "policyholder": "Tomador do seguro",
+      "profileIncomplete": "O perfil deste cliente está incompleto. Preencha os dados do tomador.",
+      "vehicleAlreadyRegistered": "Este cliente já tem um veículo com esta matrícula e outro chassis. Confirme o chassis."
     }
   }
 }

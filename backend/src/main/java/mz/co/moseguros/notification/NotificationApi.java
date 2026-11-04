@@ -8,7 +8,8 @@ import mz.co.moseguros.shared.domain.Channel;
 import org.springframework.stereotype.Service;
 
 /**
- * Interface pública do módulo Notificações. Nesta fase envia códigos OTP (S1-03) e e-mails
+ * Interface pública do módulo Notificações. Nesta fase envia códigos OTP (S1-03), códigos de assinatura
+ * de propostas (S4-04) e e-mails
  * de modelos simples, como o convite de staff (S1-04); as notificações gerais chegam no Sprint 6.
  *
  * <p>Pode ser chamada de qualquer âmbito, dentro ou fora de uma transacção: os serviços em que
@@ -37,6 +38,19 @@ public class NotificationApi {
     public DeliveryResult sendOtp(Channel channel, String destination, String code, int validityMinutes,
                                   String language, UUID correlationId) {
         return otpMessages.sendOtp(channel, destination, code, validityMinutes, language, correlationId);
+    }
+
+    /**
+     * Envia já o código de assinatura de uma proposta (S4-04 §4), com o mesmo comportamento de
+     * {@link #sendOtp} (síncrono, 5 s, nunca lança: devolve {@code FAILED}); grava
+     * {@code outbound_message.purpose = SIGN_OTP}. Textos {@code otp.sign.*} ou, com
+     * {@code assistedByName}, {@code otp.sign-assisted.*}; WhatsApp com o modelo {@code moseguros_sign_otp}.
+     *
+     * @param correlationId id do desafio OTP; volta no evento {@link OtpDeliveryFailed}
+     */
+    public DeliveryResult sendSignOtp(Channel channel, String destination, String code, int validityMinutes,
+                                      SignOtpText text, String language, UUID correlationId) {
+        return otpMessages.sendSignOtp(channel, destination, code, validityMinutes, text, language, correlationId);
     }
 
     /**

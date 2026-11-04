@@ -48,7 +48,7 @@ describe('rotas', () => {
 
   it('/seguradora mostra o menu da área (com as permissões) e a página em construção', async () => {
     restore = signIn(staff('INSURER', ['INSURER_ADMIN'], ['org-user:read', 'product:read']));
-    renderRoute('/seguradora/propostas');
+    renderRoute('/seguradora/apolices');
     expect(await screen.findByRole('heading', { name: 'Em construção' })).toBeInTheDocument();
     // Sem matchMedia (jsdom) o layout é o de ecrã estreito: o menu abre-se como gaveta.
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menu' }));

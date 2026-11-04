@@ -56,6 +56,9 @@ jobs:
 
       - run: flutter pub get
       - run: flutter analyze
+      # Os testes usam a base drift (S4-09) com o SQLite do sistema.
+      - name: SQLite para os testes
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
       - run: flutter test
 
       - name: APK de desenvolvimento

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moseguros_api/moseguros_api.dart';
 
 import '../api/api_client.dart';
+import '../db/app_database.dart';
 import 'auth_interceptor.dart';
 import 'token_storage.dart';
 
@@ -104,11 +105,18 @@ class SessionController extends AsyncNotifier<Session?>
     _set(current.copyWith(me: me, isNewUser: false));
   }
 
-  /// Termina a sessão: avisa a API (ignora erros) e apaga o refresh token.
+  /// Termina a sessão: avisa a API (ignora erros), apaga o refresh token e os
+  /// dados locais do utilizador (fila da vistoria, S4-09 §5). Quem chama confirma
+  /// antes se houver fotografias por enviar.
   Future<void> logout() async {
     final refreshToken = _current?.refreshToken;
     _set(null);
     await _storage.deleteRefreshToken();
+    try {
+      await ref.read(localUserDataCleanerProvider)();
+    } on Object {
+      // A base local não abriu: não há nada a apagar.
+    }
     if (refreshToken != null) {
       unawaited(
         _api.sessionIdentity

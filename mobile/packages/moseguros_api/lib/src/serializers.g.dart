@@ -8,8 +8,19 @@ part of 'serializers.dart';
 
 Serializers _$serializers = (Serializers().toBuilder()
       ..add(AcceptInvitationRequest.serializer)
+      ..add(AcceptProposalRequest.serializer)
+      ..add(AcceptanceMode.serializer)
+      ..add(AcknowledgeSuitabilityRequest.serializer)
       ..add(ActivateInvitationRequest.serializer)
+      ..add(ApproveInspectionRequest.serializer)
       ..add(AssignableRolesResponse.serializer)
+      ..add(BrokerPolicyholderRequest.serializer)
+      ..add(BrokerPolicyholderRequestIdDocTypeEnum.serializer)
+      ..add(BrokerPolicyholderRequestProvinceEnum.serializer)
+      ..add(BrokerProposalDriverRequest.serializer)
+      ..add(BrokerProposalSummaryResponse.serializer)
+      ..add(BrokerProposalVehicleRequest.serializer)
+      ..add(BrokerProposalVehicleRequestProvinceOfCirculationEnum.serializer)
       ..add(BrokerVehicleRequest.serializer)
       ..add(BrokerVehicleRequestProvinceOfCirculationEnum.serializer)
       ..add(CatalogInsurerResponse.serializer)
@@ -19,6 +30,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(Charge.serializer)
       ..add(ChargeTypeEnum.serializer)
       ..add(ChargeValue.serializer)
+      ..add(ConfirmSignatureRequest.serializer)
       ..add(ContactResponse.serializer)
       ..add(ContactResponseTypeEnum.serializer)
       ..add(ContactsResponse.serializer)
@@ -32,6 +44,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CoverageResponseCodeEnum.serializer)
       ..add(CoverageResponseDeductibleTypeEnum.serializer)
       ..add(CoverageResponseRequiresCodesEnum.serializer)
+      ..add(CreateBrokerProposalRequest.serializer)
       ..add(CreateBrokerQuoteRequest.serializer)
       ..add(CreateBrokerQuoteRequestProductTypeEnum.serializer)
       ..add(CreateDriverRequest.serializer)
@@ -41,6 +54,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CreatePlateFormatRequest.serializer)
       ..add(CreateProductRequest.serializer)
       ..add(CreateProductRequestTypeEnum.serializer)
+      ..add(CreateProposalRequest.serializer)
       ..add(CreateQuoteRequest.serializer)
       ..add(CreateQuoteRequestProductTypeEnum.serializer)
       ..add(CreateReferenceValueRequest.serializer)
@@ -49,14 +63,35 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CustomerProfileResponse.serializer)
       ..add(CustomerProfileResponseIdDocTypeEnum.serializer)
       ..add(CustomerProfileResponseProvinceEnum.serializer)
+      ..add(DeclarationAnswerRequest.serializer)
+      ..add(DeclarationAnswerResponse.serializer)
+      ..add(DeclarationQuestion.serializer)
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
       ..add(DriverResponse.serializer)
       ..add(FieldError.serializer)
       ..add(ForgotPasswordRequest.serializer)
+      ..add(InfoRequestItem.serializer)
+      ..add(InspectionMode.serializer)
+      ..add(InspectionPhotoResponse.serializer)
+      ..add(InspectionResponse.serializer)
+      ..add(InspectionReview.serializer)
+      ..add(InspectionStatus.serializer)
       ..add(InsurerBrandingResponse.serializer)
+      ..add(InsurerInspectionSummaryResponse.serializer)
+      ..add(InsurerKycCheckResponse.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
+      ..add(InsurerProposalDriver.serializer)
+      ..add(InsurerProposalKyc.serializer)
+      ..add(InsurerProposalResponse.serializer)
+      ..add(InsurerProposalSignature.serializer)
+      ..add(InsurerProposalSignatureChannelEnum.serializer)
+      ..add(InsurerProposalSignatureInvalidatedReasonEnum.serializer)
+      ..add(InsurerProposalSla.serializer)
+      ..add(InsurerProposalSummaryResponse.serializer)
+      ..add(InsurerProposalSummaryResponseProductTypeEnum.serializer)
+      ..add(InsurerProposalVehicle.serializer)
       ..add(InsurerRatingSettingsResponse.serializer)
       ..add(InsurerRatingSettingsResponseRatingModeEnum.serializer)
       ..add(InvitationDetailsResponse.serializer)
@@ -67,6 +102,17 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(InviteUserRequest.serializer)
       ..add(Jwk.serializer)
       ..add(JwksResponse.serializer)
+      ..add(KycCheckResponse.serializer)
+      ..add(KycCheckResponseIdDocTypeEnum.serializer)
+      ..add(KycCheckStatus.serializer)
+      ..add(KycCheckSummaryResponse.serializer)
+      ..add(KycCheckSummaryResponseIdDocTypeEnum.serializer)
+      ..add(KycCustomerResponse.serializer)
+      ..add(KycCustomerResponseIdDocTypeEnum.serializer)
+      ..add(KycFilesResponse.serializer)
+      ..add(KycPreviousCheckResponse.serializer)
+      ..add(KycRejectionReason.serializer)
+      ..add(KycState.serializer)
       ..add(LogoutRequest.serializer)
       ..add(MeOrganization.serializer)
       ..add(MeOrganizationTypeEnum.serializer)
@@ -74,6 +120,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(MeResponseTypeEnum.serializer)
       ..add(Money.serializer)
       ..add(MoneyCurrencyEnum.serializer)
+      ..add(MyKycResponse.serializer)
       ..add(OrganizationResponse.serializer)
       ..add(OrganizationResponseProvinceEnum.serializer)
       ..add(OrganizationResponseStatusEnum.serializer)
@@ -100,20 +147,28 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpTestResponseChannelEnum.serializer)
       ..add(OtpTestResponseDeliveryStatusEnum.serializer)
       ..add(OtpVerifyResponse.serializer)
+      ..add(PageResponseBrokerProposalSummaryResponse.serializer)
       ..add(PageResponseCatalogProductResponse.serializer)
       ..add(PageResponseDriverResponse.serializer)
+      ..add(PageResponseInsurerInspectionSummaryResponse.serializer)
+      ..add(PageResponseInsurerProposalSummaryResponse.serializer)
       ..add(PageResponseInvitationResponse.serializer)
+      ..add(PageResponseKycCheckSummaryResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
       ..add(PageResponseProductSummaryResponse.serializer)
+      ..add(PageResponseProposalSummaryResponse.serializer)
       ..add(PageResponseQuoteRequestSummaryResponse.serializer)
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
       ..add(PageResponseVehicleResponse.serializer)
+      ..add(PhotoSlot.serializer)
+      ..add(PhotoSource.serializer)
       ..add(PlateFormatResponse.serializer)
       ..add(PlateFormatsResponse.serializer)
       ..add(PlatformSettingResponse.serializer)
       ..add(PlatformSettingResponseValueTypeEnum.serializer)
       ..add(PlatformSettingsResponse.serializer)
+      ..add(PolicyholderSource.serializer)
       ..add(ProblemDetail.serializer)
       ..add(ProductDocumentResponse.serializer)
       ..add(ProductDocumentResponseDocTypeEnum.serializer)
@@ -130,6 +185,37 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ProductVersionResponseProductTypeEnum.serializer)
       ..add(ProductVersionResponseStatusEnum.serializer)
       ..add(ProductVersionValidationResponse.serializer)
+      ..add(ProposalChannel.serializer)
+      ..add(ProposalCharge.serializer)
+      ..add(ProposalChecklist.serializer)
+      ..add(ProposalChecklistDeclarationsEnum.serializer)
+      ..add(ProposalChecklistInspectionEnum.serializer)
+      ..add(ProposalChecklistSignatureEnum.serializer)
+      ..add(ProposalChecklistSuitabilityEnum.serializer)
+      ..add(ProposalCoverage.serializer)
+      ..add(ProposalCoverageCodeEnum.serializer)
+      ..add(ProposalDecision.serializer)
+      ..add(ProposalDeclarations.serializer)
+      ..add(ProposalDeductible.serializer)
+      ..add(ProposalDeductibleTypeEnum.serializer)
+      ..add(ProposalDriver.serializer)
+      ..add(ProposalInfoRequest.serializer)
+      ..add(ProposalKyc.serializer)
+      ..add(ProposalOrganization.serializer)
+      ..add(ProposalPolicyholder.serializer)
+      ..add(ProposalPremium.serializer)
+      ..add(ProposalProduct.serializer)
+      ..add(ProposalProductDocument.serializer)
+      ..add(ProposalProductDocumentTypeEnum.serializer)
+      ..add(ProposalProductTypeEnum.serializer)
+      ..add(ProposalResponse.serializer)
+      ..add(ProposalSignature.serializer)
+      ..add(ProposalSignatureChannelEnum.serializer)
+      ..add(ProposalStatus.serializer)
+      ..add(ProposalSuitability.serializer)
+      ..add(ProposalSummaryResponse.serializer)
+      ..add(ProposalSummaryResponseProductTypeEnum.serializer)
+      ..add(ProposalVehicle.serializer)
       ..add(PublicPlateFormatResponse.serializer)
       ..add(PublicPlateFormatsResponse.serializer)
       ..add(PublicPlatformSettingResponse.serializer)
@@ -174,10 +260,19 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RefreshTokenRequest.serializer)
       ..add(RegistrationDocResponse.serializer)
       ..add(RegistryLookupResponse.serializer)
+      ..add(RejectInspectionRequest.serializer)
+      ..add(RejectKycCheckRequest.serializer)
+      ..add(RejectProposalRequest.serializer)
+      ..add(RejectProposalRequestReasonCodeEnum.serializer)
+      ..add(RejectionReasonCode.serializer)
       ..add(ReplaceCoveragesRequest.serializer)
+      ..add(RequestOnSiteInspectionRequest.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
+      ..add(RequestProposalInfoRequest.serializer)
+      ..add(RequestSignatureRequest.serializer)
+      ..add(RequestSignatureRequestChannelEnum.serializer)
       ..add(RequestedCoverageRequest.serializer)
       ..add(RequestedCoverageRequestCodeEnum.serializer)
       ..add(RequestedCoverageResponse.serializer)
@@ -185,21 +280,40 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ResetPasswordRequest.serializer)
       ..add(RiskDriverRequest.serializer)
       ..add(RuleError.serializer)
+      ..add(SaveDeclarationsRequest.serializer)
+      ..add(SaveSuitabilityRequest.serializer)
+      ..add(SignatureRequestResponse.serializer)
+      ..add(SignatureRequestResponseChannelEnum.serializer)
       ..add(SimulateRatingRequest.serializer)
       ..add(SimulationVehicleRequest.serializer)
       ..add(SimulationVehicleRequestProvinceOfCirculationEnum.serializer)
+      ..add(SlaStatus.serializer)
       ..add(StaffLoginRequest.serializer)
       ..add(StaffUserResponse.serializer)
       ..add(StaffUserResponseStatusEnum.serializer)
       ..add(StartContactVerificationRequest.serializer)
       ..add(StartContactVerificationRequestChannelEnum.serializer)
       ..add(StartContactVerificationRequestTypeEnum.serializer)
+      ..add(SubmitInspectionRequest.serializer)
+      ..add(SubmitProposalRequest.serializer)
+      ..add(SuitabilityAnswerRequest.serializer)
+      ..add(SuitabilityAnswerResponse.serializer)
+      ..add(SuitabilityQuestion.serializer)
+      ..add(SuitabilityReason.serializer)
+      ..add(SuitabilityResult.serializer)
       ..add(SuspendOrganizationRequest.serializer)
       ..add(TestPlateFormatRequest.serializer)
       ..add(TestPlateFormatResponse.serializer)
       ..add(TokenResponse.serializer)
       ..add(TotpSetupResponse.serializer)
       ..add(UnavailableReason.serializer)
+      ..add(UnderwritingFailure.serializer)
+      ..add(UnderwritingInputs.serializer)
+      ..add(UnderwritingOutcome.serializer)
+      ..add(UnderwritingResult.serializer)
+      ..add(UnderwritingResultRulesSourceEnum.serializer)
+      ..add(UnderwritingRulesResponse.serializer)
+      ..add(UpdateBrokerProposalRequest.serializer)
       ..add(UpdateDriverRequest.serializer)
       ..add(UpdateInsurerRatingSettingsRequest.serializer)
       ..add(UpdateMeRequest.serializer)
@@ -218,10 +332,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateProductRequest.serializer)
       ..add(UpdateProductRequestTypeEnum.serializer)
       ..add(UpdateProductVersionRequest.serializer)
+      ..add(UpdateProposalRequest.serializer)
       ..add(UpdateRatingIntegrationRequest.serializer)
       ..add(UpdateRatingIntegrationRequestRatingModeEnum.serializer)
       ..add(UpdateRatingRulesRequest.serializer)
       ..add(UpdateReferenceValueRequest.serializer)
+      ..add(UpdateUnderwritingRulesRequest.serializer)
       ..add(UpdateUserRolesRequest.serializer)
       ..add(UpdateVehicleDriversRequest.serializer)
       ..add(UpdateVehicleRequest.serializer)
@@ -234,8 +350,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(VehicleResponseProvinceOfCirculationEnum.serializer)
       ..add(VehicleUsage.serializer)
       ..add(VerifyContactRequest.serializer)
+      ..add(VerifyKycCheckRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
       ..add(VersionResponse.serializer)
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(BrokerProposalSummaryResponse)]),
+          () => ListBuilder<BrokerProposalSummaryResponse>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(CatalogProductResponse)]),
@@ -286,17 +407,48 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(VehicleCategory)]),
           () => ListBuilder<VehicleCategory>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(DeclarationAnswerRequest)]),
+          () => ListBuilder<DeclarationAnswerRequest>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(DeclarationAnswerResponse)]),
+          () => ListBuilder<DeclarationAnswerResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(DeclarationQuestion)]),
+          () => ListBuilder<DeclarationQuestion>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(DriverResponse)]),
           () => ListBuilder<DriverResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FieldError)]),
           () => ListBuilder<FieldError>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(InfoRequestItem)]),
+          () => ListBuilder<InfoRequestItem>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(InsurerInspectionSummaryResponse)]),
+          () => ListBuilder<InsurerInspectionSummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(InsurerProposalSummaryResponse)]),
+          () => ListBuilder<InsurerProposalSummaryResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(InvitationResponse)]),
           () => ListBuilder<InvitationResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Jwk)]),
           () => ListBuilder<Jwk>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(KycCheckSummaryResponse)]),
+          () => ListBuilder<KycCheckSummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(KycPreviousCheckResponse)]),
+          () => ListBuilder<KycPreviousCheckResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Money)]),
           () => ListBuilder<Money>())
@@ -333,6 +485,19 @@ Serializers _$serializers = (Serializers().toBuilder()
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PhotoSlot)]),
+          () => ListBuilder<PhotoSlot>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PhotoSlot)]),
+          () => ListBuilder<PhotoSlot>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PhotoSlot)]),
+          () => ListBuilder<PhotoSlot>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(InspectionPhotoResponse)]),
+          () => ListBuilder<InspectionPhotoResponse>())
+      ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PlateFormatResponse)]),
           () => ListBuilder<PlateFormatResponse>())
@@ -348,6 +513,27 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(ProductVersionRefResponse)]),
           () => ListBuilder<ProductVersionRefResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(ProposalCharge)]),
+          () => ListBuilder<ProposalCharge>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(ProposalCoverage)]),
+          () => ListBuilder<ProposalCoverage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(ProposalCoverage)]),
+          () => ListBuilder<ProposalCoverage>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(InsurerProposalSignature)]),
+          () => ListBuilder<InsurerProposalSignature>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ProposalProductDocument)]),
+          () => ListBuilder<ProposalProductDocument>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ProposalSummaryResponse)]),
+          () => ListBuilder<ProposalSummaryResponse>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PublicPlateFormatResponse)]),
@@ -454,6 +640,30 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(SuitabilityAnswerRequest)]),
+          () => ListBuilder<SuitabilityAnswerRequest>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(SuitabilityAnswerResponse)]),
+          () => ListBuilder<SuitabilityAnswerResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(SuitabilityReason)]),
+          () => ListBuilder<SuitabilityReason>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(UnderwritingFailure)]),
+          () => ListBuilder<UnderwritingFailure>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [
             const FullType(UpdateOtpSettingsRequestEnabledChannelsEnum)

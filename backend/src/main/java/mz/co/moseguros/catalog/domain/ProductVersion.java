@@ -141,6 +141,19 @@ public class ProductVersion extends BaseEntity {
         this.rules = copy;
     }
 
+    /**
+     * Substitui só a chave {@code underwriting} de {@code rules} (regras de aceitação, S4-05 §2); as
+     * outras chaves ficam como estão. O conteúdo é validado pelo {@code UnderwritingRulesService}.
+     */
+    public void replaceUnderwritingRules(JsonNode underwriting) {
+        requireEditable();
+        Objects.requireNonNull(underwriting, "underwriting");
+        ObjectNode copy = rules != null && rules.isObject()
+                ? (ObjectNode) rules.deepCopy() : JsonNodeFactory.instance.objectNode();
+        copy.set("underwriting", underwriting.deepCopy());
+        this.rules = copy;
+    }
+
     /** {@code DRAFT} → {@code PUBLISHED}, em vigor desde {@code today}. */
     public void publish(LocalDate today, Instant now, String publishedBy) {
         requireEditable();

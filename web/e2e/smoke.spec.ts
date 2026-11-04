@@ -64,8 +64,10 @@ test('/seguradora mostra o menu da área (com sessão de staff)', async ({ page 
   await page.getByRole('button', { name: 'Abrir menu' }).click();
   const nav = page.getByRole('navigation', { name: 'Seguradora' });
   await expect(nav.getByRole('link', { name: 'Tarifas' })).toBeVisible();
-  await nav.getByRole('link', { name: 'Propostas' }).click();
-  await expect(page).toHaveURL(/\/seguradora\/propostas$/);
+  // Sem proposal:read o item "Propostas" não aparece (S4-07).
+  await expect(nav.getByRole('link', { name: 'Propostas' })).toHaveCount(0);
+  await nav.getByRole('link', { name: 'Apólices' }).click();
+  await expect(page).toHaveURL(/\/seguradora\/apolices$/);
   await expect(nav).toBeHidden();
   await expectNoHorizontalScroll(page);
 });

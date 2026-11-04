@@ -60,42 +60,60 @@ final imageCompressorProvider = Provider<ImageCompressor>(
 /// Prepara uma foto (câmara ou galeria) para envio: JPEG, lado maior ≤ 2400 px,
 /// qualidade 85 e **sem metadados** (EXIF com a localização GPS, XMP, IPTC).
 /// Converte HEIC para JPEG.
+///
+/// A vistoria e o KYC (S4-09 §4 e §6) usam [ImagePreparer.inspection]: lado maior
+/// ≤ 1920 px e qualidade 80.
 class ImagePreparer {
-  const ImagePreparer(this._compressor);
+  const ImagePreparer(
+    this._compressor, {
+    this.maxSideOf = maxSide,
+    this.qualityOf = quality,
+  });
+
+  /// Fotografias da vistoria e do KYC: 1920 px, qualidade 80, sem EXIF.
+  const ImagePreparer.inspection(this._compressor)
+    : maxSideOf = inspectionMaxSide,
+      qualityOf = inspectionQuality;
 
   final ImageCompressor _compressor;
 
+  /// Lado maior e qualidade desta instância.
+  final int maxSideOf;
+  final int qualityOf;
+
   static const maxSide = 2400;
   static const quality = 85;
+  static const inspectionMaxSide = 1920;
+  static const inspectionQuality = 80;
 
   Future<Uint8List> prepare(Uint8List source) async {
     var current = source;
     // Com o tamanho conhecido basta uma passagem; um HEIC (tamanho desconhecido)
     // passa a JPEG na primeira e reduz-se na segunda, se ainda for grande.
     for (var pass = 0; pass < 2; pass++) {
-      final target = targetSize(readImageSize(current));
+      final target = targetSize(readImageSize(current), maxSideOf);
       current = await _compressor.compressToJpeg(
         current,
         minWidth: target.width,
         minHeight: target.height,
-        quality: quality,
+        quality: qualityOf,
         keepExif: false,
       );
       final size = readImageSize(current);
       if (size == null) throw const ImageNotReadableException();
-      if (math.max(size.width, size.height) <= maxSide) break;
+      if (math.max(size.width, size.height) <= maxSideOf) break;
     }
     final result = stripJpegMetadata(current);
     if (result.length > maxUploadBytes) throw const FileTooLargeException();
     return result;
   }
 
-  /// Parâmetros para o compressor: a mesma proporção, com o lado maior ≤ [maxSide].
-  static ImageSize targetSize(ImageSize? size) {
-    if (size == null) return (width: maxSide, height: maxSide);
+  /// Parâmetros para o compressor: a mesma proporção, com o lado maior ≤ [limit].
+  static ImageSize targetSize(ImageSize? size, [int limit = maxSide]) {
+    if (size == null) return (width: limit, height: limit);
     final longest = math.max(size.width, size.height);
-    if (longest <= maxSide) return size;
-    final factor = maxSide / longest;
+    if (longest <= limit) return size;
+    final factor = limit / longest;
     return (
       width: math.max(1, (size.width * factor).floor()),
       height: math.max(1, (size.height * factor).floor()),
@@ -105,6 +123,11 @@ class ImagePreparer {
 
 final imagePreparerProvider = Provider<ImagePreparer>(
   (ref) => ImagePreparer(ref.watch(imageCompressorProvider)),
+);
+
+/// Preparação das fotografias da vistoria e do KYC (1920 px, qualidade 80).
+final inspectionImagePreparerProvider = Provider<ImagePreparer>(
+  (ref) => ImagePreparer.inspection(ref.watch(imageCompressorProvider)),
 );
 
 /// Tamanho de um JPEG ou PNG lido do cabeçalho; `null` noutros formatos.

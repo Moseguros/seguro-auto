@@ -172,8 +172,10 @@ class IdentityPersistenceIT {
                     "otp-settings:read", "otp-settings:manage", "organization:read", "organization:manage",
                     "org-user:read", "org-user:manage", "reference:manage"); // reference:manage: S2-01
             assertThat(roles.findPermissionsByRoleCodes(List.of("CUSTOMER")))
-                    .containsExactlyInAnyOrder("self:profile", "self:vehicles", "self:quotes"); // self:quotes: S3-01
-            assertThat(roles.findPermissionsByRoleCodes(List.of("UNDERWRITER"))).containsExactly("product:read");
+                    .containsExactlyInAnyOrder("self:profile", "self:vehicles", "self:quotes", // self:quotes: S3-01
+                            "self:proposals"); // S4-01
+            assertThat(roles.findPermissionsByRoleCodes(List.of("UNDERWRITER"))).containsExactlyInAnyOrder(
+                    "product:read", "proposal:read", "proposal:decide", "kyc:review", "inspection:review"); // S4-01
             return null;
         });
     }

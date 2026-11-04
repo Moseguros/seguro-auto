@@ -219,6 +219,67 @@ public final class ErrorCodes {
     /** A organização não é uma seguradora (400). */
     public static final String ORGANIZATION_NOT_INSURER = "ORGANIZATION_NOT_INSURER";
 
+    // KYC do cliente (S4-01)
+    /** O perfil do cliente está incompleto ({@code CustomerProfile.isComplete()}) (409). */
+    public static final String PROFILE_INCOMPLETE = "PROFILE_INCOMPLETE";
+    /** O cliente já tem uma verificação de identidade {@code PENDING} (409). */
+    public static final String KYC_ALREADY_PENDING = "KYC_ALREADY_PENDING";
+    /** A identidade do cliente já está verificada e o perfil não mudou (409). */
+    public static final String KYC_ALREADY_VERIFIED = "KYC_ALREADY_VERIFIED";
+    /** Verificação de identidade inexistente ou de outra seguradora (404). */
+    public static final String KYC_NOT_FOUND = "KYC_NOT_FOUND";
+
+    // Propostas (S4-02)
+    /** Já existe uma proposta para esta cotação; propriedade {@code proposalId} (409). */
+    public static final String PROPOSAL_ALREADY_EXISTS = "PROPOSAL_ALREADY_EXISTS";
+    /** Proposta inexistente ou de outro cliente, mediador ou seguradora (404). */
+    public static final String PROPOSAL_NOT_FOUND = "PROPOSAL_NOT_FOUND";
+    /** A proposta não está em {@code DRAFT} nem {@code INFO_REQUESTED} (409). */
+    public static final String PROPOSAL_NOT_EDITABLE = "PROPOSAL_NOT_EDITABLE";
+    /** A seguradora da cotação não está activa (409). */
+    public static final String INSURER_NOT_ACTIVE = "INSURER_NOT_ACTIVE";
+    /** O questionário de adequação não deu {@code WARNED}: não há avisos para confirmar (409). */
+    public static final String SUITABILITY_NOT_WARNED = "SUITABILITY_NOT_WARNED";
+    /** Dados do veículo ou do condutor usados na tarifa mudaram depois da cotação; propriedade {@code fields} (409). */
+    public static final String QUOTE_DATA_CHANGED = "QUOTE_DATA_CHANGED";
+
+    // PDF e assinatura da proposta (S4-04)
+    /** Modelo de PDF desconhecido (erro de programação) (500). */
+    public static final String PDF_TEMPLATE_NOT_FOUND = "PDF_TEMPLATE_NOT_FOUND";
+    /** O PDF não pôde ser gerado (modelo inválido, texto em falta ou erro do renderizador) (500). */
+    public static final String PDF_RENDER_FAILED = "PDF_RENDER_FAILED";
+    /** A conta do signatário não tem telemóvel nem e-mail verificado para receber o código (409). */
+    public static final String SIGNER_CONTACT_MISSING = "SIGNER_CONTACT_MISSING";
+    /** Faltam passos da proposta; propriedade {@code missing} (lista de itens) (409). */
+    public static final String PROPOSAL_INCOMPLETE = "PROPOSAL_INCOMPLETE";
+    /** Não há pedido de assinatura em curso, ou é de outro código (409). */
+    public static final String SIGN_REQUEST_NOT_FOUND = "SIGN_REQUEST_NOT_FOUND";
+    /** A proposta mudou depois de o código de assinatura ter sido pedido (409). */
+    public static final String PROPOSAL_CHANGED_SINCE_SIGN_REQUEST = "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST";
+    // Vistoria de danos próprios (S4-03)
+    /** A proposta não tem coberturas de danos próprios: não há vistoria (409). */
+    public static final String INSPECTION_NOT_REQUIRED = "INSPECTION_NOT_REQUIRED";
+    /** Vistoria inexistente, de outra seguradora ou de uma proposta ainda não submetida (404). */
+    public static final String INSPECTION_NOT_FOUND = "INSPECTION_NOT_FOUND";
+    /** A vistoria não está em {@code PENDING} nem {@code REJECTED} (409). */
+    public static final String INSPECTION_NOT_EDITABLE = "INSPECTION_NOT_EDITABLE";
+    /** Faltam ângulos obrigatórios; propriedade {@code missingSlots} (409). */
+    public static final String INSPECTION_PHOTOS_MISSING = "INSPECTION_PHOTOS_MISSING";
+    /** Fotografia inexistente, de outra vistoria ou já retirada (404). */
+    public static final String PHOTO_NOT_FOUND = "PHOTO_NOT_FOUND";
+    /** A proposta não está em {@code UNDER_REVIEW} (409). */
+    public static final String PROPOSAL_NOT_UNDER_REVIEW = "PROPOSAL_NOT_UNDER_REVIEW";
+
+    // Submissão e aceitação da proposta (S4-05)
+    /** Aceitar sem o KYC do cliente verificado, com o total acima do limiar do KYC simplificado (409). */
+    public static final String KYC_NOT_VERIFIED = "KYC_NOT_VERIFIED";
+    /** Aceitar uma proposta com vistoria obrigatória ainda não aprovada (409). */
+    public static final String INSPECTION_NOT_APPROVED = "INSPECTION_NOT_APPROVED";
+
+    // Proposta criada pelo mediador (S4-06)
+    /** A conta do cliente da cotação do mediador está desactivada ({@code DISABLED}) (409). */
+    public static final String CLIENT_ACCOUNT_DISABLED = "CLIENT_ACCOUNT_DISABLED";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -313,7 +374,32 @@ public final class ErrorCodes {
             Map.entry(QUOTE_ALREADY_USED, 409),
             Map.entry(QUOTE_RATE_LIMITED, 429),
             Map.entry(VEHICLE_VALUE_REQUIRED, 400),
-            Map.entry(ORGANIZATION_NOT_INSURER, 400));
+            Map.entry(ORGANIZATION_NOT_INSURER, 400),
+            Map.entry(PROFILE_INCOMPLETE, 409),
+            Map.entry(KYC_ALREADY_PENDING, 409),
+            Map.entry(KYC_ALREADY_VERIFIED, 409),
+            Map.entry(KYC_NOT_FOUND, 404),
+            Map.entry(PROPOSAL_ALREADY_EXISTS, 409),
+            Map.entry(PROPOSAL_NOT_FOUND, 404),
+            Map.entry(PROPOSAL_NOT_EDITABLE, 409),
+            Map.entry(INSURER_NOT_ACTIVE, 409),
+            Map.entry(SUITABILITY_NOT_WARNED, 409),
+            Map.entry(QUOTE_DATA_CHANGED, 409),
+            Map.entry(PDF_TEMPLATE_NOT_FOUND, 500),
+            Map.entry(PDF_RENDER_FAILED, 500),
+            Map.entry(SIGNER_CONTACT_MISSING, 409),
+            Map.entry(PROPOSAL_INCOMPLETE, 409),
+            Map.entry(SIGN_REQUEST_NOT_FOUND, 409),
+            Map.entry(PROPOSAL_CHANGED_SINCE_SIGN_REQUEST, 409),
+            Map.entry(INSPECTION_NOT_REQUIRED, 409),
+            Map.entry(INSPECTION_NOT_FOUND, 404),
+            Map.entry(INSPECTION_NOT_EDITABLE, 409),
+            Map.entry(INSPECTION_PHOTOS_MISSING, 409),
+            Map.entry(PHOTO_NOT_FOUND, 404),
+            Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409),
+            Map.entry(KYC_NOT_VERIFIED, 409),
+            Map.entry(INSPECTION_NOT_APPROVED, 409),
+            Map.entry(CLIENT_ACCOUNT_DISABLED, 409));
 
     private ErrorCodes() {
     }

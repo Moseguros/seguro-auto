@@ -90,6 +90,37 @@ class RunAsSystemUsageTest {
                         "OrganizationSystemLookups.insurerProfiles");
     }
 
+    /**
+     * S4-02 e S4-06: a seguradora da cotação e a organização do mediador lêem-se e as propostas expiram em
+     * SYSTEM, em classes permitidas.
+     */
+    @Test
+    void proposalSystemLookupsAndExpiryJobAreAllowed() {
+        JavaClasses proposal = new ClassFileImporter().importClasses(
+                mz.co.moseguros.proposal.application.ProposalSystemLookups.class,
+                mz.co.moseguros.proposal.application.ProposalExpiryJob.class);
+        RUN_AS_SYSTEM_OWNERS.check(proposal);
+        org.assertj.core.api.Assertions.assertThat(proposal.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("ProposalSystemLookups.insurer", "ProposalSystemLookups.broker",
+                        "ProposalExpiryJob.expire");
+    }
+
+    /** S4-06: o veículo e o condutor do cliente registam-se a pedido do mediador só pelo VehicleSystemLookups. */
+    @Test
+    void vehicleSystemLookupsIsAllowed() {
+        JavaClasses vehicle = new ClassFileImporter().importClasses(
+                mz.co.moseguros.vehicle.application.VehicleSystemLookups.class);
+        RUN_AS_SYSTEM_OWNERS.check(vehicle);
+        org.assertj.core.api.Assertions.assertThat(vehicle.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactly("VehicleSystemLookups.registerForCustomer");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);
