@@ -132,6 +132,7 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'PROPOSAL_NOT_UNDER_REVIEW' => l10n.errorProposalNotUnderReview,
   'KYC_NOT_VERIFIED' => l10n.errorKycNotVerified,
   'INSPECTION_NOT_APPROVED' => l10n.errorInspectionNotApproved,
+  'CLIENT_ACCOUNT_DISABLED' => l10n.errorClientAccountDisabled,
   _ => l10n.errorUnknown,
 };
 

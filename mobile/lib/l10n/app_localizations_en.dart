@@ -1976,6 +1976,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The inspection has not been approved yet.';
 
   @override
+  String get errorClientAccountDisabled =>
+      'This customer\'s account is disabled. Contact MoSeguros support.';
+
+  @override
   String get validationInvalidRules => 'Invalid rule.';
 
   @override

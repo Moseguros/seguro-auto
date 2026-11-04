@@ -617,6 +617,7 @@
   "myQuotesSeeAll": "See all",
   "errorKycNotVerified": "The customer's identity has not been verified yet.",
   "errorInspectionNotApproved": "The inspection has not been approved yet.",
+  "errorClientAccountDisabled": "This customer's account is disabled. Contact MoSeguros support.",
   "validationInvalidRules": "Invalid rule.",
   "proposalUnderwritingFailureAutoAcceptDisabled": "Automatic acceptance is turned off for the product",
   "proposalUnderwritingFailureKycRequired": "Identity not verified and premium above the simplified KYC limit",

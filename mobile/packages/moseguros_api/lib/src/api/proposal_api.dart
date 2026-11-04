@@ -14,6 +14,7 @@ import 'package:moseguros_api/src/model/accept_proposal_request.dart';
 import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/approve_inspection_request.dart';
 import 'package:moseguros_api/src/model/confirm_signature_request.dart';
+import 'package:moseguros_api/src/model/create_broker_proposal_request.dart';
 import 'package:moseguros_api/src/model/create_proposal_request.dart';
 import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/inspection_mode.dart';
@@ -21,6 +22,7 @@ import 'package:moseguros_api/src/model/inspection_photo_response.dart';
 import 'package:moseguros_api/src/model/inspection_response.dart';
 import 'package:moseguros_api/src/model/inspection_status.dart';
 import 'package:moseguros_api/src/model/insurer_proposal_response.dart';
+import 'package:moseguros_api/src/model/page_response_broker_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_inspection_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
@@ -41,6 +43,7 @@ import 'package:moseguros_api/src/model/signature_request_response.dart';
 import 'package:moseguros_api/src/model/sla_status.dart';
 import 'package:moseguros_api/src/model/submit_inspection_request.dart';
 import 'package:moseguros_api/src/model/submit_proposal_request.dart';
+import 'package:moseguros_api/src/model/update_broker_proposal_request.dart';
 import 'package:moseguros_api/src/model/update_proposal_request.dart';
 
 class ProposalApi {
@@ -361,7 +364,7 @@ class ProposalApi {
   }
 
   /// Confirma a assinatura com o código recebido
-  /// Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature &#x3D; DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura.
+  /// Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature &#x3D; DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura. Confirmada por um utilizador do mediador (S4-06) → signature.assisted &#x3D; true; pelo próprio cliente → não assistida.
   ///
   /// Parameters:
   /// * [id] 
@@ -511,6 +514,107 @@ class ProposalApi {
     try {
       const _type = FullType(CreateProposalRequest);
       _bodyData = _serializers.serialize(createProposalRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(ProposalResponse),
+      ) as ProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Cria uma proposta a partir da cotação do mediador
+  /// Permissão proposal:create-for-client (corretor ou agente). Por esta ordem: cotação não visível, do cliente ou de outra organização → 404 QUOTE_NOT_FOUND; já usada numa proposta → 409 PROPOSAL_ALREADY_EXISTS; QUOTE_NOT_AVAILABLE, QUOTE_ALREADY_USED, QUOTE_EXPIRED (409); seguradora não activa → 409 INSURER_NOT_ACTIVE; vehicle ou driver em falta → 400 REQUIRED; campos usados na tarifa diferentes dos da cotação → 409 QUOTE_DATA_CHANGED (fields, ex.: vehicle.year); conta do cliente desactivada → 409 CLIENT_ACCOUNT_DISABLED; perfil do cliente completo e policyholder enviado → 400 NOT_ALLOWED (policyholder); perfil incompleto sem policyholder → 400 REQUIRED (policyholder), com as regras do perfil (errors[].field policyholder.*); regras do veículo e do condutor do S2-03 (errors[].field vehicle.* e driver.*; VEHICLE_ALREADY_REGISTERED com a mesma matrícula e outro chassis, VEHICLE_LIMIT_REACHED, DRIVER_LIMIT_REACHED). Regista o veículo e o condutor na conta do cliente (reutiliza os iguais), grava a proposta DRAFT com channel &#x3D; BROKER e a cotação passa a USED. Qualquer erro desfaz tudo. O cliente vê a proposta em listMyProposals e recebe um e-mail se tiver e-mail verificado.
+  ///
+  /// Parameters:
+  /// * [createBrokerProposalRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ProposalResponse>> createProposalForClient({ 
+    required CreateBrokerProposalRequest createBrokerProposalRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/broker/proposals';
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(CreateBrokerProposalRequest);
+      _bodyData = _serializers.serialize(createBrokerProposalRequest, specifiedType: _type);
 
     } catch(error, stackTrace) {
       throw DioException(
@@ -796,6 +900,104 @@ class ProposalApi {
     }
 
     return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Lista as propostas da organização do mediador
+  /// Permissão proposal:create-for-client (corretor ou agente). Propostas criadas por qualquer utilizador da organização; status repetível (vazio &#x3D; todos); q &#x3D; número exacto ou parte do nome do tomador. Ordenação por createdAt (defeito createdAt,desc).
+  ///
+  /// Parameters:
+  /// * [status] - Estados a incluir (repetível); vazio = todos
+  /// * [q] - Número exacto ou parte do nome do tomador
+  /// * [page] 
+  /// * [size] 
+  /// * [sort] - createdAt, com ,asc ou ,desc
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [PageResponseBrokerProposalSummaryResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<PageResponseBrokerProposalSummaryResponse>> listBrokerProposals({ 
+    BuiltList<ProposalStatus>? status,
+    String? q,
+    int? page,
+    int? size,
+    String? sort,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/broker/proposals';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (status != null) r'status': encodeCollectionQueryParameter<ProposalStatus>(_serializers, status, const FullType(BuiltList, [FullType(ProposalStatus)]), format: ListFormat.multi,),
+      if (q != null) r'q': encodeQueryParameter(_serializers, q, const FullType(String)),
+      if (page != null) r'page': encodeQueryParameter(_serializers, page, const FullType(int)),
+      if (size != null) r'size': encodeQueryParameter(_serializers, size, const FullType(int)),
+      if (sort != null) r'sort': encodeQueryParameter(_serializers, sort, const FullType(String)),
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    PageResponseBrokerProposalSummaryResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(PageResponseBrokerProposalSummaryResponse),
+      ) as PageResponseBrokerProposalSummaryResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<PageResponseBrokerProposalSummaryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -1581,7 +1783,7 @@ class ProposalApi {
   }
 
   /// Gera o PDF da proposta e envia o código de assinatura
-  /// Permissão self:proposals ou proposal:create-for-client. Por esta ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT, INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND.
+  /// Permissão self:proposals ou proposal:create-for-client. Por esta ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT, INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Pedido pelo mediador da proposta (S4-06): assinatura assistida, o código vai para o telemóvel da conta do cliente com o nome do mediador na mensagem.
   ///
   /// Parameters:
   /// * [id] 
@@ -2095,8 +2297,111 @@ class ProposalApi {
     );
   }
 
+  /// Altera a data de início ou o tomador
+  /// Permissão proposal:create-for-client (corretor ou agente). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outra organização → 404 PROPOSAL_NOT_FOUND. startDate entre hoje e hoje + 60 dias (START_DATE_OUT_OF_RANGE); policyholder só com policyholderSource &#x3D; BROKER (senão 400 NOT_ALLOWED), com as regras do perfil (idDocNumber e nuit omitidos mantêm os actuais); sem nenhum dos dois → 400 REQUIRED (startDate). Com policyholderSource &#x3D; PROFILE o tomador é copiado de novo do perfil. Aumenta contentRevision, invalida a assinatura e renova expiresAt. O veículo e o condutor não mudam (mudar o risco exige nova cotação).
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [updateBrokerProposalRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ProposalResponse>> updateBrokerProposal({ 
+    required String id,
+    required UpdateBrokerProposalRequest updateBrokerProposalRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/broker/proposals/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'PUT',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(UpdateBrokerProposalRequest);
+      _bodyData = _serializers.serialize(updateBrokerProposalRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(ProposalResponse),
+      ) as ProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Altera a data de início da proposta
-  /// Permissão self:proposals ou proposal:create-for-client. startDate entre hoje e hoje + 60 dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE); a duração e o prémio não mudam; o tomador é copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
+  /// Permissão self:proposals ou proposal:create-for-client. startDate entre hoje e hoje + 60 dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE); a duração e o prémio não mudam; o tomador é copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE); com policyholderSource &#x3D; BROKER (S4-06) mantém o tomador preenchido pelo mediador. Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
   ///
   /// Parameters:
   /// * [id] 

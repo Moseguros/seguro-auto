@@ -19,6 +19,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/proposal_driver.dart';
 import 'package:moseguros_api/src/model/proposal_vehicle.dart';
+import 'package:moseguros_api/src/model/policyholder_source.dart';
 import 'package:moseguros_api/src/model/proposal_declarations.dart';
 import 'package:moseguros_api/src/model/proposal_premium.dart';
 import 'package:built_value/built_value.dart';
@@ -47,6 +48,7 @@ part 'proposal_response.g.dart';
 /// * [kyc] 
 /// * [number] 
 /// * [policyholder] 
+/// * [policyholderSource] 
 /// * [premium] 
 /// * [product] 
 /// * [quoteId] 
@@ -117,6 +119,10 @@ abstract class ProposalResponse implements Built<ProposalResponse, ProposalRespo
 
   @BuiltValueField(wireName: r'policyholder')
   ProposalPolicyholder get policyholder;
+
+  @BuiltValueField(wireName: r'policyholderSource')
+  PolicyholderSource get policyholderSource;
+  // enum policyholderSourceEnum {  PROFILE,  BROKER,  };
 
   @BuiltValueField(wireName: r'premium')
   ProposalPremium get premium;
@@ -275,6 +281,11 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
     yield serializers.serialize(
       object.policyholder,
       specifiedType: const FullType(ProposalPolicyholder),
+    );
+    yield r'policyholderSource';
+    yield serializers.serialize(
+      object.policyholderSource,
+      specifiedType: const FullType(PolicyholderSource),
     );
     yield r'premium';
     yield serializers.serialize(
@@ -490,6 +501,13 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
             specifiedType: const FullType(ProposalPolicyholder),
           ) as ProposalPolicyholder;
           result.policyholder.replace(valueDes);
+          break;
+        case r'policyholderSource':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(PolicyholderSource),
+          ) as PolicyholderSource;
+          result.policyholderSource = valueDes;
           break;
         case r'premium':
           final valueDes = serializers.deserialize(

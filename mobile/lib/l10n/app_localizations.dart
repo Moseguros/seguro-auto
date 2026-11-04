@@ -3474,6 +3474,12 @@ abstract class AppLocalizations {
   /// **'A vistoria ainda não foi aprovada.'**
   String get errorInspectionNotApproved;
 
+  /// No description provided for @errorClientAccountDisabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'A conta deste cliente está desactivada. Contacte o apoio da MoSeguros.'**
+  String get errorClientAccountDisabled;
+
   /// No description provided for @validationInvalidRules.
   ///
   /// In pt, this message translates to:

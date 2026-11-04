@@ -1976,6 +1976,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get errorInspectionNotApproved => 'A vistoria ainda não foi aprovada.';
 
   @override
+  String get errorClientAccountDisabled =>
+      'A conta deste cliente está desactivada. Contacte o apoio da MoSeguros.';
+
+  @override
   String get validationInvalidRules => 'Regra inválida.';
 
   @override

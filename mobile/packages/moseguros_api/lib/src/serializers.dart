@@ -21,6 +21,10 @@ import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/activate_invitation_request.dart';
 import 'package:moseguros_api/src/model/approve_inspection_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
+import 'package:moseguros_api/src/model/broker_policyholder_request.dart';
+import 'package:moseguros_api/src/model/broker_proposal_driver_request.dart';
+import 'package:moseguros_api/src/model/broker_proposal_summary_response.dart';
+import 'package:moseguros_api/src/model/broker_proposal_vehicle_request.dart';
 import 'package:moseguros_api/src/model/broker_vehicle_request.dart';
 import 'package:moseguros_api/src/model/catalog_insurer_response.dart';
 import 'package:moseguros_api/src/model/catalog_product_response.dart';
@@ -31,6 +35,7 @@ import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/coverage_request.dart';
 import 'package:moseguros_api/src/model/coverage_response.dart';
+import 'package:moseguros_api/src/model/create_broker_proposal_request.dart';
 import 'package:moseguros_api/src/model/create_broker_quote_request.dart';
 import 'package:moseguros_api/src/model/create_driver_request.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
@@ -95,6 +100,7 @@ import 'package:moseguros_api/src/model/otp_settings_response.dart';
 import 'package:moseguros_api/src/model/otp_test_request.dart';
 import 'package:moseguros_api/src/model/otp_test_response.dart';
 import 'package:moseguros_api/src/model/otp_verify_response.dart';
+import 'package:moseguros_api/src/model/page_response_broker_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_catalog_product_response.dart';
 import 'package:moseguros_api/src/model/page_response_driver_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_inspection_summary_response.dart';
@@ -114,6 +120,7 @@ import 'package:moseguros_api/src/model/plate_format_response.dart';
 import 'package:moseguros_api/src/model/plate_formats_response.dart';
 import 'package:moseguros_api/src/model/platform_setting_response.dart';
 import 'package:moseguros_api/src/model/platform_settings_response.dart';
+import 'package:moseguros_api/src/model/policyholder_source.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
 import 'package:moseguros_api/src/model/product_document_response.dart';
 import 'package:moseguros_api/src/model/product_response.dart';
@@ -211,6 +218,7 @@ import 'package:moseguros_api/src/model/underwriting_inputs.dart';
 import 'package:moseguros_api/src/model/underwriting_outcome.dart';
 import 'package:moseguros_api/src/model/underwriting_result.dart';
 import 'package:moseguros_api/src/model/underwriting_rules_response.dart';
+import 'package:moseguros_api/src/model/update_broker_proposal_request.dart';
 import 'package:moseguros_api/src/model/update_driver_request.dart';
 import 'package:moseguros_api/src/model/update_insurer_rating_settings_request.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
@@ -250,6 +258,10 @@ part 'serializers.g.dart';
   ActivateInvitationRequest,
   ApproveInspectionRequest,
   AssignableRolesResponse,
+  BrokerPolicyholderRequest,
+  BrokerProposalDriverRequest,
+  BrokerProposalSummaryResponse,
+  BrokerProposalVehicleRequest,
   BrokerVehicleRequest,
   CatalogInsurerResponse,
   CatalogProductResponse,
@@ -260,6 +272,7 @@ part 'serializers.g.dart';
   ContactsResponse,
   CoverageRequest,
   CoverageResponse,
+  CreateBrokerProposalRequest,
   CreateBrokerQuoteRequest,
   CreateDriverRequest,
   CreateOrganizationRequest,
@@ -324,6 +337,7 @@ part 'serializers.g.dart';
   OtpTestRequest,
   OtpTestResponse,
   OtpVerifyResponse,
+  PageResponseBrokerProposalSummaryResponse,
   PageResponseCatalogProductResponse,
   PageResponseDriverResponse,
   PageResponseInsurerInspectionSummaryResponse,
@@ -343,6 +357,7 @@ part 'serializers.g.dart';
   PlateFormatsResponse,
   PlatformSettingResponse,
   PlatformSettingsResponse,
+  PolicyholderSource,
   ProblemDetail,
   ProductDocumentResponse,
   ProductResponse,
@@ -440,6 +455,7 @@ part 'serializers.g.dart';
   UnderwritingOutcome,
   UnderwritingResult,
   UnderwritingRulesResponse,
+  UpdateBrokerProposalRequest,
   UpdateDriverRequest,
   UpdateInsurerRatingSettingsRequest,
   UpdateMeRequest,

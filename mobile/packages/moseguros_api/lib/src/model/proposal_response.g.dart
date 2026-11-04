@@ -44,6 +44,8 @@ class _$ProposalResponse extends ProposalResponse {
   @override
   final ProposalPolicyholder policyholder;
   @override
+  final PolicyholderSource policyholderSource;
+  @override
   final ProposalPremium premium;
   @override
   final ProposalProduct product;
@@ -89,6 +91,7 @@ class _$ProposalResponse extends ProposalResponse {
       required this.kyc,
       required this.number,
       required this.policyholder,
+      required this.policyholderSource,
       required this.premium,
       required this.product,
       required this.quoteId,
@@ -131,6 +134,7 @@ class _$ProposalResponse extends ProposalResponse {
         kyc == other.kyc &&
         number == other.number &&
         policyholder == other.policyholder &&
+        policyholderSource == other.policyholderSource &&
         premium == other.premium &&
         product == other.product &&
         quoteId == other.quoteId &&
@@ -165,6 +169,7 @@ class _$ProposalResponse extends ProposalResponse {
     _$hash = $jc(_$hash, kyc.hashCode);
     _$hash = $jc(_$hash, number.hashCode);
     _$hash = $jc(_$hash, policyholder.hashCode);
+    _$hash = $jc(_$hash, policyholderSource.hashCode);
     _$hash = $jc(_$hash, premium.hashCode);
     _$hash = $jc(_$hash, product.hashCode);
     _$hash = $jc(_$hash, quoteId.hashCode);
@@ -201,6 +206,7 @@ class _$ProposalResponse extends ProposalResponse {
           ..add('kyc', kyc)
           ..add('number', number)
           ..add('policyholder', policyholder)
+          ..add('policyholderSource', policyholderSource)
           ..add('premium', premium)
           ..add('product', product)
           ..add('quoteId', quoteId)
@@ -308,6 +314,11 @@ class ProposalResponseBuilder
   set policyholder(ProposalPolicyholderBuilder? policyholder) =>
       _$this._policyholder = policyholder;
 
+  PolicyholderSource? _policyholderSource;
+  PolicyholderSource? get policyholderSource => _$this._policyholderSource;
+  set policyholderSource(PolicyholderSource? policyholderSource) =>
+      _$this._policyholderSource = policyholderSource;
+
   ProposalPremiumBuilder? _premium;
   ProposalPremiumBuilder get premium =>
       _$this._premium ??= ProposalPremiumBuilder();
@@ -384,6 +395,7 @@ class ProposalResponseBuilder
       _kyc = $v.kyc.toBuilder();
       _number = $v.number;
       _policyholder = $v.policyholder.toBuilder();
+      _policyholderSource = $v.policyholderSource;
       _premium = $v.premium.toBuilder();
       _product = $v.product.toBuilder();
       _quoteId = $v.quoteId;
@@ -443,6 +455,8 @@ class ProposalResponseBuilder
             number: BuiltValueNullFieldError.checkNotNull(
                 number, r'ProposalResponse', 'number'),
             policyholder: policyholder.build(),
+            policyholderSource: BuiltValueNullFieldError.checkNotNull(
+                policyholderSource, r'ProposalResponse', 'policyholderSource'),
             premium: premium.build(),
             product: product.build(),
             quoteId: BuiltValueNullFieldError.checkNotNull(
@@ -487,6 +501,7 @@ class ProposalResponseBuilder
 
         _$failedField = 'policyholder';
         policyholder.build();
+
         _$failedField = 'premium';
         premium.build();
         _$failedField = 'product';

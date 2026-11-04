@@ -934,6 +934,7 @@
   "myQuotesSeeAll": "Ver todas",
   "errorKycNotVerified": "A identidade do cliente ainda não foi verificada.",
   "errorInspectionNotApproved": "A vistoria ainda não foi aprovada.",
+  "errorClientAccountDisabled": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros.",
   "validationInvalidRules": "Regra inválida.",
   "proposalUnderwritingFailureAutoAcceptDisabled": "Aceitação automática desligada no produto",
   "proposalUnderwritingFailureKycRequired": "Identidade por verificar e prémio acima do limite do KYC simplificado",

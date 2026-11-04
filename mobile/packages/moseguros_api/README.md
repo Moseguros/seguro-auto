@@ -164,9 +164,11 @@ Class | Method | HTTP request | Description
 [*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**confirmProposalSignature**](doc/ProposalApi.md#confirmproposalsignature) | **POST** /api/v1/proposals/{id}/sign/confirm | Confirma a assinatura com o código recebido
 [*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
+[*ProposalApi*](doc/ProposalApi.md) | [**createProposalForClient**](doc/ProposalApi.md#createproposalforclient) | **POST** /api/v1/broker/proposals | Cria uma proposta a partir da cotação do mediador
 [*ProposalApi*](doc/ProposalApi.md) | [**getInsurerInspection**](doc/ProposalApi.md#getinsurerinspection) | **GET** /api/v1/insurer/inspections/{id} | Consulta uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**getInsurerProposal**](doc/ProposalApi.md#getinsurerproposal) | **GET** /api/v1/insurer/proposals/{id} | Consulta uma proposta submetida
 [*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**listBrokerProposals**](doc/ProposalApi.md#listbrokerproposals) | **GET** /api/v1/broker/proposals | Lista as propostas da organização do mediador
 [*ProposalApi*](doc/ProposalApi.md) | [**listInsurerInspections**](doc/ProposalApi.md#listinsurerinspections) | **GET** /api/v1/insurer/inspections | Lista as vistorias da seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**listInsurerProposals**](doc/ProposalApi.md#listinsurerproposals) | **GET** /api/v1/insurer/proposals | Lista as propostas submetidas à seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
@@ -180,6 +182,7 @@ Class | Method | HTTP request | Description
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**submitInspection**](doc/ProposalApi.md#submitinspection) | **POST** /api/v1/proposals/{id}/inspection/submit | Submete a vistoria por fotografias
 [*ProposalApi*](doc/ProposalApi.md) | [**submitProposal**](doc/ProposalApi.md#submitproposal) | **POST** /api/v1/proposals/{id}/submit | Submete a proposta à seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**updateBrokerProposal**](doc/ProposalApi.md#updatebrokerproposal) | **PUT** /api/v1/broker/proposals/{id} | Altera a data de início ou o tomador
 [*ProposalApi*](doc/ProposalApi.md) | [**updateProposal**](doc/ProposalApi.md#updateproposal) | **PUT** /api/v1/proposals/{id} | Altera a data de início da proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**uploadInspectionPhoto**](doc/ProposalApi.md#uploadinspectionphoto) | **POST** /api/v1/proposals/{id}/inspection/photos | Envia uma fotografia da vistoria
 [*RatingApi*](doc/RatingApi.md) | [**createBrokerQuoteRequest**](doc/RatingApi.md#createbrokerquoterequest) | **POST** /api/v1/broker/quotes | Pede cotações em nome de um cliente
@@ -215,6 +218,10 @@ Class | Method | HTTP request | Description
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
  - [ApproveInspectionRequest](doc/ApproveInspectionRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
+ - [BrokerPolicyholderRequest](doc/BrokerPolicyholderRequest.md)
+ - [BrokerProposalDriverRequest](doc/BrokerProposalDriverRequest.md)
+ - [BrokerProposalSummaryResponse](doc/BrokerProposalSummaryResponse.md)
+ - [BrokerProposalVehicleRequest](doc/BrokerProposalVehicleRequest.md)
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
@@ -225,6 +232,7 @@ Class | Method | HTTP request | Description
  - [ContactsResponse](doc/ContactsResponse.md)
  - [CoverageRequest](doc/CoverageRequest.md)
  - [CoverageResponse](doc/CoverageResponse.md)
+ - [CreateBrokerProposalRequest](doc/CreateBrokerProposalRequest.md)
  - [CreateBrokerQuoteRequest](doc/CreateBrokerQuoteRequest.md)
  - [CreateDriverRequest](doc/CreateDriverRequest.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
@@ -289,6 +297,7 @@ Class | Method | HTTP request | Description
  - [OtpTestRequest](doc/OtpTestRequest.md)
  - [OtpTestResponse](doc/OtpTestResponse.md)
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
+ - [PageResponseBrokerProposalSummaryResponse](doc/PageResponseBrokerProposalSummaryResponse.md)
  - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
  - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
@@ -308,6 +317,7 @@ Class | Method | HTTP request | Description
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
  - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
+ - [PolicyholderSource](doc/PolicyholderSource.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [ProductDocumentResponse](doc/ProductDocumentResponse.md)
  - [ProductResponse](doc/ProductResponse.md)
@@ -405,6 +415,7 @@ Class | Method | HTTP request | Description
  - [UnderwritingOutcome](doc/UnderwritingOutcome.md)
  - [UnderwritingResult](doc/UnderwritingResult.md)
  - [UnderwritingRulesResponse](doc/UnderwritingRulesResponse.md)
+ - [UpdateBrokerProposalRequest](doc/UpdateBrokerProposalRequest.md)
  - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
  - [UpdateInsurerRatingSettingsRequest](doc/UpdateInsurerRatingSettingsRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
