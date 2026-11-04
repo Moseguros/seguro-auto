@@ -98,9 +98,13 @@ public class ProposalQueryService {
      * Proposta visível e de quem pede: cliente dono ({@code CUSTOMER}), mediador da proposta
      * ({@code ORG} com {@code broker_org_id}) ou a seguradora, só depois da submissão.
      *
+     * <p>O 404 não marca a transacção de quem chama para rollback: o {@code confirmProposalSignature}
+     * ({@code noRollbackFor = DomainException}) devolveria 500 em vez de 404 (S4-06, mediador de outra
+     * organização).
+     *
      * @throws DomainException 404 {@code PROPOSAL_NOT_FOUND}
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, noRollbackFor = DomainException.class)
     public Proposal accessible(UUID proposalId) {
         Proposal proposal = proposalId == null ? null : proposals.findById(proposalId).orElse(null);
         if (proposal == null || !canAccess(proposal, TenantContext.current())) {

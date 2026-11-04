@@ -151,6 +151,28 @@ class ProposalTest {
                 365), Instant.now(), EXPIRY)).isInstanceOf(IllegalArgumentException.class);
     }
 
+    /** S4-06 §1: o tomador do mediador só existe no canal BROKER; por defeito vem do perfil. */
+    @Test
+    void policyholderSource() {
+        assertThat(draft(Instant.now(), List.of(line("MTPL"))).getPolicyholderSource())
+                .isEqualTo(PolicyholderSource.PROFILE);
+        ObjectNode empty = JsonNodeFactory.instance.objectNode();
+        Proposal.Draft broker = new Proposal.Draft("PR-2027-000003", UUID.randomUUID(), UUID.randomUUID(), "S",
+                UUID.randomUUID(), UUID.randomUUID(), "P", ProductType.MTPL_ONLY, UUID.randomUUID(), UUID.randomUUID(),
+                ProposalChannel.BROKER, UUID.randomUUID(), "Corretora", UUID.randomUUID(), UUID.randomUUID(), empty,
+                "DOC12345", "123456789", empty, empty, empty, List.of(), JsonNodeFactory.instance.arrayNode(), empty,
+                100L, CoverPeriod.of(LocalDate.of(2027, 1, 15), 365), 365);
+        assertThat(Proposal.draft(broker, PolicyholderSource.BROKER, Instant.now(), EXPIRY).getPolicyholderSource())
+                .isEqualTo(PolicyholderSource.BROKER);
+        Proposal.Draft app = new Proposal.Draft("PR-2027-000004", UUID.randomUUID(), UUID.randomUUID(), "S",
+                UUID.randomUUID(), UUID.randomUUID(), "P", ProductType.MTPL_ONLY, UUID.randomUUID(), UUID.randomUUID(),
+                ProposalChannel.APP, null, null, UUID.randomUUID(), UUID.randomUUID(), empty, "DOC12345", "123456789",
+                empty, empty, empty, List.of(), JsonNodeFactory.instance.arrayNode(), empty, 100L,
+                CoverPeriod.of(LocalDate.of(2027, 1, 15), 365), 365);
+        assertThatThrownBy(() -> Proposal.draft(app, PolicyholderSource.BROKER, Instant.now(), EXPIRY))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @Test
     void policyholderMasks() {
         PolicyholderSnapshot p = new PolicyholderSnapshot("Ana", LocalDate.of(1990, 5, 14), "BI", "*****345A",
