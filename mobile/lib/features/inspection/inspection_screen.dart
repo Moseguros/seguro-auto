@@ -14,7 +14,8 @@ import '../../core/location/location_service.dart';
 import '../../core/network/connectivity.dart';
 import '../../core/widgets/message_banner.dart';
 import '../../l10n/app_localizations.dart';
-import '../onboarding/onboarding_controller.dart' show sharedPreferencesProvider;
+import '../onboarding/onboarding_controller.dart'
+    show sharedPreferencesProvider;
 import '../proposals/proposal_controller.dart';
 import 'guided_camera_screen.dart';
 import 'inspection_repository.dart';
@@ -70,11 +71,13 @@ List<SlotView> slotViews(
     for (final slot in requiredSlots)
       () {
         final local = uploads.where((u) => u.slot == slot).lastOrNull;
-        final remote = (inspection.photos?.toList() ?? const <InspectionPhotoResponse>[])
-            .where((photo) => photo.slot.name == slot)
-            .lastOrNull;
+        final remote =
+            (inspection.photos?.toList() ?? const <InspectionPhotoResponse>[])
+                .where((photo) => photo.slot.name == slot)
+                .lastOrNull;
         final retakeAsked =
-            rejected && (review?.retakeSlots.any((s) => s.name == slot) ?? false);
+            rejected &&
+            (review?.retakeSlots.any((s) => s.name == slot) ?? false);
         final newerLocal =
             local != null &&
             (review == null || local.createdAt.isAfter(review.reviewedAt));
@@ -177,8 +180,7 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
     super.dispose();
   }
 
-  Future<void> _reload() =>
-      ref.read(proposalProvider(_id).notifier).reload();
+  Future<void> _reload() => ref.read(proposalProvider(_id).notifier).reload();
 
   /// Pede a localização uma vez, com a explicação (opcional para o cliente).
   Future<void> _askLocationOnce() async {
@@ -188,7 +190,10 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text(l10n.locationRationale, key: const Key('location-rationale')),
+        content: Text(
+          l10n.locationRationale,
+          key: const Key('location-rationale'),
+        ),
         actions: [
           TextButton(
             key: const Key('location-continue'),
@@ -241,6 +246,52 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
     }
   }
 
+  /// "Retirar" uma fotografia extra já enviada (`removeInspectionPhoto`, com
+  /// confirmação; precisa de rede).
+  Future<void> _removeRemote(InspectionPhotoResponse photo) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(l10n.inspectionRemoveConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            key: const Key('inspection-remove-confirm'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.inspectionRemove),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    String? error;
+    if (!await ref.read(connectivityMonitorProvider).isOnline()) {
+      error = l10n.errorNoConnection;
+    } else {
+      try {
+        await ref
+            .read(proposalRepositoryProvider)
+            .removeInspectionPhoto(_id, photoId: photo.id);
+        await _reload();
+      } on Object catch (e) {
+        final problem = Problem.from(e);
+        error = problem.status == 0
+            ? l10n.errorNoConnection
+            : problem.message(l10n);
+      }
+    }
+    if (error != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(error)));
+    }
+  }
+
   /// Quando a fila envia uma fotografia ou a submissão, a proposta é relida.
   void _watchQueue(
     List<InspectionUpload> uploads,
@@ -275,9 +326,9 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
     ref.listen(proposalProvider(_id), (_, next) {
       final photos = next.value?.inspection.photos;
       if (photos == null) return;
-      ref
-          .read(inspectionRepositoryProvider)
-          .forgetUploaded(_id, {for (final photo in photos) photo.id});
+      ref.read(inspectionRepositoryProvider).forgetUploaded(_id, {
+        for (final photo in photos) photo.id,
+      });
     });
 
     final value = proposal.value;
@@ -327,9 +378,10 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
     final failedSubmission =
         submission != null && submission.status == SubmissionStatus.failed;
     final extrasLocal = uploads.where((u) => u.slot == extraSlot).toList();
-    final extrasRemote = (inspection.photos?.toList() ?? const <InspectionPhotoResponse>[])
-        .where((p) => p.slot == PhotoSlot.EXTRA)
-        .toList();
+    final extrasRemote =
+        (inspection.photos?.toList() ?? const <InspectionPhotoResponse>[])
+            .where((p) => p.slot == PhotoSlot.EXTRA)
+            .toList();
     final maxExtras = inspection.maxExtraPhotos ?? 0;
     final extraCount =
         extrasRemote.length +
@@ -389,9 +441,11 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
           FilledButton.icon(
             key: const Key('inspection-start'),
             style: FilledButton.styleFrom(minimumSize: const Size(64, 48)),
-            onPressed: views.any(
+            onPressed:
+                views.any(
                   (v) =>
-                      v.state == SlotState.toTake || v.state == SlotState.failed,
+                      v.state == SlotState.toTake ||
+                      v.state == SlotState.failed,
                 )
                 ? () => _start(views)
                 : null,
@@ -402,7 +456,10 @@ class _InspectionScreenState extends ConsumerState<InspectionScreen> {
         Text(l10n.inspectionExtras, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
         for (final photo in extrasRemote)
-          _ExtraTile(remote: photo),
+          _ExtraTile(
+            remote: photo,
+            onDiscard: editable ? () => _removeRemote(photo) : null,
+          ),
         for (final upload in extrasLocal.where(
           (u) => u.status != UploadStatus.done,
         ))
@@ -522,7 +579,11 @@ class _SlotTile extends StatelessWidget {
         l10n.inspectionUploaded,
         Colors.green.shade700,
       ),
-      SlotState.failed => (Icons.error_outline, l10n.inspectionFailed, scheme.error),
+      SlotState.failed => (
+        Icons.error_outline,
+        l10n.inspectionFailed,
+        scheme.error,
+      ),
     };
     final failed = view.state == SlotState.failed;
     return Card(
@@ -538,7 +599,11 @@ class _SlotTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  _Thumbnail(local: view.local, remote: view.remote, view: view),
+                  _Thumbnail(
+                    local: view.local,
+                    remote: view.remote,
+                    view: view,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -652,7 +717,10 @@ class _Thumbnail extends ConsumerWidget {
           color: scheme.surfaceContainerHighest,
           child:
               image ??
-              Icon(Icons.directions_car_outlined, color: scheme.onSurfaceVariant),
+              Icon(
+                Icons.directions_car_outlined,
+                color: scheme.onSurfaceVariant,
+              ),
         ),
       ),
     );
@@ -686,9 +754,12 @@ class _ExtraTile extends StatelessWidget {
       ),
       title: Text(l10n.inspectionSlotExtra),
       subtitle: Text(label),
-      trailing: local != null && state != SlotState.uploading
+      trailing: onDiscard != null && state != SlotState.uploading
           ? IconButton(
-              tooltip: l10n.inspectionDiscard,
+              key: Key('extra-${local?.clientPhotoId ?? remote?.id}-remove'),
+              tooltip: local == null
+                  ? l10n.inspectionRemove
+                  : l10n.inspectionDiscard,
               onPressed: onDiscard,
               icon: const Icon(Icons.delete_outline),
             )

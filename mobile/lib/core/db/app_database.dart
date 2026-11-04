@@ -87,6 +87,7 @@ const appDatabaseFileName = 'moseguros.sqlite';
 /// (`<applicationDocumentsDirectory>`). Os testes substituem-na por uma temporária.
 final appFilesDirectoryProvider = FutureProvider<Directory>(
   (ref) => getApplicationDocumentsDirectory(),
+  retry: (_, _) => null,
 );
 
 /// Pastas de `<applicationDocumentsDirectory>` com ficheiros de um utilizador,
@@ -94,8 +95,12 @@ final appFilesDirectoryProvider = FutureProvider<Directory>(
 const userDataFolders = ['inspections'];
 
 /// Apaga os dados locais do utilizador (base e ficheiros). Chamado no logout.
+///
+/// A base abre-se no arranque da app (o executor da fila usa-a); sem ela (testes
+/// só da sessão) não há nada a apagar.
 final localUserDataCleanerProvider = Provider<Future<void> Function()>(
   (ref) => () async {
+    if (!ref.exists(appDatabaseProvider)) return;
     await ref.read(appDatabaseProvider).clearUserData();
     final root = await ref.read(appFilesDirectoryProvider.future);
     for (final folder in userDataFolders) {

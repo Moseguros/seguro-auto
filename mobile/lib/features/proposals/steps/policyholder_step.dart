@@ -39,7 +39,11 @@ class _PolicyholderStepState extends ConsumerState<PolicyholderStep>
 
   Future<void> _pickDate() async {
     final today = todayInMaputo(ref.read(clockProvider)());
-    final last = DateTime(today.year, today.month, today.day + maxStartDaysAhead);
+    final last = DateTime(
+      today.year,
+      today.month,
+      today.day + maxStartDaysAhead,
+    );
     var initial = _currentStart;
     if (initial.isBefore(today)) initial = today;
     if (initial.isAfter(last)) initial = last;
@@ -122,7 +126,10 @@ class _PolicyholderStepState extends ConsumerState<PolicyholderStep>
               key: const Key('proposal-edit-profile'),
               style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
               onPressed: () => context.go(
-                Uri(path: '/profile', queryParameters: {'from': back}).toString(),
+                Uri(
+                  path: '/profile',
+                  queryParameters: {'from': back},
+                ).toString(),
               ),
               child: Text(l10n.proposalEditProfile),
             ),

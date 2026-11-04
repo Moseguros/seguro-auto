@@ -39,24 +39,25 @@ final myKycProvider = FutureProvider.autoDispose<MyKycResponse>(
 /// Seguradora a quem se envia o KYC fora de uma proposta (`/identity`): a da
 /// proposta editável ou em análise mais recente; `null` sem nenhuma (S4-08 §3).
 final kycInsurerProvider = FutureProvider.autoDispose<String?>((ref) async {
-  final proposals = await ref.read(proposalRepositoryProvider).listMine(
-    status: const [
-      ProposalStatus.DRAFT,
-      ProposalStatus.INFO_REQUESTED,
-      ProposalStatus.UNDER_REVIEW,
-    ],
-    size: 1,
-  );
+  final proposals = await ref
+      .read(proposalRepositoryProvider)
+      .listMine(
+        status: const [
+          ProposalStatus.DRAFT,
+          ProposalStatus.INFO_REQUESTED,
+          ProposalStatus.UNDER_REVIEW,
+        ],
+        size: 1,
+      );
   return proposals.firstOrNull?.insurer?.id;
 }, retry: (_, _) => null);
 
 /// Tipo de documento do perfil (`BI`, `PASSPORT`, `DIRE`).
 final kycIdDocTypeProvider = FutureProvider.autoDispose<String?>(
-  (ref) async =>
-      (await ref.read(apiClientProvider).identity.getMyProfile())
-          .data
-          ?.idDocType
-          ?.name,
+  (ref) async => (await ref.read(apiClientProvider).identity.getMyProfile())
+      .data
+      ?.idDocType
+      ?.name,
   retry: (_, _) => null,
 );
 

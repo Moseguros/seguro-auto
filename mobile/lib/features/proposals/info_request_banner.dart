@@ -49,7 +49,9 @@ class InfoRequestBanner extends StatelessWidget {
                 for (final item in request.items)
                   TextButton(
                     key: Key('info-request-${item.name}'),
-                    style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(48, 48),
+                    ),
                     onPressed: () => onOpenStep(stepForInfoItem(item)),
                     child: Text(proposalInfoRequestItem(l10n, item.name)),
                   ),

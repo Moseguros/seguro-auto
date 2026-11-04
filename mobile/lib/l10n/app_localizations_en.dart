@@ -2673,4 +2673,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cameraUnavailableNoGallery => 'Could not open the camera.';
+
+  @override
+  String get inspectionRemove => 'Remove';
+
+  @override
+  String get inspectionRemoveConfirm =>
+      'Remove this photo from the inspection?';
 }

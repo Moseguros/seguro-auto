@@ -815,5 +815,7 @@
   "proposalInfoRequestedTitle": "The insurer asked for more information",
   "logoutPendingUploads": "{n, plural, =1{You have 1 photo waiting to upload. If you log out, you will lose it.} other{You have {n} photos waiting to upload. If you log out, you will lose them.}}",
   "logoutAnyway": "Log out anyway",
-  "cameraUnavailableNoGallery": "Could not open the camera."
+  "cameraUnavailableNoGallery": "Could not open the camera.",
+  "inspectionRemove": "Remove",
+  "inspectionRemoveConfirm": "Remove this photo from the inspection?"
 }

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:moseguros/core/db/app_database.dart';
@@ -82,7 +81,9 @@ void main() {
           200,
           (_) => ProposalFixtures.proposal(version: 3, photos: photos),
         )
-        ..on('POST', '$proposalPath/inspection/photos', 201, (request) {
+        ..on('POST', '$proposalPath/inspection/photos', 201, (
+          RequestOptions request,
+        ) {
           final photo = ProposalFixtures.photoResponse(
             _slot(request)!,
             'remote-${_slot(request)}',
@@ -124,18 +125,22 @@ void main() {
         ),
         findsOneWidget,
       );
-      await scrollToInspection(tester, find.byKey(const Key('inspection-start')));
+      await scrollToInspection(
+        tester,
+        find.byKey(const Key('inspection-start')),
+      );
       await tapVisible(tester, find.byKey(const Key('inspection-start')));
       for (var i = 0; i < 6; i++) {
         await tapVisible(tester, find.byKey(const Key('camera-shutter')));
         await tapVisible(tester, find.byKey(const Key('photo-use')));
         await pumpUntil(
           tester,
-          () => (i < 5
-                  ? find.byKey(const Key('camera-shutter'))
-                  : find.byKey(const Key('inspection-submit')))
-              .evaluate()
-              .isNotEmpty,
+          () =>
+              (i < 5
+                      ? find.byKey(const Key('camera-shutter'))
+                      : find.byKey(const Key('inspection-submit')))
+                  .evaluate()
+                  .isNotEmpty,
         );
       }
       await scrollToInspection(
@@ -193,7 +198,9 @@ void main() {
       network.online = true;
       await pumpUntil(
         tester,
-        () => secondApi.calls('POST', '$proposalPath/inspection/submit').isNotEmpty,
+        () => secondApi
+            .calls('POST', '$proposalPath/inspection/submit')
+            .isNotEmpty,
       );
 
       final order = [
@@ -212,9 +219,9 @@ void main() {
       final rows = await secondDb.select(secondDb.inspectionUploads).get();
       expect(rows.every((r) => r.status == UploadStatus.done), isTrue);
       expect(
-        Directory(p.join(root.path, 'inspections', proposalId))
-            .listSync()
-            .whereType<File>(),
+        Directory(
+          p.join(root.path, 'inspections', proposalId),
+        ).listSync().whereType<File>(),
         isEmpty,
       );
       final submission = await secondDb

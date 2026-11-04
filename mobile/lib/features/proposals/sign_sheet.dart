@@ -171,7 +171,8 @@ class _SignSheetState extends ConsumerState<SignSheet> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final codeLength =
-        ref.watch(otpOptionsProvider).value?.codeLength ?? defaultSignCodeLength;
+        ref.watch(otpOptionsProvider).value?.codeLength ??
+        defaultSignCodeLength;
     final error = _error;
     final channel = channelName(l10n, _request.channel.name);
     return Scaffold(

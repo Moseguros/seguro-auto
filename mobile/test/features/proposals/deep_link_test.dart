@@ -26,18 +26,24 @@ const _anonymous = AsyncData<Session?>(null);
 
 void main() {
   group('deepLinkLocation', () {
-    test('moseguros://proposal/{id}/inspection e moseguros://proposal/{id}', () {
-      expect(deepLinkLocation(Uri.parse(_link)), _inspection);
-      expect(
-        deepLinkLocation(Uri.parse('moseguros://proposal/$proposalId')),
-        '/proposals/$proposalId',
-      );
-      expect(deepLinkLocation(Uri.parse('moseguros://outra/coisa')), '/');
-      expect(deepLinkLocation(Uri.parse('/proposals')), isNull);
-    });
+    test(
+      'moseguros://proposal/{id}/inspection e moseguros://proposal/{id}',
+      () {
+        expect(deepLinkLocation(Uri.parse(_link)), _inspection);
+        expect(
+          deepLinkLocation(Uri.parse('moseguros://proposal/$proposalId')),
+          '/proposals/$proposalId',
+        );
+        expect(deepLinkLocation(Uri.parse('moseguros://outra/coisa')), '/');
+        expect(deepLinkLocation(Uri.parse('/proposals')), isNull);
+      },
+    );
 
     test('safeReturnPath: só caminhos internos', () {
-      expect(safeReturnPath('/proposals/new?quoteId=1'), '/proposals/new?quoteId=1');
+      expect(
+        safeReturnPath('/proposals/new?quoteId=1'),
+        '/proposals/new?quoteId=1',
+      );
       expect(safeReturnPath('https://mal.example/x'), isNull);
       expect(safeReturnPath('//mal.example/x'), isNull);
       expect(safeReturnPath('proposals'), isNull);

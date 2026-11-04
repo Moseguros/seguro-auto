@@ -216,9 +216,7 @@ class _KycFormState extends ConsumerState<KycForm> {
         if (canSend) ...[
           if (required != null) ...[
             Text(
-              required
-                  ? l10n.kycRequiredForAutoAcceptance
-                  : l10n.kycOptional,
+              required ? l10n.kycRequiredForAutoAcceptance : l10n.kycOptional,
               key: const Key('kyc-why'),
               style: theme.textTheme.bodyMedium,
             ),
@@ -309,7 +307,10 @@ class _ShotTile extends StatelessWidget {
                 child: ColoredBox(
                   color: scheme.surfaceContainerHighest,
                   child: photo == null
-                      ? Icon(Icons.badge_outlined, color: scheme.onSurfaceVariant)
+                      ? Icon(
+                          Icons.badge_outlined,
+                          color: scheme.onSurfaceVariant,
+                        )
                       : Image.memory(photo, fit: BoxFit.cover, cacheWidth: 112),
                 ),
               ),

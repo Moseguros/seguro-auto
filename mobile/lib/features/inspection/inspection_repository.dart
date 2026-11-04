@@ -200,11 +200,8 @@ class InspectionRepository {
         .go();
   }
 
-  Future<String> _proposalDirectory(String proposalId) async => p.join(
-    (await _filesDirectory()).path,
-    inspectionsFolder,
-    proposalId,
-  );
+  Future<String> _proposalDirectory(String proposalId) async =>
+      p.join((await _filesDirectory()).path, inspectionsFolder, proposalId);
 
   static Future<void> deleteFile(String path) async {
     try {

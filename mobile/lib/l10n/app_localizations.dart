@@ -4667,6 +4667,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não foi possível abrir a câmara.'**
   String get cameraUnavailableNoGallery;
+
+  /// No description provided for @inspectionRemove.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar'**
+  String get inspectionRemove;
+
+  /// No description provided for @inspectionRemoveConfirm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Retirar esta fotografia da vistoria?'**
+  String get inspectionRemoveConfirm;
 }
 
 class _AppLocalizationsDelegate

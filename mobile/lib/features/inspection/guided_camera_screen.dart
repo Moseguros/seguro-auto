@@ -45,12 +45,18 @@ class GuidedCameraScreen extends ConsumerWidget {
   final String slot;
   final List<String> then;
 
-  Future<void> _use(BuildContext context, WidgetRef ref, Uint8List photo) async {
+  Future<void> _use(
+    BuildContext context,
+    WidgetRef ref,
+    Uint8List photo,
+  ) async {
     final takenAt = ref.read(clockProvider)().toUtc();
     final location = await ref
         .read(locationServiceProvider)
         .current(timeout: const Duration(seconds: 5));
-    final bytes = await ref.read(inspectionImagePreparerProvider).prepare(photo);
+    final bytes = await ref
+        .read(inspectionImagePreparerProvider)
+        .prepare(photo);
     await ref
         .read(inspectionRepositoryProvider)
         .enqueuePhoto(

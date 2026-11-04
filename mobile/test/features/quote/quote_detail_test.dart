@@ -83,7 +83,12 @@ void main() {
   testWidgets('"Adquirir apólice" abre /proposals/new?quoteId=', (
     tester,
   ) async {
-    api.on('POST', '/api/v1/proposals', 409, MockApi.problem(409, 'QUOTE_EXPIRED'));
+    api.on(
+      'POST',
+      '/api/v1/proposals',
+      409,
+      MockApi.problem(409, 'QUOTE_EXPIRED'),
+    );
     final (_, router) = await openQuote(
       tester,
       api,

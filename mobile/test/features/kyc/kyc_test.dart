@@ -12,7 +12,10 @@ Future<void> _capture(WidgetTester tester, String key) async {
   await tester.ensureVisible(find.byKey(Key(key)));
   await tester.pumpAndSettle();
   await tester.tap(
-    find.descendant(of: find.byKey(Key(key)), matching: find.byType(TextButton)),
+    find.descendant(
+      of: find.byKey(Key(key)),
+      matching: find.byType(TextButton),
+    ),
   );
   await settle(tester);
   await tester.tap(find.byKey(const Key('camera-shutter')));
@@ -84,8 +87,7 @@ void main() {
 
   testWidgets('sem rede: errorNoConnection e as imagens ficam', (tester) async {
     final device = FakeDevice();
-    final api = MockApi()
-      ..on('GET', _kycPath, 200, ProposalFixtures.myKyc());
+    final api = MockApi()..on('GET', _kycPath, 200, ProposalFixtures.myKyc());
     await openAt(
       tester,
       api,
@@ -119,7 +121,9 @@ void main() {
 
     expect(find.text('Identidade verificada'), findsOneWidget);
     expect(
-      find.text('A verificação de identidade é pedida quando faz uma proposta.'),
+      find.text(
+        'A verificação de identidade é pedida quando faz uma proposta.',
+      ),
       findsOneWidget,
     );
     expect(find.byKey(const Key('kyc-submit')), findsNothing);

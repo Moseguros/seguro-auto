@@ -2670,4 +2670,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get cameraUnavailableNoGallery => 'Não foi possível abrir a câmara.';
+
+  @override
+  String get inspectionRemove => 'Retirar';
+
+  @override
+  String get inspectionRemoveConfirm => 'Retirar esta fotografia da vistoria?';
 }

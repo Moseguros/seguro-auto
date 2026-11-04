@@ -43,12 +43,16 @@ class _NewProposalScreenState extends ConsumerState<NewProposalScreen> {
   Future<void> _create() async {
     final quoteId = widget.quoteId;
     if (quoteId == null || quoteId.isEmpty) {
-      setState(() => _problem = const Problem(status: 404, code: 'QUOTE_NOT_FOUND'));
+      setState(
+        () => _problem = const Problem(status: 404, code: 'QUOTE_NOT_FOUND'),
+      );
       return;
     }
     setState(() => _problem = null);
     try {
-      final proposal = await ref.read(proposalRepositoryProvider).create(quoteId);
+      final proposal = await ref
+          .read(proposalRepositoryProvider)
+          .create(quoteId);
       ref.invalidate(myProposalsProvider);
       if (mounted) context.pushReplacement('/proposals/${proposal.id}');
     } on Object catch (error) {

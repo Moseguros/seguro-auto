@@ -83,7 +83,9 @@ class ReviewStepState extends ConsumerState<ReviewStep> with ProposalStepState {
         request: request,
       );
       if (outcome == null || !mounted) return;
-      ref.read(proposalProvider(_proposal.id).notifier).replace(outcome.proposal);
+      ref
+          .read(proposalProvider(_proposal.id).notifier)
+          .replace(outcome.proposal);
       final submitError = outcome.submitError;
       if (submitError != null) {
         setState(() => _error = submitError.message(l10n));
@@ -111,13 +113,13 @@ class ReviewStepState extends ConsumerState<ReviewStep> with ProposalStepState {
     final theme = Theme.of(context);
     final proposal = _proposal;
     final missing = missingItems(proposal);
-    final pending =
-        ref.watch(pendingUploadsProvider(proposal.id)).value ?? 0;
+    final pending = ref.watch(pendingUploadsProvider(proposal.id)).value ?? 0;
     final usage = vehicleUsageName(l10n, proposal.vehicle.usage.name);
     final error = _error;
     final documents = [
       for (final document in proposal.product.documents)
-        if (document.type == ProposalProductDocumentTypeEnum.GENERAL_CONDITIONS ||
+        if (document.type ==
+                ProposalProductDocumentTypeEnum.GENERAL_CONDITIONS ||
             document.type == ProposalProductDocumentTypeEnum.PRE_CONTRACT_INFO)
           document,
     ];
@@ -128,7 +130,10 @@ class ReviewStepState extends ConsumerState<ReviewStep> with ProposalStepState {
         ProposalSummaryCard(proposal: proposal, detailed: true),
         const SizedBox(height: 16),
         if (proposal.declarations case final declarations?) ...[
-          Text(l10n.proposalDeclarationsAnswers, style: theme.textTheme.titleSmall),
+          Text(
+            l10n.proposalDeclarationsAnswers,
+            style: theme.textTheme.titleSmall,
+          ),
           for (final answer in declarations.answers)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
@@ -141,7 +146,10 @@ class ReviewStepState extends ConsumerState<ReviewStep> with ProposalStepState {
           const SizedBox(height: 16),
         ],
         if (proposal.suitability case final suitability?) ...[
-          Text(l10n.proposalSuitabilityAnswers, style: theme.textTheme.titleSmall),
+          Text(
+            l10n.proposalSuitabilityAnswers,
+            style: theme.textTheme.titleSmall,
+          ),
           for (final answer in suitability.answers)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
@@ -165,7 +173,8 @@ class ReviewStepState extends ConsumerState<ReviewStep> with ProposalStepState {
                         ProposalProductDocumentTypeEnum.GENERAL_CONDITIONS
                     ? l10n.quoteGeneralConditions
                     : l10n.quotePreContractInfo,
-                name: document.type ==
+                name:
+                    document.type ==
                         ProposalProductDocumentTypeEnum.GENERAL_CONDITIONS
                     ? 'condicoes-gerais'
                     : 'informacao-pre-contratual',

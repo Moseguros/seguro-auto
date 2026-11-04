@@ -30,17 +30,20 @@ String suitabilityQuestion(AppLocalizations l10n, String code) =>
 
 /// Texto de uma resposta (as de `SUIT_NEED` são próprias; as outras são
 /// Sim/Não/Não sei).
-String suitabilityAnswer(AppLocalizations l10n, String question, String option) =>
-    switch ((question, option)) {
-      ('SUIT_NEED', 'MANDATORY_ONLY') => l10n.suitabilityNeedOptionMandatoryOnly,
-      ('SUIT_NEED', 'OWN_DAMAGE') => l10n.suitabilityNeedOptionOwnDamage,
-      ('SUIT_NEED', 'FULL') => l10n.suitabilityNeedOptionFull,
-      ('SUIT_NEED', 'UNSURE') => l10n.suitabilityNeedOptionUnsure,
-      (_, 'YES') => l10n.suitabilityAnswerYes,
-      (_, 'NO') => l10n.suitabilityAnswerNo,
-      (_, 'UNSURE') => l10n.suitabilityAnswerUnsure,
-      _ => option,
-    };
+String suitabilityAnswer(
+  AppLocalizations l10n,
+  String question,
+  String option,
+) => switch ((question, option)) {
+  ('SUIT_NEED', 'MANDATORY_ONLY') => l10n.suitabilityNeedOptionMandatoryOnly,
+  ('SUIT_NEED', 'OWN_DAMAGE') => l10n.suitabilityNeedOptionOwnDamage,
+  ('SUIT_NEED', 'FULL') => l10n.suitabilityNeedOptionFull,
+  ('SUIT_NEED', 'UNSURE') => l10n.suitabilityNeedOptionUnsure,
+  (_, 'YES') => l10n.suitabilityAnswerYes,
+  (_, 'NO') => l10n.suitabilityAnswerNo,
+  (_, 'UNSURE') => l10n.suitabilityAnswerUnsure,
+  _ => option,
+};
 
 /// Aviso de um motivo de inadequação.
 String suitabilityReasonText(AppLocalizations l10n, SuitabilityReason reason) =>
@@ -49,7 +52,8 @@ String suitabilityReasonText(AppLocalizations l10n, SuitabilityReason reason) =>
         l10n.suitabilityReasonNeedNotCoveredOwnDamage,
       SuitabilityReason.NEED_NOT_COVERED_THEFT_FIRE =>
         l10n.suitabilityReasonNeedNotCoveredTheftFire,
-      SuitabilityReason.COVER_ABOVE_NEED => l10n.suitabilityReasonCoverAboveNeed,
+      SuitabilityReason.COVER_ABOVE_NEED =>
+        l10n.suitabilityReasonCoverAboveNeed,
       SuitabilityReason.NEED_UNSURE => l10n.suitabilityReasonNeedUnsure,
       SuitabilityReason.FINANCED_WITHOUT_OWN_DAMAGE =>
         l10n.suitabilityReasonFinancedWithoutOwnDamage,
@@ -133,7 +137,9 @@ class _SuitabilityStepState extends ConsumerState<SuitabilityStep>
       );
       if (problem != null) {
         if (mounted) {
-          setState(() => _error = problem.message(AppLocalizations.of(context)));
+          setState(
+            () => _error = problem.message(AppLocalizations.of(context)),
+          );
         }
         return false;
       }
@@ -168,9 +174,7 @@ class _SuitabilityStepState extends ConsumerState<SuitabilityStep>
     final saved = _saved;
     final error = _error;
     final showWarnings =
-        saved != null &&
-        saved.result == SuitabilityResult.WARNED &&
-        !_changed;
+        saved != null && saved.result == SuitabilityResult.WARNED && !_changed;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -224,7 +228,10 @@ class _SuitabilityStepState extends ConsumerState<SuitabilityStep>
               key: const Key('suitability-acknowledge'),
               style: FilledButton.styleFrom(minimumSize: const Size(64, 48)),
               onPressed: _busy ? null : _acknowledge,
-              child: Text(l10n.suitabilityAcknowledge, textAlign: TextAlign.center),
+              child: Text(
+                l10n.suitabilityAcknowledge,
+                textAlign: TextAlign.center,
+              ),
             ),
             const SizedBox(height: 8),
             OutlinedButton(

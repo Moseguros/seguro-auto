@@ -190,10 +190,10 @@ void main() {
       (body['answers'] as List).map((a) => (a as Map)['answer']),
       everyElement(isFalse),
     );
-    expect(
-      (body['answers'] as List).first,
-      {'questionCode': 'CLAIMS_LAST_3_YEARS', 'answer': false},
-    );
+    expect((body['answers'] as List).first, {
+      'questionCode': 'CLAIMS_LAST_3_YEARS',
+      'answer': false,
+    });
     expect(find.text('Passo 3 de 6 · Adequação'), findsOneWidget);
   });
 

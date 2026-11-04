@@ -146,7 +146,9 @@ class _DeclarationsStepState extends ConsumerState<DeclarationsStep>
     final l10n = AppLocalizations.of(context);
     final fieldErrors = <String, String>{};
     for (final error in problem.errors) {
-      final match = RegExp(r'^answers\[(\d+)\]\.(\w+)$').firstMatch(error.field);
+      final match = RegExp(
+        r'^answers\[(\d+)\]\.(\w+)$',
+      ).firstMatch(error.field);
       if (match == null) continue;
       final index = int.parse(match.group(1)!);
       if (index >= declarationCodes.length) continue;

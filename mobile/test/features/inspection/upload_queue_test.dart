@@ -69,8 +69,9 @@ void main() {
 
   test('as respostas simuladas desserializam no cliente gerado', () async {
     api.on('GET', proposalPath, 200, ProposalFixtures.proposal());
-    final proposal = (await api.client.proposal.getProposal(id: proposalId))
-        .data!;
+    final proposal = (await api.client.proposal.getProposal(
+      id: proposalId,
+    )).data!;
     expect(proposal.inspection.required_, isTrue);
     expect(proposal.inspection.missingSlots, hasLength(6));
   });
@@ -99,48 +100,46 @@ void main() {
     expect(_field(request, 'source'), 'CAMERA');
   });
 
-  test('503: volta a QUEUED com +30 s e depois +1 min; o mesmo clientPhotoId',
-      () async {
-    final upload = await enqueue('REAR');
-    api.on('POST', _photosPath, 503, MockApi.problem(503, 'INTERNAL_ERROR'));
+  test(
+    '503: volta a QUEUED com +30 s e depois +1 min; o mesmo clientPhotoId',
+    () async {
+      final upload = await enqueue('REAR');
+      api.on('POST', _photosPath, 503, MockApi.problem(503, 'INTERNAL_ERROR'));
 
-    await queue.runOnce();
-    var saved = await row(upload.clientPhotoId);
-    expect(saved.status, UploadStatus.queued);
-    expect(saved.attempts, 1);
-    expect(
-      saved.nextAttemptAt.toUtc(),
-      now.add(const Duration(seconds: 30)),
-    );
+      await queue.runOnce();
+      var saved = await row(upload.clientPhotoId);
+      expect(saved.status, UploadStatus.queued);
+      expect(saved.attempts, 1);
+      expect(saved.nextAttemptAt.toUtc(), now.add(const Duration(seconds: 30)));
 
-    // Antes da hora não tenta.
-    await queue.runOnce();
-    expect(api.calls('POST', _photosPath), hasLength(1));
+      // Antes da hora não tenta.
+      await queue.runOnce();
+      expect(api.calls('POST', _photosPath), hasLength(1));
 
-    now = now.add(const Duration(seconds: 30));
-    await queue.runOnce();
-    saved = await row(upload.clientPhotoId);
-    expect(saved.attempts, 2);
-    expect(saved.nextAttemptAt.toUtc(), now.add(const Duration(minutes: 1)));
+      now = now.add(const Duration(seconds: 30));
+      await queue.runOnce();
+      saved = await row(upload.clientPhotoId);
+      expect(saved.attempts, 2);
+      expect(saved.nextAttemptAt.toUtc(), now.add(const Duration(minutes: 1)));
 
-    // Repetir o envio leva o mesmo clientPhotoId (idempotência do S4-03).
-    now = now.add(const Duration(minutes: 1));
-    api.on(
-      'POST',
-      _photosPath,
-      200,
-      ProposalFixtures.photoResponse('REAR', 'remote-2'),
-    );
-    await queue.runOnce();
-    saved = await row(upload.clientPhotoId);
-    expect(saved.status, UploadStatus.done);
-    final sent = api.calls('POST', _photosPath);
-    expect(sent, hasLength(3));
-    expect(
-      sent.map((r) => _field(r, 'clientPhotoId')).toSet(),
-      {upload.clientPhotoId},
-    );
-  });
+      // Repetir o envio leva o mesmo clientPhotoId (idempotência do S4-03).
+      now = now.add(const Duration(minutes: 1));
+      api.on(
+        'POST',
+        _photosPath,
+        200,
+        ProposalFixtures.photoResponse('REAR', 'remote-2'),
+      );
+      await queue.runOnce();
+      saved = await row(upload.clientPhotoId);
+      expect(saved.status, UploadStatus.done);
+      final sent = api.calls('POST', _photosPath);
+      expect(sent, hasLength(3));
+      expect(sent.map((r) => _field(r, 'clientPhotoId')).toSet(), {
+        upload.clientPhotoId,
+      });
+    },
+  );
 
   test('espera: 30 s, 1, 2, 5, 10 e depois 15 min', () {
     expect(
@@ -261,12 +260,11 @@ void main() {
       final result = await queue.runOnce();
 
       expect(result.submitted, 1);
-      final order = [
-        for (final r in api.requests) '${r.method} ${r.path}',
-      ];
-      expect(order.indexOf('GET $proposalPath'), greaterThan(
-        order.lastIndexOf('POST $_photosPath'),
-      ));
+      final order = [for (final r in api.requests) '${r.method} ${r.path}'];
+      expect(
+        order.indexOf('GET $proposalPath'),
+        greaterThan(order.lastIndexOf('POST $_photosPath')),
+      );
       final submit = api.calls('POST', _submitPath).single;
       expect(submit.data, {'odometerKm': 84500, 'version': 7});
       final submission = await (db.select(
@@ -303,21 +301,23 @@ void main() {
     expect(submission.lastErrorCode, 'INSPECTION_PHOTOS_MISSING');
   });
 
-  test('uma fotografia nova do mesmo ângulo substitui a que está na fila',
-      () async {
-    final first = await enqueue('FRONT');
-    final second = await enqueue('FRONT');
-    await enqueue('EXTRA');
-    await enqueue('EXTRA');
+  test(
+    'uma fotografia nova do mesmo ângulo substitui a que está na fila',
+    () async {
+      final first = await enqueue('FRONT');
+      final second = await enqueue('FRONT');
+      await enqueue('EXTRA');
+      await enqueue('EXTRA');
 
-    final rows = await db.select(db.inspectionUploads).get();
-    expect(
-      rows.map((r) => r.clientPhotoId),
-      containsAll([second.clientPhotoId]),
-    );
-    expect(rows.where((r) => r.slot == 'FRONT'), hasLength(1));
-    expect(rows.where((r) => r.slot == 'EXTRA'), hasLength(2));
-    expect(File(first.filePath).existsSync(), isFalse);
-    expect(await repository.pendingCount(proposalId: proposalId), 3);
-  });
+      final rows = await db.select(db.inspectionUploads).get();
+      expect(
+        rows.map((r) => r.clientPhotoId),
+        containsAll([second.clientPhotoId]),
+      );
+      expect(rows.where((r) => r.slot == 'FRONT'), hasLength(1));
+      expect(rows.where((r) => r.slot == 'EXTRA'), hasLength(2));
+      expect(File(first.filePath).existsSync(), isFalse);
+      expect(await repository.pendingCount(proposalId: proposalId), 3);
+    },
+  );
 }

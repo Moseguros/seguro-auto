@@ -125,7 +125,9 @@ void main() {
           server.suitability = 'DONE';
           return server.bump();
         })
-        ..on('POST', '$proposalPath/inspection/photos', 201, (request) {
+        ..on('POST', '$proposalPath/inspection/photos', 201, (
+          RequestOptions request,
+        ) {
           final slot = _field(request, 'slot')!;
           final photo = ProposalFixtures.photoResponse(slot, 'remote-$slot');
           server.photos.add(photo);
@@ -169,10 +171,10 @@ void main() {
       );
       await tapVisible(tester, find.text('Adquirir apólice'));
       await pumpUntilFound(tester, find.byType(ProposalWizard));
-      expect(
-        api.calls('POST', '/api/v1/proposals').single.data,
-        {'quoteId': quoteDemoId, 'channel': 'APP'},
-      );
+      expect(api.calls('POST', '/api/v1/proposals').single.data, {
+        'quoteId': quoteDemoId,
+        'channel': 'APP',
+      });
       expect(find.text('Passo 2 de 6 · Declarações'), findsOneWidget);
 
       // Declarações: todas "Não" e a veracidade.
@@ -185,7 +187,10 @@ void main() {
       ]) {
         await tapInStep(tester, find.byKey(Key('declaration-$code-no')));
       }
-      await tapInStep(tester, find.byKey(const Key('declaration-truthfulness')));
+      await tapInStep(
+        tester,
+        find.byKey(const Key('declaration-truthfulness')),
+      );
       await tapVisible(tester, find.byKey(const Key('proposal-continue')));
 
       // Adequação sem avisos.
@@ -207,7 +212,10 @@ void main() {
       // Vistoria com a câmara falsa: os 6 ângulos seguidos.
       await pumpUntilFound(tester, find.text('Passo 4 de 6 · Vistoria'));
       await tapVisible(tester, find.byKey(const Key('inspection-step-open')));
-      await scrollToInspection(tester, find.byKey(const Key('inspection-start')));
+      await scrollToInspection(
+        tester,
+        find.byKey(const Key('inspection-start')),
+      );
       await tapVisible(tester, find.byKey(const Key('inspection-start')));
       for (var i = 0; i < 6; i++) {
         await tapVisible(tester, find.byKey(const Key('camera-shutter')));
@@ -233,7 +241,10 @@ void main() {
       for (var i = 0; i < 100 && server.inspection != 'DONE'; i++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
-      expect(api.calls('POST', '$proposalPath/inspection/photos'), hasLength(6));
+      expect(
+        api.calls('POST', '$proposalPath/inspection/photos'),
+        hasLength(6),
+      );
       expect(
         api.calls('POST', '$proposalPath/inspection/submit').single.data,
         containsPair('odometerKm', 84500),

@@ -211,7 +211,8 @@ abstract final class ProposalFixtures {
       'declarations': checklistDeclarations,
       'suitability': checklistSuitability,
       'inspection':
-          checklistInspection ?? (inspectionRequired ? 'MISSING' : 'NOT_REQUIRED'),
+          checklistInspection ??
+          (inspectionRequired ? 'MISSING' : 'NOT_REQUIRED'),
       'signature': checklistSignature,
     },
     'inspection': inspectionRequired
@@ -384,8 +385,9 @@ class FakeLocation implements LocationService {
   }
 
   @override
-  Future<GeoPoint?> current({Duration timeout = const Duration(seconds: 5)}) async =>
-      point;
+  Future<GeoPoint?> current({
+    Duration timeout = const Duration(seconds: 5),
+  }) async => point;
 }
 
 /// Pasta temporária para os ficheiros da fila.

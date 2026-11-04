@@ -67,7 +67,9 @@ class ProposalScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          value == null ? l10n.proposalsTitle : l10n.proposalTitle(value.number),
+          value == null
+              ? l10n.proposalsTitle
+              : l10n.proposalTitle(value.number),
         ),
       ),
       body: SafeArea(child: body),
@@ -154,7 +156,9 @@ class _ProposalWizardState extends ConsumerState<ProposalWizard> {
       if (problem.code == 'CONCURRENT_MODIFICATION') {
         messenger
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(l10n.proposalChangedElsewhere)));
+          ..showSnackBar(
+            SnackBar(content: Text(l10n.proposalChangedElsewhere)),
+          );
         await _reload();
       } else if (problem.code == 'PROPOSAL_NOT_EDITABLE') {
         // O ecrã passa ao estado.
@@ -221,7 +225,11 @@ class _ProposalWizardState extends ConsumerState<ProposalWizard> {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              l10n.proposalStepOf(index + 1, steps.length, stepName(l10n, _step)),
+              l10n.proposalStepOf(
+                index + 1,
+                steps.length,
+                stepName(l10n, _step),
+              ),
               key: const Key('proposal-step-of'),
               style: theme.textTheme.bodySmall,
               maxLines: 1,
@@ -243,7 +251,10 @@ class _ProposalWizardState extends ConsumerState<ProposalWizard> {
             if (infoRequest != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: InfoRequestBanner(request: infoRequest, onOpenStep: _goTo),
+                child: InfoRequestBanner(
+                  request: infoRequest,
+                  onOpenStep: _goTo,
+                ),
               ),
             Expanded(
               child: PageView(

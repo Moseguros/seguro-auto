@@ -17,7 +17,10 @@ const activeProposalStatuses = [
 /// Código de uma pergunta como na API (`SUIT_NEED`, `CLAIMS_LAST_3_YEARS`): o
 /// nome Dart dos enums gerados nem sempre é o da API (ex.: `SuitabilityQuestion.NEED`).
 String wireName(Object question) =>
-    apiSerializers.serialize(question, specifiedType: FullType(question.runtimeType))
+    apiSerializers.serialize(
+          question,
+          specifiedType: FullType(question.runtimeType),
+        )
         as String;
 
 /// Estados em que o cliente ainda altera a proposta.
@@ -47,15 +50,14 @@ class ProposalRepository {
 
   ProposalApi get _proposal => _api.proposal;
 
-  Future<ProposalResponse> create(String quoteId) async => (await _proposal
-          .createProposal(
-            createProposalRequest: CreateProposalRequest(
-              (b) => b
-                ..quoteId = quoteId
-                ..channel = ProposalChannel.APP,
-            ),
-          ))
-      .data!;
+  Future<ProposalResponse> create(String quoteId) async =>
+      (await _proposal.createProposal(
+        createProposalRequest: CreateProposalRequest(
+          (b) => b
+            ..quoteId = quoteId
+            ..channel = ProposalChannel.APP,
+        ),
+      )).data!;
 
   Future<ProposalResponse> get(String id) async =>
       (await _proposal.getProposal(id: id)).data!;
@@ -152,6 +154,10 @@ class ProposalRepository {
         ..version = version,
     ),
   )).data!;
+
+  /// Retira uma fotografia já enviada (extras; S4-03).
+  Future<void> removeInspectionPhoto(String id, {required String photoId}) =>
+      _proposal.removeInspectionPhoto(id: id, photoId: photoId);
 
   Future<SignatureRequestResponse> requestSignature(
     String id, {

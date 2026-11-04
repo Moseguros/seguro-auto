@@ -97,23 +97,33 @@ class InspectionUploadQueue {
 
   /// Há trabalho por fazer (fotografias ou submissões por enviar).
   Future<bool> hasWork() async {
-    final photo = await (db.select(_uploads)
-          ..where((t) => t.status.isIn([UploadStatus.queued, UploadStatus.uploading]))
-          ..limit(1))
-        .getSingleOrNull();
+    final photo =
+        await (db.select(_uploads)
+              ..where(
+                (t) => t.status.isIn([
+                  UploadStatus.queued,
+                  UploadStatus.uploading,
+                ]),
+              )
+              ..limit(1))
+            .getSingleOrNull();
     if (photo != null) return true;
-    final submission = await (db.select(_submissions)
-          ..where((t) => t.status.equals(SubmissionStatus.queued))
-          ..limit(1))
-        .getSingleOrNull();
+    final submission =
+        await (db.select(_submissions)
+              ..where((t) => t.status.equals(SubmissionStatus.queued))
+              ..limit(1))
+            .getSingleOrNull();
     return submission != null;
   }
 
   /// Uma passagem interrompida (app fechada a meio de um envio) deixa linhas em
   /// `UPLOADING`: voltam para a fila. Só corre uma passagem de cada vez.
   Future<void> _recoverInterrupted() =>
-      (db.update(_uploads)..where((t) => t.status.equals(UploadStatus.uploading)))
-          .write(const InspectionUploadsCompanion(status: Value(UploadStatus.queued)));
+      (db.update(
+        _uploads,
+      )..where((t) => t.status.equals(UploadStatus.uploading))).write(
+        const InspectionUploadsCompanion(status: Value(UploadStatus.queued)),
+      );
 
   /// §5a: fotografias com mais de 7 dias ficam `FAILED` (`PHOTO_TOO_OLD`) sem envio.
   Future<void> _expireOldPhotos(QueueRunResult result) async {
@@ -172,9 +182,11 @@ class InspectionUploadQueue {
       await _setUpload(row.clientPhotoId, failedWith: localFileMissing);
       return _Outcome.failed;
     }
-    await (db.update(_uploads)
-          ..where((t) => t.clientPhotoId.equals(row.clientPhotoId)))
-        .write(const InspectionUploadsCompanion(status: Value(UploadStatus.uploading)));
+    await (db.update(
+      _uploads,
+    )..where((t) => t.clientPhotoId.equals(row.clientPhotoId))).write(
+      const InspectionUploadsCompanion(status: Value(UploadStatus.uploading)),
+    );
     try {
       final response = await _api().uploadInspectionPhoto(
         id: row.proposalId,
@@ -192,38 +204,40 @@ class InspectionUploadQueue {
         latitude: row.latitude,
         longitude: row.longitude,
       );
-      await (db.update(_uploads)
-            ..where((t) => t.clientPhotoId.equals(row.clientPhotoId)))
-          .write(
-            InspectionUploadsCompanion(
-              status: const Value(UploadStatus.done),
-              remotePhotoId: Value(response.data?.id),
-              lastErrorCode: const Value(null),
-            ),
-          );
+      await (db.update(
+        _uploads,
+      )..where((t) => t.clientPhotoId.equals(row.clientPhotoId))).write(
+        InspectionUploadsCompanion(
+          status: const Value(UploadStatus.done),
+          remotePhotoId: Value(response.data?.id),
+          lastErrorCode: const Value(null),
+        ),
+      );
       await InspectionRepository.deleteFile(row.filePath);
       return _Outcome.done;
     } on Object catch (error) {
       final problem = Problem.from(error);
       if (problem.status == 401) {
         // O AuthInterceptor já tentou renovar: a sessão terminou.
-        await (db.update(_uploads)
-              ..where((t) => t.clientPhotoId.equals(row.clientPhotoId)))
-            .write(const InspectionUploadsCompanion(status: Value(UploadStatus.queued)));
+        await (db.update(
+          _uploads,
+        )..where((t) => t.clientPhotoId.equals(row.clientPhotoId))).write(
+          const InspectionUploadsCompanion(status: Value(UploadStatus.queued)),
+        );
         return _Outcome.sessionEnded;
       }
       if (isTransient(problem) || error is! DioException) {
         final attempts = row.attempts + 1;
-        await (db.update(_uploads)
-              ..where((t) => t.clientPhotoId.equals(row.clientPhotoId)))
-            .write(
-              InspectionUploadsCompanion(
-                status: const Value(UploadStatus.queued),
-                attempts: Value(attempts),
-                nextAttemptAt: Value(_utcNow.add(retryDelay(attempts))),
-                lastErrorCode: Value(problem.code),
-              ),
-            );
+        await (db.update(
+          _uploads,
+        )..where((t) => t.clientPhotoId.equals(row.clientPhotoId))).write(
+          InspectionUploadsCompanion(
+            status: const Value(UploadStatus.queued),
+            attempts: Value(attempts),
+            nextAttemptAt: Value(_utcNow.add(retryDelay(attempts))),
+            lastErrorCode: Value(problem.code),
+          ),
+        );
         return _Outcome.retry;
       }
       await _setUpload(row.clientPhotoId, failedWith: _fieldOrTopCode(problem));
@@ -232,13 +246,14 @@ class InspectionUploadQueue {
   }
 
   Future<void> _setUpload(String clientPhotoId, {required String failedWith}) =>
-      (db.update(_uploads)..where((t) => t.clientPhotoId.equals(clientPhotoId)))
-          .write(
-            InspectionUploadsCompanion(
-              status: const Value(UploadStatus.failed),
-              lastErrorCode: Value(failedWith),
-            ),
-          );
+      (db.update(
+        _uploads,
+      )..where((t) => t.clientPhotoId.equals(clientPhotoId))).write(
+        InspectionUploadsCompanion(
+          status: const Value(UploadStatus.failed),
+          lastErrorCode: Value(failedWith),
+        ),
+      );
 
   /// Num 400, o código útil está no primeiro erro de campo (ex.: `PHOTO_TOO_OLD`).
   static String _fieldOrTopCode(Problem problem) =>
@@ -286,13 +301,17 @@ class InspectionUploadQueue {
       ..where((t) => t.proposalId.equals(submission.proposalId));
     try {
       // O `version` actual da proposta, lido antes do envio.
-      final proposal = (await _api().getProposal(id: submission.proposalId)).data!;
+      final proposal = (await _api().getProposal(
+        id: submission.proposalId,
+      )).data!;
       final status = proposal.inspection.status;
       if (status == InspectionStatus.SUBMITTED ||
           status == InspectionStatus.APPROVED) {
         // Um envio anterior chegou ao servidor, mas a resposta perdeu-se.
         await where.write(
-          const InspectionSubmissionsCompanion(status: Value(SubmissionStatus.done)),
+          const InspectionSubmissionsCompanion(
+            status: Value(SubmissionStatus.done),
+          ),
         );
         return _Outcome.done;
       }

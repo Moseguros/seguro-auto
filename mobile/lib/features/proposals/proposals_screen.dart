@@ -34,7 +34,9 @@ class _ProposalsScreenState extends ConsumerState<ProposalsScreen> {
     Widget body;
     if (value != null) {
       final shown = _activeOnly
-          ? value.where((p) => activeProposalStatuses.contains(p.status)).toList()
+          ? value
+                .where((p) => activeProposalStatuses.contains(p.status))
+                .toList()
           : value;
       body = ListView(
         padding: const EdgeInsets.all(16),
@@ -42,7 +44,10 @@ class _ProposalsScreenState extends ConsumerState<ProposalsScreen> {
           SegmentedButton<bool>(
             key: const Key('proposals-filter'),
             segments: [
-              ButtonSegment(value: true, label: Text(l10n.proposalsFilterActive)),
+              ButtonSegment(
+                value: true,
+                label: Text(l10n.proposalsFilterActive),
+              ),
               ButtonSegment(value: false, label: Text(l10n.proposalsFilterAll)),
             ],
             selected: {_activeOnly},
@@ -115,16 +120,20 @@ class ProposalCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(proposal.number, style: theme.textTheme.titleSmall),
+                  child: Text(
+                    proposal.number,
+                    style: theme.textTheme.titleSmall,
+                  ),
                 ),
                 ProposalStatusChip(status: proposal.status),
               ],
             ),
             const SizedBox(height: 4),
             Text(
-              [proposal.insurer?.displayName, proposal.productName]
-                  .whereType<String>()
-                  .join(' · '),
+              [
+                proposal.insurer?.displayName,
+                proposal.productName,
+              ].whereType<String>().join(' · '),
               style: muted,
             ),
             Text(
@@ -143,7 +152,9 @@ class ProposalCard extends StatelessWidget {
                 key: Key('proposal-${proposal.id}-open'),
                 style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: () => context.push('/proposals/${proposal.id}'),
-                child: Text(editable ? l10n.proposalContinue : l10n.proposalView),
+                child: Text(
+                  editable ? l10n.proposalContinue : l10n.proposalView,
+                ),
               ),
             ),
           ],

@@ -1245,5 +1245,7 @@
     }
   },
   "logoutAnyway": "Terminar na mesma",
-  "cameraUnavailableNoGallery": "Não foi possível abrir a câmara."
+  "cameraUnavailableNoGallery": "Não foi possível abrir a câmara.",
+  "inspectionRemove": "Retirar",
+  "inspectionRemoveConfirm": "Retirar esta fotografia da vistoria?"
 }

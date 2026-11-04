@@ -50,12 +50,10 @@ void main() {
         200,
         ProposalFixtures.signatureRequest(),
       )
-      ..on(
-        'POST',
-        '$proposalPath/sign/confirm',
-        200,
-        {..._ready(version: 6), 'signature': ProposalFixtures.signature()},
-      )
+      ..on('POST', '$proposalPath/sign/confirm', 200, {
+        ..._ready(version: 6),
+        'signature': ProposalFixtures.signature(),
+      })
       ..on('POST', '$proposalPath/submit', 200, {
         ..._ready(version: 7),
         'status': 'UNDER_REVIEW',
@@ -75,10 +73,10 @@ void main() {
     await tester.tap(sign);
     await settle(tester);
 
-    expect(
-      api.calls('POST', '$proposalPath/sign/request').single.data,
-      {'version': 5, 'documentsAcknowledged': true},
-    );
+    expect(api.calls('POST', '$proposalPath/sign/request').single.data, {
+      'version': 5,
+      'documentsAcknowledged': true,
+    });
     expect(
       find.text('Enviámos um código por SMS para +258*****4567.'),
       findsOneWidget,
@@ -158,8 +156,7 @@ void main() {
     final db = AppDatabase.memory();
     addTearDown(db.close);
     await _insertQueued(db);
-    final api = MockApi()
-      ..on('POST', '/api/v1/auth/logout', 204);
+    final api = MockApi()..on('POST', '/api/v1/auth/logout', 204);
     await openAt(
       tester,
       api,

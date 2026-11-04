@@ -34,8 +34,8 @@ Future<void> _insert(
 
 Finder _state(String slot) => find.byKey(Key('slot-$slot-state'));
 
-Future<void> _scrollTo(WidgetTester tester, Finder finder) => tester
-    .scrollUntilVisible(
+Future<void> _scrollTo(WidgetTester tester, Finder finder) =>
+    tester.scrollUntilVisible(
       finder,
       200,
       scrollable: find
@@ -222,7 +222,8 @@ void main() {
       // O ficheiro da fila é escrito com I/O real.
       await pumpUntil(
         tester,
-        () => find.byKey(const Key('camera-shutter')).evaluate().isEmpty &&
+        () =>
+            find.byKey(const Key('camera-shutter')).evaluate().isEmpty &&
             find.byKey(const Key('photo-use')).evaluate().isEmpty,
       );
 
@@ -260,7 +261,9 @@ void main() {
     await settle(tester);
 
     expect(
-      find.text('Para fazer a vistoria, a MoSeguros precisa de acesso à câmara.'),
+      find.text(
+        'Para fazer a vistoria, a MoSeguros precisa de acesso à câmara.',
+      ),
       findsOneWidget,
     );
     await tester.tap(find.byKey(const Key('camera-open-settings')));
@@ -293,6 +296,32 @@ void main() {
     );
     expect(tester.widget<Text>(_state('FRONT')).data, 'Tirar de novo');
     expect(tester.widget<Text>(_state('REAR')).data, 'Enviada');
+  });
+
+  testWidgets('"Retirar" uma fotografia extra já enviada', (tester) async {
+    final api = MockApi()
+      ..on(
+        'GET',
+        proposalPath,
+        200,
+        ProposalFixtures.proposal(
+          photos: [ProposalFixtures.photo('EXTRA', id: 'extra-1')],
+        ),
+      )
+      ..on('DELETE', '$proposalPath/inspection/photos/extra-1', 204);
+    await openAt(tester, api, _inspectionPath, database: db);
+    final remove = find.byKey(const Key('extra-extra-1-remove'));
+    await _scrollTo(tester, remove);
+    await tester.tap(remove);
+    await settle(tester);
+    await tester.tap(find.byKey(const Key('inspection-remove-confirm')));
+    await settle(tester);
+
+    expect(
+      api.calls('DELETE', '$proposalPath/inspection/photos/extra-1'),
+      hasLength(1),
+    );
+    expect(api.calls('GET', proposalPath), hasLength(2));
   });
 
   test('slotViews e canSubmitInspection', () {

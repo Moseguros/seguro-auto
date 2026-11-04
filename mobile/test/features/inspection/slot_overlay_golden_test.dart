@@ -53,12 +53,28 @@ void main() {
   });
 
   test('moldura por ângulo (fracções da largura)', () {
-    expect(slotFrame('FRONT'), (width: 0.86, height: 0.48, shape: FrameShape.rect));
+    expect(slotFrame('FRONT'), (
+      width: 0.86,
+      height: 0.48,
+      shape: FrameShape.rect,
+    ));
     expect(slotFrame('REAR'), slotFrame('FRONT'));
-    expect(slotFrame('LEFT'), (width: 0.94, height: 0.36, shape: FrameShape.rect));
+    expect(slotFrame('LEFT'), (
+      width: 0.94,
+      height: 0.36,
+      shape: FrameShape.rect,
+    ));
     expect(slotFrame('RIGHT'), slotFrame('LEFT'));
-    expect(slotFrame('ODOMETER'), (width: 0.70, height: 0.30, shape: FrameShape.rect));
-    expect(slotFrame('CHASSIS'), (width: 0.90, height: 0.14, shape: FrameShape.rect));
+    expect(slotFrame('ODOMETER'), (
+      width: 0.70,
+      height: 0.30,
+      shape: FrameShape.rect,
+    ));
+    expect(slotFrame('CHASSIS'), (
+      width: 0.90,
+      height: 0.14,
+      shape: FrameShape.rect,
+    ));
     expect(slotFrame('EXTRA'), isNull);
     final rect = frameRect(slotFrame('FRONT')!, const Size(360, 640));
     expect(rect.width, closeTo(309.6, 1e-9));

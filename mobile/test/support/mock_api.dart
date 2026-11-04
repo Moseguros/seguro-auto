@@ -251,9 +251,7 @@ Future<ProviderContainer> pumpMoSeguros(
       connectivityMonitorProvider.overrideWithValue(
         connectivity ?? AlwaysOnline(),
       ),
-      locationServiceProvider.overrideWithValue(
-        location ?? const NoLocation(),
-      ),
+      locationServiceProvider.overrideWithValue(location ?? const NoLocation()),
       uploadQueueTickProvider.overrideWithValue(null),
       ...overrides,
     ],
@@ -286,8 +284,9 @@ class NoLocation implements LocationService {
   Future<bool> requestPermission() async => false;
 
   @override
-  Future<GeoPoint?> current({Duration timeout = const Duration(seconds: 5)}) async =>
-      null;
+  Future<GeoPoint?> current({
+    Duration timeout = const Duration(seconds: 5),
+  }) async => null;
 }
 
 /// Erro de um pedido com resposta [status] e [body] (para widgets testados sem a API).

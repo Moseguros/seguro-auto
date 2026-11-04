@@ -115,8 +115,10 @@ String? appRedirect({
   if (session.value == null && !_isEntry(location) && location != '/') {
     // Guarda-se até haver sessão.
     pending?.value = safeReturnPath(
-      Uri(path: uri.path, query: uri.query.isEmpty ? null : uri.query)
-          .toString(),
+      Uri(
+        path: uri.path,
+        query: uri.query.isEmpty ? null : uri.query,
+      ).toString(),
     );
   }
   if (location == '/login') {
