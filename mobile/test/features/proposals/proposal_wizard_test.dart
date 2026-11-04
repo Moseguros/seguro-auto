@@ -322,4 +322,23 @@ void main() {
     expect(api.calls('GET', proposalPath), hasLength(2));
     expect(container, isNotNull);
   });
+  testWidgets('tomador preenchido pelo mediador: sem editar nem actualizar '
+      'com o perfil', (tester) async {
+    final api = MockApi()
+      ..on(
+        'GET',
+        proposalPath,
+        200,
+        ProposalFixtures.proposal(
+          channel: 'BROKER',
+          policyholderSource: 'BROKER',
+        ),
+      );
+    await openAt(tester, api, '/proposals/$proposalId?step=policyholder');
+
+    expect(find.text('Ana Maria Machava'), findsWidgets);
+    expect(find.byKey(const Key('proposal-edit-profile')), findsNothing);
+    expect(find.byKey(const Key('proposal-refresh-profile')), findsNothing);
+    expect(find.text('Estes dados vêm do seu perfil.'), findsNothing);
+  });
 }

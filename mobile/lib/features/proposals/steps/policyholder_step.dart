@@ -116,31 +116,37 @@ class _PolicyholderStepState extends ConsumerState<PolicyholderStep>
         ProposalSummaryCard(proposal: _proposal),
         const SizedBox(height: 16),
         PolicyholderCard(policyholder: _proposal.policyholder),
-        const SizedBox(height: 8),
-        Text(l10n.proposalPolicyholderFromProfile),
-        Wrap(
-          spacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            TextButton(
-              key: const Key('proposal-edit-profile'),
-              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: () => context.go(
-                Uri(
-                  path: '/profile',
-                  queryParameters: {'from': back},
-                ).toString(),
+        // Tomador preenchido pelo mediador (S4-06): o cliente só o vê; só o
+        // mediador o altera (decisão do S4-08, igual à web).
+        if (_proposal.policyholderSource == PolicyholderSource.PROFILE) ...[
+          const SizedBox(height: 8),
+          Text(l10n.proposalPolicyholderFromProfile),
+          Wrap(
+            spacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TextButton(
+                key: const Key('proposal-edit-profile'),
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: () => context.go(
+                  Uri(
+                    path: '/profile',
+                    queryParameters: {'from': back},
+                  ).toString(),
+                ),
+                child: Text(l10n.proposalEditProfile),
               ),
-              child: Text(l10n.proposalEditProfile),
-            ),
-            OutlinedButton(
-              key: const Key('proposal-refresh-profile'),
-              style: OutlinedButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: _busy ? null : _refreshFromProfile,
-              child: Text(l10n.proposalRefreshFromProfile),
-            ),
-          ],
-        ),
+              OutlinedButton(
+                key: const Key('proposal-refresh-profile'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(48, 48),
+                ),
+                onPressed: _busy ? null : _refreshFromProfile,
+                child: Text(l10n.proposalRefreshFromProfile),
+              ),
+            ],
+          ),
+        ],
         const SizedBox(height: 16),
         Text(l10n.proposalStartDate, style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
