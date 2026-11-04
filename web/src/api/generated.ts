@@ -37,6 +37,14 @@ export interface ActivateInvitationRequest {
   totpCode: string;
 }
 
+export interface ApproveInspectionRequest {
+  mode?: InspectionMode;
+  /** @maxLength 1000 */
+  notes?: string;
+  /** Versão da vistoria; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface AssignableRolesResponse {
   /** Perfis a dar ao primeiro gestor no ecrã de criação de organização */
   managerInviteRoles: string[];
@@ -757,9 +765,86 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
+export type InspectionMode = (typeof InspectionMode)[keyof typeof InspectionMode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InspectionMode = {
+  SELF_PHOTOS: 'SELF_PHOTOS',
+  ON_SITE: 'ON_SITE',
+} as const;
+
+export interface InspectionPhotoResponse {
+  fileId: string;
+  id: string;
+  latitude?: number;
+  longitude?: number;
+  slot: PhotoSlot;
+  source: PhotoSource;
+  /** Hora da fotografia indicada pelo cliente */
+  takenAt?: string;
+  uploadedAt: string;
+}
+
+export interface InspectionResponse {
+  /** Pedido presencial: local e horas preferidas */
+  customerNotes?: string;
+  /** Só com required = true */
+  id?: string;
+  maxExtraPhotos?: number;
+  /** Ângulos obrigatórios sem fotografia ([] em ON_SITE) */
+  missingSlots?: PhotoSlot[];
+  mode?: InspectionMode;
+  odometerKm?: number;
+  /** Activas, pela ordem dos ângulos e depois do envio */
+  photos?: InspectionPhotoResponse[];
+  /** Alguma cobertura OD_* */
+  required: boolean;
+  review?: InspectionReview;
+  status?: InspectionStatus;
+  submittedAt?: string;
+  /** Versão da vistoria, para approveInspection e rejectInspection */
+  version?: number;
+}
+
+/**
+ * Ausente até haver revisão
+ */
+export interface InspectionReview {
+  /** Notas da aprovação */
+  notes?: string;
+  /** Só em REJECTED */
+  rejectionReason?: string;
+  /** Ângulos a repetir pedidos na recusa */
+  retakeSlots: PhotoSlot[];
+  reviewedAt: string;
+}
+
+export type InspectionStatus = (typeof InspectionStatus)[keyof typeof InspectionStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InspectionStatus = {
+  PENDING: 'PENDING',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+} as const;
+
 export interface InsurerBrandingResponse {
   /** @nullable */
   logoFileId: string | null;
+}
+
+export interface InsurerInspectionSummaryResponse {
+  customerName: string;
+  id: string;
+  mode: InspectionMode;
+  /** Fotografias activas */
+  photoCount: number;
+  proposalId: string;
+  proposalNumber: string;
+  status: InspectionStatus;
+  submittedAt?: string;
+  vehiclePlate: string;
 }
 
 export interface InsurerKycCheckResponse {
@@ -1434,6 +1519,13 @@ export interface PageResponseDriverResponse {
   totalElements: number;
 }
 
+export interface PageResponseInsurerInspectionSummaryResponse {
+  content: InsurerInspectionSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseInvitationResponse {
   content: InvitationResponse[];
   page: number;
@@ -1496,6 +1588,30 @@ export interface PageResponseVehicleResponse {
   size: number;
   totalElements: number;
 }
+
+export type PhotoSlot = (typeof PhotoSlot)[keyof typeof PhotoSlot];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PhotoSlot = {
+  FRONT: 'FRONT',
+  REAR: 'REAR',
+  LEFT: 'LEFT',
+  RIGHT: 'RIGHT',
+  ODOMETER: 'ODOMETER',
+  CHASSIS: 'CHASSIS',
+  EXTRA: 'EXTRA',
+} as const;
+
+/**
+ * Por defeito UPLOAD
+ */
+export type PhotoSource = (typeof PhotoSource)[keyof typeof PhotoSource];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PhotoSource = {
+  CAMERA: 'CAMERA',
+  UPLOAD: 'UPLOAD',
+} as const;
 
 export interface PlateFormatResponse {
   active: boolean;
@@ -1859,10 +1975,6 @@ export interface ProposalDriver {
   licenceNumberMasked: string;
 }
 
-export interface ProposalInspection {
-  required: boolean;
-}
-
 export interface ProposalKyc {
   /**
    * S4-05; null nesta fase
@@ -1959,7 +2071,7 @@ export interface ProposalResponse {
    */
   expiresAt?: string | null;
   id: string;
-  inspection: ProposalInspection;
+  inspection: InspectionResponse;
   insurer: ProposalOrganization;
   kyc: ProposalKyc;
   number: string;
@@ -2531,6 +2643,18 @@ export interface RegistryLookupResponse {
   year: number;
 }
 
+export interface RejectInspectionRequest {
+  /**
+   * @minLength 10
+   * @maxLength 1000
+   */
+  reason: string;
+  /** Ângulos a repetir, sem repetidos (INVALID_SLOT, DUPLICATED) */
+  retakeSlots?: PhotoSlot[];
+  /** Versão da vistoria; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface RejectKycCheckRequest {
   /**
    * @minLength 10
@@ -2543,6 +2667,17 @@ export interface RejectKycCheckRequest {
 
 export interface ReplaceCoveragesRequest {
   coverages: CoverageRequest[];
+  version: number;
+}
+
+export interface RequestOnSiteInspectionRequest {
+  /**
+   * Local e horas preferidas (REQUIRED, TOO_SHORT, TOO_LONG)
+   * @minLength 10
+   * @maxLength 500
+   */
+  notes: string;
+  /** Versão da proposta; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
 }
 
@@ -2848,6 +2983,17 @@ export interface StartContactVerificationRequest {
   type: StartContactVerificationRequestType;
   /** Telemóvel (841234567, +258841234567) ou e-mail */
   value: string;
+}
+
+export interface SubmitInspectionRequest {
+  /**
+   * Quilometragem; fora de 0–2 000 000 → OUT_OF_RANGE
+   * @minimum 0
+   * @maximum 2000000
+   */
+  odometerKm: number;
+  /** Versão da proposta; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
 }
 
 export interface SuitabilityAnswerRequest {
@@ -3533,6 +3679,17 @@ export type UploadInsurerLogoBody = {
   file: Blob;
 };
 
+export type ListInsurerInspectionsParams = {
+  status?: InspectionStatus;
+  mode?: InspectionMode;
+  page?: number;
+  size?: number;
+  /**
+   * submittedAt ou createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
 export type ListInsurerKycChecksParams = {
   status?: KycCheckStatus;
   q?: string;
@@ -3739,6 +3896,18 @@ export const ListOrganizationUsersStatus = {
   LOCKED: 'LOCKED',
   DISABLED: 'DISABLED',
 } as const;
+
+export type UploadInspectionPhotoBody = {
+  /** Gerado pelo cliente; torna o envio idempotente */
+  clientPhotoId?: string;
+  file?: Blob;
+  latitude?: number;
+  longitude?: number;
+  slot?: PhotoSlot;
+  source?: PhotoSource;
+  /** Hora da fotografia (ISO 8601) */
+  takenAt?: string;
+};
 
 export type ListReferenceValuesParams = {
   /**
@@ -7803,6 +7972,450 @@ export const useUploadInsurerLogo = <TError = ErrorType<ProblemDetail>, TContext
   TContext
 > => {
   const mutationOptions = getUploadInsurerLogoMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão inspection:review. Só vistorias de propostas já submetidas. status por defeito SUBMITTED; mode opcional. Ordenação por submittedAt (defeito, asc) ou createdAt.
+ * @summary Lista as vistorias da seguradora
+ */
+export const listInsurerInspections = (
+  params?: ListInsurerInspectionsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInsurerInspectionSummaryResponse>(
+    { url: `/api/v1/insurer/inspections`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListInsurerInspectionsQueryKey = (params?: ListInsurerInspectionsParams) => {
+  return [`/api/v1/insurer/inspections`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInsurerInspectionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerInspections>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerInspectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerInspections>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerInspectionsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerInspections>>> = ({ signal }) =>
+    listInsurerInspections(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerInspections>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerInspectionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerInspections>>
+>;
+export type ListInsurerInspectionsQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerInspections<
+  TData = Awaited<ReturnType<typeof listInsurerInspections>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListInsurerInspectionsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerInspections>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerInspections>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerInspections>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerInspections<
+  TData = Awaited<ReturnType<typeof listInsurerInspections>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerInspectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerInspections>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerInspections>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerInspections>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerInspections<
+  TData = Awaited<ReturnType<typeof listInsurerInspections>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerInspectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerInspections>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as vistorias da seguradora
+ */
+
+export function useListInsurerInspections<
+  TData = Awaited<ReturnType<typeof listInsurerInspections>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerInspectionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerInspections>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerInspectionsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão inspection:review. As fotografias activas (fileId para GET /api/v1/files/{id}) e a version para aprovar ou recusar.
+ * @summary Consulta uma vistoria
+ */
+export const getInsurerInspection = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InspectionResponse>(
+    { url: `/api/v1/insurer/inspections/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerInspectionQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/inspections/${id}`] as const;
+};
+
+export const getGetInsurerInspectionQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerInspection>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerInspection>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerInspectionQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerInspection>>> = ({ signal }) =>
+    getInsurerInspection(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerInspection>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerInspectionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInsurerInspection>>
+>;
+export type GetInsurerInspectionQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerInspection<
+  TData = Awaited<ReturnType<typeof getInsurerInspection>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerInspection>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerInspection>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerInspection>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerInspection<
+  TData = Awaited<ReturnType<typeof getInsurerInspection>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerInspection>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerInspection>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerInspection>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerInspection<
+  TData = Awaited<ReturnType<typeof getInsurerInspection>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerInspection>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma vistoria
+ */
+
+export function useGetInsurerInspection<
+  TData = Awaited<ReturnType<typeof getInsurerInspection>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerInspection>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerInspectionQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão inspection:review. SUBMITTED → APPROVED. mode = ON_SITE regista uma vistoria presencial e exige notes (REQUIRED); SELF_PHOTOS (ou o modo da vistoria, sem mode) exige os seis ângulos (409 INSPECTION_PHOTOS_MISSING); notes até 1000 (TOO_LONG). Proposta fora de UNDER_REVIEW → 409 PROPOSAL_NOT_UNDER_REVIEW; version da vistoria diferente → 409 CONCURRENT_MODIFICATION; vistoria fora de SUBMITTED → 409 INVALID_STATE_TRANSITION.
+ * @summary Aprova uma vistoria
+ */
+export const approveInspection = (
+  id: string,
+  approveInspectionRequest: BodyType<ApproveInspectionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InspectionResponse>(
+    {
+      url: `/api/v1/insurer/inspections/${id}/approve`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: approveInspectionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getApproveInspectionMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof approveInspection>>,
+    TError,
+    { id: string; data: BodyType<ApproveInspectionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof approveInspection>>,
+  TError,
+  { id: string; data: BodyType<ApproveInspectionRequest> },
+  TContext
+> => {
+  const mutationKey = ['approveInspection'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof approveInspection>>,
+    { id: string; data: BodyType<ApproveInspectionRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return approveInspection(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ApproveInspectionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof approveInspection>>
+>;
+export type ApproveInspectionMutationBody = BodyType<ApproveInspectionRequest>;
+export type ApproveInspectionMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Aprova uma vistoria
+ */
+export const useApproveInspection = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof approveInspection>>,
+      TError,
+      { id: string; data: BodyType<ApproveInspectionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof approveInspection>>,
+  TError,
+  { id: string; data: BodyType<ApproveInspectionRequest> },
+  TContext
+> => {
+  const mutationOptions = getApproveInspectionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão inspection:review. SUBMITTED → REJECTED com reason 10–1000 (REQUIRED, TOO_SHORT, TOO_LONG) e os ângulos a repetir (INVALID_SLOT, DUPLICATED). A proposta continua UNDER_REVIEW: para o cliente refazer, pede-se informação (S4-05) ou recusa-se a proposta. Proposta fora de UNDER_REVIEW → 409 PROPOSAL_NOT_UNDER_REVIEW; version da vistoria diferente → 409 CONCURRENT_MODIFICATION; vistoria fora de SUBMITTED → 409 INVALID_STATE_TRANSITION.
+ * @summary Recusa uma vistoria
+ */
+export const rejectInspection = (
+  id: string,
+  rejectInspectionRequest: BodyType<RejectInspectionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InspectionResponse>(
+    {
+      url: `/api/v1/insurer/inspections/${id}/reject`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: rejectInspectionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRejectInspectionMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectInspection>>,
+    TError,
+    { id: string; data: BodyType<RejectInspectionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rejectInspection>>,
+  TError,
+  { id: string; data: BodyType<RejectInspectionRequest> },
+  TContext
+> => {
+  const mutationKey = ['rejectInspection'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rejectInspection>>,
+    { id: string; data: BodyType<RejectInspectionRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return rejectInspection(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RejectInspectionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rejectInspection>>
+>;
+export type RejectInspectionMutationBody = BodyType<RejectInspectionRequest>;
+export type RejectInspectionMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Recusa uma vistoria
+ */
+export const useRejectInspection = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rejectInspection>>,
+      TError,
+      { id: string; data: BodyType<RejectInspectionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof rejectInspection>>,
+  TError,
+  { id: string; data: BodyType<RejectInspectionRequest> },
+  TContext
+> => {
+  const mutationOptions = getRejectInspectionMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -14749,6 +15362,378 @@ export const useSaveProposalDeclarations = <TError = ErrorType<ProblemDetail>, T
   TContext
 > => {
   const mutationOptions = getSaveProposalDeclarationsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. file: JPEG, PNG ou HEIC até 10 MB (em falta → REQUIRED; vazio → 400 FILE_EMPTY; maior → 413 FILE_TOO_LARGE; outro tipo → 415 FILE_TYPE_NOT_ALLOWED). slot obrigatório (INVALID_SLOT); EXTRA além do máximo → EXTRA_PHOTOS_LIMIT; uma fotografia nova num ângulo fixo substitui a anterior. takenAt no futuro (+5 min) → PHOTO_IN_FUTURE, com mais de 7 dias → PHOTO_TOO_OLD; latitude e longitude juntas e dentro dos limites (INVALID_COORDINATES). Com um clientPhotoId já enviado devolve 200 com a mesma fotografia, sem gravar nada. Numa vistoria REJECTED passa-a a PENDING. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE. Aumenta contentRevision e renova expiresAt.
+ * @summary Envia uma fotografia da vistoria
+ */
+export const uploadInspectionPhoto = (
+  id: string,
+  uploadInspectionPhotoBody: BodyType<UploadInspectionPhotoBody>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  const formData = new FormData();
+  if (uploadInspectionPhotoBody.clientPhotoId !== undefined) {
+    formData.append(`clientPhotoId`, uploadInspectionPhotoBody.clientPhotoId);
+  }
+  if (uploadInspectionPhotoBody.file !== undefined) {
+    formData.append(`file`, uploadInspectionPhotoBody.file);
+  }
+  if (uploadInspectionPhotoBody.latitude !== undefined) {
+    formData.append(`latitude`, uploadInspectionPhotoBody.latitude.toString());
+  }
+  if (uploadInspectionPhotoBody.longitude !== undefined) {
+    formData.append(`longitude`, uploadInspectionPhotoBody.longitude.toString());
+  }
+  if (uploadInspectionPhotoBody.slot !== undefined) {
+    formData.append(`slot`, uploadInspectionPhotoBody.slot);
+  }
+  if (uploadInspectionPhotoBody.source !== undefined) {
+    formData.append(`source`, uploadInspectionPhotoBody.source);
+  }
+  if (uploadInspectionPhotoBody.takenAt !== undefined) {
+    formData.append(`takenAt`, uploadInspectionPhotoBody.takenAt);
+  }
+
+  return http<InspectionPhotoResponse | InspectionPhotoResponse>(
+    {
+      url: `/api/v1/proposals/${id}/inspection/photos`,
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getUploadInspectionPhotoMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadInspectionPhoto>>,
+    TError,
+    { id: string; data: BodyType<UploadInspectionPhotoBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadInspectionPhoto>>,
+  TError,
+  { id: string; data: BodyType<UploadInspectionPhotoBody> },
+  TContext
+> => {
+  const mutationKey = ['uploadInspectionPhoto'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadInspectionPhoto>>,
+    { id: string; data: BodyType<UploadInspectionPhotoBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return uploadInspectionPhoto(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UploadInspectionPhotoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadInspectionPhoto>>
+>;
+export type UploadInspectionPhotoMutationBody = BodyType<UploadInspectionPhotoBody>;
+export type UploadInspectionPhotoMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia uma fotografia da vistoria
+ */
+export const useUploadInspectionPhoto = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof uploadInspectionPhoto>>,
+      TError,
+      { id: string; data: BodyType<UploadInspectionPhotoBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof uploadInspectionPhoto>>,
+  TError,
+  { id: string; data: BodyType<UploadInspectionPhotoBody> },
+  TContext
+> => {
+  const mutationOptions = getUploadInspectionPhotoMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. Fica guardada com removedAt. Inexistente ou já retirada → 404 PHOTO_NOT_FOUND. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE. Aumenta contentRevision e renova expiresAt.
+ * @summary Retira uma fotografia da vistoria
+ */
+export const removeInspectionPhoto = (
+  id: string,
+  photoId: string,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<void>(
+    { url: `/api/v1/proposals/${id}/inspection/photos/${photoId}`, method: 'DELETE' },
+    options,
+  );
+};
+
+export const getRemoveInspectionPhotoMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof removeInspectionPhoto>>,
+    TError,
+    { id: string; photoId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof removeInspectionPhoto>>,
+  TError,
+  { id: string; photoId: string },
+  TContext
+> => {
+  const mutationKey = ['removeInspectionPhoto'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof removeInspectionPhoto>>,
+    { id: string; photoId: string }
+  > = (props) => {
+    const { id, photoId } = props ?? {};
+
+    return removeInspectionPhoto(id, photoId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RemoveInspectionPhotoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof removeInspectionPhoto>>
+>;
+
+export type RemoveInspectionPhotoMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Retira uma fotografia da vistoria
+ */
+export const useRemoveInspectionPhoto = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof removeInspectionPhoto>>,
+      TError,
+      { id: string; photoId: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof removeInspectionPhoto>>,
+  TError,
+  { id: string; photoId: string },
+  TContext
+> => {
+  const mutationOptions = getRemoveInspectionPhotoMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. PENDING ou REJECTED → SUBMITTED com mode = ON_SITE; notes 10–500 (REQUIRED, TOO_SHORT, TOO_LONG); as fotografias já enviadas ficam. A seguradora contacta o cliente para marcar a visita; version da proposta diferente → 409 CONCURRENT_MODIFICATION. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE. Aumenta contentRevision e renova expiresAt.
+ * @summary Pede uma vistoria presencial
+ */
+export const requestOnSiteInspection = (
+  id: string,
+  requestOnSiteInspectionRequest: BodyType<RequestOnSiteInspectionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/inspection/request-on-site`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: requestOnSiteInspectionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRequestOnSiteInspectionMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestOnSiteInspection>>,
+    TError,
+    { id: string; data: BodyType<RequestOnSiteInspectionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof requestOnSiteInspection>>,
+  TError,
+  { id: string; data: BodyType<RequestOnSiteInspectionRequest> },
+  TContext
+> => {
+  const mutationKey = ['requestOnSiteInspection'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof requestOnSiteInspection>>,
+    { id: string; data: BodyType<RequestOnSiteInspectionRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return requestOnSiteInspection(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RequestOnSiteInspectionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof requestOnSiteInspection>>
+>;
+export type RequestOnSiteInspectionMutationBody = BodyType<RequestOnSiteInspectionRequest>;
+export type RequestOnSiteInspectionMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pede uma vistoria presencial
+ */
+export const useRequestOnSiteInspection = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof requestOnSiteInspection>>,
+      TError,
+      { id: string; data: BodyType<RequestOnSiteInspectionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof requestOnSiteInspection>>,
+  TError,
+  { id: string; data: BodyType<RequestOnSiteInspectionRequest> },
+  TContext
+> => {
+  const mutationOptions = getRequestOnSiteInspectionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. PENDING → SUBMITTED com a quilometragem (REQUIRED, OUT_OF_RANGE). Faltam ângulos → 409 INSPECTION_PHOTOS_MISSING (missingSlots); REJECTED sem fotografia nova → 409 INVALID_STATE_TRANSITION; version da proposta diferente → 409 CONCURRENT_MODIFICATION. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE. Aumenta contentRevision e renova expiresAt.
+ * @summary Submete a vistoria por fotografias
+ */
+export const submitInspection = (
+  id: string,
+  submitInspectionRequest: BodyType<SubmitInspectionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/inspection/submit`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: submitInspectionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSubmitInspectionMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof submitInspection>>,
+    TError,
+    { id: string; data: BodyType<SubmitInspectionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof submitInspection>>,
+  TError,
+  { id: string; data: BodyType<SubmitInspectionRequest> },
+  TContext
+> => {
+  const mutationKey = ['submitInspection'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof submitInspection>>,
+    { id: string; data: BodyType<SubmitInspectionRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return submitInspection(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SubmitInspectionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof submitInspection>>
+>;
+export type SubmitInspectionMutationBody = BodyType<SubmitInspectionRequest>;
+export type SubmitInspectionMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Submete a vistoria por fotografias
+ */
+export const useSubmitInspection = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof submitInspection>>,
+      TError,
+      { id: string; data: BodyType<SubmitInspectionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof submitInspection>>,
+  TError,
+  { id: string; data: BodyType<SubmitInspectionRequest> },
+  TContext
+> => {
+  const mutationOptions = getSubmitInspectionMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

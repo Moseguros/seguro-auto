@@ -10,6 +10,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AcceptInvitationRequest.serializer)
       ..add(AcknowledgeSuitabilityRequest.serializer)
       ..add(ActivateInvitationRequest.serializer)
+      ..add(ApproveInspectionRequest.serializer)
       ..add(AssignableRolesResponse.serializer)
       ..add(BrokerVehicleRequest.serializer)
       ..add(BrokerVehicleRequestProvinceOfCirculationEnum.serializer)
@@ -60,7 +61,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DriverResponse.serializer)
       ..add(FieldError.serializer)
       ..add(ForgotPasswordRequest.serializer)
+      ..add(InspectionMode.serializer)
+      ..add(InspectionPhotoResponse.serializer)
+      ..add(InspectionResponse.serializer)
+      ..add(InspectionReview.serializer)
+      ..add(InspectionStatus.serializer)
       ..add(InsurerBrandingResponse.serializer)
+      ..add(InsurerInspectionSummaryResponse.serializer)
       ..add(InsurerKycCheckResponse.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
@@ -121,6 +128,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(OtpVerifyResponse.serializer)
       ..add(PageResponseCatalogProductResponse.serializer)
       ..add(PageResponseDriverResponse.serializer)
+      ..add(PageResponseInsurerInspectionSummaryResponse.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseKycCheckSummaryResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
@@ -130,6 +138,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
       ..add(PageResponseVehicleResponse.serializer)
+      ..add(PhotoSlot.serializer)
+      ..add(PhotoSource.serializer)
       ..add(PlateFormatResponse.serializer)
       ..add(PlateFormatsResponse.serializer)
       ..add(PlatformSettingResponse.serializer)
@@ -164,7 +174,6 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ProposalDeductible.serializer)
       ..add(ProposalDeductibleTypeEnum.serializer)
       ..add(ProposalDriver.serializer)
-      ..add(ProposalInspection.serializer)
       ..add(ProposalKyc.serializer)
       ..add(ProposalOrganization.serializer)
       ..add(ProposalPolicyholder.serializer)
@@ -225,8 +234,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RefreshTokenRequest.serializer)
       ..add(RegistrationDocResponse.serializer)
       ..add(RegistryLookupResponse.serializer)
+      ..add(RejectInspectionRequest.serializer)
       ..add(RejectKycCheckRequest.serializer)
       ..add(ReplaceCoveragesRequest.serializer)
+      ..add(RequestOnSiteInspectionRequest.serializer)
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
@@ -252,6 +263,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(StartContactVerificationRequest.serializer)
       ..add(StartContactVerificationRequestChannelEnum.serializer)
       ..add(StartContactVerificationRequestTypeEnum.serializer)
+      ..add(SubmitInspectionRequest.serializer)
       ..add(SuitabilityAnswerRequest.serializer)
       ..add(SuitabilityAnswerResponse.serializer)
       ..add(SuitabilityQuestion.serializer)
@@ -365,6 +377,10 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(FieldError)]),
           () => ListBuilder<FieldError>())
       ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(InsurerInspectionSummaryResponse)]),
+          () => ListBuilder<InsurerInspectionSummaryResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(InvitationResponse)]),
           () => ListBuilder<InvitationResponse>())
       ..addBuilderFactory(
@@ -413,6 +429,19 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PhotoSlot)]),
+          () => ListBuilder<PhotoSlot>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PhotoSlot)]),
+          () => ListBuilder<PhotoSlot>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PhotoSlot)]),
+          () => ListBuilder<PhotoSlot>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(InspectionPhotoResponse)]),
+          () => ListBuilder<InspectionPhotoResponse>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PlateFormatResponse)]),

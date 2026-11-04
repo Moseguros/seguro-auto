@@ -129,9 +129,8 @@ public class SignatureService {
                     "The policyholder must confirm having read the product documents");
         }
         Instant now = clock.instant();
-        // O estado da vistoria vem do S4-03; sem ele, uma vistoria obrigatória conta como em falta.
         List<ProposalCompleteness.Item> missing = ProposalCompleteness.missing(
-                ProposalCompleteness.Facts.of(proposal, null), now, false);
+                ProposalCompleteness.Facts.of(proposal, queries.inspectionStatus(proposal)), now, false);
         if (!missing.isEmpty()) {
             List<String> items = missing.stream().map(Enum::name).toList();
             throw DomainException.of(ErrorCodes.PROPOSAL_INCOMPLETE, "There are still steps missing: " + items)

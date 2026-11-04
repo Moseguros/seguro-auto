@@ -91,11 +91,12 @@ class ModularityTest {
     }
 
     /**
-     * S4-02 e S4-04: proposal usa rating, catalog, vehicle, identity, organization e document (PDF e
-     * assinatura, S4-04; modelo transversal §1: {@code proposal → rating, catalog, vehicle, identity,
-     * organization, document, notification, payment}; notification e payment entram no S6 e S5) e nenhum
-     * módulo depende de proposal nesta fase. O código de assinatura passa pelo identity
-     * ({@code identity → notification}); o document continua a depender só do shared.
+     * S4-02 a S4-04: proposal usa rating, catalog, vehicle, identity, organization e document (as
+     * fotografias da vistoria, S4-03, e o PDF e a assinatura, S4-04; modelo transversal §1:
+     * {@code proposal → rating, catalog, vehicle, identity, organization, document, notification,
+     * payment}; notification e payment entram no S6 e no S5) e nenhum módulo depende de proposal nesta
+     * fase. O código de assinatura passa pelo identity ({@code identity → notification}); o document
+     * continua a depender só do shared.
      */
     @Test
     void proposalDependsOnRatingCatalogVehicleIdentityOrganizationAndDocumentOnly() {

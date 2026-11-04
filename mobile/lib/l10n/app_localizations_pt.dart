@@ -1473,6 +1473,65 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationMustBeTrue => 'Tem de confirmar para continuar.';
 
   @override
+  String get errorInspectionNotRequired =>
+      'Esta proposta não precisa de vistoria.';
+
+  @override
+  String get errorInspectionNotFound => 'Vistoria não encontrada.';
+
+  @override
+  String get errorInspectionNotEditable =>
+      'A vistoria já foi enviada e não pode ser alterada.';
+
+  @override
+  String get errorInspectionPhotosMissing => 'Faltam fotografias obrigatórias.';
+
+  @override
+  String get errorPhotoNotFound => 'Fotografia não encontrada.';
+
+  @override
+  String get errorProposalNotUnderReview => 'A proposta não está em análise.';
+
+  @override
+  String get validationInvalidSlot => 'Ângulo inválido.';
+
+  @override
+  String get validationExtraPhotosLimit =>
+      'Já enviou o número máximo de fotografias extra.';
+
+  @override
+  String get validationPhotoTooOld =>
+      'Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.';
+
+  @override
+  String get validationPhotoInFuture =>
+      'A data da fotografia é inválida. Confirme a hora do telemóvel.';
+
+  @override
+  String get validationInvalidCoordinates => 'Localização inválida.';
+
+  @override
+  String get inspectionSlotFront => 'Frente';
+
+  @override
+  String get inspectionSlotRear => 'Traseira';
+
+  @override
+  String get inspectionSlotLeft => 'Lado esquerdo';
+
+  @override
+  String get inspectionSlotRight => 'Lado direito';
+
+  @override
+  String get inspectionSlotOdometer => 'Conta-quilómetros';
+
+  @override
+  String get inspectionSlotChassis => 'Número do chassis';
+
+  @override
+  String get inspectionSlotExtra => 'Outra fotografia';
+
+  @override
   String get quoteUnavailableTariffMissing =>
       'Esta seguradora ainda não tem preço para este produto.';
 

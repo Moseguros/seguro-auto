@@ -25,7 +25,7 @@ tags:
 - description: "Identidade, sessões e utilizador autenticado"
   name: Identity
 - description: "Propostas: criação a partir de uma cotação, declarações de risco,\
-    \ adequação e assinatura"
+    \ adequação, vistoria e assinatura"
   name: Proposal
 - description: Veículos e condutores do cliente
   name: Vehicle
@@ -1549,6 +1549,186 @@ paths:
       summary: Envia o logótipo da seguradora
       tags:
       - Catalog
+  /api/v1/insurer/inspections:
+    get:
+      description: "Permissão inspection:review. Só vistorias de propostas já submetidas.\
+        \ status por defeito SUBMITTED; mode opcional. Ordenação por submittedAt (defeito,\
+        \ asc) ou createdAt."
+      operationId: listInsurerInspections
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          $ref: "#/components/schemas/InspectionStatus"
+      - in: query
+        name: mode
+        required: false
+        schema:
+          $ref: "#/components/schemas/InspectionMode"
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "submittedAt ou createdAt, com ,asc ou ,desc"
+        example: "submittedAt,asc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInsurerInspectionSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as vistorias da seguradora
+      tags:
+      - Proposal
+  /api/v1/insurer/inspections/{id}:
+    get:
+      description: "Permissão inspection:review. As fotografias activas (fileId para\
+        \ GET /api/v1/files/{id}) e a version para aprovar ou recusar."
+      operationId: getInsurerInspection
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma vistoria
+      tags:
+      - Proposal
+  /api/v1/insurer/inspections/{id}/approve:
+    post:
+      description: "Permissão inspection:review. SUBMITTED → APPROVED. mode = ON_SITE\
+        \ regista uma vistoria presencial e exige notes (REQUIRED); SELF_PHOTOS (ou\
+        \ o modo da vistoria, sem mode) exige os seis ângulos (409 INSPECTION_PHOTOS_MISSING);\
+        \ notes até 1000 (TOO_LONG). Proposta fora de UNDER_REVIEW → 409 PROPOSAL_NOT_UNDER_REVIEW;\
+        \ version da vistoria diferente → 409 CONCURRENT_MODIFICATION; vistoria fora\
+        \ de SUBMITTED → 409 INVALID_STATE_TRANSITION."
+      operationId: approveInspection
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveInspectionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Aprova uma vistoria
+      tags:
+      - Proposal
+  /api/v1/insurer/inspections/{id}/reject:
+    post:
+      description: "Permissão inspection:review. SUBMITTED → REJECTED com reason 10–\
+        1000 (REQUIRED, TOO_SHORT, TOO_LONG) e os ângulos a repetir (INVALID_SLOT,\
+        \ DUPLICATED). A proposta continua UNDER_REVIEW: para o cliente refazer, pede-se\
+        \ informação (S4-05) ou recusa-se a proposta. Proposta fora de UNDER_REVIEW\
+        \ → 409 PROPOSAL_NOT_UNDER_REVIEW; version da vistoria diferente → 409 CONCURRENT_MODIFICATION;\
+        \ vistoria fora de SUBMITTED → 409 INVALID_STATE_TRANSITION."
+      operationId: rejectInspection
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectInspectionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectionResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Recusa uma vistoria
+      tags:
+      - Proposal
   /api/v1/insurer/kyc:
     get:
       description: "Permissão kyc:review. status por defeito PENDING; q procura no\
@@ -4240,6 +4420,215 @@ paths:
       summary: Grava as declarações de risco
       tags:
       - Proposal
+  /api/v1/proposals/{id}/inspection/photos:
+    post:
+      description: "Permissão self:proposals ou proposal:create-for-client. file:\
+        \ JPEG, PNG ou HEIC até 10 MB (em falta → REQUIRED; vazio → 400 FILE_EMPTY;\
+        \ maior → 413 FILE_TOO_LARGE; outro tipo → 415 FILE_TYPE_NOT_ALLOWED). slot\
+        \ obrigatório (INVALID_SLOT); EXTRA além do máximo → EXTRA_PHOTOS_LIMIT; uma\
+        \ fotografia nova num ângulo fixo substitui a anterior. takenAt no futuro\
+        \ (+5 min) → PHOTO_IN_FUTURE, com mais de 7 dias → PHOTO_TOO_OLD; latitude\
+        \ e longitude juntas e dentro dos limites (INVALID_COORDINATES). Com um clientPhotoId\
+        \ já enviado devolve 200 com a mesma fotografia, sem gravar nada. Numa vistoria\
+        \ REJECTED passa-a a PENDING. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND;\
+        \ sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED\
+        \ → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE.\
+        \ Aumenta contentRevision e renova expiresAt."
+      operationId: uploadInspectionPhoto
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                clientPhotoId:
+                  type: string
+                  format: uuid
+                  description: Gerado pelo cliente; torna o envio idempotente
+                file:
+                  type: string
+                  format: binary
+                latitude:
+                  type: number
+                  example: -25.965312
+                longitude:
+                  type: number
+                  example: 32.583121
+                slot:
+                  $ref: "#/components/schemas/PhotoSlot"
+                source:
+                  $ref: "#/components/schemas/PhotoSource"
+                takenAt:
+                  type: string
+                  format: date-time
+                  description: Hora da fotografia (ISO 8601)
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectionPhotoResponse"
+          description: Repetição do mesmo clientPhotoId
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectionPhotoResponse"
+          description: Fotografia gravada
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia uma fotografia da vistoria
+      tags:
+      - Proposal
+  /api/v1/proposals/{id}/inspection/photos/{photoId}:
+    delete:
+      description: Permissão self:proposals ou proposal:create-for-client. Fica guardada
+        com removedAt. Inexistente ou já retirada → 404 PHOTO_NOT_FOUND. Proposta
+        de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED;
+        proposta fora de DRAFT/INFO_REQUESTED → 409 PROPOSAL_NOT_EDITABLE; vistoria
+        fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE. Aumenta contentRevision
+        e renova expiresAt.
+      operationId: removeInspectionPhoto
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: photoId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Retira uma fotografia da vistoria
+      tags:
+      - Proposal
+  /api/v1/proposals/{id}/inspection/request-on-site:
+    post:
+      description: "Permissão self:proposals ou proposal:create-for-client. PENDING\
+        \ ou REJECTED → SUBMITTED com mode = ON_SITE; notes 10–500 (REQUIRED, TOO_SHORT,\
+        \ TOO_LONG); as fotografias já enviadas ficam. A seguradora contacta o cliente\
+        \ para marcar a visita; version da proposta diferente → 409 CONCURRENT_MODIFICATION.\
+        \ Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_*\
+        \ → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED → 409\
+        \ PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE.\
+        \ Aumenta contentRevision e renova expiresAt."
+      operationId: requestOnSiteInspection
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestOnSiteInspectionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Pede uma vistoria presencial
+      tags:
+      - Proposal
+  /api/v1/proposals/{id}/inspection/submit:
+    post:
+      description: "Permissão self:proposals ou proposal:create-for-client. PENDING\
+        \ → SUBMITTED com a quilometragem (REQUIRED, OUT_OF_RANGE). Faltam ângulos\
+        \ → 409 INSPECTION_PHOTOS_MISSING (missingSlots); REJECTED sem fotografia\
+        \ nova → 409 INVALID_STATE_TRANSITION; version da proposta diferente → 409\
+        \ CONCURRENT_MODIFICATION. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND;\
+        \ sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED\
+        \ → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE.\
+        \ Aumenta contentRevision e renova expiresAt."
+      operationId: submitInspection
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitInspectionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Submete a vistoria por fotografias
+      tags:
+      - Proposal
   /api/v1/proposals/{id}/sign/confirm:
     post:
       description: "Permissão self:proposals ou proposal:create-for-client. Proposta\
@@ -4830,6 +5219,21 @@ components:
           example: "123456"
       required:
       - totpCode
+    ApproveInspectionRequest:
+      type: object
+      properties:
+        mode:
+          $ref: "#/components/schemas/InspectionMode"
+        notes:
+          type: string
+          example: Vistoria feita na Matola em 08/01.
+          maxLength: 1000
+        version:
+          type: integer
+          format: int64
+          description: Versão da vistoria; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - version
     AssignableRolesResponse:
       type: object
       properties:
@@ -5825,6 +6229,119 @@ components:
           minLength: 0
       required:
       - email
+    InspectionMode:
+      type: string
+      enum:
+      - SELF_PHOTOS
+      - ON_SITE
+    InspectionPhotoResponse:
+      type: object
+      properties:
+        fileId:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+        latitude:
+          type: number
+          example: -25.965312
+        longitude:
+          type: number
+          example: 32.583121
+        slot:
+          $ref: "#/components/schemas/PhotoSlot"
+        source:
+          $ref: "#/components/schemas/PhotoSource"
+        takenAt:
+          type: string
+          format: date-time
+          description: Hora da fotografia indicada pelo cliente
+          example: 2027-01-06T08:12:00Z
+        uploadedAt:
+          type: string
+          format: date-time
+          example: 2027-01-06T08:15:03Z
+      required:
+      - fileId
+      - id
+      - slot
+      - source
+      - uploadedAt
+    InspectionResponse:
+      type: object
+      properties:
+        customerNotes:
+          type: string
+          description: "Pedido presencial: local e horas preferidas"
+        id:
+          type: string
+          format: uuid
+          description: Só com required = true
+        maxExtraPhotos:
+          type: integer
+          format: int32
+          example: 6
+        missingSlots:
+          type: array
+          description: "Ângulos obrigatórios sem fotografia ([] em ON_SITE)"
+          items:
+            $ref: "#/components/schemas/PhotoSlot"
+        mode:
+          $ref: "#/components/schemas/InspectionMode"
+        odometerKm:
+          type: integer
+          format: int32
+          example: 84500
+        photos:
+          type: array
+          description: "Activas, pela ordem dos ângulos e depois do envio"
+          items:
+            $ref: "#/components/schemas/InspectionPhotoResponse"
+        required:
+          type: boolean
+          description: Alguma cobertura OD_*
+        review:
+          $ref: "#/components/schemas/InspectionReview"
+        status:
+          $ref: "#/components/schemas/InspectionStatus"
+        submittedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int64
+          description: "Versão da vistoria, para approveInspection e rejectInspection"
+      required:
+      - required
+    InspectionReview:
+      type: object
+      description: Ausente até haver revisão
+      properties:
+        notes:
+          type: string
+          description: Notas da aprovação
+        rejectionReason:
+          type: string
+          description: Só em REJECTED
+        retakeSlots:
+          type: array
+          description: Ângulos a repetir pedidos na recusa
+          items:
+            $ref: "#/components/schemas/PhotoSlot"
+        reviewedAt:
+          type: string
+          format: date-time
+      required:
+      - retakeSlots
+      - reviewedAt
+    InspectionStatus:
+      type: string
+      enum:
+      - PENDING
+      - SUBMITTED
+      - APPROVED
+      - REJECTED
     InsurerBrandingResponse:
       type: object
       properties:
@@ -5834,6 +6351,44 @@ components:
           nullable: true
       required:
       - logoFileId
+    InsurerInspectionSummaryResponse:
+      type: object
+      properties:
+        customerName:
+          type: string
+          example: Ana Maria Mussa
+        id:
+          type: string
+          format: uuid
+        mode:
+          $ref: "#/components/schemas/InspectionMode"
+        photoCount:
+          type: integer
+          format: int32
+          description: Fotografias activas
+        proposalId:
+          type: string
+          format: uuid
+        proposalNumber:
+          type: string
+          example: PR-2027-000123
+        status:
+          $ref: "#/components/schemas/InspectionStatus"
+        submittedAt:
+          type: string
+          format: date-time
+        vehiclePlate:
+          type: string
+          example: ABC-123-MC
+      required:
+      - customerName
+      - id
+      - mode
+      - photoCount
+      - proposalId
+      - proposalNumber
+      - status
+      - vehiclePlate
     InsurerKycCheckResponse:
       type: object
       properties:
@@ -6754,6 +7309,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseInsurerInspectionSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsurerInspectionSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInvitationResponse:
       type: object
       properties:
@@ -6961,6 +7539,22 @@ components:
       - page
       - size
       - totalElements
+    PhotoSlot:
+      type: string
+      enum:
+      - FRONT
+      - REAR
+      - LEFT
+      - RIGHT
+      - ODOMETER
+      - CHASSIS
+      - EXTRA
+    PhotoSource:
+      type: string
+      description: Por defeito UPLOAD
+      enum:
+      - CAMERA
+      - UPLOAD
     PlateFormatResponse:
       type: object
       properties:
@@ -7503,13 +8097,6 @@ components:
       - id
       - licenceIssueDate
       - licenceNumberMasked
-    ProposalInspection:
-      type: object
-      properties:
-        required:
-          type: boolean
-      required:
-      - required
     ProposalKyc:
       type: object
       properties:
@@ -7685,7 +8272,7 @@ components:
           type: string
           format: uuid
         inspection:
-          $ref: "#/components/schemas/ProposalInspection"
+          $ref: "#/components/schemas/InspectionResponse"
         insurer:
           $ref: "#/components/schemas/ProposalOrganization"
         kyc:
@@ -8638,6 +9225,26 @@ components:
       - seats
       - source
       - year
+    RejectInspectionRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: A fotografia do chassis está ilegível.
+          maxLength: 1000
+          minLength: 10
+        retakeSlots:
+          type: array
+          description: "Ângulos a repetir, sem repetidos (INVALID_SLOT, DUPLICATED)"
+          items:
+            $ref: "#/components/schemas/PhotoSlot"
+        version:
+          type: integer
+          format: int64
+          description: Versão da vistoria; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - reason
+      - version
     RejectKycCheckRequest:
       type: object
       properties:
@@ -8666,6 +9273,22 @@ components:
           format: int64
       required:
       - coverages
+      - version
+    RequestOnSiteInspectionRequest:
+      type: object
+      properties:
+        notes:
+          type: string
+          description: "Local e horas preferidas (REQUIRED, TOO_SHORT, TOO_LONG)"
+          example: "Matola, Av. das Indústrias, dias úteis de manhã"
+          maxLength: 500
+          minLength: 10
+        version:
+          type: integer
+          format: int64
+          description: Versão da proposta; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - notes
       - version
     RequestOtpRequest:
       type: object
@@ -9057,6 +9680,23 @@ components:
       required:
       - type
       - value
+    SubmitInspectionRequest:
+      type: object
+      properties:
+        odometerKm:
+          type: integer
+          format: int32
+          description: Quilometragem; fora de 0–2 000 000 → OUT_OF_RANGE
+          example: 84500
+          maximum: 2000000
+          minimum: 0
+        version:
+          type: integer
+          format: int64
+          description: Versão da proposta; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - odometerKm
+      - version
     SuitabilityAnswerRequest:
       type: object
       properties:

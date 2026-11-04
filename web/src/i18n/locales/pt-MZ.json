@@ -233,7 +233,13 @@
     "SIGNER_CONTACT_MISSING": "Não há telemóvel nem e-mail verificado para enviar o código.",
     "PROPOSAL_INCOMPLETE": "Ainda faltam passos para concluir a proposta.",
     "SIGN_REQUEST_NOT_FOUND": "Este código já não é válido. Peça um novo.",
-    "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST": "A proposta mudou depois de pedir o código. Peça um novo."
+    "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST": "A proposta mudou depois de pedir o código. Peça um novo.",
+    "INSPECTION_NOT_REQUIRED": "Esta proposta não precisa de vistoria.",
+    "INSPECTION_NOT_FOUND": "Vistoria não encontrada.",
+    "INSPECTION_NOT_EDITABLE": "A vistoria já foi enviada e não pode ser alterada.",
+    "INSPECTION_PHOTOS_MISSING": "Faltam fotografias obrigatórias.",
+    "PHOTO_NOT_FOUND": "Fotografia não encontrada.",
+    "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -323,7 +329,12 @@
     "ANSWER_DUPLICATED": "Pergunta repetida.",
     "UNKNOWN_QUESTION": "Pergunta desconhecida.",
     "INVALID_ANSWER": "Resposta inválida.",
-    "MUST_BE_TRUE": "Tem de confirmar para continuar."
+    "MUST_BE_TRUE": "Tem de confirmar para continuar.",
+    "INVALID_SLOT": "Ângulo inválido.",
+    "EXTRA_PHOTOS_LIMIT": "Já enviou o número máximo de fotografias extra.",
+    "PHOTO_TOO_OLD": "Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.",
+    "PHOTO_IN_FUTURE": "A data da fotografia é inválida. Confirme a hora do telemóvel.",
+    "INVALID_COORDINATES": "Localização inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -1739,6 +1750,17 @@
       "INSPECTION": "Vistoria do veículo",
       "START_DATE": "Data de início",
       "SIGNATURE": "Assinatura"
+    }
+  },
+  "inspection": {
+    "slot": {
+      "FRONT": "Frente",
+      "REAR": "Traseira",
+      "LEFT": "Lado esquerdo",
+      "RIGHT": "Lado direito",
+      "ODOMETER": "Conta-quilómetros",
+      "CHASSIS": "Número do chassis",
+      "EXTRA": "Outra fotografia"
     }
   }
 }

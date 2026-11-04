@@ -190,3 +190,8 @@ moseguros:
   proposal:
     expiry-days: 15
     max-start-days: 60
+    # Vistoria (S4-03 §2): fotografias extra por vistoria e idade máxima da fotografia (takenAt; a app
+    # pode enviar mais tarde, sem rede).
+    inspection:
+      max-extra-photos: 6
+      max-photo-age-days: 7

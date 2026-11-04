@@ -14,6 +14,7 @@ import mz.co.moseguros.catalog.ProductDocumentType;
 import mz.co.moseguros.catalog.ProductType;
 import mz.co.moseguros.identity.KycState;
 import mz.co.moseguros.proposal.ProposalStatus;
+import mz.co.moseguros.proposal.application.InspectionDetails;
 import mz.co.moseguros.proposal.application.ProposalDetails;
 import mz.co.moseguros.proposal.application.ProductDocuments;
 import mz.co.moseguros.proposal.application.ProposalJson;
@@ -35,10 +36,10 @@ import mz.co.moseguros.shared.domain.VehicleCategory;
 import mz.co.moseguros.shared.domain.VehicleUsage;
 
 /**
- * Proposta (S4-02 §10, S4-04 §8). {@code signature} é a assinatura válida ({@code null} sem ela); os
- * blocos {@code decision} (S4-05) e {@code broker} (S4-06) vêm a {@code null} nesta fase;
- * {@code inspection} só tem {@code required} (o S4-03 completa). O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta do condutor
- * saem só mascarados; o chassis não sai.
+ * Proposta (S4-02 §10, S4-03 §7, S4-04 §8). {@code signature} é a assinatura válida ({@code null} sem
+ * ela); os blocos {@code decision} (S4-05) e {@code broker} (S4-06) vêm a {@code null} nesta fase;
+ * {@code inspection} é o do S4-03 §7. O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta
+ * do condutor saem só mascarados; o chassis não sai.
  */
 public record ProposalResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -84,7 +85,7 @@ public record ProposalResponse(
         @Schema(nullable = true, description = "null até ser respondido")
         ProposalSuitability suitability,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        ProposalInspection inspection,
+        InspectionResponse inspection,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ProposalKyc kyc,
         @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -313,12 +314,6 @@ public record ProposalResponse(
             String answer) {
     }
 
-    /** Vistoria: nesta fase só se é obrigatória (alguma cobertura OD_*); o S4-03 acrescenta o resto. */
-    public record ProposalInspection(
-            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-            boolean required) {
-    }
-
     /** Estado KYC do cliente; {@code requiredForAutomaticAcceptance} é calculado no S4-05. */
     public record ProposalKyc(
             @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -368,9 +363,10 @@ public record ProposalResponse(
                         premium.roundingAdjustment(), premium.total()),
                 p.getStartAt(), p.getEndAt(), p.endDate(), p.getDurationDays(),
                 declarations(p, details.declarations()), suitability(p, details.suitabilityAnswers()),
-                new ProposalInspection(p.isInspectionRequired()), new ProposalKyc(details.kycState(), null),
-                ProposalSignature.of(details.signature()), checklist(p, details.signature() != null), null, p.getExpiresAt(), p.getSubmittedAt(), p.getCreatedAt(), p.getUpdatedAt(),
-                p.getVersion());
+                InspectionResponse.from(details.inspection()), new ProposalKyc(details.kycState(), null),
+                ProposalSignature.of(details.signature()),
+                checklist(p, details.inspection(), details.signature() != null), null, p.getExpiresAt(),
+                p.getSubmittedAt(), p.getCreatedAt(), p.getUpdatedAt(), p.getVersion());
     }
 
     private static List<ProposalProductDocument> documents(List<ProductDocuments.Selected> selected) {
@@ -378,7 +374,7 @@ public record ProposalResponse(
                 : selected.stream().map(d -> new ProposalProductDocument(d.type(), d.fileId())).toList();
     }
 
-    static ProposalChecklist checklist(Proposal p, boolean signed) {
+    static ProposalChecklist checklist(Proposal p, InspectionDetails inspection, boolean signed) {
         String declarations = p.getDeclarationsConfirmedAt() == null ? "MISSING" : "DONE";
         String suitability;
         if (p.getSuitabilityResult() == null) {
@@ -388,8 +384,20 @@ public record ProposalResponse(
         } else {
             suitability = "DONE";
         }
-        String inspection = p.isInspectionRequired() ? "MISSING" : "NOT_REQUIRED";
-        return new ProposalChecklist(declarations, suitability, inspection, signed ? "DONE" : "MISSING");
+        return new ProposalChecklist(declarations, suitability, inspectionChecklist(inspection),
+                signed ? "DONE" : "MISSING");
+    }
+
+    /** {@code NOT_REQUIRED} sem vistoria; {@code MISSING} em PENDING; {@code DONE} em SUBMITTED/APPROVED (S4-03 §7). */
+    static String inspectionChecklist(InspectionDetails inspection) {
+        if (inspection == null) {
+            return "NOT_REQUIRED";
+        }
+        return switch (inspection.inspection().getStatus()) {
+            case PENDING -> "MISSING";
+            case SUBMITTED, APPROVED -> "DONE";
+            case REJECTED -> "REJECTED";
+        };
     }
 
     private static ProposalDeclarations declarations(Proposal p, List<Declaration> answers) {

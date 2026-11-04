@@ -12,6 +12,9 @@ import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.ProposalView;
 import mz.co.moseguros.proposal.domain.Declaration;
 import mz.co.moseguros.proposal.domain.DeclarationRepository;
+import mz.co.moseguros.proposal.domain.Inspection;
+import mz.co.moseguros.proposal.domain.InspectionPhotoRepository;
+import mz.co.moseguros.proposal.domain.InspectionRepository;
 import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.Proposal;
 import mz.co.moseguros.proposal.domain.ProposalRepository;
@@ -44,17 +47,24 @@ public class ProposalQueryService {
     private final ProposalRepository proposals;
     private final DeclarationRepository declarations;
     private final SuitabilityAnswerRepository suitabilityAnswers;
+    private final InspectionRepository inspections;
+    private final InspectionPhotoRepository photos;
+    private final InspectionProperties inspectionProperties;
     private final IdentityApi identity;
     private final ProposalJson json;
     private final CatalogApi catalog;
     private final CurrentUser currentUser;
 
     public ProposalQueryService(ProposalRepository proposals, DeclarationRepository declarations,
-                                SuitabilityAnswerRepository suitabilityAnswers, IdentityApi identity,
-                                ProposalJson json, CatalogApi catalog, CurrentUser currentUser) {
+                                SuitabilityAnswerRepository suitabilityAnswers, InspectionRepository inspections,
+                                InspectionPhotoRepository photos, InspectionProperties inspectionProperties,
+                                IdentityApi identity, ProposalJson json, CatalogApi catalog, CurrentUser currentUser) {
         this.proposals = proposals;
         this.declarations = declarations;
         this.suitabilityAnswers = suitabilityAnswers;
+        this.inspections = inspections;
+        this.photos = photos;
+        this.inspectionProperties = inspectionProperties;
         this.identity = identity;
         this.json = json;
         this.catalog = catalog;
@@ -95,8 +105,8 @@ public class ProposalQueryService {
     }
 
     /**
-     * Proposta com as respostas, o estado KYC do cliente, a assinatura válida e os documentos do produto
-     * (na língua do tomador, S4-04 §8).
+     * Proposta com as respostas, a vistoria, o estado KYC do cliente, a assinatura válida e os documentos
+     * do produto (na língua do tomador, S4-04 §8).
      */
     @Transactional(readOnly = true)
     public ProposalDetails details(Proposal proposal) {
@@ -104,14 +114,36 @@ public class ProposalQueryService {
                 .sorted(Comparator.comparing(Declaration::getQuestionCode)).toList();
         List<SuitabilityAnswer> suit = suitabilityAnswers.findByProposalId(proposal.getId()).stream()
                 .sorted(Comparator.comparing(SuitabilityAnswer::getQuestionCode)).toList();
+        InspectionDetails inspection = proposal.isInspectionRequired()
+                ? inspections.findByProposalId(proposal.getId()).map(this::inspectionDetails).orElse(null)
+                : null;
         // A assinatura é LAZY: a resposta é montada fora da transacção.
         Signature signature = proposal.getCurrentSignature() == null ? null
                 : Hibernate.unproxy(proposal.getCurrentSignature(), Signature.class);
         String language = ProposalPdfModelBuilder.language(json.policyholder(proposal.getPolicyholder()));
         List<ProductDocuments.Selected> documents = ProductDocuments.select(
                 catalog.version(proposal.getProductVersionId()).documents(), language);
-        return new ProposalDetails(proposal, decl, suit, identity.kycStatus(proposal.getCustomerUserId()).state(),
-                signature, documents);
+        return new ProposalDetails(proposal, decl, suit, inspection,
+                identity.kycStatus(proposal.getCustomerUserId()).state(), signature, documents);
+    }
+
+    /** Vistoria com as fotografias activas (S4-03 §7). */
+    @Transactional(readOnly = true)
+    public InspectionDetails inspectionDetails(Inspection inspection) {
+        return InspectionDetails.of(inspection, photos.findActive(inspection.getId()),
+                inspectionProperties.maxExtraPhotos());
+    }
+
+    /**
+     * Estado da vistoria para o {@link ProposalCompleteness} ({@code null} sem vistoria exigida ou sem
+     * registo).
+     */
+    @Transactional(readOnly = true)
+    public String inspectionStatus(Proposal proposal) {
+        if (!proposal.isInspectionRequired()) {
+            return null;
+        }
+        return inspections.findByProposalId(proposal.getId()).map(i -> i.getStatus().name()).orElse(null);
     }
 
     /** {@code ProposalApi.view}: no âmbito de quem chama, sem a verificação do serviço. */

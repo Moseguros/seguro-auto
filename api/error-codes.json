@@ -73,6 +73,22 @@
       "status" : 403
     },
     {
+      "code" : "INSPECTION_NOT_EDITABLE",
+      "status" : 409
+    },
+    {
+      "code" : "INSPECTION_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "INSPECTION_NOT_REQUIRED",
+      "status" : 409
+    },
+    {
+      "code" : "INSPECTION_PHOTOS_MISSING",
+      "status" : 409
+    },
+    {
       "code" : "INSURER_NOT_ACTIVE",
       "status" : 409
     },
@@ -237,6 +253,10 @@
       "status" : 500
     },
     {
+      "code" : "PHOTO_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "PLATE_FORMAT_CODE_ALREADY_EXISTS",
       "status" : 409
     },
@@ -311,6 +331,10 @@
     {
       "code" : "PROPOSAL_NOT_FOUND",
       "status" : 404
+    },
+    {
+      "code" : "PROPOSAL_NOT_UNDER_REVIEW",
+      "status" : 409
     },
     {
       "code" : "QUOTE_ALREADY_USED",
@@ -462,12 +486,14 @@
     "DURATION_FACTORS_REQUIRED",
     "DURATION_NOT_ALLOWED",
     "EXAMPLE_DOES_NOT_MATCH",
+    "EXTRA_PHOTOS_LIMIT",
     "FALLBACK_ORDER_MISMATCH",
     "HABITUAL_DRIVER_REQUIRED",
     "INVALID_ANSWER",
     "INVALID_CAPITAL_TYPE",
     "INVALID_CHASSIS",
     "INVALID_CODE",
+    "INVALID_COORDINATES",
     "INVALID_COUNTRY_CODE",
     "INVALID_CURRENCY",
     "INVALID_DATE",
@@ -484,6 +510,7 @@
     "INVALID_RANGE",
     "INVALID_REQUIREMENT",
     "INVALID_SECRET_REF",
+    "INVALID_SLOT",
     "INVALID_SORT",
     "INVALID_URL",
     "INVALID_VALUE",
@@ -509,6 +536,8 @@
     "PATTERN",
     "PATTERN_NOT_ANCHORED",
     "PATTERN_WITHOUT_GROUPS",
+    "PHOTO_IN_FUTURE",
+    "PHOTO_TOO_OLD",
     "REQUIRED",
     "REQUIRED_COVERAGE_MISSING",
     "RESERVED_FACTOR_CODE",
