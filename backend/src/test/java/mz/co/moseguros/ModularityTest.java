@@ -25,12 +25,13 @@ class ModularityTest {
 
     /**
      * S1-02 e S1-03: identity só usa shared e as APIs públicas de organization e notification;
-     * organization e notification nunca usam identity.
+     * organization e notification nunca usam identity. Desde o S4-01 também usa document (fotografias
+     * do KYC; modelo transversal §1: {@code identity → organization, notification, document}).
      */
     @Test
-    void identityDependsOnOrganizationAndNotificationOnly() {
-        assertThat(dependenciesOf("identity")).contains("organization", "notification")
-                .isSubsetOf("shared", "organization", "notification");
+    void identityDependsOnOrganizationNotificationAndDocumentOnly() {
+        assertThat(dependenciesOf("identity")).contains("organization", "notification", "document")
+                .isSubsetOf("shared", "organization", "notification", "document");
         assertThat(dependenciesOf("organization")).isSubsetOf("shared");
         assertThat(dependenciesOf("notification")).isSubsetOf("shared");
     }

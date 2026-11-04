@@ -117,6 +117,18 @@
       "status" : 400
     },
     {
+      "code" : "KYC_ALREADY_PENDING",
+      "status" : 409
+    },
+    {
+      "code" : "KYC_ALREADY_VERIFIED",
+      "status" : 409
+    },
+    {
+      "code" : "KYC_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "LAST_ACTIVE_PLATE_FORMAT",
       "status" : 409
     },
@@ -265,6 +277,10 @@
       "status" : 400
     },
     {
+      "code" : "PROFILE_INCOMPLETE",
+      "status" : 409
+    },
+    {
       "code" : "QUOTE_ALREADY_USED",
       "status" : 409
     },
@@ -406,6 +422,7 @@
     "INVALID_DATE",
     "INVALID_DOCUMENT_NUMBER",
     "INVALID_EMAIL",
+    "INVALID_INSURER",
     "INVALID_LICENCE_NUMBER",
     "INVALID_MSISDN",
     "INVALID_NAME",
