@@ -276,6 +276,10 @@ public final class ErrorCodes {
     /** Aceitar uma proposta com vistoria obrigatória ainda não aprovada (409). */
     public static final String INSPECTION_NOT_APPROVED = "INSPECTION_NOT_APPROVED";
 
+    // Proposta criada pelo mediador (S4-06)
+    /** A conta do cliente da cotação do mediador está desactivada ({@code DISABLED}) (409). */
+    public static final String CLIENT_ACCOUNT_DISABLED = "CLIENT_ACCOUNT_DISABLED";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -394,7 +398,8 @@ public final class ErrorCodes {
             Map.entry(PHOTO_NOT_FOUND, 404),
             Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409),
             Map.entry(KYC_NOT_VERIFIED, 409),
-            Map.entry(INSPECTION_NOT_APPROVED, 409));
+            Map.entry(INSPECTION_NOT_APPROVED, 409),
+            Map.entry(CLIENT_ACCOUNT_DISABLED, 409));
 
     private ErrorCodes() {
     }

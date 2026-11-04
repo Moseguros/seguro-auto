@@ -45,6 +45,19 @@ public class ProposalSystemLookups {
                 .map(ProposalSystemLookups::ref);
     }
 
+    /** Mediador (corretor ou agente): nome comercial congelado na proposta (S4-06). */
+    public record BrokerRef(UUID id, String displayName, boolean active) {
+    }
+
+    /** Organização do mediador actual; vazio se não existir ou não for um corretor ou agente. */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public Optional<BrokerRef> broker(UUID orgId) {
+        return organizations.findSummary(orgId)
+                .filter(o -> o.type() == OrganizationType.BROKER || o.type() == OrganizationType.AGENT)
+                .map(o -> new BrokerRef(o.id(), o.displayName(), o.isActive()));
+    }
+
     /**
      * Regras de aceitação da versão do produto da proposta (S4-05 §3): {@code rules.underwriting} da
      * versão publicada ({@code CatalogApi.version}, já em {@code SYSTEM}) ou os valores por defeito. Um

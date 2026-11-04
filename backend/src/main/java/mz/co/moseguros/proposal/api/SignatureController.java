@@ -53,7 +53,9 @@ public class SignatureController {
                     + "SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só "
                     + "assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON "
                     + "com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. "
-                    + "Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND.")
+                    + "Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Pedido pelo mediador da proposta (S4-06): "
+                    + "assinatura assistida, o código vai para o telemóvel da conta do cliente com o nome do mediador "
+                    + "na mensagem.")
     @ApiResponse(responseCode = "202", description = "Código enviado",
             content = @Content(schema = @Schema(implementation = SignatureRequestResponse.class)))
     public ResponseEntity<SignatureRequestResponse> request(@PathVariable UUID id,
@@ -76,7 +78,8 @@ public class SignatureController {
                     + "(OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, "
                     + "OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, "
                     + "checklist.signature = DONE) e renova expiresAt. Qualquer alteração posterior da proposta "
-                    + "invalida a assinatura.")
+                    + "invalida a assinatura. Confirmada por um utilizador do mediador (S4-06) → signature.assisted = "
+                    + "true; pelo próprio cliente → não assistida.")
     public ProposalResponse confirm(@PathVariable UUID id, @RequestBody ConfirmSignatureRequest request,
                                     HttpServletRequest http) {
         return ProposalResponse.from(signatures.confirm(id, request.challengeId(), request.code(),

@@ -24,7 +24,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * E-mails da proposta (S4-05 §9): ao cliente na submissão, na aceitação, na recusa e no pedido de
- * informação, e aos subscritores no alerta de SLA. Nesta fase só há e-mail
+ * informação, e aos subscritores no alerta de SLA; ao cliente quando um mediador lhe prepara uma
+ * proposta (S4-06 §8). Nesta fase só há e-mail
  * ({@code NotificationApi.sendEmail}, {@code purpose = PROPOSAL}, {@code correlationId} = id da
  * proposta); o S6-04 passa a usar {@code NotificationApi.notify} com SMS e push.
  *
@@ -43,6 +44,7 @@ public class ProposalNotifier {
     static final String REJECTED = "proposal.rejected.email";
     static final String INFO_REQUESTED = "proposal.info-requested.email";
     static final String SLA_ALERT = "proposal.sla-alert.email";
+    static final String CREATED_BY_BROKER = "proposal.created-by-broker.email";
 
     private static final Logger log = LoggerFactory.getLogger(ProposalNotifier.class);
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy").withZone(Proposal.ZONE);
@@ -64,6 +66,17 @@ public class ProposalNotifier {
         this.newTransaction = new TransactionTemplate(transactionManager);
         this.newTransaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         this.webBaseUrl = webBaseUrl.endsWith("/") ? webBaseUrl.substring(0, webBaseUrl.length() - 1) : webBaseUrl;
+    }
+
+    /**
+     * Proposta preparada por um mediador em nome do cliente ({@code proposal.created-by-broker}, S4-06 §8):
+     * só com e-mail verificado (uma conta criada pelo mediador não tem e-mail); depois do commit.
+     */
+    public void createdByBroker(Proposal p) {
+        toCustomer(p, CREATED_BY_BROKER, (language, firstName) -> new Object[] {p.getNumber(), p.getBrokerName(),
+                firstName.isEmpty() ? ("en".equals(language) ? "customer" : "cliente") : firstName,
+                p.getInsurerName(), MoneyFormat.format(Money.ofCentavos(p.getTotalAmount()), language),
+                customerLink(p)});
     }
 
     /** Proposta enviada à seguradora, em análise ({@code proposal.submitted}). */

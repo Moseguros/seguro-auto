@@ -23,6 +23,8 @@ import mz.co.moseguros.proposal.domain.CoverageLine;
 import mz.co.moseguros.proposal.domain.Declaration;
 import mz.co.moseguros.proposal.domain.DeclarationQuestion;
 import mz.co.moseguros.proposal.domain.InfoRequestItem;
+import mz.co.moseguros.proposal.domain.InspectionStatus;
+import mz.co.moseguros.proposal.domain.PolicyholderSource;
 import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.PremiumBreakdown;
 import mz.co.moseguros.proposal.domain.Proposal;
@@ -41,7 +43,7 @@ import mz.co.moseguros.shared.domain.VehicleUsage;
 /**
  * Proposta (S4-02 §10, S4-03 §7, S4-04 §8, S4-05 §12). {@code signature} é a assinatura válida
  * ({@code null} sem ela); {@code decision} é a decisão da seguradora ({@code null} antes da primeira
- * submissão); {@code broker} vem a {@code null} nesta fase (S4-06); {@code inspection} é o do S4-03 §7. O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta
+ * submissão); {@code broker} é o mediador que criou a proposta ({@code null} nas do cliente, S4-06); {@code inspection} é o do S4-03 §7. O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta
  * do condutor saem só mascarados; o chassis não sai.
  */
 public record ProposalResponse(
@@ -64,6 +66,10 @@ public record ProposalResponse(
         ProposalProduct product,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ProposalPolicyholder policyholder,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                description = "PROFILE: tomador copiado do perfil do cliente; BROKER: preenchido pelo mediador porque "
+                        + "o perfil estava incompleto (S4-06)")
+        PolicyholderSource policyholderSource,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ProposalVehicle vehicle,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -405,6 +411,7 @@ public record ProposalResponse(
                 new ProposalPolicyholder(holder.fullName(), holder.birthDate(), holder.idDocType(),
                         holder.idDocNumberMasked(), holder.nuitMasked(), holder.address(), holder.province(),
                         holder.msisdnMasked(), holder.emailMasked()),
+                p.getPolicyholderSource(),
                 new ProposalVehicle(uuid(v, "vehicleId"), text(v, "plate"), text(v, "make"), text(v, "model"),
                         v.path("year").asInt(), VehicleCategory.valueOf(text(v, "category")),
                         VehicleUsage.valueOf(text(v, "usage")), money(v.get("commercialValue"))),
@@ -443,12 +450,23 @@ public record ProposalResponse(
                 signed ? "DONE" : "MISSING");
     }
 
+    /** Lista do que falta com o estado da vistoria ({@code null} sem vistoria), para as listas (S4-06). */
+    static ProposalChecklist checklist(Proposal p, InspectionStatus inspectionStatus, boolean signed) {
+        ProposalChecklist base = checklist(p, (InspectionDetails) null, signed);
+        return new ProposalChecklist(base.declarations(), base.suitability(), inspectionChecklist(inspectionStatus),
+                base.signature());
+    }
+
     /** {@code NOT_REQUIRED} sem vistoria; {@code MISSING} em PENDING; {@code DONE} em SUBMITTED/APPROVED (S4-03 §7). */
     static String inspectionChecklist(InspectionDetails inspection) {
-        if (inspection == null) {
+        return inspectionChecklist(inspection == null ? null : inspection.inspection().getStatus());
+    }
+
+    static String inspectionChecklist(InspectionStatus status) {
+        if (status == null) {
             return "NOT_REQUIRED";
         }
-        return switch (inspection.inspection().getStatus()) {
+        return switch (status) {
             case PENDING -> "MISSING";
             case SUBMITTED, APPROVED -> "DONE";
             case REJECTED -> "REJECTED";

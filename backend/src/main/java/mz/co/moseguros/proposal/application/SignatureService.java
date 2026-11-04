@@ -36,6 +36,9 @@ import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.error.FieldErrorCodes;
 import mz.co.moseguros.shared.error.FieldValidationException;
 import mz.co.moseguros.shared.security.CurrentUser;
+import mz.co.moseguros.shared.tenant.Scope;
+import mz.co.moseguros.shared.tenant.TenantContext;
+import mz.co.moseguros.shared.tenant.TenantSnapshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -149,17 +152,21 @@ public class SignatureService {
                         proposal.getInsurerId(), FileClassification.SENSITIVE,
                         proposal.getNumber() + "-r" + proposal.getContentRevision() + ".pdf"));
 
-        // Código ao tomador, ligado ao hash do PDF.
+        // Código ao tomador, ligado ao hash do PDF. Pedido pelo mediador (S4-06 §6): assistido, com o nome
+        // do mediador na mensagem; o destino é sempre o da conta do cliente.
+        boolean assisted = actingBroker(proposal);
         SignOtpChallenge challenge = identity.requestSignOtp(new SignOtpRequest(proposal.getCustomerUserId(),
                 file.id(), file.sha256(), proposal.getNumber(), proposal.getInsurerName(),
-                Money.ofCentavos(proposal.getTotalAmount()), null, channel));
+                Money.ofCentavos(proposal.getTotalAmount()), assisted ? proposal.getBrokerName() : null, channel));
 
-        proposal.requestSignature(file.id(), file.sha256(), challenge.challengeId(), null);
+        proposal.requestSignature(file.id(), file.sha256(), challenge.challengeId(),
+                assisted ? currentUser.id() : null);
         proposals.saveAndFlush(proposal);
         Map<String, Object> after = new LinkedHashMap<>();
         after.put("documentFileId", file.id());
         after.put("documentHash", file.sha256());
         after.put("channel", challenge.channel().name());
+        after.put("assisted", assisted);
         audit.record(new AuditRecord(proposalService.actorType(), currentUser.id().toString(), proposal.getInsurerId(),
                 "PROPOSAL.SIGN_REQUEST", "Proposal", proposal.getId().toString(), null, after));
         log.info("Signature of proposal {} (revision {}) requested: file {}, challenge {} via {}",
@@ -192,7 +199,9 @@ public class SignatureService {
         SignOtpVerification verification = identity.verifySignOtp(proposal.getCustomerUserId(), challengeId,
                 code.strip(), proposal.getSignRequestHash());
 
-        UUID assistedBy = proposal.getSignRequestAssistedByUserId();
+        // Confirmada pelo mediador → assistida (S4-06 §6); pelo próprio cliente → não assistida, mesmo que o
+        // pedido tenha sido do mediador. O signatário é sempre o cliente.
+        UUID assistedBy = actingBroker(proposal) ? currentUser.id() : null;
         Signature signature = Signature.of(proposal, new Signature.Signed(proposal.getSignRequestFileId(),
                 proposal.getSignRequestHash(), verification.challengeId(), verification.channel(),
                 verification.destinationMasked(), assistedBy, assistedBy == null ? null : proposal.getBrokerOrgId(),
@@ -206,11 +215,22 @@ public class SignatureService {
         after.put("documentHash", signature.getDocumentHash());
         after.put("channel", signature.getOtpChannel().name());
         after.put("destinationMasked", signature.getDestinationMasked());
+        after.put("assisted", assistedBy != null);
         audit.record(new AuditRecord(proposalService.actorType(), currentUser.id().toString(), proposal.getInsurerId(),
                 "PROPOSAL.SIGN", "Proposal", proposal.getId().toString(), null, after));
         log.info("Proposal {} (revision {}) signed: signature {}, document {}", proposal.getNumber(),
                 proposal.getContentRevision(), signature.getId(), signature.getDocumentFileId());
         return queries.details(proposal);
+    }
+
+    /**
+     * Quem pede é um utilizador do mediador da proposta (âmbito {@code ORG} da organização
+     * {@code broker_org_id}, S4-06 §6).
+     */
+    static boolean actingBroker(Proposal proposal) {
+        TenantSnapshot tenant = TenantContext.current();
+        return tenant.scope() == Scope.ORG && proposal.getBrokerOrgId() != null
+                && proposal.getBrokerOrgId().equals(tenant.orgId());
     }
 
     /**

@@ -80,7 +80,8 @@ public class ProposalController {
     @Operation(operationId = "updateProposal", summary = "Altera a data de início da proposta",
             description = "Permissão self:proposals ou proposal:create-for-client. startDate entre hoje e hoje + 60 "
                     + "dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE); a duração e o prémio não mudam; o tomador é "
-                    + "copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE)." + WRITE_RULES)
+                    + "copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE); com policyholderSource = "
+                    + "BROKER (S4-06) mantém o tomador preenchido pelo mediador." + WRITE_RULES)
     public ProposalResponse update(@PathVariable UUID id, @RequestBody UpdateProposalRequest request) {
         return response(proposals.update(id, request.startDate(), request.version()));
     }
