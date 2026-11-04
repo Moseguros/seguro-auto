@@ -10,6 +10,16 @@ import '../features/home/home_screen.dart';
 import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/quote/screens/coverages_step_screen.dart';
+import '../features/quote/screens/my_quotes_screen.dart';
+import '../features/quote/screens/period_step_screen.dart';
+import '../features/quote/screens/quote_compare_screen.dart';
+import '../features/quote/screens/quote_detail_screen.dart';
+import '../features/quote/screens/quote_results_screen.dart';
+import '../features/quote/screens/summary_step_screen.dart';
+import '../features/quote/screens/type_step_screen.dart';
+import '../features/quote/screens/vehicle_step_screen.dart';
+import '../features/quote/widgets/step_scaffold.dart' show QuoteSteps;
 import '../features/vehicles/camera/document_camera_screen.dart';
 import '../features/vehicles/vehicle_detail_screen.dart';
 import '../features/vehicles/vehicle_form_screen.dart';
@@ -65,6 +75,9 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// | Rota | Ecrã |
 /// | --- | --- |
 /// | `/` | início (barra inferior: Início) |
+/// | `/quote` → `/quote/vehicle` (`?redo=`), `/quote/type`, `/quote/coverages`, `/quote/period`, `/quote/summary` | assistente "Simular seguro" (barra: Início) |
+/// | `/quote/results/:requestId`, `…/compare?ids=`, `…/quotes/:quoteId` | resultados, comparação e detalhe (barra: Início) |
+/// | `/quotes` | as minhas cotações (barra: Início) |
 /// | `/vehicles`, `/vehicles/new`, `/vehicles/:id`, `/vehicles/:id/edit` | veículos (barra: Veículos) |
 /// | `/vehicles/:id/registration-doc/camera` | câmara guiada, sem a barra |
 /// | `/drivers`, `/drivers/new?vehicleId=`, `/drivers/:id/edit` | condutores (barra: Veículos) |
@@ -93,6 +106,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/',
                 builder: (context, state) => const HomeScreen(),
+                routes: _quoteRoutes,
               ),
             ],
           ),
@@ -184,6 +198,70 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+/// "Fazer seguro" (S3-05 §1), no ramo do início: os passos do assistente são
+/// empilhados um a um (o "voltar" do Android é o "Voltar" do passo) e cada um
+/// tem como nome o seu caminho (para "Alterar" no resumo voltar a ele).
+///
+/// Os formulários de veículo (`/vehicles/new`, `/vehicles/:id/edit`) abrem-se com
+/// `push` a partir daqui; o ramo dos veículos mostra-os e o "voltar" regressa ao
+/// passo.
+final _quoteRoutes = <RouteBase>[
+  GoRoute(path: 'quote', redirect: (context, state) => QuoteSteps.vehicle),
+  GoRoute(
+    path: 'quote/vehicle',
+    name: QuoteSteps.vehicle,
+    builder: (context, state) =>
+        VehicleStepScreen(redo: state.uri.queryParameters['redo']),
+  ),
+  GoRoute(
+    path: 'quote/type',
+    name: QuoteSteps.type,
+    builder: (context, state) => const TypeStepScreen(),
+  ),
+  GoRoute(
+    path: 'quote/coverages',
+    name: QuoteSteps.coverages,
+    builder: (context, state) => const CoveragesStepScreen(),
+  ),
+  GoRoute(
+    path: 'quote/period',
+    name: QuoteSteps.period,
+    builder: (context, state) => const PeriodStepScreen(),
+  ),
+  GoRoute(
+    path: 'quote/summary',
+    name: QuoteSteps.summary,
+    builder: (context, state) => const SummaryStepScreen(),
+  ),
+  GoRoute(
+    path: 'quote/results/:requestId',
+    builder: (context, state) =>
+        QuoteResultsScreen(requestId: state.pathParameters['requestId']!),
+    routes: [
+      GoRoute(
+        path: 'compare',
+        builder: (context, state) => QuoteCompareScreen(
+          requestId: state.pathParameters['requestId']!,
+          ids: [
+            for (final id in (state.uri.queryParameters['ids'] ?? '').split(
+              ',',
+            ))
+              if (id.trim().isNotEmpty) id.trim(),
+          ],
+        ),
+      ),
+      GoRoute(
+        path: 'quotes/:quoteId',
+        builder: (context, state) => QuoteDetailScreen(
+          requestId: state.pathParameters['requestId']!,
+          quoteId: state.pathParameters['quoteId']!,
+        ),
+      ),
+    ],
+  ),
+  GoRoute(path: 'quotes', builder: (context, state) => const MyQuotesScreen()),
+];
 
 class _Splash extends StatelessWidget {
   const _Splash();
