@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "rating-v1",
+  "durationFactors": [
+    { "days": 7, "factor": "0.06" },
+    { "days": 14, "factor": "0.10" },
+    { "days": 30, "factor": "0.18" },
+    { "days": 60, "factor": "0.32" },
+    { "days": 365, "factor": "1" }
+  ],
+  "coverages": [
+    {
+      "coverageCode": "MTPL",
+      "base": {
+        "type": "AMOUNT",
+        "rows": [
+          { "when": { "vehicleCategory": { "in": ["LIGHT_PASSENGER"] }, "vehicleUsage": { "in": ["PRIVATE"] } }, "value": 450000 },
+          { "when": { "vehicleCategory": { "in": ["LIGHT_MIXED"] } }, "value": 600000 },
+          { "when": { "vehicleCategory": { "in": ["MOTORCYCLE"] } }, "value": 250000 }
+        ]
+      },
+      "factors": [
+        { "code": "DRIVER_AGE", "label": "Idade do condutor", "rows": [
+          { "when": { "driverAgeYears": { "lt": 25 } }, "value": "1.30" },
+          { "when": { "driverAgeYears": { "gte": 25, "lt": 70 } }, "value": "1.00" },
+          { "when": { "driverAgeYears": { "gte": 70 } }, "value": "1.15" } ] }
+      ]
+    }
+  ]
+}

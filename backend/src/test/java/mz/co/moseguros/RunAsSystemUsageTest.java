@@ -76,6 +76,20 @@ class RunAsSystemUsageTest {
                         "CatalogSystemLookups.publishedVersion", "CatalogSystemLookups.versionAccess");
     }
 
+    /** S3-01: os perfis de seguradora (OrganizationApi.insurerProfile/insurerProfiles) lêem-se em SYSTEM. */
+    @Test
+    void organizationSystemLookupsIsAllowed() {
+        JavaClasses organization = new ClassFileImporter().importClasses(
+                mz.co.moseguros.organization.application.OrganizationSystemLookups.class);
+        RUN_AS_SYSTEM_OWNERS.check(organization);
+        org.assertj.core.api.Assertions.assertThat(organization.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("OrganizationSystemLookups.insurerProfile",
+                        "OrganizationSystemLookups.insurerProfiles");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

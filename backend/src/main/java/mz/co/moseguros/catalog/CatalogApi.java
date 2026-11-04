@@ -3,8 +3,10 @@ package mz.co.moseguros.catalog;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import mz.co.moseguros.catalog.application.CatalogSystemLookups;
 import mz.co.moseguros.catalog.application.CatalogSystemLookups.CatalogEntry;
+import mz.co.moseguros.catalog.application.InsurerVersionService;
 import mz.co.moseguros.catalog.application.PlatformSettingService;
 import mz.co.moseguros.shared.domain.VehicleCategory;
 import mz.co.moseguros.shared.domain.VehicleUsage;
@@ -24,10 +26,13 @@ public class CatalogApi {
 
     private final PlatformSettingService settings;
     private final CatalogSystemLookups lookups;
+    private final InsurerVersionService insurerVersions;
 
-    public CatalogApi(PlatformSettingService settings, CatalogSystemLookups lookups) {
+    public CatalogApi(PlatformSettingService settings, CatalogSystemLookups lookups,
+                      InsurerVersionService insurerVersions) {
         this.settings = settings;
         this.lookups = lookups;
+        this.insurerVersions = insurerVersions;
     }
 
     /**
@@ -62,5 +67,29 @@ public class CatalogApi {
                 .map(CatalogEntry::version)
                 .orElseThrow(() -> DomainException.of(ErrorCodes.PRODUCT_VERSION_NOT_FOUND,
                         "Product version not found"));
+    }
+
+    /**
+     * Versão em qualquer estado ({@code DRAFT} incluído), no âmbito de quem chama: o RLS mostra só
+     * as versões da seguradora do {@code TenantContext} (S3-01 §5). Não usa o
+     * {@link CatalogSystemLookups}.
+     *
+     * @throws DomainException {@code PRODUCT_VERSION_NOT_FOUND} (404) se não for visível
+     */
+    public ProductVersionView insurerVersion(UUID productVersionId) {
+        return insurerVersions.view(productVersionId);
+    }
+
+    /**
+     * Grava {@code rules.rating} de uma versão {@code DRAFT} da seguradora de quem chama
+     * ({@code rules = rules || {"rating": …}}) e incrementa a {@code version}. Não valida o
+     * conteúdo da tarifa: isso é do módulo {@code rating}.
+     *
+     * @return a nova {@code version}
+     * @throws DomainException {@code PRODUCT_VERSION_NOT_FOUND} (404), {@code PRODUCT_VERSION_NOT_EDITABLE}
+     *                         ou {@code CONCURRENT_MODIFICATION} (409)
+     */
+    public long updateRatingRules(UUID productVersionId, JsonNode rating, long expectedVersion) {
+        return insurerVersions.updateRatingRules(productVersionId, rating, expectedVersion);
     }
 }

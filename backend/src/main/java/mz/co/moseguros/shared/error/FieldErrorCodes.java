@@ -117,6 +117,50 @@ public final class FieldErrorCodes {
     /** Lista de condutores de um veículo com mais de um habitual. */
     public static final String MULTIPLE_HABITUAL_DRIVERS = "MULTIPLE_HABITUAL_DRIVERS";
 
+    // Tarifa interna e encargos da seguradora (S3-01); field = ponteiro JSON dentro de rating/charges
+    /** O documento não cumpre o JSON Schema ({@code rating-v1.json}, {@code charges-v1.json}). */
+    public static final String SCHEMA_VIOLATION = "SCHEMA_VIOLATION";
+    /** Uma cobertura da versão sem entrada em {@code coverages} da tarifa. */
+    public static final String COVERAGE_TARIFF_MISSING = "COVERAGE_TARIFF_MISSING";
+    /** Entrada da tarifa para uma cobertura que a versão não tem. */
+    public static final String COVERAGE_NOT_IN_PRODUCT = "COVERAGE_NOT_IN_PRODUCT";
+    /** Duas entradas da tarifa para a mesma cobertura. */
+    public static final String DUPLICATE_COVERAGE = "DUPLICATE_COVERAGE";
+    /** Tipo da base que não serve para o tipo de capital da cobertura. */
+    public static final String BASE_TYPE_NOT_ALLOWED = "BASE_TYPE_NOT_ALLOWED";
+    /** Taxa, factor ou percentagem fora dos limites permitidos. */
+    public static final String VALUE_OUT_OF_RANGE = "VALUE_OUT_OF_RANGE";
+    /** Intervalo com {@code gte} maior ou igual a {@code lt}. */
+    public static final String INVALID_RANGE = "INVALID_RANGE";
+    /** Código de factor repetido na mesma cobertura. */
+    public static final String DUPLICATE_FACTOR = "DUPLICATE_FACTOR";
+    /** Código de factor reservado ao sistema ({@code BONUS_MALUS}, S7). */
+    public static final String RESERVED_FACTOR_CODE = "RESERVED_FACTOR_CODE";
+    /** Duração ({@code days}) repetida em {@code durationFactors}. */
+    public static final String DUPLICATE_DURATION = "DUPLICATE_DURATION";
+    /** Factor de 365 dias diferente de 1. */
+    public static final String DURATION_365_NOT_ONE = "DURATION_365_NOT_ONE";
+    /** Produto {@code TEMPORARY} sem {@code durationFactors}. */
+    public static final String DURATION_FACTORS_REQUIRED = "DURATION_FACTORS_REQUIRED";
+    /** Duração diferente de 365 dias num produto que não é {@code TEMPORARY}. */
+    public static final String DURATION_NOT_ALLOWED = "DURATION_NOT_ALLOWED";
+    /** Código de encargo repetido. */
+    public static final String DUPLICATE_CHARGE = "DUPLICATE_CHARGE";
+
+    // Cotações e ligação à tarifação externa (S3-02)
+    /** Data de início antes de hoje ou depois do limite ({@code max-start-days-ahead}). */
+    public static final String START_DATE_OUT_OF_RANGE = "START_DATE_OUT_OF_RANGE";
+    /** Cobertura que não existe no tipo de seguro pedido (ex.: danos próprios fora de {@code COMPREHENSIVE}). */
+    public static final String COVERAGE_NOT_ALLOWED_FOR_TYPE = "COVERAGE_NOT_ALLOWED_FOR_TYPE";
+    /** Pedido {@code COMPREHENSIVE} sem nenhuma cobertura de danos próprios. */
+    public static final String OWN_DAMAGE_REQUIRED = "OWN_DAMAGE_REQUIRED";
+    /** Cobertura pedida sem as coberturas que ela exige ({@code OD_THEFT}). */
+    public static final String COVERAGE_REQUIRES = "COVERAGE_REQUIRES";
+    /** Endereço que não é uma URL absoluta {@code https://} (ou {@code http://} onde é permitido). */
+    public static final String INVALID_URL = "INVALID_URL";
+    /** Referência de segredo fora do formato {@code config:<chave>}. */
+    public static final String INVALID_SECRET_REF = "INVALID_SECRET_REF";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

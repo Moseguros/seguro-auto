@@ -57,6 +57,14 @@ public abstract class BaseEntity implements Persistable<UUID> {
         this.id = Ids.newId();
     }
 
+    /**
+     * Entidade com um id já gerado ({@link Ids#newId()}) antes de existir (ex.: a cotação do S3-02,
+     * cujo id vai no pedido à seguradora externa antes de ser gravada).
+     */
+    protected BaseEntity(UUID id) {
+        this.id = java.util.Objects.requireNonNull(id, "id");
+    }
+
     @Override
     public UUID getId() {
         return id;

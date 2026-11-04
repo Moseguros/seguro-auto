@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moseguros.co.mz/schemas/rating-v1.json",
+  "title": "MoSeguros - tarifa interna v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "coverages"],
+  "properties": {
+    "schemaVersion": { "const": "rating-v1" },
+    "durationFactors": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["days", "factor"],
+        "properties": {
+          "days": { "enum": [7, 14, 30, 60, 365] },
+          "factor": { "$ref": "#/$defs/decimal" }
+        }
+      }
+    },
+    "coverages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/coverageTariff" }
+    }
+  },
+  "$defs": {
+    "decimal": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,5})(\\.[0-9]{1,6})?$" },
+    "centavos": { "type": "integer", "minimum": 0, "maximum": 100000000000 },
+    "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "coverageCode": {
+      "enum": ["MTPL", "VTPL", "OD_COLLISION", "OD_GLASS", "OD_FIRE", "OD_NATURE", "OD_THEFT",
+               "OCCUPANTS", "ASSISTANCE", "LEGAL", "SRCC", "CROSS_BORDER"]
+    },
+    "coverageTariff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverageCode", "base"],
+      "properties": {
+        "coverageCode": { "$ref": "#/$defs/coverageCode" },
+        "base": { "$ref": "#/$defs/baseTable" },
+        "factors": {
+          "type": "array",
+          "maxItems": 12,
+          "items": { "$ref": "#/$defs/factorTable" }
+        }
+      }
+    },
+    "baseTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "rows"],
+      "properties": {
+        "type": { "enum": ["AMOUNT", "RATE_OF_VEHICLE_VALUE", "RATE_OF_CAPITAL"] },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["when", "value"],
+            "properties": {
+              "label": { "$ref": "#/$defs/label" },
+              "when": { "$ref": "#/$defs/condition" },
+              "value": true
+            }
+          }
+        }
+      },
+      "if": { "properties": { "type": { "const": "AMOUNT" } } },
+      "then": { "properties": { "rows": { "items": { "properties": { "value": { "$ref": "#/$defs/centavos" } } } } } },
+      "else": { "properties": { "rows": { "items": { "properties": { "value": { "$ref": "#/$defs/decimal" } } } } } }
+    },
+    "factorTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "rows"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,29}$" },
+        "label": { "$ref": "#/$defs/label" },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["when", "value"],
+            "properties": {
+              "label": { "$ref": "#/$defs/label" },
+              "when": { "$ref": "#/$defs/condition" },
+              "value": { "$ref": "#/$defs/decimal" }
+            }
+          }
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vehicleCategory": { "$ref": "#/$defs/categorySet" },
+        "vehicleUsage": { "$ref": "#/$defs/usageSet" },
+        "province": { "$ref": "#/$defs/provinceSet" },
+        "hasTracker": { "type": "boolean" },
+        "vehicleAgeYears": { "$ref": "#/$defs/intRange" },
+        "engineCc": { "$ref": "#/$defs/intRange" },
+        "seats": { "$ref": "#/$defs/intRange" },
+        "grossWeightKg": { "$ref": "#/$defs/intRange" },
+        "driverAgeYears": { "$ref": "#/$defs/intRange" },
+        "licenceYears": { "$ref": "#/$defs/intRange" },
+        "durationDays": { "$ref": "#/$defs/intRange" },
+        "capital": { "$ref": "#/$defs/amountRange" },
+        "vehicleValue": { "$ref": "#/$defs/amountRange" }
+      }
+    },
+    "intRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "gte": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+        "lt": { "type": "integer", "minimum": 1, "maximum": 1000000 }
+      }
+    },
+    "amountRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "gte": { "$ref": "#/$defs/centavos" },
+        "lt": { "$ref": "#/$defs/centavos" }
+      }
+    },
+    "categorySet": {
+      "type": "object", "additionalProperties": false, "required": ["in"],
+      "properties": { "in": { "type": "array", "minItems": 1, "uniqueItems": true,
+        "items": { "enum": ["LIGHT_PASSENGER", "LIGHT_MIXED", "HEAVY", "MOTORCYCLE", "TRAILER", "BUS"] } } }
+    },
+    "usageSet": {
+      "type": "object", "additionalProperties": false, "required": ["in"],
+      "properties": { "in": { "type": "array", "minItems": 1, "uniqueItems": true,
+        "items": { "enum": ["PRIVATE", "RENTAL", "PASSENGER_TRANSPORT", "GOODS", "TAXI", "DRIVING_SCHOOL"] } } }
+    },
+    "provinceSet": {
+      "type": "object", "additionalProperties": false, "required": ["in"],
+      "properties": { "in": { "type": "array", "minItems": 1, "uniqueItems": true,
+        "items": { "enum": ["MAPUTO_CITY", "MAPUTO", "GAZA", "INHAMBANE", "SOFALA", "MANICA", "TETE",
+                            "ZAMBEZIA", "NAMPULA", "CABO_DELGADO", "NIASSA"] } } }
+    }
+  }
+}

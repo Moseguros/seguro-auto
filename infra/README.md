@@ -103,13 +103,16 @@ No perfil `local` o Flyway aplica também `backend/src/main/resources/db/dev/` (
 | Corretor | convite para `corretor@demo.local` (`ORG_ADMIN`, `BROKER`) |
 | Cliente de teste | `+258840000001` ("Cliente Teste"), entra por OTP com o código no cabeçalho `X-Debug-Otp` |
 | Veículo do cliente de teste | `AAA-100-MC` (Toyota Corolla 2018, `PRIVATE`, `MAPUTO_CITY`, 850 000 MZN), verificado no registo simulado; id `01930000-0000-7000-8000-000000000101`; sem livrete nem condutores |
+| Segunda seguradora (S3-01) | "Seguradora Demo B, SA" (`DEMOB`), NUIT `400000010`, id `01930000-0000-7000-8000-000000000320`; sem utilizadores |
+| Produtos publicados | nas duas seguradoras: `RC-AUTO` (`MTPL_ONLY`), `AUTO-COMPLETO` (`COMPREHENSIVE`) e `TEMP-AUTO` "Temporário Demo" (`TEMPORARY`, desde 2026-12-15; só `MTPL`); ids da Demo B `…0331`–`…0333` (versões `…0341`–`…0343`) |
+| Tarifas e encargos (S3-01) | tarifas de `docs/tasks/S3-rating-cases.md` em todos os produtos (`validateRatingRules` sem erros); a Demo B tem mais o factor `COMMERCIAL` (1,08) em cada cobertura. Encargos das duas: `DEMO_STAMP` 2,5 % e `DEMO_FEE` 50 MT (provisórios) |
 
 Activar as contas de staff (palavra-passe e TOTP) abrindo os convites, que não expiram:
 
 - <http://localhost:5173/convite/dev-convite-gestor-demo> (no compose: <http://localhost:3000/convite/dev-convite-gestor-demo>)
 - <http://localhost:5173/convite/dev-convite-corretor-demo> (no compose: <http://localhost:3000/convite/dev-convite-corretor-demo>)
 
-Os ids são fixos (`01930000-0000-7000-8000-00000000000N`, N = 1 a 7, e `…0101` para o veículo) e os scripts não duplicam nada se correrem outra vez.
+Os ids são fixos (`01930000-0000-7000-8000-00000000000N`, N = 1 a 7, `…0101` para o veículo, `…02NN` para os produtos do S2 e `…03NN` para os do S3) e os scripts não duplicam nada se correrem outra vez.
 
 ### Registo automóvel simulado (INATRO)
 

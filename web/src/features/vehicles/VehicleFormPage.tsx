@@ -5,18 +5,23 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getGetMyVehicleQueryKey, getMyVehicle, type VehicleResponse } from '../../api/generated';
 import { LoadingScreen } from '../../auth/RequireAuth';
+import { customerReturnPath } from '../quotes/config';
 import { LoadError } from './LoadError';
 import type { VehicleDetailState } from './VehicleDetailPage';
 import { VehicleForm } from './VehicleForm';
 import { invalidateVehicles } from './vehicleQueries';
 
-/** `/cliente/veiculos/novo` e `/cliente/veiculos/:id/editar`. */
+/**
+ * `/cliente/veiculos/novo` e `/cliente/veiculos/:id/editar`. Com `?voltar=/cliente/…` (vindo do
+ * assistente de simulação), depois de gravar volta para lá em vez do detalhe.
+ */
 export function VehicleFormPage() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const editing = Boolean(id);
@@ -29,6 +34,11 @@ export function VehicleFormPage() {
   const onSaved = async (vehicle: VehicleResponse) => {
     queryClient.setQueryData(getGetMyVehicleQueryKey(vehicle.id), vehicle);
     await invalidateVehicles(queryClient);
+    const back = customerReturnPath(params.get('voltar'));
+    if (back) {
+      navigate(back);
+      return;
+    }
     const state: VehicleDetailState = { notice: editing ? 'saved' : 'created' };
     navigate(`/cliente/veiculos/${vehicle.id}`, { state });
   };

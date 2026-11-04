@@ -96,6 +96,18 @@ public class UserAccount extends BaseEntity {
     }
 
     /**
+     * Conta de cliente criada sem OTP, a partir do telemóvel dado por outra pessoa (o mediador que
+     * cota em nome do cliente, S3-02 §6.1): {@code ACTIVE} e com o telemóvel <b>por verificar</b>.
+     * O telemóvel fica verificado no primeiro login por OTP (regra do S1-03).
+     */
+    public static UserAccount newUnverifiedCustomer(Msisdn msisdn) {
+        UserAccount account = customer();
+        account.msisdn = Objects.requireNonNull(msisdn, "msisdn");
+        account.msisdnVerified = false;
+        return account;
+    }
+
+    /**
      * Conta de cliente criada depois de validar um OTP enviado por e-mail: {@code ACTIVE} e
      * com o e-mail verificado. E-mail inválido → {@code INVALID_EMAIL}.
      */

@@ -208,7 +208,16 @@
     "DRIVER_ALREADY_REGISTERED": "You already have a driver with this licence.",
     "DRIVER_LIMIT_REACHED": "You have reached the maximum of 10 drivers.",
     "OWNER_DRIVER_ALREADY_EXISTS": "You are already registered as a driver.",
-    "DRIVER_IS_HABITUAL": "This driver is the habitual driver of a vehicle. Choose another habitual driver first."
+    "DRIVER_IS_HABITUAL": "This driver is the habitual driver of a vehicle. Choose another habitual driver first.",
+    "RATING_RULES_TOO_LARGE": "The tariff is too large (maximum 256 KB).",
+    "QUOTE_REQUEST_NOT_FOUND": "Quote not found.",
+    "QUOTE_NOT_FOUND": "Quote not found.",
+    "QUOTE_EXPIRED": "This quote has expired. Run a new simulation.",
+    "QUOTE_NOT_AVAILABLE": "This insurer did not make an offer.",
+    "QUOTE_ALREADY_USED": "This quote has already been used in a proposal.",
+    "QUOTE_RATE_LIMITED": "You ran too many simulations in the last hour. Try again later.",
+    "VEHICLE_VALUE_REQUIRED": "For own damage, enter the commercial value of the vehicle.",
+    "ORGANIZATION_NOT_INSURER": "This organization is not an insurer."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -272,7 +281,27 @@
     "LICENCE_CATEGORY_UNKNOWN": "Unknown licence category.",
     "LICENCE_ISSUE_DATE_INVALID": "The issue date must be after the birth date and not after today.",
     "HABITUAL_DRIVER_REQUIRED": "Choose the habitual driver.",
-    "MULTIPLE_HABITUAL_DRIVERS": "There can only be one habitual driver."
+    "MULTIPLE_HABITUAL_DRIVERS": "There can only be one habitual driver.",
+    "SCHEMA_VIOLATION": "Invalid format.",
+    "COVERAGE_TARIFF_MISSING": "A coverage of the product has no tariff.",
+    "COVERAGE_NOT_IN_PRODUCT": "This coverage does not exist in the product.",
+    "DUPLICATE_COVERAGE": "Repeated coverage.",
+    "BASE_TYPE_NOT_ALLOWED": "This base type does not suit the capital of this coverage.",
+    "VALUE_OUT_OF_RANGE": "Value outside the allowed limits.",
+    "INVALID_RANGE": "The lower limit must be less than the upper limit.",
+    "DUPLICATE_FACTOR": "Repeated factor.",
+    "RESERVED_FACTOR_CODE": "This code is reserved for the system.",
+    "DUPLICATE_DURATION": "Repeated duration.",
+    "DURATION_365_NOT_ONE": "The 365-day factor must be 1.",
+    "DURATION_FACTORS_REQUIRED": "A temporary product needs the duration table.",
+    "DURATION_NOT_ALLOWED": "Duration not allowed for this product.",
+    "DUPLICATE_CHARGE": "Repeated charge.",
+    "START_DATE_OUT_OF_RANGE": "The start date must be between today and 60 days from now.",
+    "COVERAGE_NOT_ALLOWED_FOR_TYPE": "This coverage does not exist in this type of insurance.",
+    "OWN_DAMAGE_REQUIRED": "Choose at least one own damage coverage.",
+    "COVERAGE_REQUIRES": "Theft or robbery requires collision, fire and natural events.",
+    "INVALID_URL": "Invalid address (it must start with https://).",
+    "INVALID_SECRET_REF": "Invalid secret reference."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -731,6 +760,21 @@
     "LEGAL": "Legal protection",
     "SRCC": "Strikes, riots and civil commotion",
     "CROSS_BORDER": "Driving abroad"
+  },
+  "quoteUnavailable": {
+    "TARIFF_MISSING": "This insurer does not have a price for this product yet.",
+    "TARIFF_INVALID": "The price of this product could not be calculated.",
+    "COVERAGE_NOT_OFFERED": "This product does not include all the chosen coverages.",
+    "COVERAGE_REQUIREMENTS_NOT_MET": "In this product, the chosen coverages require others you did not choose.",
+    "CAPITAL_NOT_OFFERED": "This product does not offer the chosen capital.",
+    "VEHICLE_VALUE_REQUIRED": "The commercial value of the vehicle is required.",
+    "DURATION_NOT_RATED": "This product is not available for the chosen duration.",
+    "NO_MATCHING_ROW": "This insurer does not cover this vehicle or driver under these conditions.",
+    "INSURER_TIMEOUT": "The insurer did not answer in time.",
+    "INSURER_UNAVAILABLE": "The insurer is unavailable at the moment.",
+    "INSURER_DECLINED": "The insurer did not make an offer.",
+    "EXTERNAL_INVALID_RESPONSE": "The insurer returned an invalid answer.",
+    "EVALUATION_ERROR": "The price could not be calculated."
   },
   "capitalType": {
     "FIXED": "Fixed amount",
@@ -1193,6 +1237,476 @@
       "save": "Save",
       "conflict": "This driver was changed on another device",
       "reload": "Reload"
+    }
+  },
+  "tariffs": {
+    "title": "Tariffs",
+    "tabs": {
+      "products": "Products",
+      "charges": "Charges",
+      "tariff": "Tariff",
+      "simulator": "Simulator"
+    },
+    "externalNotice": "This insurer's quotes are calculated by its own system. The tariffs here are only used in the simulator.",
+    "empty": "There are no products yet. Create one in Products.",
+    "emptyLink": "Go to Products",
+    "retry": "Try again",
+    "columns": {
+      "product": "Product",
+      "version": "Version",
+      "status": "Status",
+      "tariff": "Tariff",
+      "actions": "Actions"
+    },
+    "versionNo": "Version {{n}}",
+    "configured": "With tariff",
+    "notConfigured": "No tariff",
+    "edit": "Edit tariff",
+    "view": "View tariff",
+    "noVersions": "This product has no versions yet.",
+    "publishWarning": {
+      "text": "This version has no tariff yet. If you publish it like this, it will not appear in quotes.",
+      "link": "Set up tariff"
+    },
+    "editor": {
+      "back": "Back to tariffs",
+      "title": "Tariff of {{name}}",
+      "validate": "Validate",
+      "save": "Save",
+      "more": "More",
+      "undo": "Undo",
+      "redo": "Redo",
+      "exportJson": "Export JSON",
+      "importJson": "Import JSON",
+      "readOnlyStatus": "This version is no longer in preparation: the tariff is read-only.",
+      "readOnlyPermission": "You are not allowed to change tariffs: the tariff is read-only.",
+      "valid": "The tariff is valid",
+      "saved": "Tariff saved",
+      "fixFirst": "Fix the errors before saving.",
+      "coverages": "Coverages",
+      "coverage": "Coverage",
+      "hasErrors": "Has errors",
+      "invalidJson": "The file is not a valid JSON tariff.",
+      "conflict": {
+        "title": "Tariff changed",
+        "text": "Someone else changed this tariff. Reload to see the current version; your changes will be lost.",
+        "reload": "Reload",
+        "cancel": "Cancel"
+      },
+      "importConfirm": {
+        "title": "Import JSON",
+        "text": "Replace the current tariff?",
+        "confirm": "Replace",
+        "cancel": "Cancel"
+      },
+      "unsaved": {
+        "title": "Unsaved changes",
+        "text": "If you leave now, your changes to the tariff will be lost.",
+        "stay": "Stay",
+        "leave": "Leave without saving"
+      }
+    },
+    "errorsPanel": {
+      "title": "Errors in the tariff ({{count}})",
+      "top": "Tariff",
+      "duration": "Duration",
+      "base": "Base",
+      "row": "row {{n}}"
+    },
+    "coverage": {
+      "capital": "Capital: {{type}}",
+      "mandatory": "Mandatory",
+      "base": "Base",
+      "baseType": "Base type",
+      "changeBaseType": {
+        "title": "Change the base type?",
+        "text": "The values of the base rows will be cleared.",
+        "confirm": "Change",
+        "cancel": "Cancel"
+      },
+      "factors": "Factors",
+      "noFactors": "This coverage has no factors.",
+      "factorCode": "Code {{code}}",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "delete": "Delete {{name}}",
+      "deleteFactor": {
+        "title": "Delete the factor {{name}}?",
+        "text": "The rows of this factor will be lost.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "table": {
+      "help": "The first row whose conditions are all met applies. If none is met, the coverage has no price.",
+      "columns": {
+        "n": "No.",
+        "label": "Description",
+        "conditions": "Conditions",
+        "value": "Value",
+        "actions": "Actions"
+      },
+      "addRow": "Add row",
+      "exportCsv": "Export CSV",
+      "importCsv": "Import CSV",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "delete": "Delete",
+      "actions": "Actions for row {{n}}",
+      "row": "Row {{n}}",
+      "emptyValue": "No value",
+      "importConfirm": {
+        "title": "Import CSV",
+        "text": "Replace the {{n}} rows of this table?",
+        "confirm": "Replace",
+        "cancel": "Cancel"
+      },
+      "importErrors": {
+        "title": "The CSV could not be imported",
+        "close": "Close"
+      }
+    },
+    "conditions": {
+      "always": "Always",
+      "from": "{{gte}} or more",
+      "below": "less than {{lt}}",
+      "between": "{{gte}} to {{to}}",
+      "moneyBetween": "from {{gte}} to less than {{lt}}",
+      "yes": "yes",
+      "no": "no"
+    },
+    "row": {
+      "titleNew": "New row",
+      "titleEdit": "Edit row {{n}}",
+      "label": "Description (optional)",
+      "conditions": "Conditions",
+      "use": "Use",
+      "gte": "From (≥)",
+      "lt": "Less than (<)",
+      "yes": "Yes",
+      "no": "No",
+      "valueAmount": "Value",
+      "valuePercent": "Rate (%)",
+      "valueFactor": "Factor",
+      "apply": "Apply",
+      "cancel": "Cancel"
+    },
+    "factorMenu": {
+      "add": "Add factor",
+      "custom": "Custom factor",
+      "code": "Code",
+      "label": "Name",
+      "confirm": "Add",
+      "cancel": "Cancel"
+    },
+    "duration": {
+      "title": "Duration",
+      "help": "Factor applied to the annual premium for each available duration. The 365-day one is always 1.",
+      "available": "Available: {{days}} days",
+      "factor": "{{days}}-day factor"
+    }
+  },
+  "charges": {
+    "title": "Charges",
+    "columns": {
+      "code": "Code",
+      "labelPt": "Name (pt)",
+      "labelEn": "Name (en)",
+      "type": "Type",
+      "value": "Value",
+      "actions": "Actions"
+    },
+    "type": {
+      "PERCENT": "Percentage",
+      "FIXED": "Fixed amount"
+    },
+    "charge": "Charge {{n}}",
+    "add": "Add charge",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "delete": "Delete",
+    "empty": "This insurer has no charges.",
+    "note": "Charges are added to the commercial premium and apply to all products. The total is rounded up to the metical.",
+    "save": "Save",
+    "saved": "Charges saved",
+    "fixFirst": "Fix the errors before saving.",
+    "conflict": "Someone else changed the charges",
+    "reload": "Reload"
+  },
+  "simulator": {
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "coverages": "Coverages",
+    "period": "Period",
+    "category": "Category",
+    "usage": "Use",
+    "province": "Province of circulation",
+    "year": "Year",
+    "engineCc": "Engine capacity (cc)",
+    "seats": "Seats",
+    "grossWeightKg": "Gross weight (kg)",
+    "commercialValue": "Market value",
+    "hasTracker": "Tracker installed",
+    "birthDate": "Date of birth",
+    "licenceIssueDate": "Licence date",
+    "mandatory": "{{name}} (mandatory)",
+    "capital": "Capital of {{name}}",
+    "startDate": "Start",
+    "duration": "Duration",
+    "oneYear": "1 year",
+    "days": "{{days}} days",
+    "calculate": "Calculate",
+    "invalidField": "Invalid value",
+    "fixTariff": "Fix the tariff before simulating",
+    "result": "Result",
+    "detail": {
+      "coverage": "Coverage: {{name}}",
+      "table": "Table: {{name}}",
+      "base": "Base"
+    },
+    "goToTable": "Go to the table",
+    "computed": {
+      "driverAgeYears": "Driver age: {{n}} years",
+      "vehicleAgeYears": "Vehicle age: {{n}} years",
+      "licenceYears": "Licence held for: {{n}} years"
+    },
+    "breakdown": {
+      "variables": "Calculated variables",
+      "coverages": "Coverages",
+      "capital": "Capital",
+      "baseRow": "Base · row {{n}}",
+      "baseAmount": "Base amount",
+      "factorRow": "{{name}} · row {{n}}",
+      "bonusMalus": "Bonus/malus",
+      "duration": "Duration",
+      "exactPremium": "Exact premium",
+      "premium": "Premium",
+      "commercialPremium": "Commercial premium",
+      "rounding": "Rounding adjustment",
+      "total": "Total"
+    }
+  },
+  "tariffCsv": {
+    "EMPTY_FILE": "The file has no rows.",
+    "UNKNOWN_COLUMN": "Unknown column: {{column}}.",
+    "MISSING_VALUE_COLUMN": "The \"value\" column is missing.",
+    "MISSING_VALUE": "Row {{line}}: the value is missing.",
+    "INVALID_NUMBER": "Row {{line}}, column {{column}}: invalid number.",
+    "INVALID_ENUM": "Row {{line}}, column {{column}}: unknown code \"{{value}}\".",
+    "INVALID_BOOLEAN": "Row {{line}}, column {{column}}: use true or false.",
+    "TOO_MANY_ROWS": "The file has more than 200 rows."
+  },
+  "variables": {
+    "vehicleCategory": "Vehicle category",
+    "vehicleUsage": "Vehicle use",
+    "province": "Province of circulation",
+    "hasTracker": "Tracker",
+    "vehicleAgeYears": "Vehicle age (years)",
+    "engineCc": "Engine capacity (cc)",
+    "seats": "Seats",
+    "grossWeightKg": "Gross weight (kg)",
+    "driverAgeYears": "Driver age (years)",
+    "licenceYears": "Licence held (years)",
+    "durationDays": "Duration (days)",
+    "capital": "Capital",
+    "vehicleValue": "Vehicle value"
+  },
+  "baseType": {
+    "AMOUNT": "Fixed amount",
+    "RATE_OF_VEHICLE_VALUE": "Percentage of the vehicle value",
+    "RATE_OF_CAPITAL": "Percentage of the capital"
+  },
+  "factorPreset": {
+    "DRIVER_AGE": "Driver age",
+    "LICENCE_YEARS": "Licence age",
+    "PROVINCE": "Province of circulation",
+    "VEHICLE_AGE": "Vehicle age",
+    "TRACKER": "Tracker"
+  },
+  "quote": {
+    "simulate": "Get a quote",
+    "vehicle": "Vehicle",
+    "types": {
+      "MTPL_ONLY": {
+        "title": "Third-party liability only",
+        "text": "The mandatory insurance: covers the damage you cause to others."
+      },
+      "COMPREHENSIVE": {
+        "title": "Third-party liability + own damage",
+        "text": "Also covers the damage to your vehicle."
+      },
+      "TEMPORARY": {
+        "title": "Temporary insurance",
+        "text": "Third-party liability for 7 to 60 days, or one year."
+      }
+    },
+    "oneYear": "1 year",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "periodRange": "{{start}} to {{end}}",
+    "startsOn": "Starts on {{date}}",
+    "validUntil": "Valid until {{date}}",
+    "offeredCount_one": "{{count}} offer",
+    "offeredCount_other": "{{count}} offers",
+    "bestFrom": "from {{amount}}",
+    "byBroker": "By the intermediary",
+    "expired": "Expired",
+    "cheapest": "Cheapest",
+    "chargesIncluded": "Includes {{amount}} in charges",
+    "deductible": {
+      "label": "Deductible {{value}}",
+      "percent": "{{percent}} %",
+      "percentMin": "{{percent}} % (min. {{min}})"
+    },
+    "status": {
+      "OFFERED": "Available",
+      "EXPIRED": "Expired",
+      "USED": "Used in a proposal",
+      "NOT_AVAILABLE": "No offer"
+    },
+    "viewDetail": "View details",
+    "compare": "Compare",
+    "compareWith": "Compare {{insurer}} — {{product}}",
+    "totalPremium": "Total premium",
+    "commercialPremium": "Commercial premium",
+    "roundingAdjustment": "Rounding adjustment",
+    "generalConditions": "General conditions",
+    "preContractInfo": "Pre-contractual information",
+    "notFound": "Quote not found",
+    "backToList": "See the quotes",
+    "detail": {
+      "version": "version {{n}}",
+      "coverages": "Coverages",
+      "coverage": "Coverage",
+      "capital": "Sum insured",
+      "deductible": "Deductible",
+      "premium": "Premium",
+      "period": "Period",
+      "comingSoon": "Soon you will be able to move on from here to the proposal."
+    }
+  },
+  "quoteWizard": {
+    "title": {
+      "customer": "Get a quote",
+      "broker": "New quote"
+    },
+    "steps": {
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "type": "Type",
+      "coverages": "Coverages",
+      "period": "Start and duration",
+      "summary": "Summary"
+    },
+    "stepOf": "Step {{n}} of {{total}}",
+    "back": "Back",
+    "next": "Continue",
+    "startUpdated": "We updated the start date to today.",
+    "vehicle": {
+      "choose": "Choose the vehicle",
+      "noVehicles": "You have no vehicles registered yet.",
+      "addVehicle": "Add vehicle",
+      "driver": "Driver",
+      "chooseDriver": "Choose the driver",
+      "noDrivers": "You have no drivers registered yet.",
+      "addDriver": "Register driver"
+    },
+    "client": {
+      "msisdn": "Client's mobile number",
+      "help": "The quote is linked to this number. The client does not receive any message at this stage."
+    },
+    "brokerVehicle": {
+      "valueHelp": "Optional; needed for own damage."
+    },
+    "brokerDriver": {
+      "licenceIssueDate": "Licence date",
+      "licenceCategories": "Licence categories (optional)"
+    },
+    "type": {
+      "needsValue": "Needs the vehicle's commercial value",
+      "setValue": "Enter value",
+      "setValueBroker": "Enter the value in the Vehicle step"
+    },
+    "coverages": {
+      "included": "Included",
+      "optional": "Optional",
+      "mandatory": "Mandatory",
+      "availableIn": "Available in {{n}} of {{total}} products",
+      "perPerson": "{{capital}} per person",
+      "capital": "Sum insured for {{coverage}}",
+      "theftNotice": "Theft always includes collision, fire and natural events.",
+      "noProducts": "There are currently no products of this type for this vehicle."
+    },
+    "period": {
+      "startDate": "Start date",
+      "duration": "Duration",
+      "endsOn": "Ends on {{date}}"
+    },
+    "summary": {
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "type": "Type of insurance",
+      "coverages": "Coverages",
+      "period": "Start and duration",
+      "change": "Change",
+      "driverAge": "{{age}} years old",
+      "driverAgeLicence": "{{age}} years old, licence for {{years}} years",
+      "waiting": "Asking the insurers for offers…",
+      "retryIn_one": "You can try again in {{count}} minute.",
+      "retryIn_other": "You can try again in {{count}} minutes."
+    }
+  },
+  "quoteResults": {
+    "title": "Offers",
+    "change": "Change quote",
+    "savedText": "This quote is saved in My quotes and is valid until {{date}}.",
+    "byBroker": "Quote prepared by your intermediary.",
+    "brokerText": "Prices for the client {{msisdn}}. The proposal on behalf of the client comes in a future version.",
+    "none": "No insurer made an offer for these conditions.",
+    "expired": "This quote expired on {{date}}.",
+    "unavailable": "No offer ({{count}})",
+    "compareBar": "Comparison",
+    "selected": "{{count}} selected (maximum {{max}})",
+    "compare": "Compare offers",
+    "maxCompare": "You can compare up to 3 offers"
+  },
+  "compare": {
+    "title": "Compare offers",
+    "differencesHint": "The main differences are highlighted.",
+    "insurer": "Insurer",
+    "product": "Product",
+    "deductible": "deductible {{value}}",
+    "noDeductible": "no deductible",
+    "notIncluded": "Not included",
+    "validUntil": "Valid until",
+    "documents": "Documents",
+    "back": "Back to the offers"
+  },
+  "myQuotes": {
+    "title": "My quotes",
+    "recentTitle": "My quotes",
+    "seeAll": "See all",
+    "empty": "You have not requested any quotes yet.",
+    "loadMore": "Load more"
+  },
+  "brokerQuotes": {
+    "title": "Quotes",
+    "new": "New quote",
+    "empty": "There are no quotes yet.",
+    "filter": "Client's mobile number",
+    "apply": "Filter",
+    "columns": {
+      "date": "Date",
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "type": "Type",
+      "offers": "Offers",
+      "best": "Best price",
+      "validity": "Validity"
     }
   }
 }

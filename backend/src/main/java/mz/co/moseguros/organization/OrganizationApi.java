@@ -1,33 +1,44 @@
 package mz.co.moseguros.organization;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import mz.co.moseguros.organization.application.OrganizationSystemLookups;
+import mz.co.moseguros.organization.domain.InsurerCharges;
 import mz.co.moseguros.organization.domain.InsurerProfile;
 import mz.co.moseguros.organization.domain.InsurerProfileRepository;
 import mz.co.moseguros.organization.domain.Organization;
 import mz.co.moseguros.organization.domain.OrganizationRepository;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;
+import mz.co.moseguros.shared.error.Problems.FieldError;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Interface pública do módulo Organizações. Os outros módulos usam-na em vez dos repositórios.
- * As consultas e alterações correm no âmbito do chamador ({@code TenantContext} e RLS).
+ * As consultas e alterações correm no âmbito do chamador ({@code TenantContext} e RLS), salvo
+ * {@link #insurerProfile} e {@link #insurerProfiles}, que lêem em {@code SYSTEM}
+ * ({@link OrganizationSystemLookups}).
  */
 @Service
 public class OrganizationApi {
 
     private final OrganizationRepository organizations;
     private final InsurerProfileRepository insurerProfiles;
+    private final OrganizationSystemLookups systemLookups;
 
-    public OrganizationApi(OrganizationRepository organizations, InsurerProfileRepository insurerProfiles) {
+    public OrganizationApi(OrganizationRepository organizations, InsurerProfileRepository insurerProfiles,
+                           OrganizationSystemLookups systemLookups) {
         this.organizations = organizations;
         this.insurerProfiles = insurerProfiles;
+        this.systemLookups = systemLookups;
     }
 
     /** Resumo da organização, se existir e for visível no âmbito actual. */
@@ -79,6 +90,35 @@ public class OrganizationApi {
                 .orElseThrow(() -> DomainException.of(ErrorCodes.ORGANIZATION_NOT_FOUND, "Insurer not found"));
         profile.changeLogo(fileIdOrNull);
         insurerProfiles.flush();
+    }
+
+    /**
+     * Perfil da seguradora (nome, logótipo, modo de tarifação e encargos), em qualquer âmbito
+     * (S3-01 §3): lê em {@code SYSTEM} só a seguradora pedida. Vazio se não existir ou não for uma
+     * seguradora. Nunca devolve segredos.
+     */
+    public Optional<InsurerProfileView> insurerProfile(UUID insurerId) {
+        return systemLookups.insurerProfile(insurerId);
+    }
+
+    /** Como {@link #insurerProfile}, para várias seguradoras; as que faltam não aparecem no mapa. */
+    public Map<UUID, InsurerProfileView> insurerProfiles(Collection<UUID> insurerIds) {
+        return systemLookups.insurerProfiles(insurerIds);
+    }
+
+    /**
+     * Valida uma lista de encargos em JSON ({@code charges-v1.json} e as regras do S3-01 §4) sem a
+     * gravar: o simulador da tarifa (S3-02 §12) aceita encargos ainda não gravados.
+     *
+     * @return todos os erros, com {@code field} = ponteiro JSON dentro da lista; vazia = válida
+     */
+    public List<FieldError> validateCharges(JsonNode charges) {
+        return InsurerCharges.validate(charges);
+    }
+
+    /** Lista de encargos já validada ({@link #validateCharges}) → encargos, pela mesma ordem. */
+    public List<ChargeRule> parseCharges(JsonNode charges) {
+        return InsurerCharges.parse(charges);
     }
 
     private static OrganizationSummary summary(Organization org) {

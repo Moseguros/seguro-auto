@@ -197,6 +197,27 @@ public final class ErrorCodes {
     public static final String OWNER_DRIVER_ALREADY_EXISTS = "OWNER_DRIVER_ALREADY_EXISTS";
     /** O condutor é o habitual de um veículo activo (409). */
     public static final String DRIVER_IS_HABITUAL = "DRIVER_IS_HABITUAL";
+    // Tarifa interna (S3-01)
+    /** Tarifa (ou pedido com a tarifa) com mais de 262 144 bytes (400). */
+    public static final String RATING_RULES_TOO_LARGE = "RATING_RULES_TOO_LARGE";
+
+    // Cotações (S3-02)
+    /** Pedido de cotação inexistente ou fora do âmbito de quem pede (404). */
+    public static final String QUOTE_REQUEST_NOT_FOUND = "QUOTE_REQUEST_NOT_FOUND";
+    /** Cotação inexistente ou fora do âmbito de quem pede (404). */
+    public static final String QUOTE_NOT_FOUND = "QUOTE_NOT_FOUND";
+    /** Cotação fora da validade ou com a data de início já passada (409). */
+    public static final String QUOTE_EXPIRED = "QUOTE_EXPIRED";
+    /** Cotação sem preço ({@code NOT_AVAILABLE}) (409). */
+    public static final String QUOTE_NOT_AVAILABLE = "QUOTE_NOT_AVAILABLE";
+    /** Cotação já usada numa proposta (409). */
+    public static final String QUOTE_ALREADY_USED = "QUOTE_ALREADY_USED";
+    /** Demasiados pedidos de cotação na última hora (429, com {@code retryAfterSeconds}). */
+    public static final String QUOTE_RATE_LIMITED = "QUOTE_RATE_LIMITED";
+    /** Danos próprios pedidos para um veículo sem valor comercial (400). */
+    public static final String VEHICLE_VALUE_REQUIRED = "VEHICLE_VALUE_REQUIRED";
+    /** A organização não é uma seguradora (400). */
+    public static final String ORGANIZATION_NOT_INSURER = "ORGANIZATION_NOT_INSURER";
 
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
@@ -283,7 +304,16 @@ public final class ErrorCodes {
             Map.entry(DRIVER_ALREADY_REGISTERED, 409),
             Map.entry(DRIVER_LIMIT_REACHED, 409),
             Map.entry(OWNER_DRIVER_ALREADY_EXISTS, 409),
-            Map.entry(DRIVER_IS_HABITUAL, 409));
+            Map.entry(DRIVER_IS_HABITUAL, 409),
+            Map.entry(RATING_RULES_TOO_LARGE, 400),
+            Map.entry(QUOTE_REQUEST_NOT_FOUND, 404),
+            Map.entry(QUOTE_NOT_FOUND, 404),
+            Map.entry(QUOTE_EXPIRED, 409),
+            Map.entry(QUOTE_NOT_AVAILABLE, 409),
+            Map.entry(QUOTE_ALREADY_USED, 409),
+            Map.entry(QUOTE_RATE_LIMITED, 429),
+            Map.entry(VEHICLE_VALUE_REQUIRED, 400),
+            Map.entry(ORGANIZATION_NOT_INSURER, 400));
 
     private ErrorCodes() {
     }

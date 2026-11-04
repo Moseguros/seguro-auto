@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -125,6 +126,19 @@ public class ProductVersion extends BaseEntity {
         this.vehicleCategories = new ArrayList<>(categories.stream().map(Enum::name).distinct().toList());
         this.usages = new ArrayList<>(usageList.stream().map(Enum::name).distinct().toList());
         this.changeNotes = Product.blankToNull(notes);
+    }
+
+    /**
+     * Substitui só a chave {@code rating} de {@code rules} (tarifa interna, S3-01 §5); as outras
+     * chaves ficam como estão. O conteúdo é validado pelo módulo {@code rating}, não aqui.
+     */
+    public void replaceRatingRules(JsonNode rating) {
+        requireEditable();
+        Objects.requireNonNull(rating, "rating");
+        ObjectNode copy = rules != null && rules.isObject()
+                ? (ObjectNode) rules.deepCopy() : JsonNodeFactory.instance.objectNode();
+        copy.set("rating", rating.deepCopy());
+        this.rules = copy;
     }
 
     /** {@code DRAFT} → {@code PUBLISHED}, em vigor desde {@code today}. */

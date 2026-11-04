@@ -142,11 +142,24 @@ Class | Method | HTTP request | Description
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
 [*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
 [*OrganizationApi*](doc/OrganizationApi.md) | [**createOrganization**](doc/OrganizationApi.md#createorganization) | **POST** /api/v1/organizations | Cria uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**getInsurerRatingSettings**](doc/OrganizationApi.md#getinsurerratingsettings) | **GET** /api/v1/insurer/rating-settings | Consulta as definições de tarifação
 [*OrganizationApi*](doc/OrganizationApi.md) | [**getOrganization**](doc/OrganizationApi.md#getorganization) | **GET** /api/v1/organizations/{id} | Consulta uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**getRatingIntegration**](doc/OrganizationApi.md#getratingintegration) | **GET** /api/v1/organizations/{id}/rating-integration | Consulta a ligação à tarifação de uma seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**listOrganizations**](doc/OrganizationApi.md#listorganizations) | **GET** /api/v1/organizations | Lista as organizações
 [*OrganizationApi*](doc/OrganizationApi.md) | [**reactivateOrganization**](doc/OrganizationApi.md#reactivateorganization) | **POST** /api/v1/organizations/{id}/reactivate | Reactiva uma organização suspensa
 [*OrganizationApi*](doc/OrganizationApi.md) | [**suspendOrganization**](doc/OrganizationApi.md#suspendorganization) | **POST** /api/v1/organizations/{id}/suspend | Suspende uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**updateInsurerRatingSettings**](doc/OrganizationApi.md#updateinsurerratingsettings) | **PUT** /api/v1/insurer/rating-settings | Altera os encargos da seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
+[*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
+[*RatingApi*](doc/RatingApi.md) | [**createBrokerQuoteRequest**](doc/RatingApi.md#createbrokerquoterequest) | **POST** /api/v1/broker/quotes | Pede cotações em nome de um cliente
+[*RatingApi*](doc/RatingApi.md) | [**createQuoteRequest**](doc/RatingApi.md#createquoterequest) | **POST** /api/v1/quotes | Pede cotações para um veículo do cliente
+[*RatingApi*](doc/RatingApi.md) | [**getQuoteRequest**](doc/RatingApi.md#getquoterequest) | **GET** /api/v1/quotes/{id} | Consulta um pedido de cotações
+[*RatingApi*](doc/RatingApi.md) | [**getRatingRules**](doc/RatingApi.md#getratingrules) | **GET** /api/v1/insurer/product-versions/{id}/rating | Consulta a tarifa de uma versão de produto
+[*RatingApi*](doc/RatingApi.md) | [**listBrokerQuoteRequests**](doc/RatingApi.md#listbrokerquoterequests) | **GET** /api/v1/broker/quotes | Lista os pedidos de cotações da organização
+[*RatingApi*](doc/RatingApi.md) | [**listMyQuoteRequests**](doc/RatingApi.md#listmyquoterequests) | **GET** /api/v1/me/quotes | Lista os pedidos de cotações do cliente
+[*RatingApi*](doc/RatingApi.md) | [**simulateRating**](doc/RatingApi.md#simulaterating) | **POST** /api/v1/insurer/product-versions/{id}/rating/simulate | Simula a tarifa de uma versão de produto
+[*RatingApi*](doc/RatingApi.md) | [**updateRatingRules**](doc/RatingApi.md#updateratingrules) | **PUT** /api/v1/insurer/product-versions/{id}/rating | Grava a tarifa de uma versão em preparação
+[*RatingApi*](doc/RatingApi.md) | [**validateRatingRules**](doc/RatingApi.md#validateratingrules) | **POST** /api/v1/insurer/product-versions/{id}/rating/validate | Valida uma tarifa sem a gravar
 [*VehicleApi*](doc/VehicleApi.md) | [**createMyDriver**](doc/VehicleApi.md#createmydriver) | **POST** /api/v1/me/drivers | Regista um condutor
 [*VehicleApi*](doc/VehicleApi.md) | [**createMyVehicle**](doc/VehicleApi.md#createmyvehicle) | **POST** /api/v1/me/vehicles | Regista um veículo
 [*VehicleApi*](doc/VehicleApi.md) | [**deleteMyDriver**](doc/VehicleApi.md#deletemydriver) | **DELETE** /api/v1/me/drivers/{id} | Retira um condutor
@@ -167,16 +180,21 @@ Class | Method | HTTP request | Description
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
+ - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
+ - [Charge](doc/Charge.md)
+ - [ChargeValue](doc/ChargeValue.md)
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
  - [CoverageRequest](doc/CoverageRequest.md)
  - [CoverageResponse](doc/CoverageResponse.md)
+ - [CreateBrokerQuoteRequest](doc/CreateBrokerQuoteRequest.md)
  - [CreateDriverRequest](doc/CreateDriverRequest.md)
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
  - [CreateProductRequest](doc/CreateProductRequest.md)
+ - [CreateQuoteRequest](doc/CreateQuoteRequest.md)
  - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
  - [CreateVehicleRequest](doc/CreateVehicleRequest.md)
  - [CustomerProfileResponse](doc/CustomerProfileResponse.md)
@@ -187,6 +205,7 @@ Class | Method | HTTP request | Description
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
+ - [InsurerRatingSettingsResponse](doc/InsurerRatingSettingsResponse.md)
  - [InvitationDetailsResponse](doc/InvitationDetailsResponse.md)
  - [InvitationOrganization](doc/InvitationOrganization.md)
  - [InvitationResponse](doc/InvitationResponse.md)
@@ -211,6 +230,7 @@ Class | Method | HTTP request | Description
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
+ - [PageResponseQuoteRequestSummaryResponse](doc/PageResponseQuoteRequestSummaryResponse.md)
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
  - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
@@ -232,14 +252,36 @@ Class | Method | HTTP request | Description
  - [PublicReferenceValueResponse](doc/PublicReferenceValueResponse.md)
  - [PublicReferenceValuesResponse](doc/PublicReferenceValuesResponse.md)
  - [PublishProductVersionRequest](doc/PublishProductVersionRequest.md)
+ - [QuoteChargeResponse](doc/QuoteChargeResponse.md)
+ - [QuoteCoverageResponse](doc/QuoteCoverageResponse.md)
+ - [QuoteDeductible](doc/QuoteDeductible.md)
+ - [QuoteInsurer](doc/QuoteInsurer.md)
+ - [QuoteProduct](doc/QuoteProduct.md)
+ - [QuoteRequestResponse](doc/QuoteRequestResponse.md)
+ - [QuoteRequestSummaryResponse](doc/QuoteRequestSummaryResponse.md)
+ - [QuoteResponse](doc/QuoteResponse.md)
+ - [QuoteSummaryVehicle](doc/QuoteSummaryVehicle.md)
+ - [QuotedDriver](doc/QuotedDriver.md)
+ - [QuotedVehicle](doc/QuotedVehicle.md)
+ - [RatingCoverage](doc/RatingCoverage.md)
+ - [RatingIntegrationResponse](doc/RatingIntegrationResponse.md)
+ - [RatingRuleError](doc/RatingRuleError.md)
+ - [RatingRulesResponse](doc/RatingRulesResponse.md)
+ - [RatingRulesValidationResponse](doc/RatingRulesValidationResponse.md)
+ - [RatingSimulationResponse](doc/RatingSimulationResponse.md)
  - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
  - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
+ - [RequestedCoverageRequest](doc/RequestedCoverageRequest.md)
+ - [RequestedCoverageResponse](doc/RequestedCoverageResponse.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
+ - [RiskDriverRequest](doc/RiskDriverRequest.md)
  - [RuleError](doc/RuleError.md)
+ - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
+ - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
@@ -248,7 +290,9 @@ Class | Method | HTTP request | Description
  - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
  - [TokenResponse](doc/TokenResponse.md)
  - [TotpSetupResponse](doc/TotpSetupResponse.md)
+ - [UnavailableReason](doc/UnavailableReason.md)
  - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
+ - [UpdateInsurerRatingSettingsRequest](doc/UpdateInsurerRatingSettingsRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
@@ -257,10 +301,13 @@ Class | Method | HTTP request | Description
  - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
  - [UpdateProductRequest](doc/UpdateProductRequest.md)
  - [UpdateProductVersionRequest](doc/UpdateProductVersionRequest.md)
+ - [UpdateRatingIntegrationRequest](doc/UpdateRatingIntegrationRequest.md)
+ - [UpdateRatingRulesRequest](doc/UpdateRatingRulesRequest.md)
  - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
  - [UpdateVehicleDriversRequest](doc/UpdateVehicleDriversRequest.md)
  - [UpdateVehicleRequest](doc/UpdateVehicleRequest.md)
+ - [ValidateRatingRulesRequest](doc/ValidateRatingRulesRequest.md)
  - [VehicleCategory](doc/VehicleCategory.md)
  - [VehicleDriverAssignment](doc/VehicleDriverAssignment.md)
  - [VehicleDriverResponse](doc/VehicleDriverResponse.md)

@@ -208,7 +208,16 @@
     "DRIVER_ALREADY_REGISTERED": "Já tem um condutor com esta carta.",
     "DRIVER_LIMIT_REACHED": "Atingiu o máximo de 10 condutores.",
     "OWNER_DRIVER_ALREADY_EXISTS": "Já se registou como condutor.",
-    "DRIVER_IS_HABITUAL": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro."
+    "DRIVER_IS_HABITUAL": "Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.",
+    "RATING_RULES_TOO_LARGE": "A tarifa é demasiado grande (máximo 256 KB).",
+    "QUOTE_REQUEST_NOT_FOUND": "Cotação não encontrada.",
+    "QUOTE_NOT_FOUND": "Cotação não encontrada.",
+    "QUOTE_EXPIRED": "Esta cotação já expirou. Faça uma nova simulação.",
+    "QUOTE_NOT_AVAILABLE": "Esta seguradora não apresentou proposta.",
+    "QUOTE_ALREADY_USED": "Esta cotação já foi usada numa proposta.",
+    "QUOTE_RATE_LIMITED": "Fez muitas simulações na última hora. Tente mais tarde.",
+    "VEHICLE_VALUE_REQUIRED": "Para danos próprios, indique o valor comercial do veículo.",
+    "ORGANIZATION_NOT_INSURER": "Esta organização não é uma seguradora."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -272,7 +281,27 @@
     "LICENCE_CATEGORY_UNKNOWN": "Categoria de carta desconhecida.",
     "LICENCE_ISSUE_DATE_INVALID": "A data de emissão tem de ser depois do nascimento e até hoje.",
     "HABITUAL_DRIVER_REQUIRED": "Escolha o condutor habitual.",
-    "MULTIPLE_HABITUAL_DRIVERS": "Só pode haver um condutor habitual."
+    "MULTIPLE_HABITUAL_DRIVERS": "Só pode haver um condutor habitual.",
+    "SCHEMA_VIOLATION": "Formato inválido.",
+    "COVERAGE_TARIFF_MISSING": "Falta a tarifa de uma cobertura do produto.",
+    "COVERAGE_NOT_IN_PRODUCT": "Esta cobertura não existe no produto.",
+    "DUPLICATE_COVERAGE": "Cobertura repetida.",
+    "BASE_TYPE_NOT_ALLOWED": "Este tipo de base não serve para o capital desta cobertura.",
+    "VALUE_OUT_OF_RANGE": "Valor fora dos limites permitidos.",
+    "INVALID_RANGE": "O limite inferior tem de ser menor que o superior.",
+    "DUPLICATE_FACTOR": "Factor repetido.",
+    "RESERVED_FACTOR_CODE": "Este código está reservado ao sistema.",
+    "DUPLICATE_DURATION": "Duração repetida.",
+    "DURATION_365_NOT_ONE": "O factor de 365 dias tem de ser 1.",
+    "DURATION_FACTORS_REQUIRED": "Um produto temporário precisa da tabela de duração.",
+    "DURATION_NOT_ALLOWED": "Duração não permitida para este produto.",
+    "DUPLICATE_CHARGE": "Encargo repetido.",
+    "START_DATE_OUT_OF_RANGE": "A data de início tem de ser entre hoje e daqui a 60 dias.",
+    "COVERAGE_NOT_ALLOWED_FOR_TYPE": "Esta cobertura não existe neste tipo de seguro.",
+    "OWN_DAMAGE_REQUIRED": "Escolha pelo menos uma cobertura de danos próprios.",
+    "COVERAGE_REQUIRES": "Furto ou roubo exige choque, incêndio e fenómenos da natureza.",
+    "INVALID_URL": "Endereço inválido (tem de começar por https://).",
+    "INVALID_SECRET_REF": "Referência do segredo inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -731,6 +760,21 @@
     "LEGAL": "Protecção jurídica",
     "SRCC": "Greves, tumultos e alterações da ordem pública",
     "CROSS_BORDER": "Circulação no estrangeiro"
+  },
+  "quoteUnavailable": {
+    "TARIFF_MISSING": "Esta seguradora ainda não tem preço para este produto.",
+    "TARIFF_INVALID": "Não foi possível calcular o preço deste produto.",
+    "COVERAGE_NOT_OFFERED": "Este produto não inclui todas as coberturas escolhidas.",
+    "COVERAGE_REQUIREMENTS_NOT_MET": "Neste produto, as coberturas escolhidas exigem outras que não escolheu.",
+    "CAPITAL_NOT_OFFERED": "Este produto não oferece o capital escolhido.",
+    "VEHICLE_VALUE_REQUIRED": "É preciso indicar o valor comercial do veículo.",
+    "DURATION_NOT_RATED": "Este produto não está disponível para a duração escolhida.",
+    "NO_MATCHING_ROW": "Esta seguradora não cobre este veículo ou condutor nestas condições.",
+    "INSURER_TIMEOUT": "A seguradora não respondeu a tempo.",
+    "INSURER_UNAVAILABLE": "A seguradora está indisponível neste momento.",
+    "INSURER_DECLINED": "A seguradora não apresentou proposta.",
+    "EXTERNAL_INVALID_RESPONSE": "A seguradora devolveu uma resposta inválida.",
+    "EVALUATION_ERROR": "Não foi possível calcular o preço."
   },
   "capitalType": {
     "FIXED": "Valor fixo",
@@ -1193,6 +1237,476 @@
       "save": "Guardar",
       "conflict": "Este condutor foi alterado noutro dispositivo",
       "reload": "Recarregar"
+    }
+  },
+  "tariffs": {
+    "title": "Tarifas",
+    "tabs": {
+      "products": "Produtos",
+      "charges": "Encargos",
+      "tariff": "Tarifa",
+      "simulator": "Simulador"
+    },
+    "externalNotice": "As cotações desta seguradora são calculadas pelo seu próprio sistema. As tarifas daqui só são usadas no simulador.",
+    "empty": "Ainda não há produtos. Crie um em Produtos.",
+    "emptyLink": "Ir para Produtos",
+    "retry": "Tentar de novo",
+    "columns": {
+      "product": "Produto",
+      "version": "Versão",
+      "status": "Estado",
+      "tariff": "Tarifa",
+      "actions": "Acções"
+    },
+    "versionNo": "Versão {{n}}",
+    "configured": "Com tarifa",
+    "notConfigured": "Sem tarifa",
+    "edit": "Editar tarifa",
+    "view": "Ver tarifa",
+    "noVersions": "Este produto ainda não tem versões.",
+    "publishWarning": {
+      "text": "Esta versão ainda não tem tarifa. Se a publicar assim, não vai aparecer nas cotações.",
+      "link": "Configurar tarifa"
+    },
+    "editor": {
+      "back": "Voltar às tarifas",
+      "title": "Tarifa de {{name}}",
+      "validate": "Validar",
+      "save": "Guardar",
+      "more": "Mais",
+      "undo": "Anular",
+      "redo": "Refazer",
+      "exportJson": "Exportar JSON",
+      "importJson": "Importar JSON",
+      "readOnlyStatus": "Esta versão já não está em preparação: a tarifa é só de leitura.",
+      "readOnlyPermission": "Não tem permissão para alterar tarifas: a tarifa é só de leitura.",
+      "valid": "A tarifa está válida",
+      "saved": "Tarifa guardada",
+      "fixFirst": "Corrija os erros antes de guardar.",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "hasErrors": "Tem erros",
+      "invalidJson": "O ficheiro não é uma tarifa em JSON válida.",
+      "conflict": {
+        "title": "Tarifa alterada",
+        "text": "Outra pessoa alterou esta tarifa. Recarregue para ver a versão actual; as suas alterações perdem-se.",
+        "reload": "Recarregar",
+        "cancel": "Cancelar"
+      },
+      "importConfirm": {
+        "title": "Importar JSON",
+        "text": "Substituir a tarifa actual?",
+        "confirm": "Substituir",
+        "cancel": "Cancelar"
+      },
+      "unsaved": {
+        "title": "Alterações por guardar",
+        "text": "Se sair agora, as alterações à tarifa perdem-se.",
+        "stay": "Ficar",
+        "leave": "Sair sem guardar"
+      }
+    },
+    "errorsPanel": {
+      "title": "Erros na tarifa ({{count}})",
+      "top": "Tarifa",
+      "duration": "Duração",
+      "base": "Base",
+      "row": "linha {{n}}"
+    },
+    "coverage": {
+      "capital": "Capital: {{type}}",
+      "mandatory": "Obrigatória",
+      "base": "Base",
+      "baseType": "Tipo de base",
+      "changeBaseType": {
+        "title": "Mudar o tipo de base?",
+        "text": "Os valores das linhas da base vão ser apagados.",
+        "confirm": "Mudar",
+        "cancel": "Cancelar"
+      },
+      "factors": "Factores",
+      "noFactors": "Esta cobertura não tem factores.",
+      "factorCode": "Código {{code}}",
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Descer {{name}}",
+      "delete": "Apagar {{name}}",
+      "deleteFactor": {
+        "title": "Apagar o factor {{name}}?",
+        "text": "As linhas deste factor perdem-se.",
+        "confirm": "Apagar",
+        "cancel": "Cancelar"
+      }
+    },
+    "table": {
+      "help": "Aplica-se a primeira linha cujas condições se cumprem. Se nenhuma se cumprir, a cobertura fica sem preço.",
+      "columns": {
+        "n": "N.º",
+        "label": "Descrição",
+        "conditions": "Condições",
+        "value": "Valor",
+        "actions": "Acções"
+      },
+      "addRow": "Acrescentar linha",
+      "exportCsv": "Exportar CSV",
+      "importCsv": "Importar CSV",
+      "edit": "Editar",
+      "duplicate": "Duplicar",
+      "moveUp": "Subir",
+      "moveDown": "Descer",
+      "delete": "Apagar",
+      "actions": "Acções da linha {{n}}",
+      "row": "Linha {{n}}",
+      "emptyValue": "Sem valor",
+      "importConfirm": {
+        "title": "Importar CSV",
+        "text": "Substituir as {{n}} linhas desta tabela?",
+        "confirm": "Substituir",
+        "cancel": "Cancelar"
+      },
+      "importErrors": {
+        "title": "Não foi possível importar o CSV",
+        "close": "Fechar"
+      }
+    },
+    "conditions": {
+      "always": "Sempre",
+      "from": "{{gte}} ou mais",
+      "below": "menos de {{lt}}",
+      "between": "{{gte}} a {{to}}",
+      "moneyBetween": "de {{gte}} até menos de {{lt}}",
+      "yes": "sim",
+      "no": "não"
+    },
+    "row": {
+      "titleNew": "Nova linha",
+      "titleEdit": "Editar a linha {{n}}",
+      "label": "Descrição (opcional)",
+      "conditions": "Condições",
+      "use": "Usar",
+      "gte": "A partir de (≥)",
+      "lt": "Menos de (<)",
+      "yes": "Sim",
+      "no": "Não",
+      "valueAmount": "Valor",
+      "valuePercent": "Taxa (%)",
+      "valueFactor": "Factor",
+      "apply": "Aplicar",
+      "cancel": "Cancelar"
+    },
+    "factorMenu": {
+      "add": "Acrescentar factor",
+      "custom": "Factor personalizado",
+      "code": "Código",
+      "label": "Nome",
+      "confirm": "Acrescentar",
+      "cancel": "Cancelar"
+    },
+    "duration": {
+      "title": "Duração",
+      "help": "Factor aplicado ao prémio anual em cada duração disponível. O de 365 dias é sempre 1.",
+      "available": "Disponível: {{days}} dias",
+      "factor": "Factor de {{days}} dias"
+    }
+  },
+  "charges": {
+    "title": "Encargos",
+    "columns": {
+      "code": "Código",
+      "labelPt": "Nome (pt)",
+      "labelEn": "Nome (en)",
+      "type": "Tipo",
+      "value": "Valor",
+      "actions": "Acções"
+    },
+    "type": {
+      "PERCENT": "Percentagem",
+      "FIXED": "Valor fixo"
+    },
+    "charge": "Encargo {{n}}",
+    "add": "Acrescentar encargo",
+    "moveUp": "Subir",
+    "moveDown": "Descer",
+    "delete": "Apagar",
+    "empty": "Esta seguradora não tem encargos.",
+    "note": "Os encargos somam-se ao prémio comercial e aplicam-se a todos os produtos. O total arredonda para cima ao metical.",
+    "save": "Guardar",
+    "saved": "Encargos guardados",
+    "fixFirst": "Corrija os erros antes de guardar.",
+    "conflict": "Outra pessoa alterou os encargos",
+    "reload": "Recarregar"
+  },
+  "simulator": {
+    "vehicle": "Veículo",
+    "driver": "Condutor",
+    "coverages": "Coberturas",
+    "period": "Período",
+    "category": "Categoria",
+    "usage": "Uso",
+    "province": "Província de circulação",
+    "year": "Ano",
+    "engineCc": "Cilindrada (cm³)",
+    "seats": "Lugares",
+    "grossWeightKg": "Peso bruto (kg)",
+    "commercialValue": "Valor comercial",
+    "hasTracker": "Localizador instalado",
+    "birthDate": "Data de nascimento",
+    "licenceIssueDate": "Data da carta",
+    "mandatory": "{{name}} (obrigatória)",
+    "capital": "Capital de {{name}}",
+    "startDate": "Início",
+    "duration": "Duração",
+    "oneYear": "1 ano",
+    "days": "{{days}} dias",
+    "calculate": "Calcular",
+    "invalidField": "Valor inválido",
+    "fixTariff": "Corrija a tarifa antes de simular",
+    "result": "Resultado",
+    "detail": {
+      "coverage": "Cobertura: {{name}}",
+      "table": "Tabela: {{name}}",
+      "base": "Base"
+    },
+    "goToTable": "Ir para a tabela",
+    "computed": {
+      "driverAgeYears": "Idade do condutor: {{n}} anos",
+      "vehicleAgeYears": "Idade do veículo: {{n}} anos",
+      "licenceYears": "Antiguidade da carta: {{n}} anos"
+    },
+    "breakdown": {
+      "variables": "Variáveis calculadas",
+      "coverages": "Coberturas",
+      "capital": "Capital",
+      "baseRow": "Base · linha {{n}}",
+      "baseAmount": "Montante base",
+      "factorRow": "{{name}} · linha {{n}}",
+      "bonusMalus": "Bónus/malus",
+      "duration": "Duração",
+      "exactPremium": "Prémio exacto",
+      "premium": "Prémio",
+      "commercialPremium": "Prémio comercial",
+      "rounding": "Ajuste de arredondamento",
+      "total": "Total"
+    }
+  },
+  "tariffCsv": {
+    "EMPTY_FILE": "O ficheiro não tem linhas.",
+    "UNKNOWN_COLUMN": "Coluna desconhecida: {{column}}.",
+    "MISSING_VALUE_COLUMN": "Falta a coluna \"value\".",
+    "MISSING_VALUE": "Linha {{line}}: falta o valor.",
+    "INVALID_NUMBER": "Linha {{line}}, coluna {{column}}: número inválido.",
+    "INVALID_ENUM": "Linha {{line}}, coluna {{column}}: código desconhecido \"{{value}}\".",
+    "INVALID_BOOLEAN": "Linha {{line}}, coluna {{column}}: use true ou false.",
+    "TOO_MANY_ROWS": "O ficheiro tem mais de 200 linhas."
+  },
+  "variables": {
+    "vehicleCategory": "Categoria do veículo",
+    "vehicleUsage": "Uso do veículo",
+    "province": "Província de circulação",
+    "hasTracker": "Localizador",
+    "vehicleAgeYears": "Idade do veículo (anos)",
+    "engineCc": "Cilindrada (cm³)",
+    "seats": "Lugares",
+    "grossWeightKg": "Peso bruto (kg)",
+    "driverAgeYears": "Idade do condutor (anos)",
+    "licenceYears": "Antiguidade da carta (anos)",
+    "durationDays": "Duração (dias)",
+    "capital": "Capital",
+    "vehicleValue": "Valor do veículo"
+  },
+  "baseType": {
+    "AMOUNT": "Valor fixo",
+    "RATE_OF_VEHICLE_VALUE": "Percentagem do valor do veículo",
+    "RATE_OF_CAPITAL": "Percentagem do capital"
+  },
+  "factorPreset": {
+    "DRIVER_AGE": "Idade do condutor",
+    "LICENCE_YEARS": "Antiguidade da carta",
+    "PROVINCE": "Província de circulação",
+    "VEHICLE_AGE": "Idade do veículo",
+    "TRACKER": "Localizador"
+  },
+  "quote": {
+    "simulate": "Simular seguro",
+    "vehicle": "Veículo",
+    "types": {
+      "MTPL_ONLY": {
+        "title": "Só responsabilidade civil",
+        "text": "O seguro obrigatório: cobre os danos que causar a outros."
+      },
+      "COMPREHENSIVE": {
+        "title": "Responsabilidade civil + danos próprios",
+        "text": "Cobre também os danos no seu veículo."
+      },
+      "TEMPORARY": {
+        "title": "Seguro temporário",
+        "text": "Responsabilidade civil por 7 a 60 dias, ou um ano."
+      }
+    },
+    "oneYear": "1 ano",
+    "days_one": "{{count}} dia",
+    "days_other": "{{count}} dias",
+    "periodRange": "{{start}} a {{end}}",
+    "startsOn": "Início a {{date}}",
+    "validUntil": "Válida até {{date}}",
+    "offeredCount_one": "{{count}} proposta",
+    "offeredCount_other": "{{count}} propostas",
+    "bestFrom": "desde {{amount}}",
+    "byBroker": "Pelo mediador",
+    "expired": "Expirada",
+    "cheapest": "Mais barata",
+    "chargesIncluded": "Inclui {{amount}} de encargos",
+    "deductible": {
+      "label": "Franquia {{value}}",
+      "percent": "{{percent}} %",
+      "percentMin": "{{percent}} % (mín. {{min}})"
+    },
+    "status": {
+      "OFFERED": "Disponível",
+      "EXPIRED": "Expirada",
+      "USED": "Usada numa proposta",
+      "NOT_AVAILABLE": "Sem proposta"
+    },
+    "viewDetail": "Ver detalhe",
+    "compare": "Comparar",
+    "compareWith": "Comparar {{insurer}} — {{product}}",
+    "totalPremium": "Prémio total",
+    "commercialPremium": "Prémio comercial",
+    "roundingAdjustment": "Ajuste de arredondamento",
+    "generalConditions": "Condições gerais",
+    "preContractInfo": "Informação pré-contratual",
+    "notFound": "Cotação não encontrada",
+    "backToList": "Ver as cotações",
+    "detail": {
+      "version": "versão {{n}}",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "premium": "Prémio",
+      "period": "Período",
+      "comingSoon": "Em breve vai poder avançar daqui para a proposta."
+    }
+  },
+  "quoteWizard": {
+    "title": {
+      "customer": "Simular seguro",
+      "broker": "Nova cotação"
+    },
+    "steps": {
+      "client": "Cliente",
+      "vehicle": "Veículo",
+      "driver": "Condutor",
+      "type": "Tipo",
+      "coverages": "Coberturas",
+      "period": "Início e duração",
+      "summary": "Resumo"
+    },
+    "stepOf": "Passo {{n}} de {{total}}",
+    "back": "Voltar",
+    "next": "Continuar",
+    "startUpdated": "Actualizámos a data de início para hoje.",
+    "vehicle": {
+      "choose": "Escolha o veículo",
+      "noVehicles": "Ainda não tem veículos registados.",
+      "addVehicle": "Acrescentar veículo",
+      "driver": "Condutor",
+      "chooseDriver": "Escolha o condutor",
+      "noDrivers": "Ainda não tem condutores registados.",
+      "addDriver": "Registar condutor"
+    },
+    "client": {
+      "msisdn": "Telemóvel do cliente",
+      "help": "A cotação fica associada a este número. O cliente não recebe nenhuma mensagem nesta fase."
+    },
+    "brokerVehicle": {
+      "valueHelp": "Opcional; necessário para danos próprios."
+    },
+    "brokerDriver": {
+      "licenceIssueDate": "Data da carta",
+      "licenceCategories": "Categorias da carta (opcional)"
+    },
+    "type": {
+      "needsValue": "Precisa do valor comercial do veículo",
+      "setValue": "Indicar valor",
+      "setValueBroker": "Indique o valor no passo Veículo"
+    },
+    "coverages": {
+      "included": "Incluídas",
+      "optional": "Opcionais",
+      "mandatory": "Obrigatória",
+      "availableIn": "Disponível em {{n}} de {{total}} produtos",
+      "perPerson": "{{capital}} por pessoa",
+      "capital": "Capital de {{coverage}}",
+      "theftNotice": "Furto ou roubo inclui obrigatoriamente choque, incêndio e fenómenos da natureza.",
+      "noProducts": "De momento não há produtos deste tipo para este veículo."
+    },
+    "period": {
+      "startDate": "Data de início",
+      "duration": "Duração",
+      "endsOn": "Termina a {{date}}"
+    },
+    "summary": {
+      "client": "Cliente",
+      "vehicle": "Veículo",
+      "driver": "Condutor",
+      "type": "Tipo de seguro",
+      "coverages": "Coberturas",
+      "period": "Início e duração",
+      "change": "Alterar",
+      "driverAge": "{{age}} anos",
+      "driverAgeLicence": "{{age}} anos, carta há {{years}} anos",
+      "waiting": "A pedir propostas às seguradoras…",
+      "retryIn_one": "Pode tentar de novo daqui a {{count}} minuto.",
+      "retryIn_other": "Pode tentar de novo daqui a {{count}} minutos."
+    }
+  },
+  "quoteResults": {
+    "title": "Propostas",
+    "change": "Alterar simulação",
+    "savedText": "Esta simulação fica guardada em As minhas cotações e é válida até {{date}}.",
+    "byBroker": "Cotação preparada pelo seu mediador.",
+    "brokerText": "Valores para o cliente {{msisdn}}. A proposta em nome do cliente chega numa próxima versão.",
+    "none": "Nenhuma seguradora apresentou proposta para estas condições.",
+    "expired": "Esta simulação expirou em {{date}}.",
+    "unavailable": "Sem proposta ({{count}})",
+    "compareBar": "Comparação",
+    "selected": "{{count}} seleccionadas (máximo {{max}})",
+    "compare": "Comparar propostas",
+    "maxCompare": "Pode comparar até 3 propostas"
+  },
+  "compare": {
+    "title": "Comparar propostas",
+    "differencesHint": "As principais diferenças estão destacadas.",
+    "insurer": "Seguradora",
+    "product": "Produto",
+    "deductible": "franquia {{value}}",
+    "noDeductible": "sem franquia",
+    "notIncluded": "Não incluída",
+    "validUntil": "Válida até",
+    "documents": "Documentos",
+    "back": "Voltar às propostas"
+  },
+  "myQuotes": {
+    "title": "As minhas cotações",
+    "recentTitle": "As minhas cotações",
+    "seeAll": "Ver todas",
+    "empty": "Ainda não fez simulações.",
+    "loadMore": "Carregar mais"
+  },
+  "brokerQuotes": {
+    "title": "Cotações",
+    "new": "Nova cotação",
+    "empty": "Ainda não há cotações.",
+    "filter": "Telemóvel do cliente",
+    "apply": "Filtrar",
+    "columns": {
+      "date": "Data",
+      "client": "Cliente",
+      "vehicle": "Veículo",
+      "type": "Tipo",
+      "offers": "Propostas",
+      "best": "Melhor preço",
+      "validity": "Validade"
     }
   }
 }

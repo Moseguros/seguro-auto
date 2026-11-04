@@ -41,6 +41,47 @@ export interface AssignableRolesResponse {
   roles: string[];
 }
 
+export type BrokerVehicleRequestProvinceOfCirculation =
+  (typeof BrokerVehicleRequestProvinceOfCirculation)[keyof typeof BrokerVehicleRequestProvinceOfCirculation];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const BrokerVehicleRequestProvinceOfCirculation = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface BrokerVehicleRequest {
+  category: VehicleCategory;
+  commercialValue?: Money;
+  /** 1–30 000; em TRAILER tem de faltar */
+  engineCc?: number;
+  /** 1–100 000; obrigatório em HEAVY e TRAILER */
+  grossWeightKg?: number;
+  /** Localizador instalado (defeito false) */
+  hasTracker?: boolean;
+  /** @maxLength 60 */
+  make?: string;
+  /** @maxLength 60 */
+  model?: string;
+  /** Opcional; num dos formatos activos (INVALID_PLATE) */
+  plate?: string;
+  provinceOfCirculation: BrokerVehicleRequestProvinceOfCirculation;
+  /** TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100 */
+  seats: number;
+  usage: VehicleUsage;
+  /** De 1900 ao próximo ano */
+  year: number;
+}
+
 export interface CatalogInsurerResponse {
   displayName: string;
   id: string;
@@ -85,6 +126,39 @@ export interface CatalogProductResponse {
   vehicleCategories: VehicleCategory[];
   versionNo: number;
 }
+
+export type ChargeType = (typeof ChargeType)[keyof typeof ChargeType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ChargeType = {
+  PERCENT: 'PERCENT',
+  FIXED: 'FIXED',
+} as const;
+
+/**
+ * Encargo (imposto ou taxa) que a seguradora acrescenta ao prémio comercial
+ */
+export interface Charge {
+  /** @pattern ^[A-Z][A-Z0-9_]{1,29}$ */
+  code: string;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  labelEn: string;
+  /**
+   * @minLength 1
+   * @maxLength 80
+   */
+  labelPt: string;
+  type: ChargeType;
+  value: ChargeValue;
+}
+
+/**
+ * PERCENT: percentagem em texto ("2.5" = 2,5 %); FIXED: centavos (inteiro)
+ */
+export type ChargeValue = string | number;
 
 export type ContactResponseType = (typeof ContactResponseType)[keyof typeof ContactResponseType];
 
@@ -270,6 +344,36 @@ export interface CoverageResponse {
   territorialScope?: string[];
 }
 
+/**
+ * MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED)
+ */
+export type CreateBrokerQuoteRequestProductType =
+  (typeof CreateBrokerQuoteRequestProductType)[keyof typeof CreateBrokerQuoteRequestProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateBrokerQuoteRequestProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface CreateBrokerQuoteRequest {
+  /** Telemóvel do cliente (INVALID_MSISDN) */
+  clientMsisdn: string;
+  /** Coberturas pedidas além das obrigatórias (pode ser vazia) */
+  coverages?: RequestedCoverageRequest[];
+  driver: RiskDriverRequest;
+  /** TEMPORARY: 7, 14, 30, 60 ou 365; os outros tipos: 365 */
+  durationDays: number;
+  /** MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED) */
+  productType: CreateBrokerQuoteRequestProductType;
+  /** Entre hoje e hoje + 60 dias (Africa/Maputo) */
+  startDate: string;
+  vehicle: BrokerVehicleRequest;
+}
+
 export interface CreateDriverRequest {
   /** No passado; idade até 100 anos */
   birthDate: string;
@@ -410,6 +514,36 @@ export interface CreateProductRequest {
    */
   name: string;
   type: CreateProductRequestType;
+}
+
+/**
+ * MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED)
+ */
+export type CreateQuoteRequestProductType =
+  (typeof CreateQuoteRequestProductType)[keyof typeof CreateQuoteRequestProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateQuoteRequestProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface CreateQuoteRequest {
+  /** Coberturas pedidas além das obrigatórias (pode ser vazia) */
+  coverages?: RequestedCoverageRequest[];
+  /** Condutor do cliente */
+  driverId: string;
+  /** TEMPORARY: 7, 14, 30, 60 ou 365; os outros tipos: 365 */
+  durationDays: number;
+  /** MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED) */
+  productType: CreateQuoteRequestProductType;
+  /** Entre hoje e hoje + 60 dias (Africa/Maputo) */
+  startDate: string;
+  /** Veículo activo do cliente */
+  vehicleId: string;
 }
 
 export interface CreateReferenceValueRequest {
@@ -599,6 +733,21 @@ export interface InsurerProfileResponse {
   complaintsEmail: string;
   ombudsmanOrganizationId?: string;
   shortCode: string;
+}
+
+export type InsurerRatingSettingsResponseRatingMode =
+  (typeof InsurerRatingSettingsResponseRatingMode)[keyof typeof InsurerRatingSettingsResponseRatingMode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerRatingSettingsResponseRatingMode = {
+  INTERNAL: 'INTERNAL',
+  EXTERNAL: 'EXTERNAL',
+} as const;
+
+export interface InsurerRatingSettingsResponse {
+  charges: Charge[];
+  ratingMode: InsurerRatingSettingsResponseRatingMode;
+  version: number;
 }
 
 export interface InvitationDetailsResponse {
@@ -1121,6 +1270,13 @@ export interface PageResponseProductSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseQuoteRequestSummaryResponse {
+  content: QuoteRequestSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseReferenceValueResponse {
   content: ReferenceValueResponse[];
   page: number;
@@ -1180,6 +1336,13 @@ export interface PlatformSettingResponse {
 
 export interface PlatformSettingsResponse {
   settings: PlatformSettingResponse[];
+}
+
+/**
+ * Decomposição do prémio (S3-01 §10): provider, variables, durationFactor, coverages (capitalAmount, deductible, base, factors, bonusMalusFactor, exactPremium, premiumAmount), commercialPremiumAmount, charges, subtotalAmount, roundingAdjustmentAmount e totalAmount. Decimais em texto, centavos em inteiro.
+ */
+export interface PremiumBreakdown {
+  [key: string]: unknown;
 }
 
 /**
@@ -1415,6 +1578,364 @@ export interface PublishProductVersionRequest {
   version: number;
 }
 
+export interface QuoteChargeResponse {
+  amount: Money;
+  code: string;
+  labelEn: string;
+  labelPt: string;
+}
+
+export type QuoteCoverageResponseCode =
+  (typeof QuoteCoverageResponseCode)[keyof typeof QuoteCoverageResponseCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteCoverageResponseCode = {
+  MTPL: 'MTPL',
+  VTPL: 'VTPL',
+  OD_COLLISION: 'OD_COLLISION',
+  OD_GLASS: 'OD_GLASS',
+  OD_FIRE: 'OD_FIRE',
+  OD_NATURE: 'OD_NATURE',
+  OD_THEFT: 'OD_THEFT',
+  OCCUPANTS: 'OCCUPANTS',
+  ASSISTANCE: 'ASSISTANCE',
+  LEGAL: 'LEGAL',
+  SRCC: 'SRCC',
+  CROSS_BORDER: 'CROSS_BORDER',
+} as const;
+
+export interface QuoteCoverageResponse {
+  capital?: Money;
+  code: QuoteCoverageResponseCode;
+  deductible: QuoteDeductible;
+  mandatory: boolean;
+  premium: Money;
+}
+
+export type QuoteDeductibleType = (typeof QuoteDeductibleType)[keyof typeof QuoteDeductibleType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteDeductibleType = {
+  NONE: 'NONE',
+  FIXED: 'FIXED',
+  PERCENT: 'PERCENT',
+} as const;
+
+export interface QuoteDeductible {
+  amount?: Money;
+  minAmount?: Money;
+  percent?: string;
+  type: QuoteDeductibleType;
+}
+
+export interface QuoteInsurer {
+  displayName: string;
+  id: string;
+  /** @nullable */
+  logoFileId?: string | null;
+  shortCode: string;
+}
+
+export type QuoteProductType = (typeof QuoteProductType)[keyof typeof QuoteProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface QuoteProduct {
+  code: string;
+  /** @nullable */
+  generalConditionsFileId?: string | null;
+  id: string;
+  name: string;
+  /** @nullable */
+  preContractInfoFileId?: string | null;
+  type: QuoteProductType;
+  versionId: string;
+  versionNo: number;
+}
+
+export type QuoteRequestResponseOrigin =
+  (typeof QuoteRequestResponseOrigin)[keyof typeof QuoteRequestResponseOrigin];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteRequestResponseOrigin = {
+  CUSTOMER: 'CUSTOMER',
+  BROKER: 'BROKER',
+} as const;
+
+export type QuoteRequestResponseProductType =
+  (typeof QuoteRequestResponseProductType)[keyof typeof QuoteRequestResponseProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteRequestResponseProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface QuoteRequestResponse {
+  /** @nullable */
+  clientMsisdn?: string | null;
+  createdAt: string;
+  driver: QuotedDriver;
+  durationDays: number;
+  /** Inclusiva */
+  endDate: string;
+  id: string;
+  origin: QuoteRequestResponseOrigin;
+  productType: QuoteRequestResponseProductType;
+  quotes: QuoteResponse[];
+  requestedCoverages: RequestedCoverageResponse[];
+  startDate: string;
+  vehicle: QuotedVehicle;
+}
+
+export type QuoteRequestSummaryResponseOrigin =
+  (typeof QuoteRequestSummaryResponseOrigin)[keyof typeof QuoteRequestSummaryResponseOrigin];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteRequestSummaryResponseOrigin = {
+  CUSTOMER: 'CUSTOMER',
+  BROKER: 'BROKER',
+} as const;
+
+export type QuoteRequestSummaryResponseProductType =
+  (typeof QuoteRequestSummaryResponseProductType)[keyof typeof QuoteRequestSummaryResponseProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteRequestSummaryResponseProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface QuoteRequestSummaryResponse {
+  bestTotal?: Money;
+  /** @nullable */
+  clientMsisdn?: string | null;
+  createdAt: string;
+  durationDays: number;
+  expired: boolean;
+  id: string;
+  offeredCount: number;
+  origin: QuoteRequestSummaryResponseOrigin;
+  productType: QuoteRequestSummaryResponseProductType;
+  startDate: string;
+  /** @nullable */
+  validUntil?: string | null;
+  vehicle: QuoteSummaryVehicle;
+}
+
+export type QuoteResponseStatus = (typeof QuoteResponseStatus)[keyof typeof QuoteResponseStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuoteResponseStatus = {
+  OFFERED: 'OFFERED',
+  NOT_AVAILABLE: 'NOT_AVAILABLE',
+  EXPIRED: 'EXPIRED',
+  USED: 'USED',
+} as const;
+
+export interface QuoteResponse {
+  charges?: QuoteChargeResponse[];
+  commercialPremium?: Money;
+  coverages?: QuoteCoverageResponse[];
+  id: string;
+  insurer: QuoteInsurer;
+  product: QuoteProduct;
+  roundingAdjustment?: Money;
+  status: QuoteResponseStatus;
+  totalAmount?: Money;
+  unavailableDetail?: UnavailableDetail;
+  unavailableReason?: UnavailableReason;
+  /** Até quando se pode usar numa proposta */
+  validUntil?: string;
+}
+
+export interface QuoteSummaryVehicle {
+  /** @nullable */
+  make?: string | null;
+  /** @nullable */
+  model?: string | null;
+  /** @nullable */
+  plate?: string | null;
+}
+
+export interface QuotedDriver {
+  /** @nullable */
+  birthDate?: string | null;
+  /** @nullable */
+  driverId?: string | null;
+  licenceCategories: string[];
+  /** @nullable */
+  licenceIssueDate?: string | null;
+}
+
+export type QuotedVehicleProvinceOfCirculation =
+  (typeof QuotedVehicleProvinceOfCirculation)[keyof typeof QuotedVehicleProvinceOfCirculation];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuotedVehicleProvinceOfCirculation = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface QuotedVehicle {
+  category: VehicleCategory;
+  commercialValue?: Money;
+  /** @nullable */
+  engineCc?: number | null;
+  /** @nullable */
+  grossWeightKg?: number | null;
+  hasTracker: boolean;
+  /** @nullable */
+  make?: string | null;
+  /** @nullable */
+  model?: string | null;
+  /** @nullable */
+  plate?: string | null;
+  provinceOfCirculation: QuotedVehicleProvinceOfCirculation;
+  /** @nullable */
+  seats?: number | null;
+  usage: VehicleUsage;
+  /** @nullable */
+  vehicleId?: string | null;
+  year: number;
+}
+
+export type RatingCoverageCapitalType =
+  (typeof RatingCoverageCapitalType)[keyof typeof RatingCoverageCapitalType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingCoverageCapitalType = {
+  FIXED: 'FIXED',
+  VEHICLE_VALUE: 'VEHICLE_VALUE',
+  OPTIONS: 'OPTIONS',
+  PER_PERSON: 'PER_PERSON',
+} as const;
+
+export type RatingCoverageCode = (typeof RatingCoverageCode)[keyof typeof RatingCoverageCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingCoverageCode = {
+  MTPL: 'MTPL',
+  VTPL: 'VTPL',
+  OD_COLLISION: 'OD_COLLISION',
+  OD_GLASS: 'OD_GLASS',
+  OD_FIRE: 'OD_FIRE',
+  OD_NATURE: 'OD_NATURE',
+  OD_THEFT: 'OD_THEFT',
+  OCCUPANTS: 'OCCUPANTS',
+  ASSISTANCE: 'ASSISTANCE',
+  LEGAL: 'LEGAL',
+  SRCC: 'SRCC',
+  CROSS_BORDER: 'CROSS_BORDER',
+} as const;
+
+export interface RatingCoverage {
+  capital?: Money;
+  /** @nullable */
+  capitalOptions?: Money[] | null;
+  capitalType: RatingCoverageCapitalType;
+  code: RatingCoverageCode;
+  mandatory: boolean;
+}
+
+export type RatingIntegrationResponseRatingMode =
+  (typeof RatingIntegrationResponseRatingMode)[keyof typeof RatingIntegrationResponseRatingMode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingIntegrationResponseRatingMode = {
+  INTERNAL: 'INTERNAL',
+  EXTERNAL: 'EXTERNAL',
+} as const;
+
+export interface RatingIntegrationResponse {
+  /** @nullable */
+  ratingEndpointUrl?: string | null;
+  ratingMode: RatingIntegrationResponseRatingMode;
+  /** @nullable */
+  ratingSecretRef?: string | null;
+  version: number;
+}
+
+export interface RatingRuleError {
+  code: string;
+  field: string;
+  message?: string;
+}
+
+/**
+ * Tarifa interna no formato rating-v1 (backend/src/main/resources/schemas/rating-v1.json): schemaVersion, durationFactors e coverages (base e factores). Decimais em texto, dinheiro em centavos.
+ */
+export interface RatingRules {
+  [key: string]: unknown;
+}
+
+export type RatingRulesResponseProductType =
+  (typeof RatingRulesResponseProductType)[keyof typeof RatingRulesResponseProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingRulesResponseProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface RatingRulesResponse {
+  configured: boolean;
+  coverages: RatingCoverage[];
+  editable: boolean;
+  productType: RatingRulesResponseProductType;
+  productVersionId: string;
+  rating?: RatingRules;
+  version: number;
+}
+
+export interface RatingRulesValidationResponse {
+  errors: RatingRuleError[];
+  valid: boolean;
+}
+
+export type RatingSimulationResponseStatus =
+  (typeof RatingSimulationResponseStatus)[keyof typeof RatingSimulationResponseStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RatingSimulationResponseStatus = {
+  OFFERED: 'OFFERED',
+  NOT_AVAILABLE: 'NOT_AVAILABLE',
+  EXPIRED: 'EXPIRED',
+  USED: 'USED',
+} as const;
+
+export interface RatingSimulationResponse {
+  breakdown?: PremiumBreakdown;
+  status: RatingSimulationResponseStatus;
+  unavailableDetail?: UnavailableDetail;
+  unavailableReason?: UnavailableReason;
+}
+
 export type ReferenceValueResponseDomain =
   (typeof ReferenceValueResponseDomain)[keyof typeof ReferenceValueResponseDomain];
 
@@ -1500,6 +2021,54 @@ export interface RequestOtpRequest {
   identifierType: RequestOtpRequestIdentifierType;
 }
 
+export type RequestedCoverageRequestCode =
+  (typeof RequestedCoverageRequestCode)[keyof typeof RequestedCoverageRequestCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RequestedCoverageRequestCode = {
+  MTPL: 'MTPL',
+  VTPL: 'VTPL',
+  OD_COLLISION: 'OD_COLLISION',
+  OD_GLASS: 'OD_GLASS',
+  OD_FIRE: 'OD_FIRE',
+  OD_NATURE: 'OD_NATURE',
+  OD_THEFT: 'OD_THEFT',
+  OCCUPANTS: 'OCCUPANTS',
+  ASSISTANCE: 'ASSISTANCE',
+  LEGAL: 'LEGAL',
+  SRCC: 'SRCC',
+  CROSS_BORDER: 'CROSS_BORDER',
+} as const;
+
+export interface RequestedCoverageRequest {
+  capital?: Money;
+  code: RequestedCoverageRequestCode;
+}
+
+export type RequestedCoverageResponseCode =
+  (typeof RequestedCoverageResponseCode)[keyof typeof RequestedCoverageResponseCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RequestedCoverageResponseCode = {
+  MTPL: 'MTPL',
+  VTPL: 'VTPL',
+  OD_COLLISION: 'OD_COLLISION',
+  OD_GLASS: 'OD_GLASS',
+  OD_FIRE: 'OD_FIRE',
+  OD_NATURE: 'OD_NATURE',
+  OD_THEFT: 'OD_THEFT',
+  OCCUPANTS: 'OCCUPANTS',
+  ASSISTANCE: 'ASSISTANCE',
+  LEGAL: 'LEGAL',
+  SRCC: 'SRCC',
+  CROSS_BORDER: 'CROSS_BORDER',
+} as const;
+
+export interface RequestedCoverageResponse {
+  capital?: Money;
+  code: RequestedCoverageResponseCode;
+}
+
 export interface ResetPasswordRequest {
   /** 12 a 128 caracteres, sem a parte local do e-mail e fora das mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[], campo newPassword) */
   newPassword: string;
@@ -1511,9 +2080,75 @@ export interface ResetPasswordRequest {
   token: string;
 }
 
+export interface RiskDriverRequest {
+  /** No passado; idade até 100 anos */
+  birthDate: string;
+  /**
+   * Opcional (0–12): códigos activos em LICENCE_CATEGORY
+   * @maxItems 12
+   */
+  licenceCategories?: string[];
+  /** Opcional; entre o nascimento e hoje */
+  licenceIssueDate?: string;
+}
+
 export interface RuleError {
   code: string;
   field: string;
+}
+
+export interface SimulateRatingRequest {
+  /**
+   * @maxItems 10
+   * @nullable
+   */
+  charges?: Charge[] | null;
+  /** Coberturas pedidas além das obrigatórias (pode ser vazia) */
+  coverages?: RequestedCoverageRequest[];
+  driver: RiskDriverRequest;
+  durationDays: number;
+  rating?: RatingRules;
+  /** Qualquer data */
+  startDate: string;
+  vehicle: SimulationVehicleRequest;
+}
+
+export type SimulationVehicleRequestProvinceOfCirculation =
+  (typeof SimulationVehicleRequestProvinceOfCirculation)[keyof typeof SimulationVehicleRequestProvinceOfCirculation];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SimulationVehicleRequestProvinceOfCirculation = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface SimulationVehicleRequest {
+  category: VehicleCategory;
+  commercialValue?: Money;
+  /** 1–30 000; em TRAILER tem de faltar */
+  engineCc?: number;
+  /** 1–100 000 */
+  grossWeightKg?: number;
+  /** Localizador instalado (defeito false) */
+  hasTracker?: boolean;
+  /** @maxLength 60 */
+  make?: string;
+  /** @maxLength 60 */
+  model?: string;
+  provinceOfCirculation: SimulationVehicleRequestProvinceOfCirculation;
+  /** TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100 */
+  seats?: number;
+  usage: VehicleUsage;
+  year: number;
 }
 
 export interface StaffLoginRequest {
@@ -1637,6 +2272,36 @@ export interface TotpSetupResponse {
   totpSecret: string;
 }
 
+/**
+ * Pormenores do motivo de uma cotação NOT_AVAILABLE (ex.: {"coverageCode": "OD_COLLISION", "table": "BASE"} ou {"declineReason": "…"}). Valores em texto, números ou listas de texto.
+ */
+export interface UnavailableDetail {
+  [key: string]: unknown;
+}
+
+/**
+ * Motivo de uma cotação NOT_AVAILABLE (traduzido em quoteUnavailable.<REASON>)
+ * @nullable
+ */
+export type UnavailableReason = (typeof UnavailableReason)[keyof typeof UnavailableReason] | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UnavailableReason = {
+  TARIFF_MISSING: 'TARIFF_MISSING',
+  TARIFF_INVALID: 'TARIFF_INVALID',
+  COVERAGE_NOT_OFFERED: 'COVERAGE_NOT_OFFERED',
+  COVERAGE_REQUIREMENTS_NOT_MET: 'COVERAGE_REQUIREMENTS_NOT_MET',
+  CAPITAL_NOT_OFFERED: 'CAPITAL_NOT_OFFERED',
+  VEHICLE_VALUE_REQUIRED: 'VEHICLE_VALUE_REQUIRED',
+  DURATION_NOT_RATED: 'DURATION_NOT_RATED',
+  NO_MATCHING_ROW: 'NO_MATCHING_ROW',
+  INSURER_TIMEOUT: 'INSURER_TIMEOUT',
+  INSURER_UNAVAILABLE: 'INSURER_UNAVAILABLE',
+  INSURER_DECLINED: 'INSURER_DECLINED',
+  EXTERNAL_INVALID_RESPONSE: 'EXTERNAL_INVALID_RESPONSE',
+  EVALUATION_ERROR: 'EVALUATION_ERROR',
+} as const;
+
 export interface UpdateDriverRequest {
   birthDate: string;
   /**
@@ -1651,6 +2316,12 @@ export interface UpdateDriverRequest {
   /** Omitido ou null mantém o actual */
   licenceNumber?: string;
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export interface UpdateInsurerRatingSettingsRequest {
+  /** @maxItems 10 */
+  charges: Charge[];
   version: number;
 }
 
@@ -1883,6 +2554,29 @@ export interface UpdateProductVersionRequest {
   version: number;
 }
 
+export type UpdateRatingIntegrationRequestRatingMode =
+  (typeof UpdateRatingIntegrationRequestRatingMode)[keyof typeof UpdateRatingIntegrationRequestRatingMode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateRatingIntegrationRequestRatingMode = {
+  INTERNAL: 'INTERNAL',
+  EXTERNAL: 'EXTERNAL',
+} as const;
+
+export interface UpdateRatingIntegrationRequest {
+  /** @maxLength 500 */
+  ratingEndpointUrl?: string;
+  ratingMode: UpdateRatingIntegrationRequestRatingMode;
+  /** @maxLength 200 */
+  ratingSecretRef?: string;
+  version: number;
+}
+
+export interface UpdateRatingRulesRequest {
+  rating: RatingRules;
+  version: number;
+}
+
 export interface UpdateReferenceValueRequest {
   /**
    * @minLength 0
@@ -1955,6 +2649,10 @@ export interface UpdateVehicleRequest {
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
   year: number;
+}
+
+export interface ValidateRatingRulesRequest {
+  rating: RatingRules;
 }
 
 export type VehicleCategory = (typeof VehicleCategory)[keyof typeof VehicleCategory];
@@ -2110,6 +2808,19 @@ export const ListPlatformUsersStatus = {
   DISABLED: 'DISABLED',
 } as const;
 
+export type ListBrokerQuoteRequestsParams = {
+  /**
+   * Telemóvel do cliente
+   */
+  clientMsisdn?: string;
+  page?: number;
+  size?: number;
+  /**
+   * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
 export type ListCatalogProductsParams = {
   vehicleCategory?: VehicleCategory;
   usage?: VehicleUsage;
@@ -2204,6 +2915,15 @@ export const ListInsurerProductsType = {
 } as const;
 
 export type ListMyDriversParams = {
+  page?: number;
+  size?: number;
+  /**
+   * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListMyQuoteRequestsParams = {
   page?: number;
   size?: number;
   /**
@@ -5491,6 +6211,228 @@ export const useRefreshToken = <TError = ErrorType<ProblemDetail>, TContext = un
 };
 
 /**
+ * Permissão quote:create-for-client. Pedidos de todos os utilizadores da organização do mediador; clientMsisdn (opcional) filtra pelo telemóvel do cliente (INVALID_MSISDN). Ordenação por createdAt (defeito createdAt,desc).
+ * @summary Lista os pedidos de cotações da organização
+ */
+export const listBrokerQuoteRequests = (
+  params?: ListBrokerQuoteRequestsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseQuoteRequestSummaryResponse>(
+    { url: `/api/v1/broker/quotes`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListBrokerQuoteRequestsQueryKey = (params?: ListBrokerQuoteRequestsParams) => {
+  return [`/api/v1/broker/quotes`, ...(params ? [params] : [])] as const;
+};
+
+export const getListBrokerQuoteRequestsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerQuoteRequests>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListBrokerQuoteRequestsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listBrokerQuoteRequests>>> = ({
+    signal,
+  }) => listBrokerQuoteRequests(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListBrokerQuoteRequestsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listBrokerQuoteRequests>>
+>;
+export type ListBrokerQuoteRequestsQueryError = ErrorType<ProblemDetail>;
+
+export function useListBrokerQuoteRequests<
+  TData = Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListBrokerQuoteRequestsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerQuoteRequests>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+          TError,
+          Awaited<ReturnType<typeof listBrokerQuoteRequests>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListBrokerQuoteRequests<
+  TData = Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerQuoteRequests>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+          TError,
+          Awaited<ReturnType<typeof listBrokerQuoteRequests>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListBrokerQuoteRequests<
+  TData = Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerQuoteRequests>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os pedidos de cotações da organização
+ */
+
+export function useListBrokerQuoteRequests<
+  TData = Awaited<ReturnType<typeof listBrokerQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerQuoteRequests>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListBrokerQuoteRequestsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão quote:create-for-client (corretor ou agente). Dados do veículo e do condutor escritos à mão (só o que a tarifa usa) e o telemóvel do cliente: a conta do cliente é encontrada ou criada (telemóvel por verificar), sem mensagem nenhuma. O cliente vê o pedido em listMyQuoteRequests com origin = BROKER. Mesmas regras e respostas de createQuoteRequest.
+ * @summary Pede cotações em nome de um cliente
+ */
+export const createBrokerQuoteRequest = (
+  createBrokerQuoteRequest: BodyType<CreateBrokerQuoteRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<QuoteRequestResponse>(
+    {
+      url: `/api/v1/broker/quotes`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createBrokerQuoteRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateBrokerQuoteRequestMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createBrokerQuoteRequest>>,
+    TError,
+    { data: BodyType<CreateBrokerQuoteRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createBrokerQuoteRequest>>,
+  TError,
+  { data: BodyType<CreateBrokerQuoteRequest> },
+  TContext
+> => {
+  const mutationKey = ['createBrokerQuoteRequest'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createBrokerQuoteRequest>>,
+    { data: BodyType<CreateBrokerQuoteRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createBrokerQuoteRequest(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateBrokerQuoteRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createBrokerQuoteRequest>>
+>;
+export type CreateBrokerQuoteRequestMutationBody = BodyType<CreateBrokerQuoteRequest>;
+export type CreateBrokerQuoteRequestMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pede cotações em nome de um cliente
+ */
+export const useCreateBrokerQuoteRequest = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createBrokerQuoteRequest>>,
+      TError,
+      { data: BodyType<CreateBrokerQuoteRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createBrokerQuoteRequest>>,
+  TError,
+  { data: BodyType<CreateBrokerQuoteRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreateBrokerQuoteRequestMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Público. Qualquer versão que foi publicada (também SUPERSEDED e RETIRED, para quem tem uma apólice antiga), de uma seguradora activa, com as coberturas completas; senão 404 PRODUCT_VERSION_NOT_FOUND.
  * @summary Consulta uma versão publicada
  */
@@ -6729,6 +7671,390 @@ export const usePublishProductVersion = <TError = ErrorType<ProblemDetail>, TCon
 };
 
 /**
+ * Permissão rating:manage ou product:read. rating é null quando a versão ainda não tem tarifa; coverages são as coberturas da versão; editable = versão DRAFT.
+ * @summary Consulta a tarifa de uma versão de produto
+ */
+export const getRatingRules = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<RatingRulesResponse>(
+    { url: `/api/v1/insurer/product-versions/${id}/rating`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetRatingRulesQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/product-versions/${id}/rating`] as const;
+};
+
+export const getGetRatingRulesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRatingRulesQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRatingRules>>> = ({ signal }) =>
+    getRatingRules(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRatingRules>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetRatingRulesQueryResult = NonNullable<Awaited<ReturnType<typeof getRatingRules>>>;
+export type GetRatingRulesQueryError = ErrorType<ProblemDetail>;
+
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRatingRules>>,
+          TError,
+          Awaited<ReturnType<typeof getRatingRules>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRatingRules>>,
+          TError,
+          Awaited<ReturnType<typeof getRatingRules>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta a tarifa de uma versão de produto
+ */
+
+export function useGetRatingRules<
+  TData = Awaited<ReturnType<typeof getRatingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getRatingRules>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetRatingRulesQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão rating:manage. Só versões DRAFT (senão 409 PRODUCT_VERSION_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION. Validada por rating-v1.json e pelas regras do S3-01 §7: 400 VALIDATION_ERROR com errors[].field = ponteiro JSON dentro de rating. Mais de 256 KB → 400 RATING_RULES_TOO_LARGE.
+ * @summary Grava a tarifa de uma versão em preparação
+ */
+export const updateRatingRules = (
+  id: string,
+  updateRatingRulesRequest: BodyType<UpdateRatingRulesRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<RatingRulesResponse>(
+    {
+      url: `/api/v1/insurer/product-versions/${id}/rating`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateRatingRulesRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateRatingRulesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateRatingRules>>,
+    TError,
+    { id: string; data: BodyType<UpdateRatingRulesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<UpdateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateRatingRules'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateRatingRules>>,
+    { id: string; data: BodyType<UpdateRatingRulesRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateRatingRules(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateRatingRulesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateRatingRules>>
+>;
+export type UpdateRatingRulesMutationBody = BodyType<UpdateRatingRulesRequest>;
+export type UpdateRatingRulesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Grava a tarifa de uma versão em preparação
+ */
+export const useUpdateRatingRules = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateRatingRules>>,
+      TError,
+      { id: string; data: BodyType<UpdateRatingRulesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<UpdateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateRatingRulesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão rating:manage. Versões em qualquer estado da própria seguradora (outra → 404 PRODUCT_VERSION_NOT_FOUND). Usa sempre a tarifa interna: a gravada ou rating (validada como em updateRatingRules), com os encargos gravados ou charges. Devolve a decomposição completa. Não grava nada nem chama seguradoras externas.
+ * @summary Simula a tarifa de uma versão de produto
+ */
+export const simulateRating = (
+  id: string,
+  simulateRatingRequest: BodyType<SimulateRatingRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<RatingSimulationResponse>(
+    {
+      url: `/api/v1/insurer/product-versions/${id}/rating/simulate`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: simulateRatingRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSimulateRatingMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof simulateRating>>,
+    TError,
+    { id: string; data: BodyType<SimulateRatingRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof simulateRating>>,
+  TError,
+  { id: string; data: BodyType<SimulateRatingRequest> },
+  TContext
+> => {
+  const mutationKey = ['simulateRating'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof simulateRating>>,
+    { id: string; data: BodyType<SimulateRatingRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return simulateRating(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SimulateRatingMutationResult = NonNullable<Awaited<ReturnType<typeof simulateRating>>>;
+export type SimulateRatingMutationBody = BodyType<SimulateRatingRequest>;
+export type SimulateRatingMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Simula a tarifa de uma versão de produto
+ */
+export const useSimulateRating = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof simulateRating>>,
+      TError,
+      { id: string; data: BodyType<SimulateRatingRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof simulateRating>>,
+  TError,
+  { id: string; data: BodyType<SimulateRatingRequest> },
+  TContext
+> => {
+  const mutationOptions = getSimulateRatingMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão rating:manage. As mesmas validações de updateRatingRules, em qualquer estado da versão; todos os erros em errors[] (field = ponteiro JSON dentro de rating). Não grava.
+ * @summary Valida uma tarifa sem a gravar
+ */
+export const validateRatingRules = (
+  id: string,
+  validateRatingRulesRequest: BodyType<ValidateRatingRulesRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<RatingRulesValidationResponse>(
+    {
+      url: `/api/v1/insurer/product-versions/${id}/rating/validate`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: validateRatingRulesRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getValidateRatingRulesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof validateRatingRules>>,
+    TError,
+    { id: string; data: BodyType<ValidateRatingRulesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof validateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<ValidateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationKey = ['validateRatingRules'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof validateRatingRules>>,
+    { id: string; data: BodyType<ValidateRatingRulesRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return validateRatingRules(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ValidateRatingRulesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof validateRatingRules>>
+>;
+export type ValidateRatingRulesMutationBody = BodyType<ValidateRatingRulesRequest>;
+export type ValidateRatingRulesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Valida uma tarifa sem a gravar
+ */
+export const useValidateRatingRules = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof validateRatingRules>>,
+      TError,
+      { id: string; data: BodyType<ValidateRatingRulesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof validateRatingRules>>,
+  TError,
+  { id: string; data: BodyType<ValidateRatingRulesRequest> },
+  TContext
+> => {
+  const mutationOptions = getValidateRatingRulesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão product:read. As mesmas regras da publicação, sem gravar; todas as falhas em errors[].
  * @summary Verifica as regras de publicação
  */
@@ -7401,6 +8727,221 @@ export const useCreateProductVersion = <TError = ErrorType<ProblemDetail>, TCont
   TContext
 > => {
   const mutationOptions = getCreateProductVersionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão rating:manage ou product:read, staff de uma seguradora (outro âmbito → 403 FORBIDDEN). Encargos pela ordem em que se calculam.
+ * @summary Consulta as definições de tarifação
+ */
+export const getInsurerRatingSettings = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerRatingSettingsResponse>(
+    { url: `/api/v1/insurer/rating-settings`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerRatingSettingsQueryKey = () => {
+  return [`/api/v1/insurer/rating-settings`] as const;
+};
+
+export const getGetInsurerRatingSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerRatingSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerRatingSettings>>> = ({
+    signal,
+  }) => getInsurerRatingSettings(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerRatingSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInsurerRatingSettings>>
+>;
+export type GetInsurerRatingSettingsQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerRatingSettings>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta as definições de tarifação
+ */
+
+export function useGetInsurerRatingSettings<
+  TData = Awaited<ReturnType<typeof getInsurerRatingSettings>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerRatingSettings>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerRatingSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão rating:manage. charges validado por charges-v1.json (SCHEMA_VIOLATION) e pelas regras DUPLICATE_CHARGE e VALUE_OUT_OF_RANGE (PERCENT acima de 100): 400 VALIDATION_ERROR com errors[].field = ponteiro JSON dentro de charges. version diferente → 409 CONCURRENT_MODIFICATION. O modo de tarifação não se altera aqui.
+ * @summary Altera os encargos da seguradora
+ */
+export const updateInsurerRatingSettings = (
+  updateInsurerRatingSettingsRequest: BodyType<UpdateInsurerRatingSettingsRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<InsurerRatingSettingsResponse>(
+    {
+      url: `/api/v1/insurer/rating-settings`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateInsurerRatingSettingsRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateInsurerRatingSettingsMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+    TError,
+    { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+  TError,
+  { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateInsurerRatingSettings'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+    { data: BodyType<UpdateInsurerRatingSettingsRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateInsurerRatingSettings(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateInsurerRatingSettingsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateInsurerRatingSettings>>
+>;
+export type UpdateInsurerRatingSettingsMutationBody = BodyType<UpdateInsurerRatingSettingsRequest>;
+export type UpdateInsurerRatingSettingsMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera os encargos da seguradora
+ */
+export const useUpdateInsurerRatingSettings = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+      TError,
+      { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateInsurerRatingSettings>>,
+  TError,
+  { data: BodyType<UpdateInsurerRatingSettingsRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateInsurerRatingSettingsMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -8881,6 +10422,139 @@ export const useUpdateMyProfile = <TError = ErrorType<ProblemDetail>, TContext =
 };
 
 /**
+ * Permissão self:quotes. Inclui os pedidos de um mediador em nome do cliente (origin = BROKER). offeredCount e bestTotal contam só as cotações ainda OFFERED. Ordenação por createdAt (defeito createdAt,desc).
+ * @summary Lista os pedidos de cotações do cliente
+ */
+export const listMyQuoteRequests = (
+  params?: ListMyQuoteRequestsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseQuoteRequestSummaryResponse>(
+    { url: `/api/v1/me/quotes`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyQuoteRequestsQueryKey = (params?: ListMyQuoteRequestsParams) => {
+  return [`/api/v1/me/quotes`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyQuoteRequestsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyQuoteRequests>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyQuoteRequestsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyQuoteRequests>>> = ({ signal }) =>
+    listMyQuoteRequests(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyQuoteRequests>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyQuoteRequestsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyQuoteRequests>>
+>;
+export type ListMyQuoteRequestsQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyQuoteRequests<
+  TData = Awaited<ReturnType<typeof listMyQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyQuoteRequestsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyQuoteRequests>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyQuoteRequests>>,
+          TError,
+          Awaited<ReturnType<typeof listMyQuoteRequests>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyQuoteRequests<
+  TData = Awaited<ReturnType<typeof listMyQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyQuoteRequests>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyQuoteRequests>>,
+          TError,
+          Awaited<ReturnType<typeof listMyQuoteRequests>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyQuoteRequests<
+  TData = Awaited<ReturnType<typeof listMyQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyQuoteRequests>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os pedidos de cotações do cliente
+ */
+
+export function useListMyQuoteRequests<
+  TData = Awaited<ReturnType<typeof listMyQuoteRequests>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyQuoteRequestsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyQuoteRequests>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyQuoteRequestsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Só os activos. Ordenação por createdAt (defeito, desc) ou plate.
  * @summary Lista os veículos do cliente
  */
@@ -10213,6 +11887,226 @@ export const useUpdateOrganization = <TError = ErrorType<ProblemDetail>, TContex
 };
 
 /**
+ * Permissão organization:manage. Organização inexistente → 404 ORGANIZATION_NOT_FOUND; que não é seguradora → 400 ORGANIZATION_NOT_INSURER.
+ * @summary Consulta a ligação à tarifação de uma seguradora
+ */
+export const getRatingIntegration = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<RatingIntegrationResponse>(
+    { url: `/api/v1/organizations/${id}/rating-integration`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetRatingIntegrationQueryKey = (id?: string) => {
+  return [`/api/v1/organizations/${id}/rating-integration`] as const;
+};
+
+export const getGetRatingIntegrationQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRatingIntegration>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRatingIntegration>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRatingIntegrationQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRatingIntegration>>> = ({ signal }) =>
+    getRatingIntegration(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRatingIntegration>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetRatingIntegrationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRatingIntegration>>
+>;
+export type GetRatingIntegrationQueryError = ErrorType<ProblemDetail>;
+
+export function useGetRatingIntegration<
+  TData = Awaited<ReturnType<typeof getRatingIntegration>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRatingIntegration>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRatingIntegration>>,
+          TError,
+          Awaited<ReturnType<typeof getRatingIntegration>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetRatingIntegration<
+  TData = Awaited<ReturnType<typeof getRatingIntegration>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRatingIntegration>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRatingIntegration>>,
+          TError,
+          Awaited<ReturnType<typeof getRatingIntegration>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetRatingIntegration<
+  TData = Awaited<ReturnType<typeof getRatingIntegration>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRatingIntegration>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta a ligação à tarifação de uma seguradora
+ */
+
+export function useGetRatingIntegration<
+  TData = Awaited<ReturnType<typeof getRatingIntegration>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRatingIntegration>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetRatingIntegrationQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão organization:manage. EXTERNAL exige ratingEndpointUrl (https://, até 500 caracteres: INVALID_URL) e ratingSecretRef (config:<chave>: INVALID_SECRET_REF); em falta → REQUIRED. INTERNAL mantém os outros dois campos gravados. version diferente → 409 CONCURRENT_MODIFICATION. Auditado (RATING_INTEGRATION.UPDATE).
+ * @summary Altera a ligação à tarifação de uma seguradora
+ */
+export const updateRatingIntegration = (
+  id: string,
+  updateRatingIntegrationRequest: BodyType<UpdateRatingIntegrationRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<RatingIntegrationResponse>(
+    {
+      url: `/api/v1/organizations/${id}/rating-integration`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateRatingIntegrationRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateRatingIntegrationMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateRatingIntegration>>,
+    TError,
+    { id: string; data: BodyType<UpdateRatingIntegrationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateRatingIntegration>>,
+  TError,
+  { id: string; data: BodyType<UpdateRatingIntegrationRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateRatingIntegration'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateRatingIntegration>>,
+    { id: string; data: BodyType<UpdateRatingIntegrationRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateRatingIntegration(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateRatingIntegrationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateRatingIntegration>>
+>;
+export type UpdateRatingIntegrationMutationBody = BodyType<UpdateRatingIntegrationRequest>;
+export type UpdateRatingIntegrationMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera a ligação à tarifação de uma seguradora
+ */
+export const useUpdateRatingIntegration = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateRatingIntegration>>,
+      TError,
+      { id: string; data: BodyType<UpdateRatingIntegrationRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateRatingIntegration>>,
+  TError,
+  { id: string; data: BodyType<UpdateRatingIntegrationRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateRatingIntegrationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão organization:manage. Já activa → 409 INVALID_STATE_TRANSITION.
  * @summary Reactiva uma organização suspensa
  */
@@ -10998,6 +12892,215 @@ export function useListPublicPlatformSettings<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getListPublicPlatformSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:quotes. Uma cotação por produto publicado compatível de cada seguradora activa (OFFERED, ou NOT_AVAILABLE com unavailableReason), em menos de 3 s, ordenadas por preço; valem 15 dias. Veículo ou condutor de outro cliente → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND. Danos próprios sem valor comercial → 400 VEHICLE_VALUE_REQUIRED. Mais de 30 pedidos numa hora → 429 QUOTE_RATE_LIMITED (Retry-After). Sem produtos compatíveis → quotes: [].
+ * @summary Pede cotações para um veículo do cliente
+ */
+export const createQuoteRequest = (
+  createQuoteRequest: BodyType<CreateQuoteRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<QuoteRequestResponse>(
+    {
+      url: `/api/v1/quotes`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createQuoteRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateQuoteRequestMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createQuoteRequest>>,
+    TError,
+    { data: BodyType<CreateQuoteRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createQuoteRequest>>,
+  TError,
+  { data: BodyType<CreateQuoteRequest> },
+  TContext
+> => {
+  const mutationKey = ['createQuoteRequest'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createQuoteRequest>>,
+    { data: BodyType<CreateQuoteRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createQuoteRequest(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateQuoteRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createQuoteRequest>>
+>;
+export type CreateQuoteRequestMutationBody = BodyType<CreateQuoteRequest>;
+export type CreateQuoteRequestMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pede cotações para um veículo do cliente
+ */
+export const useCreateQuoteRequest = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createQuoteRequest>>,
+      TError,
+      { data: BodyType<CreateQuoteRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createQuoteRequest>>,
+  TError,
+  { data: BodyType<CreateQuoteRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreateQuoteRequestMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:quotes ou quote:create-for-client. O cliente vê os seus (também os do mediador em nome dele); o mediador os da sua organização. Outro → 404 QUOTE_REQUEST_NOT_FOUND. status é o estado efectivo (EXPIRED depois da validade ou da data de início).
+ * @summary Consulta um pedido de cotações
+ */
+export const getQuoteRequest = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<QuoteRequestResponse>(
+    { url: `/api/v1/quotes/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetQuoteRequestQueryKey = (id?: string) => {
+  return [`/api/v1/quotes/${id}`] as const;
+};
+
+export const getGetQuoteRequestQueryOptions = <
+  TData = Awaited<ReturnType<typeof getQuoteRequest>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuoteRequest>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetQuoteRequestQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getQuoteRequest>>> = ({ signal }) =>
+    getQuoteRequest(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getQuoteRequest>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetQuoteRequestQueryResult = NonNullable<Awaited<ReturnType<typeof getQuoteRequest>>>;
+export type GetQuoteRequestQueryError = ErrorType<ProblemDetail>;
+
+export function useGetQuoteRequest<
+  TData = Awaited<ReturnType<typeof getQuoteRequest>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuoteRequest>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getQuoteRequest>>,
+          TError,
+          Awaited<ReturnType<typeof getQuoteRequest>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetQuoteRequest<
+  TData = Awaited<ReturnType<typeof getQuoteRequest>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuoteRequest>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getQuoteRequest>>,
+          TError,
+          Awaited<ReturnType<typeof getQuoteRequest>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetQuoteRequest<
+  TData = Awaited<ReturnType<typeof getQuoteRequest>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuoteRequest>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta um pedido de cotações
+ */
+
+export function useGetQuoteRequest<
+  TData = Awaited<ReturnType<typeof getQuoteRequest>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getQuoteRequest>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetQuoteRequestQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

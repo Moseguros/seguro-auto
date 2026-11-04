@@ -54,7 +54,10 @@ export type MenuItem = {
  * Caminhos sem item próprio no menu e o item (`key`) que fica marcado quando se está neles (o
  * próprio caminho e os que começam por ele).
  */
-export const menuAliases: Record<string, string> = { '/cliente/condutores': 'vehicles' };
+export const menuAliases: Record<string, string> = {
+  '/cliente/condutores': 'vehicles',
+  '/cliente/cotacoes': 'quote',
+};
 
 /** Item marcado por um alias para o caminho, se houver. */
 export function aliasedMenuKey(pathname: string): string | undefined {
@@ -101,7 +104,12 @@ export const menus: Record<Area, MenuItem[]> = {
       icon: Inventory,
       permission: 'product:read',
     },
-    { key: 'tariffs', path: '/seguradora/tarifas', icon: PriceChange },
+    {
+      key: 'tariffs',
+      path: '/seguradora/tarifas',
+      icon: PriceChange,
+      permission: 'product:read',
+    },
     { key: 'proposals', path: '/seguradora/propostas', icon: Assignment },
     { key: 'policies', path: '/seguradora/apolices', icon: Description },
     { key: 'payments', path: '/seguradora/pagamentos', icon: Payments },
@@ -114,7 +122,12 @@ export const menus: Record<Area, MenuItem[]> = {
   mediador: [
     { key: 'home', path: '/mediador', icon: Dashboard },
     { key: 'customers', path: '/mediador/clientes', icon: People },
-    { key: 'quotes', path: '/mediador/cotacoes', icon: Calculate },
+    {
+      key: 'quotes',
+      path: '/mediador/cotacoes',
+      icon: Calculate,
+      permission: 'quote:create-for-client',
+    },
     { key: 'policies', path: '/mediador/apolices', icon: Description },
     { key: 'reports', path: '/mediador/relatorios', icon: BarChart },
     { key: 'users', path: '/mediador/utilizadores', icon: Group, permission: 'org-user:read' },

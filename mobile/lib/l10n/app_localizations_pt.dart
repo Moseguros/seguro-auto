@@ -892,6 +892,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este condutor é o habitual de um veículo. Escolha outro habitual primeiro.';
 
   @override
+  String get errorRatingRulesTooLarge =>
+      'A tarifa é demasiado grande (máximo 256 KB).';
+
+  @override
   String get validationInvalidChassis => 'N.º de chassis inválido.';
 
   @override
@@ -914,6 +918,56 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get validationMultipleHabitualDrivers =>
       'Só pode haver um condutor habitual.';
+
+  @override
+  String get validationSchemaViolation => 'Formato inválido.';
+
+  @override
+  String get validationCoverageTariffMissing =>
+      'Falta a tarifa de uma cobertura do produto.';
+
+  @override
+  String get validationCoverageNotInProduct =>
+      'Esta cobertura não existe no produto.';
+
+  @override
+  String get validationDuplicateCoverage => 'Cobertura repetida.';
+
+  @override
+  String get validationBaseTypeNotAllowed =>
+      'Este tipo de base não serve para o capital desta cobertura.';
+
+  @override
+  String get validationValueOutOfRange => 'Valor fora dos limites permitidos.';
+
+  @override
+  String get validationInvalidRange =>
+      'O limite inferior tem de ser menor que o superior.';
+
+  @override
+  String get validationDuplicateFactor => 'Factor repetido.';
+
+  @override
+  String get validationReservedFactorCode =>
+      'Este código está reservado ao sistema.';
+
+  @override
+  String get validationDuplicateDuration => 'Duração repetida.';
+
+  @override
+  String get validationDuration365NotOne =>
+      'O factor de 365 dias tem de ser 1.';
+
+  @override
+  String get validationDurationFactorsRequired =>
+      'Um produto temporário precisa da tabela de duração.';
+
+  @override
+  String get validationDurationNotAllowed =>
+      'Duração não permitida para este produto.';
+
+  @override
+  String get validationDuplicateCharge => 'Encargo repetido.';
 
   @override
   String get save => 'Guardar';
@@ -1266,4 +1320,494 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get driverConflict => 'Este condutor foi alterado noutro dispositivo';
+
+  @override
+  String get errorQuoteRequestNotFound => 'Cotação não encontrada.';
+
+  @override
+  String get errorQuoteNotFound => 'Cotação não encontrada.';
+
+  @override
+  String get errorQuoteExpired =>
+      'Esta cotação já expirou. Faça uma nova simulação.';
+
+  @override
+  String get errorQuoteNotAvailable =>
+      'Esta seguradora não apresentou proposta.';
+
+  @override
+  String get errorQuoteAlreadyUsed =>
+      'Esta cotação já foi usada numa proposta.';
+
+  @override
+  String get errorQuoteRateLimited =>
+      'Fez muitas simulações na última hora. Tente mais tarde.';
+
+  @override
+  String get errorVehicleValueRequired =>
+      'Para danos próprios, indique o valor comercial do veículo.';
+
+  @override
+  String get errorOrganizationNotInsurer =>
+      'Esta organização não é uma seguradora.';
+
+  @override
+  String get validationStartDateOutOfRange =>
+      'A data de início tem de ser entre hoje e daqui a 60 dias.';
+
+  @override
+  String get validationCoverageNotAllowedForType =>
+      'Esta cobertura não existe neste tipo de seguro.';
+
+  @override
+  String get validationOwnDamageRequired =>
+      'Escolha pelo menos uma cobertura de danos próprios.';
+
+  @override
+  String get validationCoverageRequires =>
+      'Furto ou roubo exige choque, incêndio e fenómenos da natureza.';
+
+  @override
+  String get validationInvalidUrl =>
+      'Endereço inválido (tem de começar por https://).';
+
+  @override
+  String get validationInvalidSecretRef => 'Referência do segredo inválida.';
+
+  @override
+  String get quoteUnavailableTariffMissing =>
+      'Esta seguradora ainda não tem preço para este produto.';
+
+  @override
+  String get quoteUnavailableTariffInvalid =>
+      'Não foi possível calcular o preço deste produto.';
+
+  @override
+  String get quoteUnavailableCoverageNotOffered =>
+      'Este produto não inclui todas as coberturas escolhidas.';
+
+  @override
+  String get quoteUnavailableCoverageRequirementsNotMet =>
+      'Neste produto, as coberturas escolhidas exigem outras que não escolheu.';
+
+  @override
+  String get quoteUnavailableCapitalNotOffered =>
+      'Este produto não oferece o capital escolhido.';
+
+  @override
+  String get quoteUnavailableVehicleValueRequired =>
+      'É preciso indicar o valor comercial do veículo.';
+
+  @override
+  String get quoteUnavailableDurationNotRated =>
+      'Este produto não está disponível para a duração escolhida.';
+
+  @override
+  String get quoteUnavailableNoMatchingRow =>
+      'Esta seguradora não cobre este veículo ou condutor nestas condições.';
+
+  @override
+  String get quoteUnavailableInsurerTimeout =>
+      'A seguradora não respondeu a tempo.';
+
+  @override
+  String get quoteUnavailableInsurerUnavailable =>
+      'A seguradora está indisponível neste momento.';
+
+  @override
+  String get quoteUnavailableInsurerDeclined =>
+      'A seguradora não apresentou proposta.';
+
+  @override
+  String get quoteUnavailableExternalInvalidResponse =>
+      'A seguradora devolveu uma resposta inválida.';
+
+  @override
+  String get quoteUnavailableEvaluationError =>
+      'Não foi possível calcular o preço.';
+
+  @override
+  String get coverageMtpl => 'Responsabilidade civil obrigatória';
+
+  @override
+  String get coverageVtpl => 'Responsabilidade civil facultativa';
+
+  @override
+  String get coverageOdCollision => 'Choque, colisão e capotamento';
+
+  @override
+  String get coverageOdGlass => 'Quebra isolada de vidros';
+
+  @override
+  String get coverageOdFire => 'Incêndio, raio e explosão';
+
+  @override
+  String get coverageOdNature => 'Fenómenos da natureza';
+
+  @override
+  String get coverageOdTheft => 'Furto ou roubo';
+
+  @override
+  String get coverageOccupants => 'Ocupantes';
+
+  @override
+  String get coverageAssistance => 'Assistência em viagem';
+
+  @override
+  String get coverageLegal => 'Protecção jurídica';
+
+  @override
+  String get coverageSrcc => 'Greves, tumultos e alterações da ordem pública';
+
+  @override
+  String get coverageCrossBorder => 'Circulação no estrangeiro';
+
+  @override
+  String get quoteWizardTitle => 'Simular seguro';
+
+  @override
+  String quoteStepOf(int step, int total) {
+    return 'Passo $step de $total';
+  }
+
+  @override
+  String get quoteStepVehicle => 'Veículo e condutor';
+
+  @override
+  String get quoteStepType => 'Tipo de seguro';
+
+  @override
+  String get quoteStepCoverages => 'Coberturas';
+
+  @override
+  String get quoteStepPeriod => 'Início e duração';
+
+  @override
+  String get quoteStepSummary => 'Resumo';
+
+  @override
+  String get quoteBack => 'Voltar';
+
+  @override
+  String get quoteContinue => 'Continuar';
+
+  @override
+  String get quoteVehicleLabel => 'Veículo';
+
+  @override
+  String quoteVehicleLine(String make, String model, int year) {
+    return '$make $model · $year';
+  }
+
+  @override
+  String get quoteNoVehicles => 'Ainda não tem veículos registados.';
+
+  @override
+  String get quoteAddVehicle => 'Acrescentar veículo';
+
+  @override
+  String get quoteDriverLabel => 'Condutor';
+
+  @override
+  String get quoteNoDrivers => 'Ainda não tem condutores registados.';
+
+  @override
+  String get quoteAddDriver => 'Acrescentar condutor';
+
+  @override
+  String get quoteStartDateMoved => 'Actualizámos a data de início para hoje.';
+
+  @override
+  String get quoteTypeMtplOnly => 'Só responsabilidade civil';
+
+  @override
+  String get quoteTypeMtplOnlyText =>
+      'O seguro obrigatório: cobre os danos que causar a outros.';
+
+  @override
+  String get quoteTypeComprehensive =>
+      'Responsabilidade civil + danos próprios';
+
+  @override
+  String get quoteTypeComprehensiveText =>
+      'Cobre também os danos no seu veículo.';
+
+  @override
+  String get quoteTypeTemporary => 'Seguro temporário';
+
+  @override
+  String get quoteTypeTemporaryText =>
+      'Responsabilidade civil por 7 a 60 dias, ou um ano.';
+
+  @override
+  String get quoteNeedsCommercialValue =>
+      'Precisa do valor comercial do veículo';
+
+  @override
+  String get quoteSetCommercialValue => 'Indicar valor';
+
+  @override
+  String get quoteCoverageMandatory => 'Obrigatória';
+
+  @override
+  String quoteCoverageAvailableIn(int count, int total) {
+    return 'Disponível em $count de $total produtos';
+  }
+
+  @override
+  String get quoteCoverageCapital => 'Capital';
+
+  @override
+  String quoteCapitalPerPerson(String capital) {
+    return '$capital por pessoa';
+  }
+
+  @override
+  String get quoteTheftNotice =>
+      'Furto ou roubo inclui obrigatoriamente choque, incêndio e fenómenos da natureza.';
+
+  @override
+  String get quoteNoProducts =>
+      'De momento não há produtos deste tipo para este veículo.';
+
+  @override
+  String get quoteStartDate => 'Data de início';
+
+  @override
+  String get quoteDuration => 'Duração';
+
+  @override
+  String quoteDurationDays(int count) {
+    return '$count dias';
+  }
+
+  @override
+  String get quoteDurationYear => '1 ano';
+
+  @override
+  String quoteEndsOn(String date) {
+    return 'Termina a $date';
+  }
+
+  @override
+  String get quoteChange => 'Alterar';
+
+  @override
+  String quoteDriverAges(int age, int years) {
+    return '$age anos, carta há $years anos';
+  }
+
+  @override
+  String quotePeriodRange(String start, String end) {
+    return '$start a $end';
+  }
+
+  @override
+  String get quoteRequesting => 'A pedir propostas às seguradoras…';
+
+  @override
+  String quoteRetryInMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tente de novo dentro de $count minutos.',
+      one: 'Tente de novo dentro de 1 minuto.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quoteResultsTitle => 'Propostas';
+
+  @override
+  String get quoteChangeSimulation => 'Alterar simulação';
+
+  @override
+  String quoteSavedUntil(String date) {
+    return 'Esta simulação fica guardada em As minhas cotações e é válida até $date.';
+  }
+
+  @override
+  String get quoteByBroker => 'Cotação preparada pelo seu mediador.';
+
+  @override
+  String get quoteGoToMyQuotes => 'Ver as minhas cotações';
+
+  @override
+  String quoteIncludesCharges(String amount) {
+    return 'Inclui $amount de encargos';
+  }
+
+  @override
+  String quoteDeductible(String value) {
+    return 'Franquia $value';
+  }
+
+  @override
+  String quoteDeductiblePercent(String percent) {
+    return '$percent %';
+  }
+
+  @override
+  String quoteDeductiblePercentMin(String percent, String min) {
+    return '$percent % (mín. $min)';
+  }
+
+  @override
+  String get quoteNoDeductible => 'Sem franquia';
+
+  @override
+  String quoteValidUntil(String date) {
+    return 'Válida até $date';
+  }
+
+  @override
+  String get quoteCheapest => 'Mais barata';
+
+  @override
+  String get quoteViewDetail => 'Ver detalhe';
+
+  @override
+  String get quoteCompare => 'Comparar';
+
+  @override
+  String get quoteUsed => 'Usada numa proposta';
+
+  @override
+  String get quoteExpiredLabel => 'Expirada';
+
+  @override
+  String get quoteNotAvailableLabel => 'Sem proposta';
+
+  @override
+  String quoteCompareSelected(int count) {
+    return '$count seleccionadas (máximo 3)';
+  }
+
+  @override
+  String get quoteCompareMax => 'Pode comparar até 3 propostas';
+
+  @override
+  String quoteUnavailableTitle(int count) {
+    return 'Sem proposta ($count)';
+  }
+
+  @override
+  String get quoteNoOffers =>
+      'Nenhuma seguradora apresentou proposta para estas condições.';
+
+  @override
+  String quoteExpiredOn(String date) {
+    return 'Esta simulação expirou em $date.';
+  }
+
+  @override
+  String get quoteGeneralConditions => 'Condições gerais';
+
+  @override
+  String get quotePreContractInfo => 'Informação pré-contratual';
+
+  @override
+  String get compareTitle => 'Comparar propostas';
+
+  @override
+  String get compareInsurer => 'Seguradora';
+
+  @override
+  String get compareProduct => 'Produto';
+
+  @override
+  String get compareTotal => 'Prémio total';
+
+  @override
+  String get compareCommercialPremium => 'Prémio comercial';
+
+  @override
+  String get compareNotIncluded => 'Não incluída';
+
+  @override
+  String get compareValidUntil => 'Válida até';
+
+  @override
+  String get compareDocuments => 'Documentos';
+
+  @override
+  String compareCoverageWithDeductible(
+    String capital,
+    String deductible,
+    String premium,
+  ) {
+    return '$capital · franquia $deductible · $premium';
+  }
+
+  @override
+  String compareCoverageNoDeductible(String capital, String premium) {
+    return '$capital · $premium';
+  }
+
+  @override
+  String get quoteDetailTitle => 'Detalhe da proposta';
+
+  @override
+  String quoteProductVersion(String product, int version) {
+    return '$product · versão $version';
+  }
+
+  @override
+  String get quoteDetailCoverages => 'Coberturas';
+
+  @override
+  String quoteDetailCapital(String value) {
+    return 'Capital: $value';
+  }
+
+  @override
+  String get quoteDetailPremium => 'Prémio';
+
+  @override
+  String get quoteRoundingAdjustment => 'Ajuste de arredondamento';
+
+  @override
+  String get quoteDetailPeriod => 'Período';
+
+  @override
+  String get quoteDetailValidity => 'Validade';
+
+  @override
+  String get quoteProposalSoon =>
+      'Em breve vai poder avançar daqui para a proposta.';
+
+  @override
+  String get myQuotesTitle => 'As minhas cotações';
+
+  @override
+  String get myQuotesEmpty => 'Ainda não fez simulações.';
+
+  @override
+  String get myQuotesByBroker => 'Pelo mediador';
+
+  @override
+  String myQuotesStart(String date) {
+    return 'Início a $date';
+  }
+
+  @override
+  String myQuotesOffers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count propostas',
+      one: '1 proposta',
+      zero: 'Sem propostas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String myQuotesFrom(String amount) {
+    return 'desde $amount';
+  }
+
+  @override
+  String get myQuotesSeeAll => 'Ver todas';
 }

@@ -2,11 +2,13 @@ package mz.co.moseguros.document.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -103,7 +105,9 @@ class FileStoreServiceIT {
         try (FileContent content = as(TenantSnapshot.customer(customer), () -> documents.open(ref.id()))) {
             byte[] bytes = content.content().readAllBytes();
             assertThat(FileStoreService.sha256(bytes)).isEqualTo(ref.sha256());
-            assertThat(content.ref()).isEqualTo(ref);
+            // O Postgres guarda microssegundos: o createdAt lido pode diferir 1 µs do que está em memória.
+            assertThat(content.ref()).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(ref);
+            assertThat(content.ref().createdAt()).isCloseTo(ref.createdAt(), within(1, ChronoUnit.MICROS));
         }
         assertThat(as(TenantSnapshot.customer(customer), () -> documents.metadata(ref.id()))).isEqualTo(ref);
     }
