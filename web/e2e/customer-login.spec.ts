@@ -168,7 +168,8 @@ test('login por telemóvel, completar o perfil e chegar ao início', async ({ pa
 
   await page.getByRole('link', { name: 'Simular seguro' }).click();
   await expect(page).toHaveURL(/\/cliente\/simular$/);
-  await expect(page.getByRole('heading', { name: 'Em construção' })).toBeVisible();
+  // O assistente de simulação (S3-04).
+  await expect(page.getByRole('heading', { level: 1, name: 'Simular seguro' })).toBeVisible();
 });
 
 test('código enviado por outro canal mostra o aviso', async ({ page }) => {
