@@ -1431,6 +1431,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationMustBeTrue => 'You must confirm to continue.';
 
   @override
+  String get errorInspectionNotRequired =>
+      'This proposal does not need an inspection.';
+
+  @override
+  String get errorInspectionNotFound => 'Inspection not found.';
+
+  @override
+  String get errorInspectionNotEditable =>
+      'The inspection has been sent and cannot be changed.';
+
+  @override
+  String get errorInspectionPhotosMissing => 'Required photos are missing.';
+
+  @override
+  String get errorPhotoNotFound => 'Photo not found.';
+
+  @override
+  String get errorProposalNotUnderReview => 'The proposal is not under review.';
+
+  @override
+  String get validationInvalidSlot => 'Invalid angle.';
+
+  @override
+  String get validationExtraPhotosLimit =>
+      'You have already sent the maximum number of extra photos.';
+
+  @override
+  String get validationPhotoTooOld =>
+      'This photo was taken more than 7 days ago. Take a new one.';
+
+  @override
+  String get validationPhotoInFuture =>
+      'The photo date is invalid. Check your phone\'s clock.';
+
+  @override
+  String get validationInvalidCoordinates => 'Invalid location.';
+
+  @override
+  String get inspectionSlotFront => 'Front';
+
+  @override
+  String get inspectionSlotRear => 'Rear';
+
+  @override
+  String get inspectionSlotLeft => 'Left side';
+
+  @override
+  String get inspectionSlotRight => 'Right side';
+
+  @override
+  String get inspectionSlotOdometer => 'Odometer';
+
+  @override
+  String get inspectionSlotChassis => 'Chassis number';
+
+  @override
+  String get inspectionSlotExtra => 'Other photo';
+
+  @override
   String get quoteUnavailableTariffMissing =>
       'This insurer does not have a price for this product yet.';
 

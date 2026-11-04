@@ -158,12 +158,20 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
+[*ProposalApi*](doc/ProposalApi.md) | [**getInsurerInspection**](doc/ProposalApi.md#getinsurerinspection) | **GET** /api/v1/insurer/inspections/{id} | Consulta uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**listInsurerInspections**](doc/ProposalApi.md#listinsurerinspections) | **GET** /api/v1/insurer/inspections | Lista as vistorias da seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
+[*ProposalApi*](doc/ProposalApi.md) | [**rejectInspection**](doc/ProposalApi.md#rejectinspection) | **POST** /api/v1/insurer/inspections/{id}/reject | Recusa uma vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**removeInspectionPhoto**](doc/ProposalApi.md#removeinspectionphoto) | **DELETE** /api/v1/proposals/{id}/inspection/photos/{photoId} | Retira uma fotografia da vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**requestOnSiteInspection**](doc/ProposalApi.md#requestonsiteinspection) | **POST** /api/v1/proposals/{id}/inspection/request-on-site | Pede uma vistoria presencial
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalDeclarations**](doc/ProposalApi.md#saveproposaldeclarations) | **POST** /api/v1/proposals/{id}/declarations | Grava as declarações de risco
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**submitInspection**](doc/ProposalApi.md#submitinspection) | **POST** /api/v1/proposals/{id}/inspection/submit | Submete a vistoria por fotografias
 [*ProposalApi*](doc/ProposalApi.md) | [**updateProposal**](doc/ProposalApi.md#updateproposal) | **PUT** /api/v1/proposals/{id} | Altera a data de início da proposta
+[*ProposalApi*](doc/ProposalApi.md) | [**uploadInspectionPhoto**](doc/ProposalApi.md#uploadinspectionphoto) | **POST** /api/v1/proposals/{id}/inspection/photos | Envia uma fotografia da vistoria
 [*RatingApi*](doc/RatingApi.md) | [**createBrokerQuoteRequest**](doc/RatingApi.md#createbrokerquoterequest) | **POST** /api/v1/broker/quotes | Pede cotações em nome de um cliente
 [*RatingApi*](doc/RatingApi.md) | [**createQuoteRequest**](doc/RatingApi.md#createquoterequest) | **POST** /api/v1/quotes | Pede cotações para um veículo do cliente
 [*RatingApi*](doc/RatingApi.md) | [**getQuoteRequest**](doc/RatingApi.md#getquoterequest) | **GET** /api/v1/quotes/{id} | Consulta um pedido de cotações
@@ -193,6 +201,7 @@ Class | Method | HTTP request | Description
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
  - [AcknowledgeSuitabilityRequest](doc/AcknowledgeSuitabilityRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
+ - [ApproveInspectionRequest](doc/ApproveInspectionRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
@@ -220,7 +229,13 @@ Class | Method | HTTP request | Description
  - [DriverResponse](doc/DriverResponse.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
+ - [InspectionMode](doc/InspectionMode.md)
+ - [InspectionPhotoResponse](doc/InspectionPhotoResponse.md)
+ - [InspectionResponse](doc/InspectionResponse.md)
+ - [InspectionReview](doc/InspectionReview.md)
+ - [InspectionStatus](doc/InspectionStatus.md)
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
+ - [InsurerInspectionSummaryResponse](doc/InsurerInspectionSummaryResponse.md)
  - [InsurerKycCheckResponse](doc/InsurerKycCheckResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
@@ -255,6 +270,7 @@ Class | Method | HTTP request | Description
  - [OtpVerifyResponse](doc/OtpVerifyResponse.md)
  - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
+ - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
@@ -264,6 +280,8 @@ Class | Method | HTTP request | Description
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
  - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
+ - [PhotoSlot](doc/PhotoSlot.md)
+ - [PhotoSource](doc/PhotoSource.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
@@ -282,7 +300,6 @@ Class | Method | HTTP request | Description
  - [ProposalDeclarations](doc/ProposalDeclarations.md)
  - [ProposalDeductible](doc/ProposalDeductible.md)
  - [ProposalDriver](doc/ProposalDriver.md)
- - [ProposalInspection](doc/ProposalInspection.md)
  - [ProposalKyc](doc/ProposalKyc.md)
  - [ProposalOrganization](doc/ProposalOrganization.md)
  - [ProposalPolicyholder](doc/ProposalPolicyholder.md)
@@ -321,8 +338,10 @@ Class | Method | HTTP request | Description
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
  - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
+ - [RejectInspectionRequest](doc/RejectInspectionRequest.md)
  - [RejectKycCheckRequest](doc/RejectKycCheckRequest.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
+ - [RequestOnSiteInspectionRequest](doc/RequestOnSiteInspectionRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
  - [RequestedCoverageRequest](doc/RequestedCoverageRequest.md)
  - [RequestedCoverageResponse](doc/RequestedCoverageResponse.md)
@@ -336,6 +355,7 @@ Class | Method | HTTP request | Description
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
+ - [SubmitInspectionRequest](doc/SubmitInspectionRequest.md)
  - [SuitabilityAnswerRequest](doc/SuitabilityAnswerRequest.md)
  - [SuitabilityAnswerResponse](doc/SuitabilityAnswerResponse.md)
  - [SuitabilityQuestion](doc/SuitabilityQuestion.md)

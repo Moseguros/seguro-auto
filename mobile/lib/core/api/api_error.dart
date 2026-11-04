@@ -117,6 +117,12 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'PROPOSAL_NOT_EDITABLE' => l10n.errorProposalNotEditable,
   'INSURER_NOT_ACTIVE' => l10n.errorInsurerNotActive,
   'SUITABILITY_NOT_WARNED' => l10n.errorSuitabilityNotWarned,
+  'INSPECTION_NOT_REQUIRED' => l10n.errorInspectionNotRequired,
+  'INSPECTION_NOT_FOUND' => l10n.errorInspectionNotFound,
+  'INSPECTION_NOT_EDITABLE' => l10n.errorInspectionNotEditable,
+  'INSPECTION_PHOTOS_MISSING' => l10n.errorInspectionPhotosMissing,
+  'PHOTO_NOT_FOUND' => l10n.errorPhotoNotFound,
+  'PROPOSAL_NOT_UNDER_REVIEW' => l10n.errorProposalNotUnderReview,
   _ => l10n.errorUnknown,
 };
 
@@ -209,6 +215,11 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'UNKNOWN_QUESTION' => l10n.validationUnknownQuestion,
   'INVALID_ANSWER' => l10n.validationInvalidAnswer,
   'MUST_BE_TRUE' => l10n.validationMustBeTrue,
+  'INVALID_SLOT' => l10n.validationInvalidSlot,
+  'EXTRA_PHOTOS_LIMIT' => l10n.validationExtraPhotosLimit,
+  'PHOTO_TOO_OLD' => l10n.validationPhotoTooOld,
+  'PHOTO_IN_FUTURE' => l10n.validationPhotoInFuture,
+  'INVALID_COORDINATES' => l10n.validationInvalidCoordinates,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,

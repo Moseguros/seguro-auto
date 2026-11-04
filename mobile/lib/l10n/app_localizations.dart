@@ -2582,6 +2582,114 @@ abstract class AppLocalizations {
   /// **'Tem de confirmar para continuar.'**
   String get validationMustBeTrue;
 
+  /// No description provided for @errorInspectionNotRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta não precisa de vistoria.'**
+  String get errorInspectionNotRequired;
+
+  /// No description provided for @errorInspectionNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria não encontrada.'**
+  String get errorInspectionNotFound;
+
+  /// No description provided for @errorInspectionNotEditable.
+  ///
+  /// In pt, this message translates to:
+  /// **'A vistoria já foi enviada e não pode ser alterada.'**
+  String get errorInspectionNotEditable;
+
+  /// No description provided for @errorInspectionPhotosMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faltam fotografias obrigatórias.'**
+  String get errorInspectionPhotosMissing;
+
+  /// No description provided for @errorPhotoNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fotografia não encontrada.'**
+  String get errorPhotoNotFound;
+
+  /// No description provided for @errorProposalNotUnderReview.
+  ///
+  /// In pt, this message translates to:
+  /// **'A proposta não está em análise.'**
+  String get errorProposalNotUnderReview;
+
+  /// No description provided for @validationInvalidSlot.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ângulo inválido.'**
+  String get validationInvalidSlot;
+
+  /// No description provided for @validationExtraPhotosLimit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou o número máximo de fotografias extra.'**
+  String get validationExtraPhotosLimit;
+
+  /// No description provided for @validationPhotoTooOld.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.'**
+  String get validationPhotoTooOld;
+
+  /// No description provided for @validationPhotoInFuture.
+  ///
+  /// In pt, this message translates to:
+  /// **'A data da fotografia é inválida. Confirme a hora do telemóvel.'**
+  String get validationPhotoInFuture;
+
+  /// No description provided for @validationInvalidCoordinates.
+  ///
+  /// In pt, this message translates to:
+  /// **'Localização inválida.'**
+  String get validationInvalidCoordinates;
+
+  /// No description provided for @inspectionSlotFront.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frente'**
+  String get inspectionSlotFront;
+
+  /// No description provided for @inspectionSlotRear.
+  ///
+  /// In pt, this message translates to:
+  /// **'Traseira'**
+  String get inspectionSlotRear;
+
+  /// No description provided for @inspectionSlotLeft.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lado esquerdo'**
+  String get inspectionSlotLeft;
+
+  /// No description provided for @inspectionSlotRight.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lado direito'**
+  String get inspectionSlotRight;
+
+  /// No description provided for @inspectionSlotOdometer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta-quilómetros'**
+  String get inspectionSlotOdometer;
+
+  /// No description provided for @inspectionSlotChassis.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número do chassis'**
+  String get inspectionSlotChassis;
+
+  /// No description provided for @inspectionSlotExtra.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outra fotografia'**
+  String get inspectionSlotExtra;
+
   /// No description provided for @quoteUnavailableTariffMissing.
   ///
   /// In pt, this message translates to:

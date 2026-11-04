@@ -34,7 +34,7 @@ class _$ProposalResponse extends ProposalResponse {
   @override
   final String id;
   @override
-  final ProposalInspection inspection;
+  final InspectionResponse inspection;
   @override
   final ProposalOrganization? insurer;
   @override
@@ -282,10 +282,10 @@ class ProposalResponseBuilder
   String? get id => _$this._id;
   set id(String? id) => _$this._id = id;
 
-  ProposalInspectionBuilder? _inspection;
-  ProposalInspectionBuilder get inspection =>
-      _$this._inspection ??= ProposalInspectionBuilder();
-  set inspection(ProposalInspectionBuilder? inspection) =>
+  InspectionResponseBuilder? _inspection;
+  InspectionResponseBuilder get inspection =>
+      _$this._inspection ??= InspectionResponseBuilder();
+  set inspection(InspectionResponseBuilder? inspection) =>
       _$this._inspection = inspection;
 
   ProposalOrganizationBuilder? _insurer;

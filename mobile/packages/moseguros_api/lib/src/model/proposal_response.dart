@@ -7,7 +7,7 @@ import 'package:moseguros_api/src/model/proposal_status.dart';
 import 'package:moseguros_api/src/model/proposal_policyholder.dart';
 import 'package:moseguros_api/src/model/proposal_kyc.dart';
 import 'package:moseguros_api/src/model/proposal_channel.dart';
-import 'package:moseguros_api/src/model/proposal_inspection.dart';
+import 'package:moseguros_api/src/model/inspection_response.dart';
 import 'package:moseguros_api/src/model/proposal_product.dart';
 import 'package:moseguros_api/src/model/proposal_suitability.dart';
 import 'package:moseguros_api/src/model/proposal_checklist.dart';
@@ -104,7 +104,7 @@ abstract class ProposalResponse implements Built<ProposalResponse, ProposalRespo
   String get id;
 
   @BuiltValueField(wireName: r'inspection')
-  ProposalInspection get inspection;
+  InspectionResponse get inspection;
 
   @BuiltValueField(wireName: r'insurer')
   ProposalOrganization? get insurer;
@@ -255,7 +255,7 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
     yield r'inspection';
     yield serializers.serialize(
       object.inspection,
-      specifiedType: const FullType(ProposalInspection),
+      specifiedType: const FullType(InspectionResponse),
     );
     yield r'insurer';
     yield object.insurer == null ? null : serializers.serialize(
@@ -458,8 +458,8 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
         case r'inspection':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(ProposalInspection),
-          ) as ProposalInspection;
+            specifiedType: const FullType(InspectionResponse),
+          ) as InspectionResponse;
           result.inspection.replace(valueDes);
           break;
         case r'insurer':
