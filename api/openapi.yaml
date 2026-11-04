@@ -1225,6 +1225,164 @@ paths:
       summary: Renova a sessão
       tags:
       - Identity
+  /api/v1/broker/proposals:
+    get:
+      description: "Permissão proposal:create-for-client (corretor ou agente). Propostas\
+        \ criadas por qualquer utilizador da organização; status repetível (vazio\
+        \ = todos); q = número exacto ou parte do nome do tomador. Ordenação por createdAt\
+        \ (defeito createdAt,desc)."
+      operationId: listBrokerProposals
+      parameters:
+      - description: Estados a incluir (repetível); vazio = todos
+        in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProposalStatus"
+      - description: Número exacto ou parte do nome do tomador
+        example: PR-2027-000123
+        in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseBrokerProposalSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as propostas da organização do mediador
+      tags:
+      - Proposal
+    post:
+      description: "Permissão proposal:create-for-client (corretor ou agente). Por\
+        \ esta ordem: cotação não visível, do cliente ou de outra organização → 404\
+        \ QUOTE_NOT_FOUND; já usada numa proposta → 409 PROPOSAL_ALREADY_EXISTS; QUOTE_NOT_AVAILABLE,\
+        \ QUOTE_ALREADY_USED, QUOTE_EXPIRED (409); seguradora não activa → 409 INSURER_NOT_ACTIVE;\
+        \ vehicle ou driver em falta → 400 REQUIRED; campos usados na tarifa diferentes\
+        \ dos da cotação → 409 QUOTE_DATA_CHANGED (fields, ex.: vehicle.year); conta\
+        \ do cliente desactivada → 409 CLIENT_ACCOUNT_DISABLED; perfil do cliente\
+        \ completo e policyholder enviado → 400 NOT_ALLOWED (policyholder); perfil\
+        \ incompleto sem policyholder → 400 REQUIRED (policyholder), com as regras\
+        \ do perfil (errors[].field policyholder.*); regras do veículo e do condutor\
+        \ do S2-03 (errors[].field vehicle.* e driver.*; VEHICLE_ALREADY_REGISTERED\
+        \ com a mesma matrícula e outro chassis, VEHICLE_LIMIT_REACHED, DRIVER_LIMIT_REACHED).\
+        \ Regista o veículo e o condutor na conta do cliente (reutiliza os iguais),\
+        \ grava a proposta DRAFT com channel = BROKER e a cotação passa a USED. Qualquer\
+        \ erro desfaz tudo. O cliente vê a proposta em listMyProposals e recebe um\
+        \ e-mail se tiver e-mail verificado."
+      operationId: createProposalForClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBrokerProposalRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Cria uma proposta a partir da cotação do mediador
+      tags:
+      - Proposal
+  /api/v1/broker/proposals/{id}:
+    put:
+      description: "Permissão proposal:create-for-client (corretor ou agente). Só\
+        \ em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente\
+        \ → 409 CONCURRENT_MODIFICATION; proposta de outra organização → 404 PROPOSAL_NOT_FOUND.\
+        \ startDate entre hoje e hoje + 60 dias (START_DATE_OUT_OF_RANGE); policyholder\
+        \ só com policyholderSource = BROKER (senão 400 NOT_ALLOWED), com as regras\
+        \ do perfil (idDocNumber e nuit omitidos mantêm os actuais); sem nenhum dos\
+        \ dois → 400 REQUIRED (startDate). Com policyholderSource = PROFILE o tomador\
+        \ é copiado de novo do perfil. Aumenta contentRevision, invalida a assinatura\
+        \ e renova expiresAt. O veículo e o condutor não mudam (mudar o risco exige\
+        \ nova cotação)."
+      operationId: updateBrokerProposal
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBrokerProposalRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera a data de início ou o tomador
+      tags:
+      - Proposal
   /api/v1/broker/quotes:
     get:
       description: "Permissão quote:create-for-client. Pedidos de todos os utilizadores\
@@ -4676,7 +4834,8 @@ paths:
       description: Permissão self:proposals ou proposal:create-for-client. startDate
         entre hoje e hoje + 60 dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE);
         a duração e o prémio não mudam; o tomador é copiado de novo do perfil (perfil
-        incompleto → 409 PROFILE_INCOMPLETE). Só em DRAFT ou INFO_REQUESTED (senão
+        incompleto → 409 PROFILE_INCOMPLETE); com policyholderSource = BROKER (S4-06)
+        mantém o tomador preenchido pelo mediador. Só em DRAFT ou INFO_REQUESTED (senão
         409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION;
         proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision
         e renova expiresAt (+15 dias).
@@ -4979,7 +5138,8 @@ paths:
         \ OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava\
         \ a assinatura ligada ao hash do PDF (bloco signature, checklist.signature\
         \ = DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida\
-        \ a assinatura."
+        \ a assinatura. Confirmada por um utilizador do mediador (S4-06) → signature.assisted\
+        \ = true; pelo próprio cliente → não assistida."
       operationId: confirmProposalSignature
       parameters:
       - in: path
@@ -5027,7 +5187,9 @@ paths:
         \ Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só\
         \ assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED\
         \ / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido\
-        \ anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND."
+        \ anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND.\
+        \ Pedido pelo mediador da proposta (S4-06): assinatura assistida, o código\
+        \ vai para o telemóvel da conta do cliente com o nome do mediador na mensagem."
       operationId: requestProposalSignature
       parameters:
       - in: path
@@ -5667,6 +5829,216 @@ components:
       - managerInviteRoles
       - managerRoles
       - roles
+    BrokerPolicyholderRequest:
+      type: object
+      description: Só com policyholderSource = BROKER (senão NOT_ALLOWED); omitido
+        mantém o actual
+      properties:
+        address:
+          type: string
+          example: "Bairro da Machava, Q. 12"
+          maxLength: 300
+        birthDate:
+          type: string
+          format: date
+          description: "Pelo menos 18 anos, no máximo 120"
+          example: 1991-09-09
+        fullName:
+          type: string
+          description: "Letras, espaços, apóstrofo e hífen; pelo menos duas palavras"
+          example: João Carlos Sitoe
+          maxLength: 120
+          minLength: 2
+        idDocNumber:
+          type: string
+          description: "Maiúsculas e dígitos, 5–20 (espaços ignorados). Obrigatório\
+            \ na criação; no updateBrokerProposal, omitido mantém o actual (se o tipo\
+            \ não mudar)."
+          example: 110100765432B
+        idDocType:
+          type: string
+          enum:
+          - BI
+          - PASSPORT
+          - DIRE
+          example: BI
+        nuit:
+          type: string
+          description: "9 dígitos. Obrigatório na criação; no updateBrokerProposal,\
+            \ omitido mantém o actual."
+          example: "123456789"
+        province:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+      required:
+      - birthDate
+      - fullName
+      - idDocType
+      - province
+    BrokerProposalDriverRequest:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          example: 1991-09-09
+        fullName:
+          type: string
+          description: "Letras, espaços, apóstrofo e hífen; pelo menos duas palavras"
+          example: João Carlos Sitoe
+          maxLength: 120
+          minLength: 2
+        isOwner:
+          type: boolean
+          description: O condutor é o próprio cliente (defeito false); só um por cliente
+        licenceCategories:
+          type: array
+          description: "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos"
+          items:
+            type: string
+            description: "1–12 códigos activos em LICENCE_CATEGORY, sem repetidos"
+        licenceIssueDate:
+          type: string
+          format: date
+          example: 2011-04-04
+        licenceNumber:
+          type: string
+          description: "5–20 letras, dígitos, / ou - (espaços ignorados). Nunca é\
+            \ devolvido."
+          example: MAP-123456
+      required:
+      - birthDate
+      - fullName
+      - licenceCategories
+      - licenceIssueDate
+      - licenceNumber
+    BrokerProposalSummaryResponse:
+      type: object
+      properties:
+        checklist:
+          $ref: "#/components/schemas/ProposalChecklist"
+        createdAt:
+          type: string
+          format: date-time
+        customerMsisdnMasked:
+          type: string
+          example: +258*****4567
+        customerName:
+          type: string
+          description: Nome do tomador
+          example: João Carlos Sitoe
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        id:
+          type: string
+          format: uuid
+        insurer:
+          $ref: "#/components/schemas/ProposalOrganization"
+        number:
+          type: string
+          example: PR-2027-000123
+        productName:
+          type: string
+          example: Auto Base
+        status:
+          $ref: "#/components/schemas/ProposalStatus"
+        total:
+          $ref: "#/components/schemas/Money"
+      required:
+      - checklist
+      - createdAt
+      - customerName
+      - id
+      - insurer
+      - number
+      - productName
+      - status
+      - total
+    BrokerProposalVehicleRequest:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/VehicleCategory"
+        chassisNumber:
+          type: string
+          description: 5–30 letras ou dígitos (espaços e hífens ignorados)
+          example: JTDBR32E720012345
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        engineCc:
+          type: integer
+          format: int32
+          description: "1–30 000; obrigatório excepto em TRAILER, onde tem de faltar"
+          example: 1600
+        grossWeightKg:
+          type: integer
+          format: int32
+          description: 1–100 000; obrigatório em HEAVY e TRAILER
+          example: 40000
+        hasTracker:
+          type: boolean
+          description: Localizador instalado (defeito false)
+        make:
+          type: string
+          example: Toyota
+          maxLength: 60
+        model:
+          type: string
+          example: Corolla
+          maxLength: 60
+        plate:
+          type: string
+          description: "Num dos formatos activos (espaços, hífens e minúsculas aceites)"
+          example: ABC-123-MC
+        provinceOfCirculation:
+          type: string
+          enum:
+          - MAPUTO_CITY
+          - MAPUTO
+          - GAZA
+          - INHAMBANE
+          - SOFALA
+          - MANICA
+          - TETE
+          - ZAMBEZIA
+          - NAMPULA
+          - CABO_DELGADO
+          - NIASSA
+        seats:
+          type: integer
+          format: int32
+          description: "TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100"
+          example: 5
+        usage:
+          $ref: "#/components/schemas/VehicleUsage"
+        year:
+          type: integer
+          format: int32
+          description: De 1900 ao próximo ano (em Africa/Maputo)
+          example: 2024
+      required:
+      - category
+      - chassisNumber
+      - make
+      - model
+      - plate
+      - provinceOfCirculation
+      - seats
+      - usage
+      - year
     BrokerVehicleRequest:
       type: object
       properties:
@@ -6064,6 +6436,23 @@ components:
       - code
       - deductibleType
       - mandatory
+    CreateBrokerProposalRequest:
+      type: object
+      properties:
+        driver:
+          $ref: "#/components/schemas/BrokerProposalDriverRequest"
+        policyholder:
+          $ref: "#/components/schemas/BrokerPolicyholderRequest"
+        quoteId:
+          type: string
+          format: uuid
+          description: Cotação OFFERED do mediador
+        vehicle:
+          $ref: "#/components/schemas/BrokerProposalVehicleRequest"
+      required:
+      - driver
+      - quoteId
+      - vehicle
     CreateBrokerQuoteRequest:
       type: object
       properties:
@@ -8013,6 +8402,29 @@ components:
       - expiresIn
       - isNewUser
       - refreshToken
+    PageResponseBrokerProposalSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/BrokerProposalSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseCatalogProductResponse:
       type: object
       properties:
@@ -8418,6 +8830,13 @@ components:
             $ref: "#/components/schemas/PlatformSettingResponse"
       required:
       - settings
+    PolicyholderSource:
+      type: string
+      description: "PROFILE: tomador copiado do perfil do cliente; BROKER: preenchido\
+        \ pelo mediador porque o perfil estava incompleto (S4-06)"
+      enum:
+      - PROFILE
+      - BROKER
     PremiumBreakdown:
       type: object
       additionalProperties: true
@@ -9095,6 +9514,8 @@ components:
           example: PR-2027-000123
         policyholder:
           $ref: "#/components/schemas/ProposalPolicyholder"
+        policyholderSource:
+          $ref: "#/components/schemas/PolicyholderSource"
         premium:
           $ref: "#/components/schemas/ProposalPremium"
         product:
@@ -9141,6 +9562,7 @@ components:
       - kyc
       - number
       - policyholder
+      - policyholderSource
       - premium
       - product
       - quoteId
@@ -10830,6 +11252,23 @@ components:
       required:
       - isDefault
       - rules
+      - version
+    UpdateBrokerProposalRequest:
+      type: object
+      properties:
+        policyholder:
+          $ref: "#/components/schemas/BrokerPolicyholderRequest"
+        startDate:
+          type: string
+          format: date
+          description: "Nova data de início (hoje a hoje + 60 dias, Africa/Maputo);\
+            \ omitida mantém a actual"
+          example: 2027-01-10
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
       - version
     UpdateDriverRequest:
       type: object
