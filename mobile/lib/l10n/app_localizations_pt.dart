@@ -1220,7 +1220,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get cameraPermissionDenied =>
-      'Precisamos da câmara para fotografar o livrete.';
+      'Para fazer a vistoria, a MoSeguros precisa de acesso à câmara.';
 
   @override
   String get cameraOpenSettings => 'Abrir definições';
@@ -1931,10 +1931,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quoteDetailValidity => 'Validade';
 
   @override
-  String get quoteProposalSoon =>
-      'Em breve vai poder avançar daqui para a proposta.';
-
-  @override
   String get myQuotesTitle => 'As minhas cotações';
 
   @override
@@ -2071,4 +2067,607 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get proposalStatusConverted => 'Apólice emitida';
+
+  @override
+  String get homeProposalsTitle => 'Propostas em curso';
+
+  @override
+  String get homeProposalsSeeAll => 'Ver todas';
+
+  @override
+  String inspectionPendingUploads(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n fotografias por enviar',
+      one: '1 fotografia por enviar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get proposalsTitle => 'Propostas';
+
+  @override
+  String get proposalsEmpty => 'Ainda não tem propostas.';
+
+  @override
+  String get proposalsFilterActive => 'Em curso';
+
+  @override
+  String get proposalsFilterAll => 'Todas';
+
+  @override
+  String proposalExpiresOn(String date) {
+    return 'Expira em $date';
+  }
+
+  @override
+  String get proposalContinue => 'Continuar';
+
+  @override
+  String get proposalView => 'Ver';
+
+  @override
+  String get proposalCreating => 'A preparar a proposta…';
+
+  @override
+  String proposalTitle(String number) {
+    return 'Proposta $number';
+  }
+
+  @override
+  String get proposalChangedElsewhere => 'A proposta foi alterada noutro lado.';
+
+  @override
+  String get quoteAcquire => 'Adquirir apólice';
+
+  @override
+  String proposalStepOf(int step, int total, String name) {
+    return 'Passo $step de $total · $name';
+  }
+
+  @override
+  String get proposalStepPolicyholder => 'Tomador e data';
+
+  @override
+  String get proposalStepDeclarations => 'Declarações';
+
+  @override
+  String get proposalStepSuitability => 'Adequação';
+
+  @override
+  String get proposalStepInspection => 'Vistoria';
+
+  @override
+  String get proposalStepIdentity => 'Identidade';
+
+  @override
+  String get proposalStepReview => 'Resumo';
+
+  @override
+  String get proposalBack => 'Voltar';
+
+  @override
+  String get proposalNext => 'Continuar';
+
+  @override
+  String get proposalCoverages => 'Coberturas';
+
+  @override
+  String get proposalTotal => 'Total';
+
+  @override
+  String get proposalPolicyholderTitle => 'Tomador do seguro';
+
+  @override
+  String get proposalPolicyholderFromProfile =>
+      'Estes dados vêm do seu perfil.';
+
+  @override
+  String get proposalEditProfile => 'Editar perfil';
+
+  @override
+  String get proposalRefreshFromProfile => 'Actualizar com o perfil';
+
+  @override
+  String get proposalStartDate => 'Data de início';
+
+  @override
+  String proposalEndDate(String date) {
+    return 'Fim: $date';
+  }
+
+  @override
+  String get proposalVehicle => 'Veículo';
+
+  @override
+  String get proposalDriver => 'Condutor';
+
+  @override
+  String get declarationClaimsLast3YearsQuestion =>
+      'Nos últimos 3 anos, teve algum acidente ou sinistro com um veículo, como condutor ou como proprietário?';
+
+  @override
+  String get declarationClaimsLast3YearsClaimsCount => 'Quantos?';
+
+  @override
+  String get declarationClaimsLast3YearsDetails =>
+      'Descreva brevemente: quando, o que aconteceu e se houve feridos.';
+
+  @override
+  String get declarationPreviousRefusalQuestion =>
+      'Alguma seguradora já recusou, anulou ou não quis renovar um seguro automóvel seu?';
+
+  @override
+  String get declarationPreviousRefusalDetails => 'Que seguradora e porquê?';
+
+  @override
+  String declarationUsageDifferentQuestion(String usage) {
+    return 'O veículo vai ser usado para outro fim além de «$usage»? Por exemplo, transportar passageiros ou mercadorias a troco de pagamento.';
+  }
+
+  @override
+  String get declarationUsageDifferentDetails => 'Para que outro fim?';
+
+  @override
+  String get declarationVehicleModifiedQuestion =>
+      'O veículo tem alterações às características de fábrica (motor, suspensão, carroçaria, gás ou outras)?';
+
+  @override
+  String get declarationVehicleModifiedDetails => 'Que alterações?';
+
+  @override
+  String get declarationNoviceDriversQuestion =>
+      'Alguém com carta de condução há menos de 2 anos vai conduzir este veículo com regularidade?';
+
+  @override
+  String get declarationNoviceDriversDetails =>
+      'Quem, e há quanto tempo tem carta?';
+
+  @override
+  String get declarationTruthfulness =>
+      'Declaro que as respostas são verdadeiras e completas. Sei que declarações falsas ou omissões podem levar à anulação do contrato ou à recusa do pagamento de sinistros.';
+
+  @override
+  String get proposalAnswerRequired => 'Escolha uma resposta.';
+
+  @override
+  String get proposalDetailsLength => 'Escreva entre 10 e 500 caracteres.';
+
+  @override
+  String get proposalClaimsCountRange => 'Indique um número de 1 a 20.';
+
+  @override
+  String get proposalTruthfulnessRequired =>
+      'Confirme a declaração para continuar.';
+
+  @override
+  String get suitabilityIntro =>
+      'Estas perguntas ajudam a confirmar se a proposta corresponde ao que procura.';
+
+  @override
+  String get suitabilityNeedQuestion =>
+      'Que protecção procura para este veículo?';
+
+  @override
+  String get suitabilityNeedOptionMandatoryOnly =>
+      'Só o seguro obrigatório: danos que eu cause a outras pessoas';
+
+  @override
+  String get suitabilityNeedOptionOwnDamage =>
+      'Também os danos no meu veículo num acidente';
+
+  @override
+  String get suitabilityNeedOptionFull =>
+      'Também roubo, incêndio e fenómenos da natureza';
+
+  @override
+  String get suitabilityNeedOptionUnsure => 'Não sei';
+
+  @override
+  String get suitabilityFinancedQuestion =>
+      'O veículo ainda está a ser pago (crédito ou leasing)?';
+
+  @override
+  String get suitabilityCanAffordRepairQuestion =>
+      'Se o seu veículo ficasse danificado num acidente causado por si, conseguiria pagar a reparação sem a ajuda do seguro?';
+
+  @override
+  String get suitabilityCrossBorderQuestion =>
+      'Vai conduzir este veículo fora de Moçambique durante o período do seguro?';
+
+  @override
+  String get suitabilityDeductibleQuestion =>
+      'Aceita pagar uma parte de cada reparação (franquia) em troca de um prémio mais baixo?';
+
+  @override
+  String get suitabilityAnswerYes => 'Sim';
+
+  @override
+  String get suitabilityAnswerNo => 'Não';
+
+  @override
+  String get suitabilityAnswerUnsure => 'Não sei';
+
+  @override
+  String get suitabilityReasonNeedNotCoveredOwnDamage =>
+      'Disse que quer protecção para o seu veículo, mas esta proposta não cobre danos no próprio veículo.';
+
+  @override
+  String get suitabilityReasonNeedNotCoveredTheftFire =>
+      'Disse que quer protecção contra roubo, incêndio e fenómenos da natureza, mas esta proposta não inclui todas essas coberturas.';
+
+  @override
+  String get suitabilityReasonCoverAboveNeed =>
+      'Disse que só quer o seguro obrigatório, mas esta proposta inclui coberturas de danos próprios, que aumentam o prémio.';
+
+  @override
+  String get suitabilityReasonNeedUnsure =>
+      'Não tem a certeza da protecção de que precisa. Leia o resumo das coberturas e a informação pré-contratual antes de continuar.';
+
+  @override
+  String get suitabilityReasonFinancedWithoutOwnDamage =>
+      'O veículo ainda está a ser pago e esta proposta não cobre danos no próprio veículo. Confirme se o contrato de crédito ou leasing exige essa cobertura.';
+
+  @override
+  String get suitabilityReasonCannotAffordRepair =>
+      'Disse que não conseguiria pagar a reparação do seu veículo, mas esta proposta não cobre danos no próprio veículo.';
+
+  @override
+  String get suitabilityReasonCrossBorderNotCovered =>
+      'Vai conduzir fora de Moçambique, mas esta proposta não inclui cobertura fora do país.';
+
+  @override
+  String get suitabilityReasonDeductibleNotWanted =>
+      'Disse que não quer franquia, mas pelo menos uma cobertura de danos próprios desta proposta tem franquia.';
+
+  @override
+  String get suitabilityAcknowledge =>
+      'Li os avisos e quero continuar com esta proposta';
+
+  @override
+  String get suitabilityRequestOtherQuote => 'Pedir outra cotação';
+
+  @override
+  String get suitabilityAcknowledged => 'Confirmou que leu os avisos.';
+
+  @override
+  String get inspectionTitle => 'Vistoria';
+
+  @override
+  String get inspectionIntro =>
+      'Para os danos próprios, a seguradora precisa de fotografias do veículo. Tire-as de dia, com o veículo limpo e inteiro na imagem.';
+
+  @override
+  String get inspectionInstructionFront =>
+      'A frente do veículo inteira, com a matrícula legível.';
+
+  @override
+  String get inspectionInstructionRear =>
+      'A traseira inteira, com a matrícula legível.';
+
+  @override
+  String get inspectionInstructionLeft =>
+      'O lado esquerdo inteiro, de uma ponta à outra.';
+
+  @override
+  String get inspectionInstructionRight =>
+      'O lado direito inteiro, de uma ponta à outra.';
+
+  @override
+  String get inspectionInstructionOdometer =>
+      'O painel com o conta-quilómetros legível, com a ignição ligada.';
+
+  @override
+  String get inspectionInstructionChassis =>
+      'O número do chassis gravado no veículo (normalmente no pára-brisas ou na porta do condutor).';
+
+  @override
+  String get inspectionInstructionExtra =>
+      'Danos que o veículo já tenha, ou outros pormenores.';
+
+  @override
+  String get inspectionSideHint => 'Afaste-se até o veículo caber inteiro';
+
+  @override
+  String get inspectionToTake => 'Por tirar';
+
+  @override
+  String get inspectionQueued => 'Na fila';
+
+  @override
+  String get inspectionUploading => 'A enviar';
+
+  @override
+  String get inspectionUploaded => 'Enviada';
+
+  @override
+  String get inspectionFailed => 'Erro';
+
+  @override
+  String get inspectionStart => 'Começar vistoria';
+
+  @override
+  String get inspectionOpen => 'Fazer a vistoria';
+
+  @override
+  String inspectionProgress(int done, int total) {
+    return '$done de $total ângulos';
+  }
+
+  @override
+  String get inspectionOdometer => 'Quilometragem actual';
+
+  @override
+  String get inspectionOdometerInvalid => 'Indique um valor de 0 a 2 000 000.';
+
+  @override
+  String get inspectionSubmit => 'Enviar vistoria';
+
+  @override
+  String get inspectionWillSubmitWhenOnline =>
+      'A vistoria será enviada quando houver ligação.';
+
+  @override
+  String get inspectionSubmitQueued =>
+      'A vistoria é enviada à seguradora logo que as fotografias acabem de ser enviadas.';
+
+  @override
+  String get inspectionStatusPending => 'Por enviar';
+
+  @override
+  String get inspectionStatusSubmitted => 'Enviada à seguradora';
+
+  @override
+  String get inspectionStatusApproved => 'Aprovada';
+
+  @override
+  String get inspectionStatusRejected => 'Novas fotografias pedidas';
+
+  @override
+  String get inspectionOnSiteRequested =>
+      'Pediu vistoria presencial. A seguradora vai contactá-lo.';
+
+  @override
+  String inspectionRejectedBanner(String reason) {
+    return 'A seguradora pediu novas fotografias: $reason';
+  }
+
+  @override
+  String get inspectionRetakeMarker => 'Tirar de novo';
+
+  @override
+  String get inspectionTakeAgain => 'Tirar de novo';
+
+  @override
+  String get inspectionDiscard => 'Descartar';
+
+  @override
+  String get inspectionExtras => 'Fotografias extra';
+
+  @override
+  String get inspectionAddExtra => 'Acrescentar fotografia';
+
+  @override
+  String get inspectionOnSiteLink => 'Prefiro vistoria presencial';
+
+  @override
+  String get inspectionOnSiteTitle => 'Vistoria presencial';
+
+  @override
+  String get inspectionOnSiteNotes => 'Local e horas preferidas';
+
+  @override
+  String get inspectionOnSiteSend => 'Pedir vistoria presencial';
+
+  @override
+  String get inspectionOfflineBanner =>
+      'Sem ligação. As fotografias ficam guardadas no telemóvel e são enviadas quando a ligação voltar.';
+
+  @override
+  String inspectionMissingSlots(String slots) {
+    return 'Faltam fotografias: $slots';
+  }
+
+  @override
+  String get inspectionUsePhoto => 'Usar fotografia';
+
+  @override
+  String get inspectionNotEditable => 'A vistoria já foi enviada à seguradora.';
+
+  @override
+  String get registrationDocCameraPermissionDenied =>
+      'Precisamos da câmara para fotografar o livrete.';
+
+  @override
+  String get locationRationale =>
+      'A localização ajuda a seguradora a confirmar onde as fotografias foram tiradas. É opcional.';
+
+  @override
+  String get locationContinue => 'Continuar';
+
+  @override
+  String get kycTitle => 'Verificação de identidade';
+
+  @override
+  String get kycStateVerified => 'Identidade verificada';
+
+  @override
+  String get kycStatePending => 'Em verificação';
+
+  @override
+  String get kycStateRejected => 'Não foi possível verificar a sua identidade.';
+
+  @override
+  String get kycStateOutdated =>
+      'Os dados do seu perfil mudaram. Verifique de novo a sua identidade.';
+
+  @override
+  String get kycRequiredForAutoAcceptance =>
+      'Verifique a sua identidade para a proposta poder ser aceite logo. Sem isto, a seguradora analisa-a e pode demorar até 15 dias.';
+
+  @override
+  String get kycOptional =>
+      'Opcional: a verificação acelera propostas futuras.';
+
+  @override
+  String get kycReasonDocumentUnreadable =>
+      'As fotografias do documento não estão legíveis.';
+
+  @override
+  String get kycReasonDocumentExpired => 'O documento está fora da validade.';
+
+  @override
+  String get kycReasonDataMismatch =>
+      'Os dados do documento não coincidem com os do seu perfil.';
+
+  @override
+  String get kycReasonSelfieMismatch =>
+      'A selfie não permite confirmar que é o titular do documento.';
+
+  @override
+  String get kycReasonOther => 'Outro motivo.';
+
+  @override
+  String get kycDocFront => 'Frente do documento';
+
+  @override
+  String get kycDocBack => 'Verso do documento';
+
+  @override
+  String get kycSelfie => 'Selfie';
+
+  @override
+  String get kycTakePhoto => 'Tirar fotografia';
+
+  @override
+  String get kycRetakePhoto => 'Repetir';
+
+  @override
+  String get kycSubmit => 'Enviar';
+
+  @override
+  String get kycNotNow => 'Agora não';
+
+  @override
+  String get kycNoProposal =>
+      'A verificação de identidade é pedida quando faz uma proposta.';
+
+  @override
+  String get kycDocumentInstruction =>
+      'Coloque o documento dentro da moldura, sem reflexos, com todos os cantos visíveis.';
+
+  @override
+  String get kycSelfieInstruction =>
+      'Olhe de frente para a câmara, sem óculos escuros nem chapéu, num sítio com boa luz.';
+
+  @override
+  String get kycCameraPermissionDenied =>
+      'Para verificar a sua identidade, a MoSeguros precisa de acesso à câmara.';
+
+  @override
+  String get kycPhotosMissing => 'Tire as fotografias pedidas antes de enviar.';
+
+  @override
+  String get proposalDeclarationsAnswers => 'Respostas às declarações';
+
+  @override
+  String get proposalSuitabilityAnswers => 'Respostas de adequação';
+
+  @override
+  String get proposalDocuments => 'Documentos do produto';
+
+  @override
+  String get proposalMissingTitle => 'Falta completar:';
+
+  @override
+  String get proposalDocumentsAcknowledged =>
+      'Recebi e li as Condições Gerais e a Informação Pré-contratual.';
+
+  @override
+  String get proposalSignAndSend => 'Assinar e enviar à seguradora';
+
+  @override
+  String get proposalSendOnly => 'Enviar à seguradora';
+
+  @override
+  String get proposalWaitUploads =>
+      'Aguarde o envio das fotografias da vistoria.';
+
+  @override
+  String get errorNoConnection => 'Sem ligação à internet.';
+
+  @override
+  String get signTitle => 'Assinar a proposta';
+
+  @override
+  String signCodeSent(String channel, String destination) {
+    return 'Enviámos um código por $channel para $destination.';
+  }
+
+  @override
+  String get signViewPdf => 'Ver a proposta (PDF)';
+
+  @override
+  String signFallback(String channel) {
+    return 'Não foi possível enviar pelo canal habitual. Enviámos o código por $channel.';
+  }
+
+  @override
+  String get signSubmitting => 'A enviar à seguradora…';
+
+  @override
+  String get proposalTimelineCreated => 'Criada';
+
+  @override
+  String get proposalTimelineSubmitted => 'Enviada à seguradora';
+
+  @override
+  String get proposalTimelineDecided => 'Decisão';
+
+  @override
+  String proposalUnderReviewText(String insurer, String date) {
+    return 'A $insurer está a analisar a sua proposta. Tem até $date para responder.';
+  }
+
+  @override
+  String proposalUnderReviewNoDue(String insurer) {
+    return 'A $insurer está a analisar a sua proposta.';
+  }
+
+  @override
+  String get proposalAcceptedText => 'Proposta aceite.';
+
+  @override
+  String get proposalPaymentSoon => 'O pagamento fica disponível em breve.';
+
+  @override
+  String get proposalRejectedText => 'A proposta não foi aceite.';
+
+  @override
+  String get proposalExpiredText => 'Esta proposta expirou.';
+
+  @override
+  String get proposalDownloadSigned => 'Descarregar a proposta assinada (PDF)';
+
+  @override
+  String get proposalInfoRequestedTitle => 'A seguradora pediu mais informação';
+
+  @override
+  String logoutPendingUploads(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Tem $n fotografias por enviar. Se terminar a sessão, perde-as.',
+      one: 'Tem 1 fotografia por enviar. Se terminar a sessão, perde-a.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get logoutAnyway => 'Terminar na mesma';
+
+  @override
+  String get cameraUnavailableNoGallery => 'Não foi possível abrir a câmara.';
 }

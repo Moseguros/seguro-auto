@@ -1222,7 +1222,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cameraPermissionDenied =>
-      'We need the camera to photograph the registration document.';
+      'To do the inspection, MoSeguros needs access to the camera.';
 
   @override
   String get cameraOpenSettings => 'Open settings';
@@ -1930,10 +1930,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quoteDetailValidity => 'Validity';
 
   @override
-  String get quoteProposalSoon =>
-      'Soon you will be able to move on from here to the proposal.';
-
-  @override
   String get myQuotesTitle => 'My quotes';
 
   @override
@@ -2072,4 +2068,609 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proposalStatusConverted => 'Policy issued';
+
+  @override
+  String get homeProposalsTitle => 'Proposals in progress';
+
+  @override
+  String get homeProposalsSeeAll => 'See all';
+
+  @override
+  String inspectionPendingUploads(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n photos waiting to upload',
+      one: '1 photo waiting to upload',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get proposalsTitle => 'Proposals';
+
+  @override
+  String get proposalsEmpty => 'You don\'t have any proposals yet.';
+
+  @override
+  String get proposalsFilterActive => 'In progress';
+
+  @override
+  String get proposalsFilterAll => 'All';
+
+  @override
+  String proposalExpiresOn(String date) {
+    return 'Expires on $date';
+  }
+
+  @override
+  String get proposalContinue => 'Continue';
+
+  @override
+  String get proposalView => 'View';
+
+  @override
+  String get proposalCreating => 'Preparing the proposal…';
+
+  @override
+  String proposalTitle(String number) {
+    return 'Proposal $number';
+  }
+
+  @override
+  String get proposalChangedElsewhere => 'The proposal was changed elsewhere.';
+
+  @override
+  String get quoteAcquire => 'Buy policy';
+
+  @override
+  String proposalStepOf(int step, int total, String name) {
+    return 'Step $step of $total · $name';
+  }
+
+  @override
+  String get proposalStepPolicyholder => 'Policyholder and date';
+
+  @override
+  String get proposalStepDeclarations => 'Declarations';
+
+  @override
+  String get proposalStepSuitability => 'Suitability';
+
+  @override
+  String get proposalStepInspection => 'Inspection';
+
+  @override
+  String get proposalStepIdentity => 'Identity';
+
+  @override
+  String get proposalStepReview => 'Review';
+
+  @override
+  String get proposalBack => 'Back';
+
+  @override
+  String get proposalNext => 'Continue';
+
+  @override
+  String get proposalCoverages => 'Covers';
+
+  @override
+  String get proposalTotal => 'Total';
+
+  @override
+  String get proposalPolicyholderTitle => 'Policyholder';
+
+  @override
+  String get proposalPolicyholderFromProfile =>
+      'These details come from your profile.';
+
+  @override
+  String get proposalEditProfile => 'Edit profile';
+
+  @override
+  String get proposalRefreshFromProfile => 'Update from profile';
+
+  @override
+  String get proposalStartDate => 'Start date';
+
+  @override
+  String proposalEndDate(String date) {
+    return 'Ends: $date';
+  }
+
+  @override
+  String get proposalVehicle => 'Vehicle';
+
+  @override
+  String get proposalDriver => 'Driver';
+
+  @override
+  String get declarationClaimsLast3YearsQuestion =>
+      'In the last 3 years, have you had any accident or claim involving a vehicle, as a driver or as an owner?';
+
+  @override
+  String get declarationClaimsLast3YearsClaimsCount => 'How many?';
+
+  @override
+  String get declarationClaimsLast3YearsDetails =>
+      'Briefly describe when, what happened and whether anyone was injured.';
+
+  @override
+  String get declarationPreviousRefusalQuestion =>
+      'Has any insurer ever refused, cancelled or declined to renew a motor insurance policy of yours?';
+
+  @override
+  String get declarationPreviousRefusalDetails => 'Which insurer and why?';
+
+  @override
+  String declarationUsageDifferentQuestion(String usage) {
+    return 'Will the vehicle be used for any purpose other than \"$usage\"? For example, carrying passengers or goods for payment.';
+  }
+
+  @override
+  String get declarationUsageDifferentDetails => 'For what other purpose?';
+
+  @override
+  String get declarationVehicleModifiedQuestion =>
+      'Has the vehicle been modified from its factory specification (engine, suspension, bodywork, gas conversion or other)?';
+
+  @override
+  String get declarationVehicleModifiedDetails => 'What modifications?';
+
+  @override
+  String get declarationNoviceDriversQuestion =>
+      'Will anyone who has held a driving licence for less than 2 years drive this vehicle regularly?';
+
+  @override
+  String get declarationNoviceDriversDetails =>
+      'Who, and how long have they held a licence?';
+
+  @override
+  String get declarationTruthfulness =>
+      'I declare that my answers are true and complete. I understand that false statements or omissions may lead to the contract being voided or claims being refused.';
+
+  @override
+  String get proposalAnswerRequired => 'Choose an answer.';
+
+  @override
+  String get proposalDetailsLength => 'Write between 10 and 500 characters.';
+
+  @override
+  String get proposalClaimsCountRange => 'Enter a number from 1 to 20.';
+
+  @override
+  String get proposalTruthfulnessRequired =>
+      'Confirm the declaration to continue.';
+
+  @override
+  String get suitabilityIntro =>
+      'These questions help confirm that the proposal matches what you are looking for.';
+
+  @override
+  String get suitabilityNeedQuestion =>
+      'What protection are you looking for for this vehicle?';
+
+  @override
+  String get suitabilityNeedOptionMandatoryOnly =>
+      'Only the mandatory insurance: damage I cause to others';
+
+  @override
+  String get suitabilityNeedOptionOwnDamage =>
+      'Also damage to my own vehicle in an accident';
+
+  @override
+  String get suitabilityNeedOptionFull => 'Also theft, fire and natural events';
+
+  @override
+  String get suitabilityNeedOptionUnsure => 'I\'m not sure';
+
+  @override
+  String get suitabilityFinancedQuestion =>
+      'Are you still paying for the vehicle (loan or lease)?';
+
+  @override
+  String get suitabilityCanAffordRepairQuestion =>
+      'If your vehicle were damaged in an accident you caused, could you pay for the repair without insurance?';
+
+  @override
+  String get suitabilityCrossBorderQuestion =>
+      'Will you drive this vehicle outside Mozambique during the insurance period?';
+
+  @override
+  String get suitabilityDeductibleQuestion =>
+      'Would you accept paying part of each repair (an excess) in exchange for a lower premium?';
+
+  @override
+  String get suitabilityAnswerYes => 'Yes';
+
+  @override
+  String get suitabilityAnswerNo => 'No';
+
+  @override
+  String get suitabilityAnswerUnsure => 'I\'m not sure';
+
+  @override
+  String get suitabilityReasonNeedNotCoveredOwnDamage =>
+      'You said you want cover for your own vehicle, but this proposal does not cover damage to it.';
+
+  @override
+  String get suitabilityReasonNeedNotCoveredTheftFire =>
+      'You said you want cover against theft, fire and natural events, but this proposal does not include all of them.';
+
+  @override
+  String get suitabilityReasonCoverAboveNeed =>
+      'You said you only want the mandatory insurance, but this proposal includes own-damage cover, which increases the premium.';
+
+  @override
+  String get suitabilityReasonNeedUnsure =>
+      'You are not sure what cover you need. Read the cover summary and the pre-contract information before continuing.';
+
+  @override
+  String get suitabilityReasonFinancedWithoutOwnDamage =>
+      'You are still paying for the vehicle and this proposal does not cover damage to it. Check whether your loan or lease requires that cover.';
+
+  @override
+  String get suitabilityReasonCannotAffordRepair =>
+      'You said you could not pay to repair your vehicle, but this proposal does not cover damage to it.';
+
+  @override
+  String get suitabilityReasonCrossBorderNotCovered =>
+      'You will drive outside Mozambique, but this proposal does not include cover abroad.';
+
+  @override
+  String get suitabilityReasonDeductibleNotWanted =>
+      'You said you do not want an excess, but at least one own-damage cover in this proposal has one.';
+
+  @override
+  String get suitabilityAcknowledge =>
+      'I have read the warnings and want to continue with this proposal';
+
+  @override
+  String get suitabilityRequestOtherQuote => 'Request another quote';
+
+  @override
+  String get suitabilityAcknowledged =>
+      'You confirmed that you read the warnings.';
+
+  @override
+  String get inspectionTitle => 'Inspection';
+
+  @override
+  String get inspectionIntro =>
+      'For own-damage cover, the insurer needs photos of the vehicle. Take them in daylight, with the vehicle clean and fully in the picture.';
+
+  @override
+  String get inspectionInstructionFront =>
+      'The whole front of the vehicle, with the number plate readable.';
+
+  @override
+  String get inspectionInstructionRear =>
+      'The whole rear, with the number plate readable.';
+
+  @override
+  String get inspectionInstructionLeft =>
+      'The whole left side, from end to end.';
+
+  @override
+  String get inspectionInstructionRight =>
+      'The whole right side, from end to end.';
+
+  @override
+  String get inspectionInstructionOdometer =>
+      'The dashboard with the odometer readable, with the ignition on.';
+
+  @override
+  String get inspectionInstructionChassis =>
+      'The chassis number on the vehicle (usually on the windscreen or the driver\'s door).';
+
+  @override
+  String get inspectionInstructionExtra =>
+      'Any existing damage, or other details.';
+
+  @override
+  String get inspectionSideHint => 'Step back until the whole vehicle fits';
+
+  @override
+  String get inspectionToTake => 'Not taken';
+
+  @override
+  String get inspectionQueued => 'Queued';
+
+  @override
+  String get inspectionUploading => 'Uploading';
+
+  @override
+  String get inspectionUploaded => 'Uploaded';
+
+  @override
+  String get inspectionFailed => 'Error';
+
+  @override
+  String get inspectionStart => 'Start inspection';
+
+  @override
+  String get inspectionOpen => 'Do the inspection';
+
+  @override
+  String inspectionProgress(int done, int total) {
+    return '$done of $total angles';
+  }
+
+  @override
+  String get inspectionOdometer => 'Current mileage';
+
+  @override
+  String get inspectionOdometerInvalid => 'Enter a value from 0 to 2,000,000.';
+
+  @override
+  String get inspectionSubmit => 'Send inspection';
+
+  @override
+  String get inspectionWillSubmitWhenOnline =>
+      'The inspection will be sent when you are back online.';
+
+  @override
+  String get inspectionSubmitQueued =>
+      'The inspection is sent to the insurer as soon as the photos finish uploading.';
+
+  @override
+  String get inspectionStatusPending => 'Not sent';
+
+  @override
+  String get inspectionStatusSubmitted => 'Sent to the insurer';
+
+  @override
+  String get inspectionStatusApproved => 'Approved';
+
+  @override
+  String get inspectionStatusRejected => 'New photos requested';
+
+  @override
+  String get inspectionOnSiteRequested =>
+      'You asked for an on-site inspection. The insurer will contact you.';
+
+  @override
+  String inspectionRejectedBanner(String reason) {
+    return 'The insurer asked for new photos: $reason';
+  }
+
+  @override
+  String get inspectionRetakeMarker => 'Retake';
+
+  @override
+  String get inspectionTakeAgain => 'Take again';
+
+  @override
+  String get inspectionDiscard => 'Discard';
+
+  @override
+  String get inspectionExtras => 'Extra photos';
+
+  @override
+  String get inspectionAddExtra => 'Add photo';
+
+  @override
+  String get inspectionOnSiteLink => 'I prefer an on-site inspection';
+
+  @override
+  String get inspectionOnSiteTitle => 'On-site inspection';
+
+  @override
+  String get inspectionOnSiteNotes => 'Preferred place and times';
+
+  @override
+  String get inspectionOnSiteSend => 'Request on-site inspection';
+
+  @override
+  String get inspectionOfflineBanner =>
+      'No connection. The photos are kept on your phone and sent when the connection is back.';
+
+  @override
+  String inspectionMissingSlots(String slots) {
+    return 'Missing photos: $slots';
+  }
+
+  @override
+  String get inspectionUsePhoto => 'Use photo';
+
+  @override
+  String get inspectionNotEditable =>
+      'The inspection has already been sent to the insurer.';
+
+  @override
+  String get registrationDocCameraPermissionDenied =>
+      'We need the camera to photograph the registration document.';
+
+  @override
+  String get locationRationale =>
+      'Your location helps the insurer confirm where the photos were taken. It is optional.';
+
+  @override
+  String get locationContinue => 'Continue';
+
+  @override
+  String get kycTitle => 'Identity check';
+
+  @override
+  String get kycStateVerified => 'Identity verified';
+
+  @override
+  String get kycStatePending => 'Being checked';
+
+  @override
+  String get kycStateRejected => 'We could not verify your identity.';
+
+  @override
+  String get kycStateOutdated =>
+      'Your profile details have changed. Verify your identity again.';
+
+  @override
+  String get kycRequiredForAutoAcceptance =>
+      'Verify your identity so that the proposal can be accepted straight away. Without it, the insurer reviews it, which can take up to 15 days.';
+
+  @override
+  String get kycOptional => 'Optional: the check speeds up future proposals.';
+
+  @override
+  String get kycReasonDocumentUnreadable =>
+      'The document photos are not readable.';
+
+  @override
+  String get kycReasonDocumentExpired => 'The document has expired.';
+
+  @override
+  String get kycReasonDataMismatch =>
+      'The document details do not match your profile.';
+
+  @override
+  String get kycReasonSelfieMismatch =>
+      'The selfie does not confirm that you are the document holder.';
+
+  @override
+  String get kycReasonOther => 'Other reason.';
+
+  @override
+  String get kycDocFront => 'Front of the document';
+
+  @override
+  String get kycDocBack => 'Back of the document';
+
+  @override
+  String get kycSelfie => 'Selfie';
+
+  @override
+  String get kycTakePhoto => 'Take photo';
+
+  @override
+  String get kycRetakePhoto => 'Retake';
+
+  @override
+  String get kycSubmit => 'Send';
+
+  @override
+  String get kycNotNow => 'Not now';
+
+  @override
+  String get kycNoProposal =>
+      'The identity check is requested when you make a proposal.';
+
+  @override
+  String get kycDocumentInstruction =>
+      'Place the document inside the frame, without glare, with all corners visible.';
+
+  @override
+  String get kycSelfieInstruction =>
+      'Look straight at the camera, without sunglasses or a hat, somewhere with good light.';
+
+  @override
+  String get kycCameraPermissionDenied =>
+      'To verify your identity, MoSeguros needs access to the camera.';
+
+  @override
+  String get kycPhotosMissing => 'Take the requested photos before sending.';
+
+  @override
+  String get proposalDeclarationsAnswers => 'Declaration answers';
+
+  @override
+  String get proposalSuitabilityAnswers => 'Suitability answers';
+
+  @override
+  String get proposalDocuments => 'Product documents';
+
+  @override
+  String get proposalMissingTitle => 'Still to complete:';
+
+  @override
+  String get proposalDocumentsAcknowledged =>
+      'I have received and read the General Conditions and the Pre-contract Information.';
+
+  @override
+  String get proposalSignAndSend => 'Sign and send to the insurer';
+
+  @override
+  String get proposalSendOnly => 'Send to the insurer';
+
+  @override
+  String get proposalWaitUploads => 'Wait for the inspection photos to upload.';
+
+  @override
+  String get errorNoConnection => 'No internet connection.';
+
+  @override
+  String get signTitle => 'Sign the proposal';
+
+  @override
+  String signCodeSent(String channel, String destination) {
+    return 'We sent a code by $channel to $destination.';
+  }
+
+  @override
+  String get signViewPdf => 'View the proposal (PDF)';
+
+  @override
+  String signFallback(String channel) {
+    return 'We could not send it through the usual channel. We sent the code by $channel.';
+  }
+
+  @override
+  String get signSubmitting => 'Sending to the insurer…';
+
+  @override
+  String get proposalTimelineCreated => 'Created';
+
+  @override
+  String get proposalTimelineSubmitted => 'Sent to the insurer';
+
+  @override
+  String get proposalTimelineDecided => 'Decision';
+
+  @override
+  String proposalUnderReviewText(String insurer, String date) {
+    return '$insurer is reviewing your proposal. It has until $date to reply.';
+  }
+
+  @override
+  String proposalUnderReviewNoDue(String insurer) {
+    return '$insurer is reviewing your proposal.';
+  }
+
+  @override
+  String get proposalAcceptedText => 'Proposal accepted.';
+
+  @override
+  String get proposalPaymentSoon => 'Payment will be available soon.';
+
+  @override
+  String get proposalRejectedText => 'The proposal was not accepted.';
+
+  @override
+  String get proposalExpiredText => 'This proposal has expired.';
+
+  @override
+  String get proposalDownloadSigned => 'Download the signed proposal (PDF)';
+
+  @override
+  String get proposalInfoRequestedTitle =>
+      'The insurer asked for more information';
+
+  @override
+  String logoutPendingUploads(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          'You have $n photos waiting to upload. If you log out, you will lose them.',
+      one:
+          'You have 1 photo waiting to upload. If you log out, you will lose it.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get logoutAnyway => 'Log out anyway';
+
+  @override
+  String get cameraUnavailableNoGallery => 'Could not open the camera.';
 }

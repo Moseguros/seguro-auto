@@ -2231,7 +2231,7 @@ abstract class AppLocalizations {
   /// No description provided for @cameraPermissionDenied.
   ///
   /// In pt, this message translates to:
-  /// **'Precisamos da câmara para fotografar o livrete.'**
+  /// **'Para fazer a vistoria, a MoSeguros precisa de acesso à câmara.'**
   String get cameraPermissionDenied;
 
   /// No description provided for @cameraOpenSettings.
@@ -3414,12 +3414,6 @@ abstract class AppLocalizations {
   /// **'Validade'**
   String get quoteDetailValidity;
 
-  /// No description provided for @quoteProposalSoon.
-  ///
-  /// In pt, this message translates to:
-  /// **'Em breve vai poder avançar daqui para a proposta.'**
-  String get quoteProposalSoon;
-
   /// No description provided for @myQuotesTitle.
   ///
   /// In pt, this message translates to:
@@ -3653,6 +3647,1026 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Apólice emitida'**
   String get proposalStatusConverted;
+
+  /// No description provided for @homeProposalsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Propostas em curso'**
+  String get homeProposalsTitle;
+
+  /// No description provided for @homeProposalsSeeAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver todas'**
+  String get homeProposalsSeeAll;
+
+  /// No description provided for @inspectionPendingUploads.
+  ///
+  /// In pt, this message translates to:
+  /// **'{n, plural, =1{1 fotografia por enviar} other{{n} fotografias por enviar}}'**
+  String inspectionPendingUploads(int n);
+
+  /// No description provided for @proposalsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Propostas'**
+  String get proposalsTitle;
+
+  /// No description provided for @proposalsEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não tem propostas.'**
+  String get proposalsEmpty;
+
+  /// No description provided for @proposalsFilterActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em curso'**
+  String get proposalsFilterActive;
+
+  /// No description provided for @proposalsFilterAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas'**
+  String get proposalsFilterAll;
+
+  /// No description provided for @proposalExpiresOn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expira em {date}'**
+  String proposalExpiresOn(String date);
+
+  /// No description provided for @proposalContinue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get proposalContinue;
+
+  /// No description provided for @proposalView.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver'**
+  String get proposalView;
+
+  /// No description provided for @proposalCreating.
+  ///
+  /// In pt, this message translates to:
+  /// **'A preparar a proposta…'**
+  String get proposalCreating;
+
+  /// No description provided for @proposalTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta {number}'**
+  String proposalTitle(String number);
+
+  /// No description provided for @proposalChangedElsewhere.
+  ///
+  /// In pt, this message translates to:
+  /// **'A proposta foi alterada noutro lado.'**
+  String get proposalChangedElsewhere;
+
+  /// No description provided for @quoteAcquire.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adquirir apólice'**
+  String get quoteAcquire;
+
+  /// No description provided for @proposalStepOf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Passo {step} de {total} · {name}'**
+  String proposalStepOf(int step, int total, String name);
+
+  /// No description provided for @proposalStepPolicyholder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tomador e data'**
+  String get proposalStepPolicyholder;
+
+  /// No description provided for @proposalStepDeclarations.
+  ///
+  /// In pt, this message translates to:
+  /// **'Declarações'**
+  String get proposalStepDeclarations;
+
+  /// No description provided for @proposalStepSuitability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adequação'**
+  String get proposalStepSuitability;
+
+  /// No description provided for @proposalStepInspection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria'**
+  String get proposalStepInspection;
+
+  /// No description provided for @proposalStepIdentity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Identidade'**
+  String get proposalStepIdentity;
+
+  /// No description provided for @proposalStepReview.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo'**
+  String get proposalStepReview;
+
+  /// No description provided for @proposalBack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar'**
+  String get proposalBack;
+
+  /// No description provided for @proposalNext.
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get proposalNext;
+
+  /// No description provided for @proposalCoverages.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coberturas'**
+  String get proposalCoverages;
+
+  /// No description provided for @proposalTotal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Total'**
+  String get proposalTotal;
+
+  /// No description provided for @proposalPolicyholderTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tomador do seguro'**
+  String get proposalPolicyholderTitle;
+
+  /// No description provided for @proposalPolicyholderFromProfile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estes dados vêm do seu perfil.'**
+  String get proposalPolicyholderFromProfile;
+
+  /// No description provided for @proposalEditProfile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar perfil'**
+  String get proposalEditProfile;
+
+  /// No description provided for @proposalRefreshFromProfile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Actualizar com o perfil'**
+  String get proposalRefreshFromProfile;
+
+  /// No description provided for @proposalStartDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de início'**
+  String get proposalStartDate;
+
+  /// No description provided for @proposalEndDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fim: {date}'**
+  String proposalEndDate(String date);
+
+  /// No description provided for @proposalVehicle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Veículo'**
+  String get proposalVehicle;
+
+  /// No description provided for @proposalDriver.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condutor'**
+  String get proposalDriver;
+
+  /// No description provided for @declarationClaimsLast3YearsQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nos últimos 3 anos, teve algum acidente ou sinistro com um veículo, como condutor ou como proprietário?'**
+  String get declarationClaimsLast3YearsQuestion;
+
+  /// No description provided for @declarationClaimsLast3YearsClaimsCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantos?'**
+  String get declarationClaimsLast3YearsClaimsCount;
+
+  /// No description provided for @declarationClaimsLast3YearsDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descreva brevemente: quando, o que aconteceu e se houve feridos.'**
+  String get declarationClaimsLast3YearsDetails;
+
+  /// No description provided for @declarationPreviousRefusalQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alguma seguradora já recusou, anulou ou não quis renovar um seguro automóvel seu?'**
+  String get declarationPreviousRefusalQuestion;
+
+  /// No description provided for @declarationPreviousRefusalDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Que seguradora e porquê?'**
+  String get declarationPreviousRefusalDetails;
+
+  /// No description provided for @declarationUsageDifferentQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'O veículo vai ser usado para outro fim além de «{usage}»? Por exemplo, transportar passageiros ou mercadorias a troco de pagamento.'**
+  String declarationUsageDifferentQuestion(String usage);
+
+  /// No description provided for @declarationUsageDifferentDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para que outro fim?'**
+  String get declarationUsageDifferentDetails;
+
+  /// No description provided for @declarationVehicleModifiedQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'O veículo tem alterações às características de fábrica (motor, suspensão, carroçaria, gás ou outras)?'**
+  String get declarationVehicleModifiedQuestion;
+
+  /// No description provided for @declarationVehicleModifiedDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Que alterações?'**
+  String get declarationVehicleModifiedDetails;
+
+  /// No description provided for @declarationNoviceDriversQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alguém com carta de condução há menos de 2 anos vai conduzir este veículo com regularidade?'**
+  String get declarationNoviceDriversQuestion;
+
+  /// No description provided for @declarationNoviceDriversDetails.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quem, e há quanto tempo tem carta?'**
+  String get declarationNoviceDriversDetails;
+
+  /// No description provided for @declarationTruthfulness.
+  ///
+  /// In pt, this message translates to:
+  /// **'Declaro que as respostas são verdadeiras e completas. Sei que declarações falsas ou omissões podem levar à anulação do contrato ou à recusa do pagamento de sinistros.'**
+  String get declarationTruthfulness;
+
+  /// No description provided for @proposalAnswerRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha uma resposta.'**
+  String get proposalAnswerRequired;
+
+  /// No description provided for @proposalDetailsLength.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escreva entre 10 e 500 caracteres.'**
+  String get proposalDetailsLength;
+
+  /// No description provided for @proposalClaimsCountRange.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indique um número de 1 a 20.'**
+  String get proposalClaimsCountRange;
+
+  /// No description provided for @proposalTruthfulnessRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirme a declaração para continuar.'**
+  String get proposalTruthfulnessRequired;
+
+  /// No description provided for @suitabilityIntro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estas perguntas ajudam a confirmar se a proposta corresponde ao que procura.'**
+  String get suitabilityIntro;
+
+  /// No description provided for @suitabilityNeedQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Que protecção procura para este veículo?'**
+  String get suitabilityNeedQuestion;
+
+  /// No description provided for @suitabilityNeedOptionMandatoryOnly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Só o seguro obrigatório: danos que eu cause a outras pessoas'**
+  String get suitabilityNeedOptionMandatoryOnly;
+
+  /// No description provided for @suitabilityNeedOptionOwnDamage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Também os danos no meu veículo num acidente'**
+  String get suitabilityNeedOptionOwnDamage;
+
+  /// No description provided for @suitabilityNeedOptionFull.
+  ///
+  /// In pt, this message translates to:
+  /// **'Também roubo, incêndio e fenómenos da natureza'**
+  String get suitabilityNeedOptionFull;
+
+  /// No description provided for @suitabilityNeedOptionUnsure.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não sei'**
+  String get suitabilityNeedOptionUnsure;
+
+  /// No description provided for @suitabilityFinancedQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'O veículo ainda está a ser pago (crédito ou leasing)?'**
+  String get suitabilityFinancedQuestion;
+
+  /// No description provided for @suitabilityCanAffordRepairQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Se o seu veículo ficasse danificado num acidente causado por si, conseguiria pagar a reparação sem a ajuda do seguro?'**
+  String get suitabilityCanAffordRepairQuestion;
+
+  /// No description provided for @suitabilityCrossBorderQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vai conduzir este veículo fora de Moçambique durante o período do seguro?'**
+  String get suitabilityCrossBorderQuestion;
+
+  /// No description provided for @suitabilityDeductibleQuestion.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceita pagar uma parte de cada reparação (franquia) em troca de um prémio mais baixo?'**
+  String get suitabilityDeductibleQuestion;
+
+  /// No description provided for @suitabilityAnswerYes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get suitabilityAnswerYes;
+
+  /// No description provided for @suitabilityAnswerNo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get suitabilityAnswerNo;
+
+  /// No description provided for @suitabilityAnswerUnsure.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não sei'**
+  String get suitabilityAnswerUnsure;
+
+  /// No description provided for @suitabilityReasonNeedNotCoveredOwnDamage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disse que quer protecção para o seu veículo, mas esta proposta não cobre danos no próprio veículo.'**
+  String get suitabilityReasonNeedNotCoveredOwnDamage;
+
+  /// No description provided for @suitabilityReasonNeedNotCoveredTheftFire.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disse que quer protecção contra roubo, incêndio e fenómenos da natureza, mas esta proposta não inclui todas essas coberturas.'**
+  String get suitabilityReasonNeedNotCoveredTheftFire;
+
+  /// No description provided for @suitabilityReasonCoverAboveNeed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disse que só quer o seguro obrigatório, mas esta proposta inclui coberturas de danos próprios, que aumentam o prémio.'**
+  String get suitabilityReasonCoverAboveNeed;
+
+  /// No description provided for @suitabilityReasonNeedUnsure.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não tem a certeza da protecção de que precisa. Leia o resumo das coberturas e a informação pré-contratual antes de continuar.'**
+  String get suitabilityReasonNeedUnsure;
+
+  /// No description provided for @suitabilityReasonFinancedWithoutOwnDamage.
+  ///
+  /// In pt, this message translates to:
+  /// **'O veículo ainda está a ser pago e esta proposta não cobre danos no próprio veículo. Confirme se o contrato de crédito ou leasing exige essa cobertura.'**
+  String get suitabilityReasonFinancedWithoutOwnDamage;
+
+  /// No description provided for @suitabilityReasonCannotAffordRepair.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disse que não conseguiria pagar a reparação do seu veículo, mas esta proposta não cobre danos no próprio veículo.'**
+  String get suitabilityReasonCannotAffordRepair;
+
+  /// No description provided for @suitabilityReasonCrossBorderNotCovered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vai conduzir fora de Moçambique, mas esta proposta não inclui cobertura fora do país.'**
+  String get suitabilityReasonCrossBorderNotCovered;
+
+  /// No description provided for @suitabilityReasonDeductibleNotWanted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Disse que não quer franquia, mas pelo menos uma cobertura de danos próprios desta proposta tem franquia.'**
+  String get suitabilityReasonDeductibleNotWanted;
+
+  /// No description provided for @suitabilityAcknowledge.
+  ///
+  /// In pt, this message translates to:
+  /// **'Li os avisos e quero continuar com esta proposta'**
+  String get suitabilityAcknowledge;
+
+  /// No description provided for @suitabilityRequestOtherQuote.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir outra cotação'**
+  String get suitabilityRequestOtherQuote;
+
+  /// No description provided for @suitabilityAcknowledged.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmou que leu os avisos.'**
+  String get suitabilityAcknowledged;
+
+  /// No description provided for @inspectionTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria'**
+  String get inspectionTitle;
+
+  /// No description provided for @inspectionIntro.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para os danos próprios, a seguradora precisa de fotografias do veículo. Tire-as de dia, com o veículo limpo e inteiro na imagem.'**
+  String get inspectionIntro;
+
+  /// No description provided for @inspectionInstructionFront.
+  ///
+  /// In pt, this message translates to:
+  /// **'A frente do veículo inteira, com a matrícula legível.'**
+  String get inspectionInstructionFront;
+
+  /// No description provided for @inspectionInstructionRear.
+  ///
+  /// In pt, this message translates to:
+  /// **'A traseira inteira, com a matrícula legível.'**
+  String get inspectionInstructionRear;
+
+  /// No description provided for @inspectionInstructionLeft.
+  ///
+  /// In pt, this message translates to:
+  /// **'O lado esquerdo inteiro, de uma ponta à outra.'**
+  String get inspectionInstructionLeft;
+
+  /// No description provided for @inspectionInstructionRight.
+  ///
+  /// In pt, this message translates to:
+  /// **'O lado direito inteiro, de uma ponta à outra.'**
+  String get inspectionInstructionRight;
+
+  /// No description provided for @inspectionInstructionOdometer.
+  ///
+  /// In pt, this message translates to:
+  /// **'O painel com o conta-quilómetros legível, com a ignição ligada.'**
+  String get inspectionInstructionOdometer;
+
+  /// No description provided for @inspectionInstructionChassis.
+  ///
+  /// In pt, this message translates to:
+  /// **'O número do chassis gravado no veículo (normalmente no pára-brisas ou na porta do condutor).'**
+  String get inspectionInstructionChassis;
+
+  /// No description provided for @inspectionInstructionExtra.
+  ///
+  /// In pt, this message translates to:
+  /// **'Danos que o veículo já tenha, ou outros pormenores.'**
+  String get inspectionInstructionExtra;
+
+  /// No description provided for @inspectionSideHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Afaste-se até o veículo caber inteiro'**
+  String get inspectionSideHint;
+
+  /// No description provided for @inspectionToTake.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por tirar'**
+  String get inspectionToTake;
+
+  /// No description provided for @inspectionQueued.
+  ///
+  /// In pt, this message translates to:
+  /// **'Na fila'**
+  String get inspectionQueued;
+
+  /// No description provided for @inspectionUploading.
+  ///
+  /// In pt, this message translates to:
+  /// **'A enviar'**
+  String get inspectionUploading;
+
+  /// No description provided for @inspectionUploaded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviada'**
+  String get inspectionUploaded;
+
+  /// No description provided for @inspectionFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro'**
+  String get inspectionFailed;
+
+  /// No description provided for @inspectionStart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Começar vistoria'**
+  String get inspectionStart;
+
+  /// No description provided for @inspectionOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fazer a vistoria'**
+  String get inspectionOpen;
+
+  /// No description provided for @inspectionProgress.
+  ///
+  /// In pt, this message translates to:
+  /// **'{done} de {total} ângulos'**
+  String inspectionProgress(int done, int total);
+
+  /// No description provided for @inspectionOdometer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Quilometragem actual'**
+  String get inspectionOdometer;
+
+  /// No description provided for @inspectionOdometerInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Indique um valor de 0 a 2 000 000.'**
+  String get inspectionOdometerInvalid;
+
+  /// No description provided for @inspectionSubmit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar vistoria'**
+  String get inspectionSubmit;
+
+  /// No description provided for @inspectionWillSubmitWhenOnline.
+  ///
+  /// In pt, this message translates to:
+  /// **'A vistoria será enviada quando houver ligação.'**
+  String get inspectionWillSubmitWhenOnline;
+
+  /// No description provided for @inspectionSubmitQueued.
+  ///
+  /// In pt, this message translates to:
+  /// **'A vistoria é enviada à seguradora logo que as fotografias acabem de ser enviadas.'**
+  String get inspectionSubmitQueued;
+
+  /// No description provided for @inspectionStatusPending.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por enviar'**
+  String get inspectionStatusPending;
+
+  /// No description provided for @inspectionStatusSubmitted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviada à seguradora'**
+  String get inspectionStatusSubmitted;
+
+  /// No description provided for @inspectionStatusApproved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aprovada'**
+  String get inspectionStatusApproved;
+
+  /// No description provided for @inspectionStatusRejected.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novas fotografias pedidas'**
+  String get inspectionStatusRejected;
+
+  /// No description provided for @inspectionOnSiteRequested.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pediu vistoria presencial. A seguradora vai contactá-lo.'**
+  String get inspectionOnSiteRequested;
+
+  /// No description provided for @inspectionRejectedBanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora pediu novas fotografias: {reason}'**
+  String inspectionRejectedBanner(String reason);
+
+  /// No description provided for @inspectionRetakeMarker.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tirar de novo'**
+  String get inspectionRetakeMarker;
+
+  /// No description provided for @inspectionTakeAgain.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tirar de novo'**
+  String get inspectionTakeAgain;
+
+  /// No description provided for @inspectionDiscard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descartar'**
+  String get inspectionDiscard;
+
+  /// No description provided for @inspectionExtras.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fotografias extra'**
+  String get inspectionExtras;
+
+  /// No description provided for @inspectionAddExtra.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar fotografia'**
+  String get inspectionAddExtra;
+
+  /// No description provided for @inspectionOnSiteLink.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prefiro vistoria presencial'**
+  String get inspectionOnSiteLink;
+
+  /// No description provided for @inspectionOnSiteTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria presencial'**
+  String get inspectionOnSiteTitle;
+
+  /// No description provided for @inspectionOnSiteNotes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Local e horas preferidas'**
+  String get inspectionOnSiteNotes;
+
+  /// No description provided for @inspectionOnSiteSend.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir vistoria presencial'**
+  String get inspectionOnSiteSend;
+
+  /// No description provided for @inspectionOfflineBanner.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ligação. As fotografias ficam guardadas no telemóvel e são enviadas quando a ligação voltar.'**
+  String get inspectionOfflineBanner;
+
+  /// No description provided for @inspectionMissingSlots.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faltam fotografias: {slots}'**
+  String inspectionMissingSlots(String slots);
+
+  /// No description provided for @inspectionUsePhoto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar fotografia'**
+  String get inspectionUsePhoto;
+
+  /// No description provided for @inspectionNotEditable.
+  ///
+  /// In pt, this message translates to:
+  /// **'A vistoria já foi enviada à seguradora.'**
+  String get inspectionNotEditable;
+
+  /// No description provided for @registrationDocCameraPermissionDenied.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisamos da câmara para fotografar o livrete.'**
+  String get registrationDocCameraPermissionDenied;
+
+  /// No description provided for @locationRationale.
+  ///
+  /// In pt, this message translates to:
+  /// **'A localização ajuda a seguradora a confirmar onde as fotografias foram tiradas. É opcional.'**
+  String get locationRationale;
+
+  /// No description provided for @locationContinue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Continuar'**
+  String get locationContinue;
+
+  /// No description provided for @kycTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verificação de identidade'**
+  String get kycTitle;
+
+  /// No description provided for @kycStateVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'Identidade verificada'**
+  String get kycStateVerified;
+
+  /// No description provided for @kycStatePending.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em verificação'**
+  String get kycStatePending;
+
+  /// No description provided for @kycStateRejected.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível verificar a sua identidade.'**
+  String get kycStateRejected;
+
+  /// No description provided for @kycStateOutdated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os dados do seu perfil mudaram. Verifique de novo a sua identidade.'**
+  String get kycStateOutdated;
+
+  /// No description provided for @kycRequiredForAutoAcceptance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique a sua identidade para a proposta poder ser aceite logo. Sem isto, a seguradora analisa-a e pode demorar até 15 dias.'**
+  String get kycRequiredForAutoAcceptance;
+
+  /// No description provided for @kycOptional.
+  ///
+  /// In pt, this message translates to:
+  /// **'Opcional: a verificação acelera propostas futuras.'**
+  String get kycOptional;
+
+  /// No description provided for @kycReasonDocumentUnreadable.
+  ///
+  /// In pt, this message translates to:
+  /// **'As fotografias do documento não estão legíveis.'**
+  String get kycReasonDocumentUnreadable;
+
+  /// No description provided for @kycReasonDocumentExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O documento está fora da validade.'**
+  String get kycReasonDocumentExpired;
+
+  /// No description provided for @kycReasonDataMismatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os dados do documento não coincidem com os do seu perfil.'**
+  String get kycReasonDataMismatch;
+
+  /// No description provided for @kycReasonSelfieMismatch.
+  ///
+  /// In pt, this message translates to:
+  /// **'A selfie não permite confirmar que é o titular do documento.'**
+  String get kycReasonSelfieMismatch;
+
+  /// No description provided for @kycReasonOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outro motivo.'**
+  String get kycReasonOther;
+
+  /// No description provided for @kycDocFront.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frente do documento'**
+  String get kycDocFront;
+
+  /// No description provided for @kycDocBack.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verso do documento'**
+  String get kycDocBack;
+
+  /// No description provided for @kycSelfie.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selfie'**
+  String get kycSelfie;
+
+  /// No description provided for @kycTakePhoto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tirar fotografia'**
+  String get kycTakePhoto;
+
+  /// No description provided for @kycRetakePhoto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Repetir'**
+  String get kycRetakePhoto;
+
+  /// No description provided for @kycSubmit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar'**
+  String get kycSubmit;
+
+  /// No description provided for @kycNotNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora não'**
+  String get kycNotNow;
+
+  /// No description provided for @kycNoProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'A verificação de identidade é pedida quando faz uma proposta.'**
+  String get kycNoProposal;
+
+  /// No description provided for @kycDocumentInstruction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coloque o documento dentro da moldura, sem reflexos, com todos os cantos visíveis.'**
+  String get kycDocumentInstruction;
+
+  /// No description provided for @kycSelfieInstruction.
+  ///
+  /// In pt, this message translates to:
+  /// **'Olhe de frente para a câmara, sem óculos escuros nem chapéu, num sítio com boa luz.'**
+  String get kycSelfieInstruction;
+
+  /// No description provided for @kycCameraPermissionDenied.
+  ///
+  /// In pt, this message translates to:
+  /// **'Para verificar a sua identidade, a MoSeguros precisa de acesso à câmara.'**
+  String get kycCameraPermissionDenied;
+
+  /// No description provided for @kycPhotosMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tire as fotografias pedidas antes de enviar.'**
+  String get kycPhotosMissing;
+
+  /// No description provided for @proposalDeclarationsAnswers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Respostas às declarações'**
+  String get proposalDeclarationsAnswers;
+
+  /// No description provided for @proposalSuitabilityAnswers.
+  ///
+  /// In pt, this message translates to:
+  /// **'Respostas de adequação'**
+  String get proposalSuitabilityAnswers;
+
+  /// No description provided for @proposalDocuments.
+  ///
+  /// In pt, this message translates to:
+  /// **'Documentos do produto'**
+  String get proposalDocuments;
+
+  /// No description provided for @proposalMissingTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falta completar:'**
+  String get proposalMissingTitle;
+
+  /// No description provided for @proposalDocumentsAcknowledged.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recebi e li as Condições Gerais e a Informação Pré-contratual.'**
+  String get proposalDocumentsAcknowledged;
+
+  /// No description provided for @proposalSignAndSend.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assinar e enviar à seguradora'**
+  String get proposalSignAndSend;
+
+  /// No description provided for @proposalSendOnly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar à seguradora'**
+  String get proposalSendOnly;
+
+  /// No description provided for @proposalWaitUploads.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguarde o envio das fotografias da vistoria.'**
+  String get proposalWaitUploads;
+
+  /// No description provided for @errorNoConnection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ligação à internet.'**
+  String get errorNoConnection;
+
+  /// No description provided for @signTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assinar a proposta'**
+  String get signTitle;
+
+  /// No description provided for @signCodeSent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviámos um código por {channel} para {destination}.'**
+  String signCodeSent(String channel, String destination);
+
+  /// No description provided for @signViewPdf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver a proposta (PDF)'**
+  String get signViewPdf;
+
+  /// No description provided for @signFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível enviar pelo canal habitual. Enviámos o código por {channel}.'**
+  String signFallback(String channel);
+
+  /// No description provided for @signSubmitting.
+  ///
+  /// In pt, this message translates to:
+  /// **'A enviar à seguradora…'**
+  String get signSubmitting;
+
+  /// No description provided for @proposalTimelineCreated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criada'**
+  String get proposalTimelineCreated;
+
+  /// No description provided for @proposalTimelineSubmitted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviada à seguradora'**
+  String get proposalTimelineSubmitted;
+
+  /// No description provided for @proposalTimelineDecided.
+  ///
+  /// In pt, this message translates to:
+  /// **'Decisão'**
+  String get proposalTimelineDecided;
+
+  /// No description provided for @proposalUnderReviewText.
+  ///
+  /// In pt, this message translates to:
+  /// **'A {insurer} está a analisar a sua proposta. Tem até {date} para responder.'**
+  String proposalUnderReviewText(String insurer, String date);
+
+  /// No description provided for @proposalUnderReviewNoDue.
+  ///
+  /// In pt, this message translates to:
+  /// **'A {insurer} está a analisar a sua proposta.'**
+  String proposalUnderReviewNoDue(String insurer);
+
+  /// No description provided for @proposalAcceptedText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta aceite.'**
+  String get proposalAcceptedText;
+
+  /// No description provided for @proposalPaymentSoon.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pagamento fica disponível em breve.'**
+  String get proposalPaymentSoon;
+
+  /// No description provided for @proposalRejectedText.
+  ///
+  /// In pt, this message translates to:
+  /// **'A proposta não foi aceite.'**
+  String get proposalRejectedText;
+
+  /// No description provided for @proposalExpiredText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta expirou.'**
+  String get proposalExpiredText;
+
+  /// No description provided for @proposalDownloadSigned.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descarregar a proposta assinada (PDF)'**
+  String get proposalDownloadSigned;
+
+  /// No description provided for @proposalInfoRequestedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora pediu mais informação'**
+  String get proposalInfoRequestedTitle;
+
+  /// No description provided for @logoutPendingUploads.
+  ///
+  /// In pt, this message translates to:
+  /// **'{n, plural, =1{Tem 1 fotografia por enviar. Se terminar a sessão, perde-a.} other{Tem {n} fotografias por enviar. Se terminar a sessão, perde-as.}}'**
+  String logoutPendingUploads(int n);
+
+  /// No description provided for @logoutAnyway.
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminar na mesma'**
+  String get logoutAnyway;
+
+  /// No description provided for @cameraUnavailableNoGallery.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir a câmara.'**
+  String get cameraUnavailableNoGallery;
 }
 
 class _AppLocalizationsDelegate
