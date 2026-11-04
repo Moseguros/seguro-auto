@@ -39,6 +39,9 @@ public class Proposal extends BaseEntity {
     /** Fuso dos dias de início e de fim. */
     public static final ZoneId ZONE = ZoneId.of("Africa/Maputo");
 
+    private static final com.fasterxml.jackson.databind.ObjectMapper CANONICAL =
+            new com.fasterxml.jackson.databind.ObjectMapper();
+
     @Column(name = "number", nullable = false, updatable = false, length = 16)
     private String number;
 
@@ -101,15 +104,15 @@ public class Proposal extends BaseEntity {
 
     /** Nesta fase sempre {@code {"sameAsPolicyholder": true}}. */
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "insured", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "insured", nullable = false, updatable = false, columnDefinition = "jsonb")
     private JsonNode insured;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "vehicle_snapshot", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "vehicle_snapshot", nullable = false, updatable = false, columnDefinition = "jsonb")
     private JsonNode vehicleSnapshot;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "driver_snapshot", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "driver_snapshot", nullable = false, updatable = false, columnDefinition = "jsonb")
     private JsonNode driverSnapshot;
 
     /** Lista de {@link CoverageLine}. */
@@ -236,11 +239,11 @@ public class Proposal extends BaseEntity {
         p.vehicleId = Objects.requireNonNull(d.vehicleId(), "vehicleId");
         p.driverId = Objects.requireNonNull(d.driverId(), "driverId");
         p.setPolicyholder(d.policyholder(), d.idDocNumber(), d.nuit());
-        p.insured = Objects.requireNonNull(d.insured(), "insured").deepCopy();
-        p.vehicleSnapshot = Objects.requireNonNull(d.vehicleSnapshot(), "vehicleSnapshot").deepCopy();
-        p.driverSnapshot = Objects.requireNonNull(d.driverSnapshot(), "driverSnapshot").deepCopy();
-        p.coverages = Objects.requireNonNull(d.coverages(), "coverages").deepCopy();
-        p.premiumBreakdown = Objects.requireNonNull(d.premiumBreakdown(), "premiumBreakdown").deepCopy();
+        p.insured = canonical(Objects.requireNonNull(d.insured(), "insured"));
+        p.vehicleSnapshot = canonical(Objects.requireNonNull(d.vehicleSnapshot(), "vehicleSnapshot"));
+        p.driverSnapshot = canonical(Objects.requireNonNull(d.driverSnapshot(), "driverSnapshot"));
+        p.coverages = canonical(Objects.requireNonNull(d.coverages(), "coverages"));
+        p.premiumBreakdown = canonical(Objects.requireNonNull(d.premiumBreakdown(), "premiumBreakdown"));
         p.totalAmount = d.totalAmount();
         p.startAt = d.period().startAt();
         p.endAt = d.period().endAt();
@@ -344,9 +347,22 @@ public class Proposal extends BaseEntity {
     }
 
     private void setPolicyholder(JsonNode json, String idDocNumber, String nuit) {
-        this.policyholder = Objects.requireNonNull(json, "policyholder").deepCopy();
+        this.policyholder = canonical(Objects.requireNonNull(json, "policyholder"));
         this.policyholderIdDocNumber = Objects.requireNonNull(idDocNumber, "idDocNumber");
         this.policyholderNuit = Objects.requireNonNull(nuit, "nuit");
+    }
+
+    /**
+     * O JSON como o Hibernate o lê da coluna (texto analisado de novo): sem isto, um {@code LongNode}
+     * em memória e o {@code IntNode} lido da BD seriam diferentes e cada {@code flush} gravaria a
+     * linha outra vez (e aumentaria a {@code version}).
+     */
+    static JsonNode canonical(JsonNode node) {
+        try {
+            return CANONICAL.readTree(CANONICAL.writeValueAsString(node));
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid proposal JSON", e);
+        }
     }
 
     // --- Leitura ---
