@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "autoAccept": {
+    "enabled": true,
+    "simplifiedKycMaxPremium": { "amount": 1000000, "currency": "MZN" },
+    "liability": { "requireAllDeclarationsNegative": false },
+    "ownDamage": {
+      "maxVehicleValue": { "amount": 150000000, "currency": "MZN" },
+      "requireAllDeclarationsNegative": true
+    }
+  }
+}

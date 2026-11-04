@@ -270,6 +270,12 @@ public final class ErrorCodes {
     /** A proposta não está em {@code UNDER_REVIEW} (409). */
     public static final String PROPOSAL_NOT_UNDER_REVIEW = "PROPOSAL_NOT_UNDER_REVIEW";
 
+    // Submissão e aceitação da proposta (S4-05)
+    /** Aceitar sem o KYC do cliente verificado, com o total acima do limiar do KYC simplificado (409). */
+    public static final String KYC_NOT_VERIFIED = "KYC_NOT_VERIFIED";
+    /** Aceitar uma proposta com vistoria obrigatória ainda não aprovada (409). */
+    public static final String INSPECTION_NOT_APPROVED = "INSPECTION_NOT_APPROVED";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -386,7 +392,9 @@ public final class ErrorCodes {
             Map.entry(INSPECTION_NOT_EDITABLE, 409),
             Map.entry(INSPECTION_PHOTOS_MISSING, 409),
             Map.entry(PHOTO_NOT_FOUND, 404),
-            Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409));
+            Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409),
+            Map.entry(KYC_NOT_VERIFIED, 409),
+            Map.entry(INSPECTION_NOT_APPROVED, 409));
 
     private ErrorCodes() {
     }

@@ -189,6 +189,10 @@ public final class FieldErrorCodes {
     /** Só uma das coordenadas, ou fora dos limites. */
     public static final String INVALID_COORDINATES = "INVALID_COORDINATES";
 
+    // Regras de aceitação da versão do produto (S4-05)
+    /** As regras de aceitação não cumprem o {@code underwriting-v1.json} (um erro por violação). */
+    public static final String INVALID_RULES = "INVALID_RULES";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";
