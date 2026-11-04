@@ -117,7 +117,24 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'PROPOSAL_NOT_EDITABLE' => l10n.errorProposalNotEditable,
   'INSURER_NOT_ACTIVE' => l10n.errorInsurerNotActive,
   'SUITABILITY_NOT_WARNED' => l10n.errorSuitabilityNotWarned,
+  'PDF_TEMPLATE_NOT_FOUND' => l10n.errorPdfTemplateNotFound,
+  'PDF_RENDER_FAILED' => l10n.errorPdfRenderFailed,
+  'SIGNER_CONTACT_MISSING' => l10n.errorSignerContactMissing,
+  'PROPOSAL_INCOMPLETE' => l10n.errorProposalIncomplete,
+  'SIGN_REQUEST_NOT_FOUND' => l10n.errorSignRequestNotFound,
+  'PROPOSAL_CHANGED_SINCE_SIGN_REQUEST' => l10n.errorProposalChangedSinceSignRequest,
   _ => l10n.errorUnknown,
+};
+
+/// Nome de um passo em falta da proposta (`missing` do erro `PROPOSAL_INCOMPLETE`, S4-04 §10).
+String proposalMissingItem(AppLocalizations l10n, String item) => switch (item) {
+  'DECLARATIONS' => l10n.proposalMissingDeclarations,
+  'SUITABILITY' => l10n.proposalMissingSuitability,
+  'SUITABILITY_ACKNOWLEDGEMENT' => l10n.proposalMissingSuitabilityAcknowledgement,
+  'INSPECTION' => l10n.proposalMissingInspection,
+  'START_DATE' => l10n.proposalMissingStartDate,
+  'SIGNATURE' => l10n.proposalMissingSignature,
+  _ => item,
 };
 
 /// Mensagem traduzida para um erro de campo (`FieldErrorCodes`, em `errors[].code`).

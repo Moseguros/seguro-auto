@@ -11,13 +11,16 @@ import 'package:dio/dio.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:moseguros_api/src/api_util.dart';
 import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
+import 'package:moseguros_api/src/model/confirm_signature_request.dart';
 import 'package:moseguros_api/src/model/create_proposal_request.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
 import 'package:moseguros_api/src/model/proposal_response.dart';
 import 'package:moseguros_api/src/model/proposal_status.dart';
+import 'package:moseguros_api/src/model/request_signature_request.dart';
 import 'package:moseguros_api/src/model/save_declarations_request.dart';
 import 'package:moseguros_api/src/model/save_suitability_request.dart';
+import 'package:moseguros_api/src/model/signature_request_response.dart';
 import 'package:moseguros_api/src/model/update_proposal_request.dart';
 
 class ProposalApi {
@@ -78,6 +81,109 @@ class ProposalApi {
     try {
       const _type = FullType(AcknowledgeSuitabilityRequest);
       _bodyData = _serializers.serialize(acknowledgeSuitabilityRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(ProposalResponse),
+      ) as ProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Confirma a assinatura com o código recebido
+  /// Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature &#x3D; DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura.
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [confirmSignatureRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ProposalResponse>> confirmProposalSignature({ 
+    required String id,
+    required ConfirmSignatureRequest confirmSignatureRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/proposals/{id}/sign/confirm'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(ConfirmSignatureRequest);
+      _bodyData = _serializers.serialize(confirmSignatureRequest, specifiedType: _type);
 
     } catch(error, stackTrace) {
       throw DioException(
@@ -397,6 +503,109 @@ class ProposalApi {
     }
 
     return Response<PageResponseProposalSummaryResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Gera o PDF da proposta e envia o código de assinatura
+  /// Permissão self:proposals ou proposal:create-for-client. Por esta ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT, INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND.
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [requestSignatureRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [SignatureRequestResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<SignatureRequestResponse>> requestProposalSignature({ 
+    required String id,
+    required RequestSignatureRequest requestSignatureRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/proposals/{id}/sign/request'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(RequestSignatureRequest);
+      _bodyData = _serializers.serialize(requestSignatureRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    SignatureRequestResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(SignatureRequestResponse),
+      ) as SignatureRequestResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<SignatureRequestResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

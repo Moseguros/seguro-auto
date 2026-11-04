@@ -20,6 +20,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(Charge.serializer)
       ..add(ChargeTypeEnum.serializer)
       ..add(ChargeValue.serializer)
+      ..add(ConfirmSignatureRequest.serializer)
       ..add(ContactResponse.serializer)
       ..add(ContactResponseTypeEnum.serializer)
       ..add(ContactsResponse.serializer)
@@ -169,8 +170,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ProposalPolicyholder.serializer)
       ..add(ProposalPremium.serializer)
       ..add(ProposalProduct.serializer)
+      ..add(ProposalProductDocument.serializer)
+      ..add(ProposalProductDocumentTypeEnum.serializer)
       ..add(ProposalProductTypeEnum.serializer)
       ..add(ProposalResponse.serializer)
+      ..add(ProposalSignature.serializer)
+      ..add(ProposalSignatureChannelEnum.serializer)
       ..add(ProposalStatus.serializer)
       ..add(ProposalSuitability.serializer)
       ..add(ProposalSummaryResponse.serializer)
@@ -225,6 +230,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RequestOtpRequest.serializer)
       ..add(RequestOtpRequestChannelEnum.serializer)
       ..add(RequestOtpRequestIdentifierTypeEnum.serializer)
+      ..add(RequestSignatureRequest.serializer)
+      ..add(RequestSignatureRequestChannelEnum.serializer)
       ..add(RequestedCoverageRequest.serializer)
       ..add(RequestedCoverageRequestCodeEnum.serializer)
       ..add(RequestedCoverageResponse.serializer)
@@ -234,6 +241,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RuleError.serializer)
       ..add(SaveDeclarationsRequest.serializer)
       ..add(SaveSuitabilityRequest.serializer)
+      ..add(SignatureRequestResponse.serializer)
+      ..add(SignatureRequestResponseChannelEnum.serializer)
       ..add(SimulateRatingRequest.serializer)
       ..add(SimulationVehicleRequest.serializer)
       ..add(SimulationVehicleRequestProvinceOfCirculationEnum.serializer)
@@ -433,11 +442,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           ]),
           () => MapBuilder<String, JsonObject?>())
       ..addBuilderFactory(
-          const FullType(BuiltMap, const [
-            const FullType(String),
-            const FullType.nullable(JsonObject)
-          ]),
-          () => MapBuilder<String, JsonObject?>())
+          const FullType(
+              BuiltList, const [const FullType(ProposalProductDocument)]),
+          () => ListBuilder<ProposalProductDocument>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(ProposalSummaryResponse)]),

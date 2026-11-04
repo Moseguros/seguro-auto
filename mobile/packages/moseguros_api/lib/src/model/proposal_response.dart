@@ -13,6 +13,7 @@ import 'package:moseguros_api/src/model/proposal_suitability.dart';
 import 'package:moseguros_api/src/model/proposal_checklist.dart';
 import 'package:moseguros_api/src/model/proposal_coverage.dart';
 import 'package:moseguros_api/src/model/proposal_organization.dart';
+import 'package:moseguros_api/src/model/proposal_signature.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/proposal_driver.dart';
@@ -49,7 +50,7 @@ part 'proposal_response.g.dart';
 /// * [premium] 
 /// * [product] 
 /// * [quoteId] 
-/// * [signature] - Assinatura da proposta (S4-04); null antes de existir.
+/// * [signature] 
 /// * [startAt] - 00:00 do primeiro dia em Africa/Maputo
 /// * [status] 
 /// * [submittedAt] - Primeira submissão (S4-05)
@@ -127,9 +128,8 @@ abstract class ProposalResponse implements Built<ProposalResponse, ProposalRespo
   @BuiltValueField(wireName: r'quoteId')
   String get quoteId;
 
-  /// Assinatura da proposta (S4-04); null antes de existir.
   @BuiltValueField(wireName: r'signature')
-  BuiltMap<String, JsonObject?>? get signature;
+  ProposalSignature? get signature;
 
   /// 00:00 do primeiro dia em Africa/Maputo
   @BuiltValueField(wireName: r'startAt')
@@ -296,7 +296,7 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
       yield r'signature';
       yield serializers.serialize(
         object.signature,
-        specifiedType: const FullType(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
+        specifiedType: const FullType.nullable(ProposalSignature),
       );
     }
     yield r'startAt';
@@ -515,8 +515,9 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
         case r'signature':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
-          ) as BuiltMap<String, JsonObject?>;
+            specifiedType: const FullType.nullable(ProposalSignature),
+          ) as ProposalSignature?;
+          if (valueDes == null) continue;
           result.signature.replace(valueDes);
           break;
         case r'startAt':

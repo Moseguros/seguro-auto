@@ -1415,6 +1415,49 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não há avisos de adequação para confirmar.';
 
   @override
+  String get errorPdfTemplateNotFound =>
+      'Não foi possível gerar o documento. Tente de novo.';
+
+  @override
+  String get errorPdfRenderFailed =>
+      'Não foi possível gerar o documento. Tente de novo.';
+
+  @override
+  String get errorSignerContactMissing =>
+      'Não há telemóvel nem e-mail verificado para enviar o código.';
+
+  @override
+  String get errorProposalIncomplete =>
+      'Ainda faltam passos para concluir a proposta.';
+
+  @override
+  String get errorSignRequestNotFound =>
+      'Este código já não é válido. Peça um novo.';
+
+  @override
+  String get errorProposalChangedSinceSignRequest =>
+      'A proposta mudou depois de pedir o código. Peça um novo.';
+
+  @override
+  String get proposalMissingDeclarations => 'Declarações de risco';
+
+  @override
+  String get proposalMissingSuitability => 'Questionário de adequação';
+
+  @override
+  String get proposalMissingSuitabilityAcknowledgement =>
+      'Confirmar os avisos de adequação';
+
+  @override
+  String get proposalMissingInspection => 'Vistoria do veículo';
+
+  @override
+  String get proposalMissingStartDate => 'Data de início';
+
+  @override
+  String get proposalMissingSignature => 'Assinatura';
+
+  @override
   String get validationAnswersIncomplete => 'Responda a todas as perguntas.';
 
   @override

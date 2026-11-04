@@ -29,6 +29,7 @@ lib/src/model/catalog_insurer_response.dart
 lib/src/model/catalog_product_response.dart
 lib/src/model/charge.dart
 lib/src/model/charge_value.dart
+lib/src/model/confirm_signature_request.dart
 lib/src/model/contact_response.dart
 lib/src/model/contacts_response.dart
 lib/src/model/coverage_request.dart
@@ -119,7 +120,9 @@ lib/src/model/proposal_organization.dart
 lib/src/model/proposal_policyholder.dart
 lib/src/model/proposal_premium.dart
 lib/src/model/proposal_product.dart
+lib/src/model/proposal_product_document.dart
 lib/src/model/proposal_response.dart
+lib/src/model/proposal_signature.dart
 lib/src/model/proposal_status.dart
 lib/src/model/proposal_suitability.dart
 lib/src/model/proposal_summary_response.dart
@@ -155,6 +158,7 @@ lib/src/model/registry_lookup_response.dart
 lib/src/model/reject_kyc_check_request.dart
 lib/src/model/replace_coverages_request.dart
 lib/src/model/request_otp_request.dart
+lib/src/model/request_signature_request.dart
 lib/src/model/requested_coverage_request.dart
 lib/src/model/requested_coverage_response.dart
 lib/src/model/reset_password_request.dart
@@ -162,6 +166,7 @@ lib/src/model/risk_driver_request.dart
 lib/src/model/rule_error.dart
 lib/src/model/save_declarations_request.dart
 lib/src/model/save_suitability_request.dart
+lib/src/model/signature_request_response.dart
 lib/src/model/simulate_rating_request.dart
 lib/src/model/simulation_vehicle_request.dart
 lib/src/model/staff_login_request.dart

@@ -50,7 +50,7 @@ class _$ProposalResponse extends ProposalResponse {
   @override
   final String quoteId;
   @override
-  final BuiltMap<String, JsonObject?>? signature;
+  final ProposalSignature? signature;
   @override
   final DateTime startAt;
   @override
@@ -322,10 +322,10 @@ class ProposalResponseBuilder
   String? get quoteId => _$this._quoteId;
   set quoteId(String? quoteId) => _$this._quoteId = quoteId;
 
-  MapBuilder<String, JsonObject?>? _signature;
-  MapBuilder<String, JsonObject?> get signature =>
-      _$this._signature ??= MapBuilder<String, JsonObject?>();
-  set signature(MapBuilder<String, JsonObject?>? signature) =>
+  ProposalSignatureBuilder? _signature;
+  ProposalSignatureBuilder get signature =>
+      _$this._signature ??= ProposalSignatureBuilder();
+  set signature(ProposalSignatureBuilder? signature) =>
       _$this._signature = signature;
 
   DateTime? _startAt;

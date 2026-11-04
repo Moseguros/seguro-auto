@@ -2552,6 +2552,78 @@ abstract class AppLocalizations {
   /// **'Não há avisos de adequação para confirmar.'**
   String get errorSuitabilityNotWarned;
 
+  /// No description provided for @errorPdfTemplateNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível gerar o documento. Tente de novo.'**
+  String get errorPdfTemplateNotFound;
+
+  /// No description provided for @errorPdfRenderFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível gerar o documento. Tente de novo.'**
+  String get errorPdfRenderFailed;
+
+  /// No description provided for @errorSignerContactMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não há telemóvel nem e-mail verificado para enviar o código.'**
+  String get errorSignerContactMissing;
+
+  /// No description provided for @errorProposalIncomplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda faltam passos para concluir a proposta.'**
+  String get errorProposalIncomplete;
+
+  /// No description provided for @errorSignRequestNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este código já não é válido. Peça um novo.'**
+  String get errorSignRequestNotFound;
+
+  /// No description provided for @errorProposalChangedSinceSignRequest.
+  ///
+  /// In pt, this message translates to:
+  /// **'A proposta mudou depois de pedir o código. Peça um novo.'**
+  String get errorProposalChangedSinceSignRequest;
+
+  /// No description provided for @proposalMissingDeclarations.
+  ///
+  /// In pt, this message translates to:
+  /// **'Declarações de risco'**
+  String get proposalMissingDeclarations;
+
+  /// No description provided for @proposalMissingSuitability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Questionário de adequação'**
+  String get proposalMissingSuitability;
+
+  /// No description provided for @proposalMissingSuitabilityAcknowledgement.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar os avisos de adequação'**
+  String get proposalMissingSuitabilityAcknowledgement;
+
+  /// No description provided for @proposalMissingInspection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria do veículo'**
+  String get proposalMissingInspection;
+
+  /// No description provided for @proposalMissingStartDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data de início'**
+  String get proposalMissingStartDate;
+
+  /// No description provided for @proposalMissingSignature.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assinatura'**
+  String get proposalMissingSignature;
+
   /// No description provided for @validationAnswersIncomplete.
   ///
   /// In pt, this message translates to:

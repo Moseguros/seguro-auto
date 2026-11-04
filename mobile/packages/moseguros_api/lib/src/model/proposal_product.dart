@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:moseguros_api/src/model/proposal_product_document.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
@@ -12,12 +13,17 @@ part 'proposal_product.g.dart';
 /// ProposalProduct
 ///
 /// Properties:
+/// * [documents] - Condições Gerais e Informação Pré-contratual da versão, na língua do tomador (ou pt); descarregam-se em GET /api/v1/files/{fileId}
 /// * [id] 
 /// * [name] 
 /// * [type] 
 /// * [versionId] 
 @BuiltValue()
 abstract class ProposalProduct implements Built<ProposalProduct, ProposalProductBuilder> {
+  /// Condições Gerais e Informação Pré-contratual da versão, na língua do tomador (ou pt); descarregam-se em GET /api/v1/files/{fileId}
+  @BuiltValueField(wireName: r'documents')
+  BuiltList<ProposalProductDocument> get documents;
+
   @BuiltValueField(wireName: r'id')
   String get id;
 
@@ -54,6 +60,11 @@ class _$ProposalProductSerializer implements PrimitiveSerializer<ProposalProduct
     ProposalProduct object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
+    yield r'documents';
+    yield serializers.serialize(
+      object.documents,
+      specifiedType: const FullType(BuiltList, [FullType(ProposalProductDocument)]),
+    );
     yield r'id';
     yield serializers.serialize(
       object.id,
@@ -97,6 +108,13 @@ class _$ProposalProductSerializer implements PrimitiveSerializer<ProposalProduct
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
+        case r'documents':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(BuiltList, [FullType(ProposalProductDocument)]),
+          ) as BuiltList<ProposalProductDocument>;
+          result.documents.replace(valueDes);
+          break;
         case r'id':
           final valueDes = serializers.deserialize(
             value,

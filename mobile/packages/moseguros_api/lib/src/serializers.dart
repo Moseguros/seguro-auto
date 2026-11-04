@@ -23,6 +23,7 @@ import 'package:moseguros_api/src/model/catalog_insurer_response.dart';
 import 'package:moseguros_api/src/model/catalog_product_response.dart';
 import 'package:moseguros_api/src/model/charge.dart';
 import 'package:moseguros_api/src/model/charge_value.dart';
+import 'package:moseguros_api/src/model/confirm_signature_request.dart';
 import 'package:moseguros_api/src/model/contact_response.dart';
 import 'package:moseguros_api/src/model/contacts_response.dart';
 import 'package:moseguros_api/src/model/coverage_request.dart';
@@ -112,7 +113,9 @@ import 'package:moseguros_api/src/model/proposal_organization.dart';
 import 'package:moseguros_api/src/model/proposal_policyholder.dart';
 import 'package:moseguros_api/src/model/proposal_premium.dart';
 import 'package:moseguros_api/src/model/proposal_product.dart';
+import 'package:moseguros_api/src/model/proposal_product_document.dart';
 import 'package:moseguros_api/src/model/proposal_response.dart';
+import 'package:moseguros_api/src/model/proposal_signature.dart';
 import 'package:moseguros_api/src/model/proposal_status.dart';
 import 'package:moseguros_api/src/model/proposal_suitability.dart';
 import 'package:moseguros_api/src/model/proposal_summary_response.dart';
@@ -148,6 +151,7 @@ import 'package:moseguros_api/src/model/registry_lookup_response.dart';
 import 'package:moseguros_api/src/model/reject_kyc_check_request.dart';
 import 'package:moseguros_api/src/model/replace_coverages_request.dart';
 import 'package:moseguros_api/src/model/request_otp_request.dart';
+import 'package:moseguros_api/src/model/request_signature_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_response.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
@@ -155,6 +159,7 @@ import 'package:moseguros_api/src/model/risk_driver_request.dart';
 import 'package:moseguros_api/src/model/rule_error.dart';
 import 'package:moseguros_api/src/model/save_declarations_request.dart';
 import 'package:moseguros_api/src/model/save_suitability_request.dart';
+import 'package:moseguros_api/src/model/signature_request_response.dart';
 import 'package:moseguros_api/src/model/simulate_rating_request.dart';
 import 'package:moseguros_api/src/model/simulation_vehicle_request.dart';
 import 'package:moseguros_api/src/model/staff_login_request.dart';
@@ -211,6 +216,7 @@ part 'serializers.g.dart';
   CatalogProductResponse,
   Charge,
   ChargeValue,
+  ConfirmSignatureRequest,
   ContactResponse,
   ContactsResponse,
   CoverageRequest,
@@ -300,7 +306,9 @@ part 'serializers.g.dart';
   ProposalPolicyholder,
   ProposalPremium,
   ProposalProduct,
+  ProposalProductDocument,
   ProposalResponse,
+  ProposalSignature,
   ProposalStatus,
   ProposalSuitability,
   ProposalSummaryResponse,
@@ -336,6 +344,7 @@ part 'serializers.g.dart';
   RejectKycCheckRequest,
   ReplaceCoveragesRequest,
   RequestOtpRequest,
+  RequestSignatureRequest,
   RequestedCoverageRequest,
   RequestedCoverageResponse,
   ResetPasswordRequest,
@@ -343,6 +352,7 @@ part 'serializers.g.dart';
   RuleError,
   SaveDeclarationsRequest,
   SaveSuitabilityRequest,
+  SignatureRequestResponse,
   SimulateRatingRequest,
   SimulationVehicleRequest,
   StaffLoginRequest,

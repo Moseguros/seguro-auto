@@ -83,6 +83,8 @@ class _$ProposalProductTypeEnumSerializer
 
 class _$ProposalProduct extends ProposalProduct {
   @override
+  final BuiltList<ProposalProductDocument> documents;
+  @override
   final String id;
   @override
   final String name;
@@ -95,7 +97,8 @@ class _$ProposalProduct extends ProposalProduct {
       (ProposalProductBuilder()..update(updates))._build();
 
   _$ProposalProduct._(
-      {required this.id,
+      {required this.documents,
+      required this.id,
       required this.name,
       required this.type,
       required this.versionId})
@@ -111,6 +114,7 @@ class _$ProposalProduct extends ProposalProduct {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is ProposalProduct &&
+        documents == other.documents &&
         id == other.id &&
         name == other.name &&
         type == other.type &&
@@ -120,6 +124,7 @@ class _$ProposalProduct extends ProposalProduct {
   @override
   int get hashCode {
     var _$hash = 0;
+    _$hash = $jc(_$hash, documents.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, name.hashCode);
     _$hash = $jc(_$hash, type.hashCode);
@@ -131,6 +136,7 @@ class _$ProposalProduct extends ProposalProduct {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'ProposalProduct')
+          ..add('documents', documents)
           ..add('id', id)
           ..add('name', name)
           ..add('type', type)
@@ -142,6 +148,12 @@ class _$ProposalProduct extends ProposalProduct {
 class ProposalProductBuilder
     implements Builder<ProposalProduct, ProposalProductBuilder> {
   _$ProposalProduct? _$v;
+
+  ListBuilder<ProposalProductDocument>? _documents;
+  ListBuilder<ProposalProductDocument> get documents =>
+      _$this._documents ??= ListBuilder<ProposalProductDocument>();
+  set documents(ListBuilder<ProposalProductDocument>? documents) =>
+      _$this._documents = documents;
 
   String? _id;
   String? get id => _$this._id;
@@ -166,6 +178,7 @@ class ProposalProductBuilder
   ProposalProductBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _documents = $v.documents.toBuilder();
       _id = $v.id;
       _name = $v.name;
       _type = $v.type;
@@ -189,17 +202,31 @@ class ProposalProductBuilder
   ProposalProduct build() => _build();
 
   _$ProposalProduct _build() {
-    final _$result = _$v ??
-        _$ProposalProduct._(
-          id: BuiltValueNullFieldError.checkNotNull(
-              id, r'ProposalProduct', 'id'),
-          name: BuiltValueNullFieldError.checkNotNull(
-              name, r'ProposalProduct', 'name'),
-          type: BuiltValueNullFieldError.checkNotNull(
-              type, r'ProposalProduct', 'type'),
-          versionId: BuiltValueNullFieldError.checkNotNull(
-              versionId, r'ProposalProduct', 'versionId'),
-        );
+    _$ProposalProduct _$result;
+    try {
+      _$result = _$v ??
+          _$ProposalProduct._(
+            documents: documents.build(),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, r'ProposalProduct', 'id'),
+            name: BuiltValueNullFieldError.checkNotNull(
+                name, r'ProposalProduct', 'name'),
+            type: BuiltValueNullFieldError.checkNotNull(
+                type, r'ProposalProduct', 'type'),
+            versionId: BuiltValueNullFieldError.checkNotNull(
+                versionId, r'ProposalProduct', 'versionId'),
+          );
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'documents';
+        documents.build();
+      } catch (e) {
+        throw BuiltValueNestedFieldError(
+            r'ProposalProduct', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

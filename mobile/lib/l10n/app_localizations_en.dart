@@ -1416,6 +1416,49 @@ class AppLocalizationsEn extends AppLocalizations {
       'There are no suitability warnings to confirm.';
 
   @override
+  String get errorPdfTemplateNotFound =>
+      'We could not generate the document. Try again.';
+
+  @override
+  String get errorPdfRenderFailed =>
+      'We could not generate the document. Try again.';
+
+  @override
+  String get errorSignerContactMissing =>
+      'There is no phone number or verified e-mail to send the code to.';
+
+  @override
+  String get errorProposalIncomplete =>
+      'There are still steps to complete in this proposal.';
+
+  @override
+  String get errorSignRequestNotFound =>
+      'This code is no longer valid. Request a new one.';
+
+  @override
+  String get errorProposalChangedSinceSignRequest =>
+      'The proposal changed after the code was requested. Request a new one.';
+
+  @override
+  String get proposalMissingDeclarations => 'Risk declarations';
+
+  @override
+  String get proposalMissingSuitability => 'Suitability questionnaire';
+
+  @override
+  String get proposalMissingSuitabilityAcknowledgement =>
+      'Confirm the suitability warnings';
+
+  @override
+  String get proposalMissingInspection => 'Vehicle inspection';
+
+  @override
+  String get proposalMissingStartDate => 'Start date';
+
+  @override
+  String get proposalMissingSignature => 'Signature';
+
+  @override
   String get validationAnswersIncomplete => 'Answer all the questions.';
 
   @override

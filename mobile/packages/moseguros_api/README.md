@@ -158,9 +158,11 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**confirmProposalSignature**](doc/ProposalApi.md#confirmproposalsignature) | **POST** /api/v1/proposals/{id}/sign/confirm | Confirma a assinatura com o código recebido
 [*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
 [*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
+[*ProposalApi*](doc/ProposalApi.md) | [**requestProposalSignature**](doc/ProposalApi.md#requestproposalsignature) | **POST** /api/v1/proposals/{id}/sign/request | Gera o PDF da proposta e envia o código de assinatura
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalDeclarations**](doc/ProposalApi.md#saveproposaldeclarations) | **POST** /api/v1/proposals/{id}/declarations | Grava as declarações de risco
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**updateProposal**](doc/ProposalApi.md#updateproposal) | **PUT** /api/v1/proposals/{id} | Altera a data de início da proposta
@@ -199,6 +201,7 @@ Class | Method | HTTP request | Description
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
  - [Charge](doc/Charge.md)
  - [ChargeValue](doc/ChargeValue.md)
+ - [ConfirmSignatureRequest](doc/ConfirmSignatureRequest.md)
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
  - [CoverageRequest](doc/CoverageRequest.md)
@@ -288,7 +291,9 @@ Class | Method | HTTP request | Description
  - [ProposalPolicyholder](doc/ProposalPolicyholder.md)
  - [ProposalPremium](doc/ProposalPremium.md)
  - [ProposalProduct](doc/ProposalProduct.md)
+ - [ProposalProductDocument](doc/ProposalProductDocument.md)
  - [ProposalResponse](doc/ProposalResponse.md)
+ - [ProposalSignature](doc/ProposalSignature.md)
  - [ProposalStatus](doc/ProposalStatus.md)
  - [ProposalSuitability](doc/ProposalSuitability.md)
  - [ProposalSummaryResponse](doc/ProposalSummaryResponse.md)
@@ -324,6 +329,7 @@ Class | Method | HTTP request | Description
  - [RejectKycCheckRequest](doc/RejectKycCheckRequest.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
+ - [RequestSignatureRequest](doc/RequestSignatureRequest.md)
  - [RequestedCoverageRequest](doc/RequestedCoverageRequest.md)
  - [RequestedCoverageResponse](doc/RequestedCoverageResponse.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
@@ -331,6 +337,7 @@ Class | Method | HTTP request | Description
  - [RuleError](doc/RuleError.md)
  - [SaveDeclarationsRequest](doc/SaveDeclarationsRequest.md)
  - [SaveSuitabilityRequest](doc/SaveSuitabilityRequest.md)
+ - [SignatureRequestResponse](doc/SignatureRequestResponse.md)
  - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
  - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
