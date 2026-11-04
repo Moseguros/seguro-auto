@@ -61,30 +61,48 @@ class ModularityTest {
 
     /**
      * S2-03: vehicle só usa document e shared (o vehicle → identity do grafo ainda não é usado). Desde
-     * o S3-02 só o rating depende de vehicle (snapshots do veículo e do condutor nas cotações).
+     * o S3-02 o rating depende de vehicle (snapshots do veículo e do condutor nas cotações) e desde o
+     * S4-02 também o proposal (snapshots na proposta).
      */
     @Test
-    void vehicleDependsOnDocumentAndSharedAndOnlyRatingDependsOnVehicle() {
+    void vehicleDependsOnDocumentAndSharedAndOnlyRatingAndProposalDependOnVehicle() {
         assertThat(dependenciesOf("vehicle")).contains("document").isSubsetOf("shared", "document");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("vehicle"))
                 .filter(m -> dependenciesOf(m.getName()).contains("vehicle"))
                 .map(ApplicationModule::getName))
-                .containsOnly("rating");
+                .containsOnly("rating", "proposal");
     }
 
     /**
      * S3-01 e S3-02: rating só usa catalog, vehicle, organization e identity (modelo transversal §1:
      * {@code rating → catalog, vehicle, organization, identity, notification}; o notification entra
-     * no S6) e nenhum módulo depende de rating nesta fase.
+     * no S6). Desde o S4-02 só o proposal depende de rating ({@code RatingApi.quote}/{@code markUsed}).
      */
     @Test
-    void ratingDependsOnCatalogVehicleOrganizationAndIdentityAndNobodyDependsOnRating() {
+    void ratingDependsOnCatalogVehicleOrganizationAndIdentityAndOnlyProposalDependsOnRating() {
         assertThat(dependenciesOf("rating")).contains("catalog", "vehicle", "organization", "identity")
                 .isSubsetOf("shared", "catalog", "vehicle", "organization", "identity");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("rating"))
                 .filter(m -> dependenciesOf(m.getName()).contains("rating"))
+                .map(ApplicationModule::getName))
+                .containsOnly("proposal");
+    }
+
+    /**
+     * S4-02: proposal usa rating, catalog, vehicle, identity e organization (modelo transversal §1:
+     * {@code proposal → rating, catalog, vehicle, identity, organization, document, notification,
+     * payment}; document, notification e payment entram no S4-03/S4-04, S6 e S5) e nenhum módulo
+     * depende de proposal nesta fase.
+     */
+    @Test
+    void proposalDependsOnRatingCatalogVehicleIdentityAndOrganizationOnly() {
+        assertThat(dependenciesOf("proposal")).contains("rating", "catalog", "vehicle", "identity", "organization")
+                .isSubsetOf("shared", "rating", "catalog", "vehicle", "identity", "organization");
+        assertThat(modules.stream()
+                .filter(m -> !m.getName().equals("proposal"))
+                .filter(m -> dependenciesOf(m.getName()).contains("proposal"))
                 .map(ApplicationModule::getName))
                 .isEmpty();
     }

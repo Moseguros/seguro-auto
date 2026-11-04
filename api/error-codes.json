@@ -73,6 +73,10 @@
       "status" : 403
     },
     {
+      "code" : "INSURER_NOT_ACTIVE",
+      "status" : 409
+    },
+    {
       "code" : "INTERNAL_ERROR",
       "status" : 500
     },
@@ -281,7 +285,23 @@
       "status" : 409
     },
     {
+      "code" : "PROPOSAL_ALREADY_EXISTS",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_NOT_EDITABLE",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "QUOTE_ALREADY_USED",
+      "status" : 409
+    },
+    {
+      "code" : "QUOTE_DATA_CHANGED",
       "status" : 409
     },
     {
@@ -341,6 +361,10 @@
       "status" : 409
     },
     {
+      "code" : "SUITABILITY_NOT_WARNED",
+      "status" : 409
+    },
+    {
       "code" : "TENANT_REQUIRED",
       "status" : 500
     },
@@ -390,6 +414,8 @@
     }
   ],
   "validation" : [
+    "ANSWERS_INCOMPLETE",
+    "ANSWER_DUPLICATED",
     "BASE_TYPE_NOT_ALLOWED",
     "BORDER_ONLY_MTPL",
     "CAPITAL_OPTIONS_INVALID",
@@ -414,6 +440,7 @@
     "EXAMPLE_DOES_NOT_MATCH",
     "FALLBACK_ORDER_MISMATCH",
     "HABITUAL_DRIVER_REQUIRED",
+    "INVALID_ANSWER",
     "INVALID_CAPITAL_TYPE",
     "INVALID_CHASSIS",
     "INVALID_CODE",
@@ -443,6 +470,7 @@
     "MTPL_MUST_BE_MANDATORY",
     "MTPL_REQUIRED",
     "MULTIPLE_HABITUAL_DRIVERS",
+    "MUST_BE_TRUE",
     "MZ_SCOPE_REQUIRED",
     "NOT_ALLOWED",
     "NOT_BLANK",
@@ -469,6 +497,7 @@
     "TOO_SHORT",
     "TYPE_MISMATCH",
     "UNDERAGE",
+    "UNKNOWN_QUESTION",
     "VALUE_OUT_OF_RANGE",
     "VTPL_CAPITAL_TOO_LOW"
   ]

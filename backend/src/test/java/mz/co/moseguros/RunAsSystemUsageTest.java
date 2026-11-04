@@ -90,6 +90,20 @@ class RunAsSystemUsageTest {
                         "OrganizationSystemLookups.insurerProfiles");
     }
 
+    /** S4-02: a seguradora da cotação lê-se e as propostas expiram em SYSTEM, em classes permitidas. */
+    @Test
+    void proposalSystemLookupsAndExpiryJobAreAllowed() {
+        JavaClasses proposal = new ClassFileImporter().importClasses(
+                mz.co.moseguros.proposal.application.ProposalSystemLookups.class,
+                mz.co.moseguros.proposal.application.ProposalExpiryJob.class);
+        RUN_AS_SYSTEM_OWNERS.check(proposal);
+        org.assertj.core.api.Assertions.assertThat(proposal.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("ProposalSystemLookups.insurer", "ProposalExpiryJob.expire");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);
