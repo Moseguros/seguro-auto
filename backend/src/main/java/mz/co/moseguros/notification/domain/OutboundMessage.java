@@ -22,7 +22,7 @@ import mz.co.moseguros.shared.persistence.BaseEntity;
 public class OutboundMessage extends BaseEntity {
 
     /** Para que serve a mensagem. */
-    public enum Purpose { OTP, INVITATION, PASSWORD_RESET, KYC, SIGN_OTP }
+    public enum Purpose { OTP, INVITATION, PASSWORD_RESET, KYC, SIGN_OTP, PROPOSAL }
 
     static final int MAX_FAILURE_REASON = 200;
     static final int MAX_PROVIDER_MESSAGE_ID = 100;
