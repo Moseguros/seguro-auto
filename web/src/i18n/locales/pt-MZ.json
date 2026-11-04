@@ -2064,7 +2064,8 @@
       "verifiedAt": "Verificada em {{date}}",
       "review": "Rever identidade",
       "required": "A aceitação exige a identidade verificada.",
-      "pendingQueue": "As verificações pendentes estão no separador \"Identidade\"."
+      "pendingQueue": "As verificações pendentes estão no separador \"Identidade\".",
+      "otherInsurerNoDate": "Verificada por outra seguradora."
     },
     "underwriting": {
       "none": "As regras ainda não foram avaliadas.",

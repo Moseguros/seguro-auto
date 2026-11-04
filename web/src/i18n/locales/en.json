@@ -2064,7 +2064,8 @@
       "verifiedAt": "Verified on {{date}}",
       "review": "Review identity",
       "required": "Acceptance requires a verified identity.",
-      "pendingQueue": "Pending checks are in the \"Identity\" tab."
+      "pendingQueue": "Pending checks are in the \"Identity\" tab.",
+      "otherInsurerNoDate": "Verified by another insurer."
     },
     "underwriting": {
       "none": "The rules have not been evaluated yet.",
