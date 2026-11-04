@@ -18,9 +18,12 @@ import mz.co.moseguros.proposal.domain.SuitabilityAnswer;
  * @param kycState           {@code IdentityApi.kycStatus(customerUserId).state()}
  * @param signature          assinatura válida ({@code current_signature_id}) ou {@code null}
  * @param productDocuments   Condições Gerais e Informação Pré-contratual na língua do tomador (ou pt)
+ * @param kycRequiredForAutomaticAcceptance KYC não verificado e total acima do limiar do KYC
+ *                           simplificado das regras do produto (S4-05 §12)
  */
 public record ProposalDetails(Proposal proposal, List<Declaration> declarations,
                               List<SuitabilityAnswer> suitabilityAnswers, InspectionDetails inspection,
                               KycState kycState, Signature signature,
-                              List<ProductDocuments.Selected> productDocuments) {
+                              List<ProductDocuments.Selected> productDocuments,
+                              boolean kycRequiredForAutomaticAcceptance) {
 }

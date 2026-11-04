@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import mz.co.moseguros.catalog.CatalogApi;
+import mz.co.moseguros.catalog.ProductVersionView;
 import mz.co.moseguros.identity.IdentityApi;
+import mz.co.moseguros.identity.KycState;
 import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.ProposalView;
 import mz.co.moseguros.proposal.domain.Declaration;
@@ -54,11 +56,13 @@ public class ProposalQueryService {
     private final ProposalJson json;
     private final CatalogApi catalog;
     private final CurrentUser currentUser;
+    private final ProposalSystemLookups lookups;
 
     public ProposalQueryService(ProposalRepository proposals, DeclarationRepository declarations,
                                 SuitabilityAnswerRepository suitabilityAnswers, InspectionRepository inspections,
                                 InspectionPhotoRepository photos, InspectionProperties inspectionProperties,
-                                IdentityApi identity, ProposalJson json, CatalogApi catalog, CurrentUser currentUser) {
+                                IdentityApi identity, ProposalJson json, CatalogApi catalog, CurrentUser currentUser,
+                                ProposalSystemLookups lookups) {
         this.proposals = proposals;
         this.declarations = declarations;
         this.suitabilityAnswers = suitabilityAnswers;
@@ -69,6 +73,7 @@ public class ProposalQueryService {
         this.json = json;
         this.catalog = catalog;
         this.currentUser = currentUser;
+        this.lookups = lookups;
     }
 
     /** Proposta do cliente actual ou do mediador actual ({@code getProposal}). */
@@ -121,10 +126,12 @@ public class ProposalQueryService {
         Signature signature = proposal.getCurrentSignature() == null ? null
                 : Hibernate.unproxy(proposal.getCurrentSignature(), Signature.class);
         String language = ProposalPdfModelBuilder.language(json.policyholder(proposal.getPolicyholder()));
-        List<ProductDocuments.Selected> documents = ProductDocuments.select(
-                catalog.version(proposal.getProductVersionId()).documents(), language);
-        return new ProposalDetails(proposal, decl, suit, inspection,
-                identity.kycStatus(proposal.getCustomerUserId()).state(), signature, documents);
+        ProductVersionView version = catalog.version(proposal.getProductVersionId());
+        List<ProductDocuments.Selected> documents = ProductDocuments.select(version.documents(), language);
+        KycState kyc = identity.kycStatus(proposal.getCustomerUserId()).state();
+        boolean kycRequired = UnderwritingService.kycRequired(lookups.underwritingRules(version), kyc,
+                proposal.getTotalAmount());
+        return new ProposalDetails(proposal, decl, suit, inspection, kyc, signature, documents, kycRequired);
     }
 
     /** Vistoria com as fotografias activas (S4-03 §7). */

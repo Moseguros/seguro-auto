@@ -91,18 +91,21 @@ class ModularityTest {
     }
 
     /**
-     * S4-02 a S4-04: proposal usa rating, catalog, vehicle, identity, organization e document (as
-     * fotografias da vistoria, S4-03, e o PDF e a assinatura, S4-04; modelo transversal §1:
-     * {@code proposal → rating, catalog, vehicle, identity, organization, document, notification,
-     * payment}; notification e payment entram no S6 e no S5) e nenhum módulo depende de proposal nesta
-     * fase. O código de assinatura passa pelo identity ({@code identity → notification}); o document
-     * continua a depender só do shared.
+     * S4-02 a S4-05: proposal usa rating, catalog, vehicle, identity, organization, document (as
+     * fotografias da vistoria, S4-03, e o PDF e a assinatura, S4-04) e notification (os e-mails da
+     * submissão, da decisão e do alerta de SLA, S4-05); modelo transversal §1: {@code proposal → rating,
+     * catalog, vehicle, identity, organization, document, notification, payment}; payment entra no S5.
+     * Nenhum módulo depende de proposal nesta fase (o catalog guarda as regras de aceitação sem conhecer
+     * o proposal). O código de assinatura passa pelo identity ({@code identity → notification}); o
+     * document continua a depender só do shared.
      */
     @Test
-    void proposalDependsOnRatingCatalogVehicleIdentityOrganizationAndDocumentOnly() {
+    void proposalDependsOnRatingCatalogVehicleIdentityOrganizationDocumentAndNotificationOnly() {
         assertThat(dependenciesOf("proposal"))
-                .contains("rating", "catalog", "vehicle", "identity", "organization", "document")
-                .isSubsetOf("shared", "rating", "catalog", "vehicle", "identity", "organization", "document");
+                .contains("rating", "catalog", "vehicle", "identity", "organization", "document", "notification")
+                .isSubsetOf("shared", "rating", "catalog", "vehicle", "identity", "organization", "document",
+                        "notification");
+        assertThat(dependenciesOf("catalog")).doesNotContain("proposal");
         assertThat(dependenciesOf("identity")).contains("notification");
         assertThat(dependenciesOf("document")).isSubsetOf("shared");
         assertThat(modules.stream()

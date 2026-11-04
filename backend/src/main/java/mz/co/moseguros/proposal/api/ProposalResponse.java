@@ -13,6 +13,7 @@ import mz.co.moseguros.catalog.DeductibleType;
 import mz.co.moseguros.catalog.ProductDocumentType;
 import mz.co.moseguros.catalog.ProductType;
 import mz.co.moseguros.identity.KycState;
+import mz.co.moseguros.proposal.AcceptanceMode;
 import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.application.InspectionDetails;
 import mz.co.moseguros.proposal.application.ProposalDetails;
@@ -21,10 +22,12 @@ import mz.co.moseguros.proposal.application.ProposalJson;
 import mz.co.moseguros.proposal.domain.CoverageLine;
 import mz.co.moseguros.proposal.domain.Declaration;
 import mz.co.moseguros.proposal.domain.DeclarationQuestion;
+import mz.co.moseguros.proposal.domain.InfoRequestItem;
 import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.PremiumBreakdown;
 import mz.co.moseguros.proposal.domain.Proposal;
 import mz.co.moseguros.proposal.domain.ProposalChannel;
+import mz.co.moseguros.proposal.domain.RejectionReasonCode;
 import mz.co.moseguros.proposal.domain.Signature;
 import mz.co.moseguros.proposal.domain.SuitabilityAnswer;
 import mz.co.moseguros.proposal.domain.SuitabilityQuestion;
@@ -36,9 +39,9 @@ import mz.co.moseguros.shared.domain.VehicleCategory;
 import mz.co.moseguros.shared.domain.VehicleUsage;
 
 /**
- * Proposta (S4-02 §10, S4-03 §7, S4-04 §8). {@code signature} é a assinatura válida ({@code null} sem
- * ela); os blocos {@code decision} (S4-05) e {@code broker} (S4-06) vêm a {@code null} nesta fase;
- * {@code inspection} é o do S4-03 §7. O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta
+ * Proposta (S4-02 §10, S4-03 §7, S4-04 §8, S4-05 §12). {@code signature} é a assinatura válida
+ * ({@code null} sem ela); {@code decision} é a decisão da seguradora ({@code null} antes da primeira
+ * submissão); {@code broker} vem a {@code null} nesta fase (S4-06); {@code inspection} é o do S4-03 §7. O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta
  * do condutor saem só mascarados; o chassis não sai.
  */
 public record ProposalResponse(
@@ -94,8 +97,8 @@ public record ProposalResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ProposalChecklist checklist,
         @JsonInclude(JsonInclude.Include.ALWAYS)
-        @Schema(ref = ProposalSchemas.DECISION_REF, nullable = true)
-        JsonNode decision,
+        @Schema(nullable = true, description = "Decisão da seguradora (S4-05); null em DRAFT antes da primeira submissão")
+        ProposalDecision decision,
         @JsonInclude(JsonInclude.Include.ALWAYS)
         @Schema(nullable = true, description = "Fim do prazo sem acção do cliente; null em UNDER_REVIEW e nos finais")
         Instant expiresAt,
@@ -314,13 +317,63 @@ public record ProposalResponse(
             String answer) {
     }
 
-    /** Estado KYC do cliente; {@code requiredForAutomaticAcceptance} é calculado no S4-05. */
+    /**
+     * Estado KYC do cliente; {@code requiredForAutomaticAcceptance} = não {@code VERIFIED} e total
+     * maior ou igual ao limiar do KYC simplificado das regras do produto (S4-05 §12).
+     */
     public record ProposalKyc(
             @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
             KycState state,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                    description = "Os ecrãs recomendam verificar a identidade antes de submeter")
+            boolean requiredForAutomaticAcceptance) {
+    }
+
+    /**
+     * Decisão da seguradora (S4-05 §12). {@code insurerDueAt} só em {@code UNDER_REVIEW}; quem decidiu
+     * não sai para o cliente nem para o mediador.
+     */
+    public record ProposalDecision(
             @JsonInclude(JsonInclude.Include.ALWAYS)
-            @Schema(nullable = true, description = "S4-05; null nesta fase")
-            Boolean requiredForAutomaticAcceptance) {
+            @Schema(nullable = true, description = "Só em ACCEPTED (e nos estados seguintes)")
+            AcceptanceMode mode,
+            @JsonInclude(JsonInclude.Include.ALWAYS)
+            @Schema(nullable = true)
+            Instant decidedAt,
+            @JsonInclude(JsonInclude.Include.ALWAYS)
+            @Schema(nullable = true, description = "Só em REJECTED")
+            RejectionReasonCode rejectionReasonCode,
+            @JsonInclude(JsonInclude.Include.ALWAYS)
+            @Schema(nullable = true, description = "Motivo da recusa ou nota da aceitação")
+            String reason,
+            @JsonInclude(JsonInclude.Include.ALWAYS)
+            @Schema(nullable = true, description = "Pedido de informação em curso (INFO_REQUESTED)")
+            ProposalInfoRequest infoRequest,
+            @JsonInclude(JsonInclude.Include.ALWAYS)
+            @Schema(nullable = true, description = "Prazo de decisão da seguradora (sla_due_at), só em UNDER_REVIEW")
+            Instant insurerDueAt) {
+
+        static ProposalDecision of(Proposal p) {
+            if (p.getSubmittedAt() == null) {
+                return null;
+            }
+            ProposalInfoRequest info = p.getInfoRequestedAt() == null ? null
+                    : new ProposalInfoRequest(p.getInfoRequestMessage(), p.getInfoRequestItems(),
+                            p.getInfoRequestedAt());
+            return new ProposalDecision(p.getAcceptanceMode(), p.getDecidedAt(), p.getRejectionReasonCode(),
+                    p.getDecisionReason(), info,
+                    p.getStatus() == ProposalStatus.UNDER_REVIEW ? p.getSlaDueAt() : null);
+        }
+    }
+
+    /** Pedido de informação do subscritor. */
+    public record ProposalInfoRequest(
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "Envie de novo a fotografia do chassis.")
+            String message,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            List<InfoRequestItem> items,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            Instant requestedAt) {
     }
 
     /** O que falta para submeter. */
@@ -363,9 +416,11 @@ public record ProposalResponse(
                         premium.roundingAdjustment(), premium.total()),
                 p.getStartAt(), p.getEndAt(), p.endDate(), p.getDurationDays(),
                 declarations(p, details.declarations()), suitability(p, details.suitabilityAnswers()),
-                InspectionResponse.from(details.inspection()), new ProposalKyc(details.kycState(), null),
+                InspectionResponse.from(details.inspection()),
+                new ProposalKyc(details.kycState(), details.kycRequiredForAutomaticAcceptance()),
                 ProposalSignature.of(details.signature()),
-                checklist(p, details.inspection(), details.signature() != null), null, p.getExpiresAt(),
+                checklist(p, details.inspection(), details.signature() != null), ProposalDecision.of(p),
+                p.getExpiresAt(),
                 p.getSubmittedAt(), p.getCreatedAt(), p.getUpdatedAt(), p.getVersion());
     }
 

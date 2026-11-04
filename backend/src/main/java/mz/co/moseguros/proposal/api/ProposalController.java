@@ -10,6 +10,7 @@ import mz.co.moseguros.proposal.application.ProposalDetails;
 import mz.co.moseguros.proposal.application.ProposalJson;
 import mz.co.moseguros.proposal.application.ProposalQueryService;
 import mz.co.moseguros.proposal.application.ProposalService;
+import mz.co.moseguros.proposal.application.SubmissionService;
 import mz.co.moseguros.proposal.application.SuitabilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Propostas do cliente (S4-02 §9): criação a partir de uma cotação, consulta, data de início,
- * declarações de risco e questionário de adequação. As escritas aceitam o cliente dono
+ * declarações de risco, questionário de adequação e submissão (S4-05 §6). As escritas aceitam o cliente dono
  * ({@code self:proposals}) ou o mediador da proposta ({@code proposal:create-for-client}, S4-06); a
- * seguradora usa os seus endpoints (S4-05).
+ * seguradora usa os seus endpoints ({@code InsurerProposalController}, S4-05).
  */
 @RestController
 @RequestMapping("/api/v1/proposals")
@@ -39,14 +40,17 @@ public class ProposalController {
     private final ProposalQueryService queries;
     private final DeclarationService declarations;
     private final SuitabilityService suitability;
+    private final SubmissionService submissions;
     private final ProposalJson json;
 
     public ProposalController(ProposalService proposals, ProposalQueryService queries,
-                              DeclarationService declarations, SuitabilityService suitability, ProposalJson json) {
+                              DeclarationService declarations, SuitabilityService suitability,
+                              SubmissionService submissions, ProposalJson json) {
         this.proposals = proposals;
         this.queries = queries;
         this.declarations = declarations;
         this.suitability = suitability;
+        this.submissions = submissions;
         this.json = json;
     }
 
@@ -107,6 +111,18 @@ public class ProposalController {
     public ProposalResponse acknowledgeSuitability(@PathVariable UUID id,
                                                    @RequestBody AcknowledgeSuitabilityRequest request) {
         return response(suitability.acknowledge(id, request.version()));
+    }
+
+    @PostMapping("/{id}/submit")
+    @Operation(operationId = "submitProposal", summary = "Submete a proposta à seguradora",
+            description = "Permissão self:proposals ou proposal:create-for-client. Só em DRAFT ou INFO_REQUESTED "
+                    + "(senão 409 INVALID_STATE_TRANSITION); version diferente → 409 CONCURRENT_MODIFICATION; proposta "
+                    + "incompleta ou sem assinatura válida → 409 PROPOSAL_INCOMPLETE (missing); seguradora não activa → "
+                    + "409 INSURER_NOT_ACTIVE. As regras de aceitação do produto decidem logo: ACCEPTED (aceitação "
+                    + "automática, expiresAt = prazo para pagar) ou UNDER_REVIEW (decision.insurerDueAt = prazo da "
+                    + "seguradora). Depois de submetida, a proposta só se altera se a seguradora pedir informação.")
+    public ProposalResponse submit(@PathVariable UUID id, @RequestBody SubmitProposalRequest request) {
+        return response(submissions.submit(id, request.version()));
     }
 
     private ProposalResponse response(ProposalDetails details) {

@@ -132,7 +132,9 @@ class ProposalCreateIT {
                 .body("suitability", nullValue())
                 .body("inspection.required", equalTo(true))
                 .body("kyc.state", equalTo("NONE"))
-                .body("kyc.requiredForAutomaticAcceptance", nullValue())
+                // KYC por verificar e total acima do limiar do KYC simplificado por defeito (10 000 MT, S4-05).
+                .body("kyc.requiredForAutomaticAcceptance",
+                        equalTo(q.quote().get("totalAmount").get("amount").asLong() >= 1_000_000L))
                 .body("signature", nullValue())
                 .body("decision", nullValue())
                 .body("checklist.declarations", equalTo("MISSING"))

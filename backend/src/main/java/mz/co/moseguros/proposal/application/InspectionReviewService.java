@@ -1,6 +1,7 @@
 package mz.co.moseguros.proposal.application;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -59,11 +60,13 @@ public class InspectionReviewService {
     private final ProposalJson json;
     private final AuditService audit;
     private final CurrentUser currentUser;
+    private final UnderwritingService underwriting;
     private final Clock clock;
 
     public InspectionReviewService(InspectionRepository inspections, InspectionPhotoRepository photos,
                                    ProposalRepository proposals, ProposalQueryService queries, ProposalJson json,
-                                   AuditService audit, CurrentUser currentUser, Clock clock) {
+                                   AuditService audit, CurrentUser currentUser, UnderwritingService underwriting,
+                                   Clock clock) {
         this.inspections = inspections;
         this.photos = photos;
         this.proposals = proposals;
@@ -71,6 +74,7 @@ public class InspectionReviewService {
         this.json = json;
         this.audit = audit;
         this.currentUser = currentUser;
+        this.underwriting = underwriting;
         this.clock = clock;
     }
 
@@ -119,7 +123,8 @@ public class InspectionReviewService {
     /**
      * {@code approveInspection}: {@code SUBMITTED → APPROVED}. O modo efectivo é o pedido ou, sem ele,
      * o da vistoria: em {@code ON_SITE} as notas são obrigatórias; em {@code SELF_PHOTOS} os seis ângulos.
-     * Auditoria {@code INSPECTION.APPROVE}. (A reavaliação das regras automáticas entra no S4-05.)
+     * Auditoria {@code INSPECTION.APPROVE}. Com a proposta em análise, as regras de aceitação são
+     * avaliadas de novo (S4-05 §8).
      */
     @PreAuthorize("hasAuthority('inspection:review')")
     @Transactional
@@ -136,10 +141,12 @@ public class InspectionReviewService {
         }
         errors.throwIfAny();
         Map<String, Object> before = state(inspection);
-        inspection.approve(photos.findActive(inspection.getId()), effective, text, currentUser.id(), clock.instant());
+        Instant now = clock.instant();
+        inspection.approve(photos.findActive(inspection.getId()), effective, text, currentUser.id(), now);
         inspections.saveAndFlush(inspection);
         record(loaded.proposal(), inspection, "INSPECTION.APPROVE", before);
         log.info("Inspection {} approved by {}", inspection.getId(), currentUser.id());
+        reevaluate(loaded.proposal(), now);
         return queries.inspectionDetails(inspection);
     }
 
@@ -186,6 +193,22 @@ public class InspectionReviewService {
         record(loaded.proposal(), inspection, "INSPECTION.REJECT", before);
         log.info("Inspection {} rejected by {}", inspection.getId(), currentUser.id());
         return queries.inspectionDetails(inspection);
+    }
+
+    /**
+     * Reavaliação ao aprovar a vistoria (S4-05 §8), na mesma transacção: com a proposta em
+     * {@code UNDER_REVIEW}, avalia de novo as regras; {@code AUTOMATIC} → aceitação automática; senão
+     * grava só o novo {@code underwriting_result}.
+     */
+    private void reevaluate(Proposal proposal, Instant now) {
+        if (proposal.getStatus() != ProposalStatus.UNDER_REVIEW) {
+            return;
+        }
+        boolean accepted = underwriting.apply(proposal, underwriting.evaluate(proposal, now), now);
+        proposals.saveAndFlush(proposal);
+        if (accepted) {
+            log.info("Proposal {} accepted automatically after the inspection was approved", proposal.getNumber());
+        }
     }
 
     private record Loaded(Inspection inspection, Proposal proposal) {
