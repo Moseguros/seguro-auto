@@ -40,6 +40,7 @@ import 'package:moseguros_api/src/model/driver_response.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
 import 'package:moseguros_api/src/model/forgot_password_request.dart';
 import 'package:moseguros_api/src/model/insurer_branding_response.dart';
+import 'package:moseguros_api/src/model/insurer_kyc_check_response.dart';
 import 'package:moseguros_api/src/model/insurer_profile_request.dart';
 import 'package:moseguros_api/src/model/insurer_profile_response.dart';
 import 'package:moseguros_api/src/model/insurer_rating_settings_response.dart';
@@ -49,10 +50,19 @@ import 'package:moseguros_api/src/model/invitation_response.dart';
 import 'package:moseguros_api/src/model/invite_user_request.dart';
 import 'package:moseguros_api/src/model/jwk.dart';
 import 'package:moseguros_api/src/model/jwks_response.dart';
+import 'package:moseguros_api/src/model/kyc_check_response.dart';
+import 'package:moseguros_api/src/model/kyc_check_status.dart';
+import 'package:moseguros_api/src/model/kyc_check_summary_response.dart';
+import 'package:moseguros_api/src/model/kyc_customer_response.dart';
+import 'package:moseguros_api/src/model/kyc_files_response.dart';
+import 'package:moseguros_api/src/model/kyc_previous_check_response.dart';
+import 'package:moseguros_api/src/model/kyc_rejection_reason.dart';
+import 'package:moseguros_api/src/model/kyc_state.dart';
 import 'package:moseguros_api/src/model/logout_request.dart';
 import 'package:moseguros_api/src/model/me_organization.dart';
 import 'package:moseguros_api/src/model/me_response.dart';
 import 'package:moseguros_api/src/model/money.dart';
+import 'package:moseguros_api/src/model/my_kyc_response.dart';
 import 'package:moseguros_api/src/model/organization_response.dart';
 import 'package:moseguros_api/src/model/organization_summary_response.dart';
 import 'package:moseguros_api/src/model/otp_challenge_response.dart';
@@ -65,6 +75,7 @@ import 'package:moseguros_api/src/model/otp_verify_response.dart';
 import 'package:moseguros_api/src/model/page_response_catalog_product_response.dart';
 import 'package:moseguros_api/src/model/page_response_driver_response.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
+import 'package:moseguros_api/src/model/page_response_kyc_check_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_quote_request_summary_response.dart';
@@ -110,6 +121,7 @@ import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
 import 'package:moseguros_api/src/model/registration_doc_response.dart';
 import 'package:moseguros_api/src/model/registry_lookup_response.dart';
+import 'package:moseguros_api/src/model/reject_kyc_check_request.dart';
 import 'package:moseguros_api/src/model/replace_coverages_request.dart';
 import 'package:moseguros_api/src/model/request_otp_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_request.dart';
@@ -151,6 +163,7 @@ import 'package:moseguros_api/src/model/vehicle_driver_response.dart';
 import 'package:moseguros_api/src/model/vehicle_response.dart';
 import 'package:moseguros_api/src/model/vehicle_usage.dart';
 import 'package:moseguros_api/src/model/verify_contact_request.dart';
+import 'package:moseguros_api/src/model/verify_kyc_check_request.dart';
 import 'package:moseguros_api/src/model/verify_otp_request.dart';
 import 'package:moseguros_api/src/model/version_response.dart';
 
@@ -183,6 +196,7 @@ part 'serializers.g.dart';
   FieldError,
   ForgotPasswordRequest,
   InsurerBrandingResponse,
+  InsurerKycCheckResponse,
   InsurerProfileRequest,
   InsurerProfileResponse,
   InsurerRatingSettingsResponse,
@@ -192,10 +206,19 @@ part 'serializers.g.dart';
   InviteUserRequest,
   Jwk,
   JwksResponse,
+  KycCheckResponse,
+  KycCheckStatus,
+  KycCheckSummaryResponse,
+  KycCustomerResponse,
+  KycFilesResponse,
+  KycPreviousCheckResponse,
+  KycRejectionReason,
+  KycState,
   LogoutRequest,
   MeOrganization,
   MeResponse,
   Money,
+  MyKycResponse,
   OrganizationResponse,
   OrganizationSummaryResponse,
   OtpChallengeResponse,
@@ -208,6 +231,7 @@ part 'serializers.g.dart';
   PageResponseCatalogProductResponse,
   PageResponseDriverResponse,
   PageResponseInvitationResponse,
+  PageResponseKycCheckSummaryResponse,
   PageResponseOrganizationSummaryResponse,
   PageResponseProductSummaryResponse,
   PageResponseQuoteRequestSummaryResponse,
@@ -253,6 +277,7 @@ part 'serializers.g.dart';
   RefreshTokenRequest,
   RegistrationDocResponse,
   RegistryLookupResponse,
+  RejectKycCheckRequest,
   ReplaceCoveragesRequest,
   RequestOtpRequest,
   RequestedCoverageRequest,
@@ -294,6 +319,7 @@ part 'serializers.g.dart';
   VehicleResponse,
   VehicleUsage,
   VerifyContactRequest,
+  VerifyKycCheckRequest,
   VerifyOtpRequest,
   VersionResponse,
 ])

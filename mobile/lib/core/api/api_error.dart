@@ -107,6 +107,10 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'QUOTE_RATE_LIMITED' => l10n.errorQuoteRateLimited,
   'VEHICLE_VALUE_REQUIRED' => l10n.errorVehicleValueRequired,
   'ORGANIZATION_NOT_INSURER' => l10n.errorOrganizationNotInsurer,
+  'PROFILE_INCOMPLETE' => l10n.errorProfileIncomplete,
+  'KYC_ALREADY_PENDING' => l10n.errorKycAlreadyPending,
+  'KYC_ALREADY_VERIFIED' => l10n.errorKycAlreadyVerified,
+  'KYC_NOT_FOUND' => l10n.errorKycNotFound,
   _ => l10n.errorUnknown,
 };
 
@@ -193,6 +197,7 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'COVERAGE_REQUIRES' => l10n.validationCoverageRequires,
   'INVALID_URL' => l10n.validationInvalidUrl,
   'INVALID_SECRET_REF' => l10n.validationInvalidSecretRef,
+  'INVALID_INSURER' => l10n.validationInvalidInsurer,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,

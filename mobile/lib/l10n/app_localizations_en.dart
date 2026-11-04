@@ -1376,6 +1376,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationInvalidSecretRef => 'Invalid secret reference.';
 
   @override
+  String get errorProfileIncomplete =>
+      'Complete your profile before continuing.';
+
+  @override
+  String get errorKycAlreadyPending =>
+      'You already have an identity check under review.';
+
+  @override
+  String get errorKycAlreadyVerified => 'Your identity is already verified.';
+
+  @override
+  String get errorKycNotFound => 'Identity check not found.';
+
+  @override
+  String get validationInvalidInsurer => 'Invalid insurer.';
+
+  @override
   String get quoteUnavailableTariffMissing =>
       'This insurer does not have a price for this product yet.';
 

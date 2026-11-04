@@ -2486,6 +2486,36 @@ abstract class AppLocalizations {
   /// **'Referência do segredo inválida.'**
   String get validationInvalidSecretRef;
 
+  /// No description provided for @errorProfileIncomplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Complete o seu perfil antes de continuar.'**
+  String get errorProfileIncomplete;
+
+  /// No description provided for @errorKycAlreadyPending.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já tem uma verificação de identidade em análise.'**
+  String get errorKycAlreadyPending;
+
+  /// No description provided for @errorKycAlreadyVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'A sua identidade já está verificada.'**
+  String get errorKycAlreadyVerified;
+
+  /// No description provided for @errorKycNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verificação de identidade não encontrada.'**
+  String get errorKycNotFound;
+
+  /// No description provided for @validationInvalidInsurer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguradora inválida.'**
+  String get validationInvalidInsurer;
+
   /// No description provided for @quoteUnavailableTariffMissing.
   ///
   /// In pt, this message translates to:

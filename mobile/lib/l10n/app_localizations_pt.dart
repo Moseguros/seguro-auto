@@ -1375,6 +1375,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationInvalidSecretRef => 'Referência do segredo inválida.';
 
   @override
+  String get errorProfileIncomplete =>
+      'Complete o seu perfil antes de continuar.';
+
+  @override
+  String get errorKycAlreadyPending =>
+      'Já tem uma verificação de identidade em análise.';
+
+  @override
+  String get errorKycAlreadyVerified => 'A sua identidade já está verificada.';
+
+  @override
+  String get errorKycNotFound => 'Verificação de identidade não encontrada.';
+
+  @override
+  String get validationInvalidInsurer => 'Seguradora inválida.';
+
+  @override
   String get quoteUnavailableTariffMissing =>
       'Esta seguradora ainda não tem preço para este produto.';
 

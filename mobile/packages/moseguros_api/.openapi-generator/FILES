@@ -46,6 +46,7 @@ lib/src/model/driver_response.dart
 lib/src/model/field_error.dart
 lib/src/model/forgot_password_request.dart
 lib/src/model/insurer_branding_response.dart
+lib/src/model/insurer_kyc_check_response.dart
 lib/src/model/insurer_profile_request.dart
 lib/src/model/insurer_profile_response.dart
 lib/src/model/insurer_rating_settings_response.dart
@@ -55,10 +56,19 @@ lib/src/model/invitation_response.dart
 lib/src/model/invite_user_request.dart
 lib/src/model/jwk.dart
 lib/src/model/jwks_response.dart
+lib/src/model/kyc_check_response.dart
+lib/src/model/kyc_check_status.dart
+lib/src/model/kyc_check_summary_response.dart
+lib/src/model/kyc_customer_response.dart
+lib/src/model/kyc_files_response.dart
+lib/src/model/kyc_previous_check_response.dart
+lib/src/model/kyc_rejection_reason.dart
+lib/src/model/kyc_state.dart
 lib/src/model/logout_request.dart
 lib/src/model/me_organization.dart
 lib/src/model/me_response.dart
 lib/src/model/money.dart
+lib/src/model/my_kyc_response.dart
 lib/src/model/organization_response.dart
 lib/src/model/organization_summary_response.dart
 lib/src/model/otp_challenge_response.dart
@@ -71,6 +81,7 @@ lib/src/model/otp_verify_response.dart
 lib/src/model/page_response_catalog_product_response.dart
 lib/src/model/page_response_driver_response.dart
 lib/src/model/page_response_invitation_response.dart
+lib/src/model/page_response_kyc_check_summary_response.dart
 lib/src/model/page_response_organization_summary_response.dart
 lib/src/model/page_response_product_summary_response.dart
 lib/src/model/page_response_quote_request_summary_response.dart
@@ -116,6 +127,7 @@ lib/src/model/reference_value_response.dart
 lib/src/model/refresh_token_request.dart
 lib/src/model/registration_doc_response.dart
 lib/src/model/registry_lookup_response.dart
+lib/src/model/reject_kyc_check_request.dart
 lib/src/model/replace_coverages_request.dart
 lib/src/model/request_otp_request.dart
 lib/src/model/requested_coverage_request.dart
@@ -157,6 +169,7 @@ lib/src/model/vehicle_driver_response.dart
 lib/src/model/vehicle_response.dart
 lib/src/model/vehicle_usage.dart
 lib/src/model/verify_contact_request.dart
+lib/src/model/verify_kyc_check_request.dart
 lib/src/model/verify_otp_request.dart
 lib/src/model/version_response.dart
 lib/src/serializers.dart
