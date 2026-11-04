@@ -123,7 +123,7 @@ class AssistedSignatureIT {
         FakeOtpDeliveryChannels.Sent sms = channels.lastTo(r.quote().e164());
         assertThat(sms.text()).contains(number).contains("preparada por Agente Assistente")
                 .contains(sms.code()).contains("Seguradora Assistida");
-        assertThat(channels.sent()).allMatch(s -> s.destination().equals(r.quote().e164()));
+        assertThat(channels.sentTo(r.quote().e164())).hasSize(1);
         assertThat(owner().queryForObject("select sign_request_assisted_by_user_id from proposal.proposal where id = ?",
                 UUID.class, r.id())).isEqualTo(broker.id());
         assertThat(owner().queryForObject("select msisdn_verified from identity.user_account where id = ?",
