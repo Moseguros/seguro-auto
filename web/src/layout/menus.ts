@@ -110,7 +110,12 @@ export const menus: Record<Area, MenuItem[]> = {
       icon: PriceChange,
       permission: 'product:read',
     },
-    { key: 'proposals', path: '/seguradora/propostas', icon: Assignment },
+    {
+      key: 'proposals',
+      path: '/seguradora/propostas',
+      icon: Assignment,
+      permission: 'proposal:read',
+    },
     { key: 'policies', path: '/seguradora/apolices', icon: Description },
     { key: 'payments', path: '/seguradora/pagamentos', icon: Payments },
     { key: 'claims', path: '/seguradora/sinistros', icon: CarCrash },

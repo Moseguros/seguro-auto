@@ -17,6 +17,10 @@ export const Permissions = {
   ratingManage: 'rating:manage',
   referenceManage: 'reference:manage',
   quoteCreateForClient: 'quote:create-for-client',
+  proposalRead: 'proposal:read',
+  proposalDecide: 'proposal:decide',
+  kycReview: 'kyc:review',
+  inspectionReview: 'inspection:review',
 } as const;
 
 export type Permission = (typeof Permissions)[keyof typeof Permissions];
