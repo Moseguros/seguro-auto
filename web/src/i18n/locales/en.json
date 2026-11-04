@@ -217,7 +217,11 @@
     "QUOTE_ALREADY_USED": "This quote has already been used in a proposal.",
     "QUOTE_RATE_LIMITED": "You ran too many simulations in the last hour. Try again later.",
     "VEHICLE_VALUE_REQUIRED": "For own damage, enter the commercial value of the vehicle.",
-    "ORGANIZATION_NOT_INSURER": "This organization is not an insurer."
+    "ORGANIZATION_NOT_INSURER": "This organization is not an insurer.",
+    "PROFILE_INCOMPLETE": "Complete your profile before continuing.",
+    "KYC_ALREADY_PENDING": "You already have an identity check under review.",
+    "KYC_ALREADY_VERIFIED": "Your identity is already verified.",
+    "KYC_NOT_FOUND": "Identity check not found."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -301,7 +305,8 @@
     "OWN_DAMAGE_REQUIRED": "Choose at least one own damage coverage.",
     "COVERAGE_REQUIRES": "Theft or robbery requires collision, fire and natural events.",
     "INVALID_URL": "Invalid address (it must start with https://).",
-    "INVALID_SECRET_REF": "Invalid secret reference."
+    "INVALID_SECRET_REF": "Invalid secret reference.",
+    "INVALID_INSURER": "Invalid insurer."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

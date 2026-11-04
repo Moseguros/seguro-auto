@@ -217,7 +217,11 @@
     "QUOTE_ALREADY_USED": "Esta cotação já foi usada numa proposta.",
     "QUOTE_RATE_LIMITED": "Fez muitas simulações na última hora. Tente mais tarde.",
     "VEHICLE_VALUE_REQUIRED": "Para danos próprios, indique o valor comercial do veículo.",
-    "ORGANIZATION_NOT_INSURER": "Esta organização não é uma seguradora."
+    "ORGANIZATION_NOT_INSURER": "Esta organização não é uma seguradora.",
+    "PROFILE_INCOMPLETE": "Complete o seu perfil antes de continuar.",
+    "KYC_ALREADY_PENDING": "Já tem uma verificação de identidade em análise.",
+    "KYC_ALREADY_VERIFIED": "A sua identidade já está verificada.",
+    "KYC_NOT_FOUND": "Verificação de identidade não encontrada."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -301,7 +305,8 @@
     "OWN_DAMAGE_REQUIRED": "Escolha pelo menos uma cobertura de danos próprios.",
     "COVERAGE_REQUIRES": "Furto ou roubo exige choque, incêndio e fenómenos da natureza.",
     "INVALID_URL": "Endereço inválido (tem de começar por https://).",
-    "INVALID_SECRET_REF": "Referência do segredo inválida."
+    "INVALID_SECRET_REF": "Referência do segredo inválida.",
+    "INVALID_INSURER": "Seguradora inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",

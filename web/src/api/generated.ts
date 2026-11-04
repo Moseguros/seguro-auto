@@ -715,6 +715,21 @@ export interface InsurerBrandingResponse {
   logoFileId: string | null;
 }
 
+export interface InsurerKycCheckResponse {
+  customer: KycCustomerResponse;
+  files: KycFilesResponse;
+  id: string;
+  /** Outras verificações do mesmo cliente enviadas a esta seguradora, da mais recente para a mais antiga */
+  previousChecks: KycPreviousCheckResponse[];
+  rejectionReason?: string;
+  rejectionReasonCode?: KycRejectionReason;
+  reviewedAt?: string;
+  status: KycCheckStatus;
+  submittedAt: string;
+  /** Enviar em verify/reject */
+  version: number;
+}
+
 export interface InsurerProfileRequest {
   complaintsEmail: string;
   /** Provedor do cliente: organização existente do tipo OMBUDSMAN (400 OMBUDSMAN_INVALID) */
@@ -835,6 +850,127 @@ export interface JwksResponse {
   keys: Jwk[];
 }
 
+export type KycCheckResponseIdDocType =
+  (typeof KycCheckResponseIdDocType)[keyof typeof KycCheckResponseIdDocType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const KycCheckResponseIdDocType = {
+  BI: 'BI',
+  PASSPORT: 'PASSPORT',
+  DIRE: 'DIRE',
+} as const;
+
+export interface KycCheckResponse {
+  id: string;
+  /** Todos os caracteres menos os últimos 4 trocados por * */
+  idDocNumberMasked: string;
+  idDocType: KycCheckResponseIdDocType;
+  /** Seguradora a quem foi enviada */
+  insurerId: string;
+  /** Texto livre do subscritor (só em REJECTED, se o escreveu) */
+  rejectionReason?: string;
+  rejectionReasonCode?: KycRejectionReason;
+  /** Omitido enquanto PENDING */
+  reviewedAt?: string;
+  status: KycCheckStatus;
+  submittedAt: string;
+}
+
+export type KycCheckStatus = (typeof KycCheckStatus)[keyof typeof KycCheckStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const KycCheckStatus = {
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export type KycCheckSummaryResponseIdDocType =
+  (typeof KycCheckSummaryResponseIdDocType)[keyof typeof KycCheckSummaryResponseIdDocType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const KycCheckSummaryResponseIdDocType = {
+  BI: 'BI',
+  PASSPORT: 'PASSPORT',
+  DIRE: 'DIRE',
+} as const;
+
+export interface KycCheckSummaryResponse {
+  /** Cópia do perfil no momento do envio */
+  fullName: string;
+  id: string;
+  idDocType: KycCheckSummaryResponseIdDocType;
+  reviewedAt?: string;
+  status: KycCheckStatus;
+  submittedAt: string;
+}
+
+export type KycCustomerResponseIdDocType =
+  (typeof KycCustomerResponseIdDocType)[keyof typeof KycCustomerResponseIdDocType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const KycCustomerResponseIdDocType = {
+  BI: 'BI',
+  PASSPORT: 'PASSPORT',
+  DIRE: 'DIRE',
+} as const;
+
+export interface KycCustomerResponse {
+  birthDate: string;
+  fullName: string;
+  /** Em claro, para comparar com a fotografia */
+  idDocNumber: string;
+  idDocType: KycCustomerResponseIdDocType;
+  /** Omitido se a conta só tem e-mail */
+  msisdnMasked?: string;
+  userId: string;
+}
+
+export interface KycFilesResponse {
+  /** Omitido no passaporte */
+  docBackFileId?: string;
+  docFrontFileId: string;
+  selfieFileId: string;
+}
+
+/**
+ * Outras verificações do mesmo cliente enviadas a esta seguradora, da mais recente para a mais antiga
+ */
+export interface KycPreviousCheckResponse {
+  id: string;
+  rejectionReasonCode?: KycRejectionReason;
+  status: KycCheckStatus;
+  submittedAt: string;
+}
+
+/**
+ * Só em REJECTED
+ */
+export type KycRejectionReason = (typeof KycRejectionReason)[keyof typeof KycRejectionReason];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const KycRejectionReason = {
+  DOCUMENT_UNREADABLE: 'DOCUMENT_UNREADABLE',
+  DOCUMENT_EXPIRED: 'DOCUMENT_EXPIRED',
+  DATA_MISMATCH: 'DATA_MISMATCH',
+  SELFIE_MISMATCH: 'SELFIE_MISMATCH',
+  OTHER: 'OTHER',
+} as const;
+
+/**
+ * OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
+ */
+export type KycState = (typeof KycState)[keyof typeof KycState];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const KycState = {
+  NONE: 'NONE',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED',
+  OUTDATED: 'OUTDATED',
+} as const;
+
 export interface LogoutRequest {
   /** Refresh token da sessão a terminar */
   refreshToken?: string;
@@ -916,6 +1052,11 @@ export interface Money {
  * @pattern ^\+2588[2-7]\d{7}$
  */
 export type Msisdn = string;
+
+export interface MyKycResponse {
+  check?: KycCheckResponse;
+  state: KycState;
+}
 
 /**
  * NUIT: 9 dígitos
@@ -1251,6 +1392,13 @@ export interface PageResponseDriverResponse {
 
 export interface PageResponseInvitationResponse {
   content: InvitationResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseKycCheckSummaryResponse {
+  content: KycCheckSummaryResponse[];
   page: number;
   size: number;
   totalElements: number;
@@ -1984,6 +2132,16 @@ export interface RegistryLookupResponse {
   /** Origem dos dados (MOCK até haver acesso ao INATRO) */
   source: string;
   year: number;
+}
+
+export interface RejectKycCheckRequest {
+  /**
+   * @minLength 10
+   * @maxLength 500
+   */
+  reason?: string;
+  reasonCode: KycRejectionReason;
+  version: number;
 }
 
 export interface ReplaceCoveragesRequest {
@@ -2746,6 +2904,10 @@ export interface VerifyContactRequest {
   code: string;
 }
 
+export interface VerifyKycCheckRequest {
+  version: number;
+}
+
 export interface VerifyOtpRequest {
   /** challengeId devolvido no pedido */
   challengeId: string;
@@ -2852,6 +3014,17 @@ export type UploadInsurerLogoBody = {
   file: Blob;
 };
 
+export type ListInsurerKycChecksParams = {
+  status?: KycCheckStatus;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * submittedAt, reviewedAt ou fullName, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
 export type UploadProductVersionDocumentBodyDocType =
   (typeof UploadProductVersionDocumentBodyDocType)[keyof typeof UploadProductVersionDocumentBodyDocType];
 
@@ -2921,6 +3094,14 @@ export type ListMyDriversParams = {
    * createdAt, com ,asc ou ,desc
    */
   sort?: string;
+};
+
+export type SubmitMyKycBody = {
+  docBack?: Blob;
+  docFront?: Blob;
+  /** Seguradora a quem a verificação é enviada */
+  insurerId?: string;
+  selfie?: Blob;
 };
 
 export type ListMyQuoteRequestsParams = {
@@ -7095,6 +7276,438 @@ export const useUploadInsurerLogo = <TError = ErrorType<ProblemDetail>, TContext
 };
 
 /**
+ * Permissão kyc:review. status por defeito PENDING; q procura no nome (sem diferenciar maiúsculas). Ordenação por submittedAt (defeito, asc: mais antigas primeiro), reviewedAt ou fullName.
+ * @summary Lista as verificações de identidade da seguradora
+ */
+export const listInsurerKycChecks = (
+  params?: ListInsurerKycChecksParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseKycCheckSummaryResponse>(
+    { url: `/api/v1/insurer/kyc`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListInsurerKycChecksQueryKey = (params?: ListInsurerKycChecksParams) => {
+  return [`/api/v1/insurer/kyc`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInsurerKycChecksQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerKycChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerKycChecksParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerKycChecks>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerKycChecksQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerKycChecks>>> = ({ signal }) =>
+    listInsurerKycChecks(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerKycChecks>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerKycChecksQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerKycChecks>>
+>;
+export type ListInsurerKycChecksQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerKycChecks<
+  TData = Awaited<ReturnType<typeof listInsurerKycChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListInsurerKycChecksParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerKycChecks>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerKycChecks>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerKycChecks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerKycChecks<
+  TData = Awaited<ReturnType<typeof listInsurerKycChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerKycChecksParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerKycChecks>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerKycChecks>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerKycChecks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerKycChecks<
+  TData = Awaited<ReturnType<typeof listInsurerKycChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerKycChecksParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerKycChecks>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as verificações de identidade da seguradora
+ */
+
+export function useListInsurerKycChecks<
+  TData = Awaited<ReturnType<typeof listInsurerKycChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerKycChecksParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerKycChecks>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerKycChecksQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão kyc:review. Os dados do cliente são os do envio, com o número do documento em claro; files tem os ids para GET /api/v1/files/{id}. Fica registado na auditoria (KYC.VIEW).
+ * @summary Consulta uma verificação de identidade
+ */
+export const getInsurerKycCheck = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerKycCheckResponse>(
+    { url: `/api/v1/insurer/kyc/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerKycCheckQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/kyc/${id}`] as const;
+};
+
+export const getGetInsurerKycCheckQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerKycCheck>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerKycCheck>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerKycCheckQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerKycCheck>>> = ({ signal }) =>
+    getInsurerKycCheck(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerKycCheck>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerKycCheckQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInsurerKycCheck>>
+>;
+export type GetInsurerKycCheckQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerKycCheck<
+  TData = Awaited<ReturnType<typeof getInsurerKycCheck>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerKycCheck>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerKycCheck>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerKycCheck>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerKycCheck<
+  TData = Awaited<ReturnType<typeof getInsurerKycCheck>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerKycCheck>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerKycCheck>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerKycCheck>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerKycCheck<
+  TData = Awaited<ReturnType<typeof getInsurerKycCheck>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerKycCheck>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma verificação de identidade
+ */
+
+export function useGetInsurerKycCheck<
+  TData = Awaited<ReturnType<typeof getInsurerKycCheck>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerKycCheck>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerKycCheckQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão kyc:review. PENDING → REJECTED. reasonCode obrigatório; reason 10–500 caracteres, obrigatório com OTHER (errors[].code REQUIRED, TOO_SHORT, TOO_LONG). 409 como em verifyKycCheck. O cliente recebe um e-mail com o motivo se tiver o e-mail verificado.
+ * @summary Recusa uma identidade
+ */
+export const rejectKycCheck = (
+  id: string,
+  rejectKycCheckRequest: BodyType<RejectKycCheckRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerKycCheckResponse>(
+    {
+      url: `/api/v1/insurer/kyc/${id}/reject`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: rejectKycCheckRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRejectKycCheckMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectKycCheck>>,
+    TError,
+    { id: string; data: BodyType<RejectKycCheckRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rejectKycCheck>>,
+  TError,
+  { id: string; data: BodyType<RejectKycCheckRequest> },
+  TContext
+> => {
+  const mutationKey = ['rejectKycCheck'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rejectKycCheck>>,
+    { id: string; data: BodyType<RejectKycCheckRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return rejectKycCheck(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RejectKycCheckMutationResult = NonNullable<Awaited<ReturnType<typeof rejectKycCheck>>>;
+export type RejectKycCheckMutationBody = BodyType<RejectKycCheckRequest>;
+export type RejectKycCheckMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Recusa uma identidade
+ */
+export const useRejectKycCheck = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rejectKycCheck>>,
+      TError,
+      { id: string; data: BodyType<RejectKycCheckRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof rejectKycCheck>>,
+  TError,
+  { id: string; data: BodyType<RejectKycCheckRequest> },
+  TContext
+> => {
+  const mutationOptions = getRejectKycCheckMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão kyc:review. PENDING → VERIFIED. Outro estado → 409 INVALID_STATE_TRANSITION; version diferente → 409 CONCURRENT_MODIFICATION. O cliente recebe um e-mail se o tiver verificado.
+ * @summary Verifica uma identidade
+ */
+export const verifyKycCheck = (
+  id: string,
+  verifyKycCheckRequest: BodyType<VerifyKycCheckRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerKycCheckResponse>(
+    {
+      url: `/api/v1/insurer/kyc/${id}/verify`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: verifyKycCheckRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getVerifyKycCheckMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyKycCheck>>,
+    TError,
+    { id: string; data: BodyType<VerifyKycCheckRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof verifyKycCheck>>,
+  TError,
+  { id: string; data: BodyType<VerifyKycCheckRequest> },
+  TContext
+> => {
+  const mutationKey = ['verifyKycCheck'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof verifyKycCheck>>,
+    { id: string; data: BodyType<VerifyKycCheckRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return verifyKycCheck(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type VerifyKycCheckMutationResult = NonNullable<Awaited<ReturnType<typeof verifyKycCheck>>>;
+export type VerifyKycCheckMutationBody = BodyType<VerifyKycCheckRequest>;
+export type VerifyKycCheckMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Verifica uma identidade
+ */
+export const useVerifyKycCheck = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof verifyKycCheck>>,
+      TError,
+      { id: string; data: BodyType<VerifyKycCheckRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof verifyKycCheck>>,
+  TError,
+  { id: string; data: BodyType<VerifyKycCheckRequest> },
+  TContext
+> => {
+  const mutationOptions = getVerifyKycCheckMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão product:read. Inclui as coberturas e os documentos.
  * @summary Consulta uma versão de um produto
  */
@@ -10221,6 +10834,213 @@ export const useUpdateMyDriver = <TError = ErrorType<ProblemDetail>, TContext = 
   TContext
 > => {
   const mutationOptions = getUpdateMyDriverMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * state: NONE (sem verificações; check omitido), PENDING, VERIFIED, REJECTED ou OUTDATED (verificada, mas o perfil mudou depois). check é a verificação mais recente.
+ * @summary Estado da verificação de identidade do cliente
+ */
+export const getMyKyc = (options?: SecondParameter<typeof http>, signal?: AbortSignal) => {
+  return http<MyKycResponse>({ url: `/api/v1/me/kyc`, method: 'GET', signal }, options);
+};
+
+export const getGetMyKycQueryKey = () => {
+  return [`/api/v1/me/kyc`] as const;
+};
+
+export const getGetMyKycQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyKyc>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyKyc>>, TError, TData>>;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyKycQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyKyc>>> = ({ signal }) =>
+    getMyKyc(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyKyc>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyKycQueryResult = NonNullable<Awaited<ReturnType<typeof getMyKyc>>>;
+export type GetMyKycQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMyKyc<
+  TData = Awaited<ReturnType<typeof getMyKyc>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyKyc>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyKyc>>,
+          TError,
+          Awaited<ReturnType<typeof getMyKyc>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyKyc<
+  TData = Awaited<ReturnType<typeof getMyKyc>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyKyc>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyKyc>>,
+          TError,
+          Awaited<ReturnType<typeof getMyKyc>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyKyc<
+  TData = Awaited<ReturnType<typeof getMyKyc>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyKyc>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Estado da verificação de identidade do cliente
+ */
+
+export function useGetMyKyc<
+  TData = Awaited<ReturnType<typeof getMyKyc>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyKyc>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyKycQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Os dados do documento vêm do perfil. Perfil incompleto → 409 PROFILE_INCOMPLETE; verificação em análise → 409 KYC_ALREADY_PENDING; identidade já verificada (e perfil sem alterações) → 409 KYC_ALREADY_VERIFIED. Partes em falta ou inválidas → 400 VALIDATION_ERROR (insurerId: REQUIRED ou INVALID_INSURER; docFront e selfie: REQUIRED; docBack: REQUIRED no BI e no DIRE, NOT_ALLOWED no passaporte). Cada ficheiro: JPEG, PNG ou HEIC até 10 MB (vazio → 400 FILE_EMPTY; maior → 413 FILE_TOO_LARGE; outro tipo → 415 FILE_TYPE_NOT_ALLOWED).
+ * @summary Envia o documento e a selfie para verificação
+ */
+export const submitMyKyc = (
+  submitMyKycBody: BodyType<SubmitMyKycBody>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  const formData = new FormData();
+  if (submitMyKycBody.docBack !== undefined) {
+    formData.append(`docBack`, submitMyKycBody.docBack);
+  }
+  if (submitMyKycBody.docFront !== undefined) {
+    formData.append(`docFront`, submitMyKycBody.docFront);
+  }
+  if (submitMyKycBody.insurerId !== undefined) {
+    formData.append(`insurerId`, submitMyKycBody.insurerId);
+  }
+  if (submitMyKycBody.selfie !== undefined) {
+    formData.append(`selfie`, submitMyKycBody.selfie);
+  }
+
+  return http<KycCheckResponse>(
+    {
+      url: `/api/v1/me/kyc`,
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSubmitMyKycMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof submitMyKyc>>,
+    TError,
+    { data: BodyType<SubmitMyKycBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof submitMyKyc>>,
+  TError,
+  { data: BodyType<SubmitMyKycBody> },
+  TContext
+> => {
+  const mutationKey = ['submitMyKyc'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof submitMyKyc>>,
+    { data: BodyType<SubmitMyKycBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return submitMyKyc(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SubmitMyKycMutationResult = NonNullable<Awaited<ReturnType<typeof submitMyKyc>>>;
+export type SubmitMyKycMutationBody = BodyType<SubmitMyKycBody>;
+export type SubmitMyKycMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia o documento e a selfie para verificação
+ */
+export const useSubmitMyKyc = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof submitMyKyc>>,
+      TError,
+      { data: BodyType<SubmitMyKycBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof submitMyKyc>>,
+  TError,
+  { data: BodyType<SubmitMyKycBody> },
+  TContext
+> => {
+  const mutationOptions = getSubmitMyKycMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
