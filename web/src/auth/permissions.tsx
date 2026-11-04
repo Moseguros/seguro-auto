@@ -15,6 +15,7 @@ export const Permissions = {
   productRead: 'product:read',
   productManage: 'product:manage',
   referenceManage: 'reference:manage',
+  quoteCreateForClient: 'quote:create-for-client',
 } as const;
 
 export type Permission = (typeof Permissions)[keyof typeof Permissions];

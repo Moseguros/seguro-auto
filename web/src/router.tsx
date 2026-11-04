@@ -15,6 +15,12 @@ import { OrganizationListPage } from './features/organizations/OrganizationListP
 import { ProductDetailPage } from './features/products/ProductDetailPage';
 import { ProductListPage } from './features/products/ProductListPage';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
+import { BrokerQuotesPage } from './features/quotes/BrokerQuotesPage';
+import { MyQuotesPage } from './features/quotes/MyQuotesPage';
+import { QuoteComparePage } from './features/quotes/QuoteComparePage';
+import { QuoteDetailPage } from './features/quotes/QuoteDetailPage';
+import { QuoteResultsPage } from './features/quotes/QuoteResultsPage';
+import { QuoteWizard } from './features/quotes/QuoteWizard';
 import { ReferenceTablesPage } from './features/references/ReferenceTablesPage';
 import { ForgotPasswordPage } from './features/staff-auth/ForgotPasswordPage';
 import { InvitationPage } from './features/staff-auth/InvitationPage';
@@ -110,11 +116,35 @@ const insurerRoutes: RouteObject[] = [
   },
 ];
 
+/** Cotações do mediador (S3-04): só com `quote:create-for-client`. */
+const brokerRoutes: RouteObject[] = [
+  {
+    path: 'cotacoes',
+    element: withPermission(Permissions.quoteCreateForClient, <BrokerQuotesPage />),
+  },
+  {
+    path: 'cotacoes/nova',
+    element: withPermission(Permissions.quoteCreateForClient, <QuoteWizard mode="broker" />),
+  },
+  {
+    path: 'cotacoes/:requestId',
+    element: withPermission(Permissions.quoteCreateForClient, <QuoteResultsPage mode="broker" />),
+  },
+  {
+    path: 'cotacoes/:requestId/comparar',
+    element: withPermission(Permissions.quoteCreateForClient, <QuoteComparePage mode="broker" />),
+  },
+  {
+    path: 'cotacoes/:requestId/:quoteId',
+    element: withPermission(Permissions.quoteCreateForClient, <QuoteDetailPage mode="broker" />),
+  },
+];
+
 /** Páginas próprias de cada área de staff, além das comuns. */
 const areaExtraRoutes: Record<StaffArea, RouteObject[]> = {
   admin: [],
   seguradora: insurerRoutes,
-  mediador: [],
+  mediador: brokerRoutes,
   perito: [],
   oficina: [],
   assistencia: [],
@@ -163,6 +193,12 @@ const customerRoutes: RouteObject = {
     { path: 'condutores', element: <DriverListPage /> },
     { path: 'condutores/novo', element: <DriverFormPage /> },
     { path: 'condutores/:id/editar', element: <DriverFormPage /> },
+    // Decisão D1: só `/cliente/simular` (sem `/cliente/cotar` nem redireccionamento).
+    { path: 'simular', element: <QuoteWizard mode="customer" /> },
+    { path: 'simular/:requestId', element: <QuoteResultsPage mode="customer" /> },
+    { path: 'simular/:requestId/comparar', element: <QuoteComparePage mode="customer" /> },
+    { path: 'simular/:requestId/:quoteId', element: <QuoteDetailPage mode="customer" /> },
+    { path: 'cotacoes', element: <MyQuotesPage /> },
     { path: '*', element: <UnderConstructionPage /> },
   ],
 };
