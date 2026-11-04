@@ -11,6 +11,9 @@ import { httpClient } from '../../api/http';
 import { renderRoute } from '../../test/render';
 import { is, signInStaff, staffMe } from '../../test/staff';
 
+/** As páginas carregam-se à parte (`lazy`): o primeiro carregamento demora mais. */
+const slow = { timeout: 15000 };
+
 const underwriter = staffMe({
   roles: ['UNDERWRITER'],
   permissions: ['proposal:read', 'proposal:decide', 'kyc:review', 'inspection:review'],
@@ -22,7 +25,8 @@ function fullUrl(c: InternalAxiosRequestConfig): string {
   return httpClient.getUri({ url: c.url, params: c.params, paramsSerializer: c.paramsSerializer });
 }
 
-describe('páginas das propostas da seguradora', () => {
+// Grelha, detalhe e páginas `lazy` no jsdom: com os testes em paralelo precisam de mais tempo.
+describe('páginas das propostas da seguradora', { timeout: 45_000 }, () => {
   let restore: () => void = () => {};
   beforeEach(() => {
     URL.createObjectURL = vi.fn(() => 'blob:x');
@@ -55,7 +59,7 @@ describe('páginas das propostas da seguradora', () => {
     });
     const { router } = renderRoute('/seguradora/propostas?sla=ALERT');
     // Sem matchMedia (jsdom) as consultas `max-width` falham: ecrã largo, com a grelha.
-    const card = await screen.findByText('PR-2027-000123');
+    const card = await screen.findByText('PR-2027-000123', undefined, slow);
     expect(within(screen.getByRole('grid')).getByText('Prazo a terminar')).toBeInTheDocument();
     const request = requests.at(-1)!;
     expect(request.params).toMatchObject({
@@ -68,8 +72,13 @@ describe('páginas das propostas da seguradora', () => {
     expect(fullUrl(request)).toContain('status=UNDER_REVIEW&slaStatus=ALERT');
 
     await userEvent.click(card);
-    await waitFor(() => expect(router.state.location.pathname).toBe('/seguradora/propostas/p1'));
-    expect(await screen.findByRole('heading', { level: 1, name: 'PR-2027-000123' })).toBeVisible();
+    await waitFor(
+      () => expect(router.state.location.pathname).toBe('/seguradora/propostas/p1'),
+      slow,
+    );
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'PR-2027-000123' }, slow),
+    ).toBeVisible();
     expect(screen.getByRole('button', { name: 'Descarregar PDF' })).toBeInTheDocument();
     expect(screen.getByTestId('decision-bar')).toBeInTheDocument();
 
@@ -88,7 +97,7 @@ describe('páginas das propostas da seguradora', () => {
       return null;
     });
     renderRoute('/seguradora/propostas/p1');
-    await screen.findByRole('heading', { level: 1, name: 'PR-2027-000123' });
+    await screen.findByRole('heading', { level: 1, name: 'PR-2027-000123' }, slow);
     // Em ecrã largo todas as secções estão abertas.
     expect(
       await screen.findByText(
@@ -111,7 +120,7 @@ describe('páginas das propostas da seguradora', () => {
       staffMe({ roles: ['FINANCE'], permissions: ['payment:read'], orgType: 'INSURER' }),
     );
     const { router } = renderRoute('/seguradora/propostas');
-    await waitFor(() => expect(router.state.location.pathname).toBe('/sem-acesso'));
+    await waitFor(() => expect(router.state.location.pathname).toBe('/sem-acesso'), slow);
   });
 
   it('só com inspection:review abre a fila das vistorias', async () => {
@@ -123,10 +132,13 @@ describe('páginas das propostas da seguradora', () => {
           : null,
     );
     const { router } = renderRoute('/seguradora/propostas');
-    await waitFor(() =>
-      expect(router.state.location.pathname).toBe('/seguradora/propostas/vistorias'),
+    await waitFor(
+      () => expect(router.state.location.pathname).toBe('/seguradora/propostas/vistorias'),
+      slow,
     );
-    expect(await screen.findByText('Não há vistorias com estes filtros.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Não há vistorias com estes filtros.', undefined, slow),
+    ).toBeInTheDocument();
     const tabs = screen.getByRole('tablist');
     expect(within(tabs).getAllByRole('tab')).toHaveLength(1);
   });
@@ -150,7 +162,7 @@ describe('páginas das propostas da seguradora', () => {
       return null;
     });
     const { router } = renderRoute('/seguradora/propostas/kyc/k1');
-    expect(await screen.findByText('110100123456A')).toBeInTheDocument();
+    expect(await screen.findByText('110100123456A', undefined, slow)).toBeInTheDocument();
     expect(screen.getByText('Compare estes dados com as fotografias.')).toBeInTheDocument();
     expect(await screen.findByRole('img', { name: 'Selfie' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Confirmar identidade' }));
@@ -158,6 +170,6 @@ describe('páginas das propostas da seguradora', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Confirmar identidade' }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/seguradora/propostas/kyc'));
     expect(bodies).toEqual([{ version: 0 }]);
-    expect(await screen.findByText('Identidade confirmada')).toBeInTheDocument();
+    expect(await screen.findByText('Identidade confirmada', undefined, slow)).toBeInTheDocument();
   });
 });
