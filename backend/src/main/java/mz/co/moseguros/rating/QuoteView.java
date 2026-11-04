@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import mz.co.moseguros.rating.domain.tariff.RatedDriver;
-import mz.co.moseguros.rating.domain.tariff.RatedVehicle;
 
 /**
  * Cotação para outros módulos ({@link RatingApi#quote}, S3-02 §10): a linha de

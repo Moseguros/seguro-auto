@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import mz.co.moseguros.catalog.CoverageCode;
 import mz.co.moseguros.catalog.ProductType;
 import mz.co.moseguros.organization.ChargeRule;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.rating.UnavailableReason;
 import mz.co.moseguros.rating.domain.tariff.EvaluationResult.Offered;
 import mz.co.moseguros.rating.domain.tariff.EvaluationResult.Unavailable;

@@ -12,8 +12,8 @@ import mz.co.moseguros.rating.QuoteStatus;
 import mz.co.moseguros.rating.domain.Quote;
 import mz.co.moseguros.rating.domain.QuoteRequest;
 import mz.co.moseguros.rating.domain.StoredBreakdown;
-import mz.co.moseguros.rating.domain.tariff.RatedDriver;
-import mz.co.moseguros.rating.domain.tariff.RatedVehicle;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.rating.domain.tariff.RatingInput.RequestedCoverage;
 
 /**

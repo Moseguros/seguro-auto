@@ -27,7 +27,7 @@ import mz.co.moseguros.rating.domain.QuoteRepository;
 import mz.co.moseguros.rating.domain.QuoteRequest;
 import mz.co.moseguros.rating.domain.QuoteRequestRepository;
 import mz.co.moseguros.rating.domain.StoredBreakdown;
-import mz.co.moseguros.rating.domain.tariff.RatedVehicle;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.shared.domain.Msisdn;
 import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.error.ErrorCodes;

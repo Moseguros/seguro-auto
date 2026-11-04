@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import mz.co.moseguros.catalog.CoverageCode;
 import mz.co.moseguros.catalog.ProductType;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 
 /**
  * Pedido de tarifação de uma versão de produto (S3-01 §9).

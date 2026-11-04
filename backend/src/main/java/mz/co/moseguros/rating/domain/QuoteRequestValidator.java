@@ -13,8 +13,8 @@ import java.util.Set;
 
 import mz.co.moseguros.catalog.CoverageCode;
 import mz.co.moseguros.catalog.ProductType;
-import mz.co.moseguros.rating.domain.tariff.RatedDriver;
-import mz.co.moseguros.rating.domain.tariff.RatedVehicle;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.rating.domain.tariff.RatingInput.RequestedCoverage;
 import mz.co.moseguros.shared.domain.Matricula;
 import mz.co.moseguros.shared.domain.Money;

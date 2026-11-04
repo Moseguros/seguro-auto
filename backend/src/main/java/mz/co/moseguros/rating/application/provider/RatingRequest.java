@@ -8,8 +8,8 @@ import java.util.UUID;
 import mz.co.moseguros.catalog.ProductVersionView;
 import mz.co.moseguros.organization.InsurerProfileView;
 import mz.co.moseguros.rating.domain.tariff.ProductDefinition;
-import mz.co.moseguros.rating.domain.tariff.RatedDriver;
-import mz.co.moseguros.rating.domain.tariff.RatedVehicle;
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.rating.domain.tariff.RatingInput;
 import mz.co.moseguros.rating.domain.tariff.RatingInput.RequestedCoverage;
 

@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import mz.co.moseguros.rating.RatedDriver;
+import mz.co.moseguros.rating.RatedVehicle;
 import mz.co.moseguros.shared.domain.Province;
 import mz.co.moseguros.shared.domain.VehicleCategory;
 import mz.co.moseguros.shared.domain.VehicleUsage;

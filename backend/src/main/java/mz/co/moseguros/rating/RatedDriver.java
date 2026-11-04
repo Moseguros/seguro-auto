@@ -1,4 +1,4 @@
-package mz.co.moseguros.rating.domain.tariff;
+package mz.co.moseguros.rating;
 
 import java.time.LocalDate;
 import java.util.List;
