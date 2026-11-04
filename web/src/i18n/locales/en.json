@@ -221,7 +221,13 @@
     "PROFILE_INCOMPLETE": "Complete your profile before continuing.",
     "KYC_ALREADY_PENDING": "You already have an identity check under review.",
     "KYC_ALREADY_VERIFIED": "Your identity is already verified.",
-    "KYC_NOT_FOUND": "Identity check not found."
+    "KYC_NOT_FOUND": "Identity check not found.",
+    "QUOTE_DATA_CHANGED": "The vehicle or driver details changed after the quote. Request a new quote.",
+    "PROPOSAL_ALREADY_EXISTS": "A proposal already exists for this quote.",
+    "PROPOSAL_NOT_FOUND": "Proposal not found.",
+    "PROPOSAL_NOT_EDITABLE": "This proposal can no longer be changed.",
+    "INSURER_NOT_ACTIVE": "This insurer is not accepting proposals at the moment.",
+    "SUITABILITY_NOT_WARNED": "There are no suitability warnings to confirm."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -306,7 +312,12 @@
     "COVERAGE_REQUIRES": "Theft or robbery requires collision, fire and natural events.",
     "INVALID_URL": "Invalid address (it must start with https://).",
     "INVALID_SECRET_REF": "Invalid secret reference.",
-    "INVALID_INSURER": "Invalid insurer."
+    "INVALID_INSURER": "Invalid insurer.",
+    "ANSWERS_INCOMPLETE": "Answer all the questions.",
+    "ANSWER_DUPLICATED": "Duplicated question.",
+    "UNKNOWN_QUESTION": "Unknown question.",
+    "INVALID_ANSWER": "Invalid answer.",
+    "MUST_BE_TRUE": "You must confirm to continue."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

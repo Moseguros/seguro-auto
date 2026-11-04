@@ -221,7 +221,13 @@
     "PROFILE_INCOMPLETE": "Complete o seu perfil antes de continuar.",
     "KYC_ALREADY_PENDING": "Já tem uma verificação de identidade em análise.",
     "KYC_ALREADY_VERIFIED": "A sua identidade já está verificada.",
-    "KYC_NOT_FOUND": "Verificação de identidade não encontrada."
+    "KYC_NOT_FOUND": "Verificação de identidade não encontrada.",
+    "QUOTE_DATA_CHANGED": "Os dados do veículo ou do condutor mudaram depois da simulação. Faça uma nova simulação.",
+    "PROPOSAL_ALREADY_EXISTS": "Já existe uma proposta para esta cotação.",
+    "PROPOSAL_NOT_FOUND": "Proposta não encontrada.",
+    "PROPOSAL_NOT_EDITABLE": "Esta proposta já não pode ser alterada.",
+    "INSURER_NOT_ACTIVE": "Esta seguradora não está a aceitar propostas neste momento.",
+    "SUITABILITY_NOT_WARNED": "Não há avisos de adequação para confirmar."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -306,7 +312,12 @@
     "COVERAGE_REQUIRES": "Furto ou roubo exige choque, incêndio e fenómenos da natureza.",
     "INVALID_URL": "Endereço inválido (tem de começar por https://).",
     "INVALID_SECRET_REF": "Referência do segredo inválida.",
-    "INVALID_INSURER": "Seguradora inválida."
+    "INVALID_INSURER": "Seguradora inválida.",
+    "ANSWERS_INCOMPLETE": "Responda a todas as perguntas.",
+    "ANSWER_DUPLICATED": "Pergunta repetida.",
+    "UNKNOWN_QUESTION": "Pergunta desconhecida.",
+    "INVALID_ANSWER": "Resposta inválida.",
+    "MUST_BE_TRUE": "Tem de confirmar para continuar."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",

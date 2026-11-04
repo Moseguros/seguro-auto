@@ -28,6 +28,11 @@ export interface AcceptInvitationRequest {
   password: string;
 }
 
+export interface AcknowledgeSuitabilityRequest {
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface ActivateInvitationRequest {
   totpCode: string;
 }
@@ -516,6 +521,12 @@ export interface CreateProductRequest {
   type: CreateProductRequestType;
 }
 
+export interface CreateProposalRequest {
+  channel: ProposalChannel;
+  /** Cotação OFFERED do próprio cliente */
+  quoteId: string;
+}
+
 /**
  * MTPL_ONLY, COMPREHENSIVE ou TEMPORARY (BORDER e FLEET → NOT_ALLOWED)
  */
@@ -648,6 +659,36 @@ export interface CustomerProfileResponse {
   /** Enviar na alteração */
   version: number;
 }
+
+export interface DeclarationAnswerRequest {
+  answer: boolean;
+  /** 1–20; só em CLAIMS_LAST_3_YEARS com resposta sim */
+  claimsCount?: number;
+  /** 10–500 caracteres; obrigatório com resposta sim, proibido com não */
+  details?: string;
+  /** Código de api/proposal-questions.json (declarations) */
+  questionCode: string;
+}
+
+export interface DeclarationAnswerResponse {
+  answer: boolean;
+  /** Só em CLAIMS_LAST_3_YEARS com resposta sim */
+  claimsCount?: number;
+  /** Só com resposta sim */
+  details?: string;
+  questionCode: DeclarationQuestion;
+}
+
+export type DeclarationQuestion = (typeof DeclarationQuestion)[keyof typeof DeclarationQuestion];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const DeclarationQuestion = {
+  CLAIMS_LAST_3_YEARS: 'CLAIMS_LAST_3_YEARS',
+  PREVIOUS_REFUSAL: 'PREVIOUS_REFUSAL',
+  USAGE_DIFFERENT: 'USAGE_DIFFERENT',
+  VEHICLE_MODIFIED: 'VEHICLE_MODIFIED',
+  NOVICE_DRIVERS: 'NOVICE_DRIVERS',
+} as const;
 
 export type DeliveryReceiptRequestStatus =
   (typeof DeliveryReceiptRequestStatus)[keyof typeof DeliveryReceiptRequestStatus];
@@ -957,9 +998,6 @@ export const KycRejectionReason = {
   OTHER: 'OTHER',
 } as const;
 
-/**
- * OUTDATED: verificada, mas o nome, a data de nascimento ou o documento mudaram depois
- */
 export type KycState = (typeof KycState)[keyof typeof KycState];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -1418,6 +1456,13 @@ export interface PageResponseProductSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseProposalSummaryResponse {
+  content: ProposalSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseQuoteRequestSummaryResponse {
   content: QuoteRequestSummaryResponse[];
   page: number;
@@ -1678,6 +1723,313 @@ export interface ProductVersionResponse {
 export interface ProductVersionValidationResponse {
   errors: RuleError[];
   publishable: boolean;
+}
+
+export type ProposalChannel = (typeof ProposalChannel)[keyof typeof ProposalChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalChannel = {
+  APP: 'APP',
+  WEB: 'WEB',
+  BROKER: 'BROKER',
+} as const;
+
+export interface ProposalCharge {
+  amount: Money;
+  code: string;
+  labelEn: string;
+  labelPt: string;
+}
+
+export type ProposalChecklistDeclarations =
+  (typeof ProposalChecklistDeclarations)[keyof typeof ProposalChecklistDeclarations];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalChecklistDeclarations = {
+  DONE: 'DONE',
+  MISSING: 'MISSING',
+} as const;
+
+export type ProposalChecklistInspection =
+  (typeof ProposalChecklistInspection)[keyof typeof ProposalChecklistInspection];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalChecklistInspection = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  MISSING: 'MISSING',
+  DONE: 'DONE',
+  REJECTED: 'REJECTED',
+} as const;
+
+export type ProposalChecklistSignature =
+  (typeof ProposalChecklistSignature)[keyof typeof ProposalChecklistSignature];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalChecklistSignature = {
+  MISSING: 'MISSING',
+  DONE: 'DONE',
+} as const;
+
+export type ProposalChecklistSuitability =
+  (typeof ProposalChecklistSuitability)[keyof typeof ProposalChecklistSuitability];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalChecklistSuitability = {
+  DONE: 'DONE',
+  MISSING: 'MISSING',
+  ACK_REQUIRED: 'ACK_REQUIRED',
+} as const;
+
+export interface ProposalChecklist {
+  declarations: ProposalChecklistDeclarations;
+  inspection: ProposalChecklistInspection;
+  signature: ProposalChecklistSignature;
+  suitability: ProposalChecklistSuitability;
+}
+
+export type ProposalCoverageCode = (typeof ProposalCoverageCode)[keyof typeof ProposalCoverageCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalCoverageCode = {
+  MTPL: 'MTPL',
+  VTPL: 'VTPL',
+  OD_COLLISION: 'OD_COLLISION',
+  OD_GLASS: 'OD_GLASS',
+  OD_FIRE: 'OD_FIRE',
+  OD_NATURE: 'OD_NATURE',
+  OD_THEFT: 'OD_THEFT',
+  OCCUPANTS: 'OCCUPANTS',
+  ASSISTANCE: 'ASSISTANCE',
+  LEGAL: 'LEGAL',
+  SRCC: 'SRCC',
+  CROSS_BORDER: 'CROSS_BORDER',
+} as const;
+
+export interface ProposalCoverage {
+  capital?: Money;
+  code: ProposalCoverageCode;
+  deductible: ProposalDeductible;
+  mandatory: boolean;
+  premium: Money;
+}
+
+/**
+ * Decisão da seguradora (S4-05); null antes de existir.
+ */
+export interface ProposalDecision {
+  [key: string]: unknown;
+}
+
+/**
+ * null até serem gravadas
+ * @nullable
+ */
+export type ProposalDeclarations = {
+  answers: DeclarationAnswerResponse[];
+  confirmedAt: string;
+} | null;
+
+export type ProposalDeductibleType =
+  (typeof ProposalDeductibleType)[keyof typeof ProposalDeductibleType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalDeductibleType = {
+  NONE: 'NONE',
+  FIXED: 'FIXED',
+  PERCENT: 'PERCENT',
+} as const;
+
+export interface ProposalDeductible {
+  amount?: Money;
+  minAmount?: Money;
+  percent?: string;
+  type: ProposalDeductibleType;
+}
+
+export interface ProposalDriver {
+  fullName: string;
+  id: string;
+  licenceIssueDate: string;
+  licenceNumberMasked: string;
+}
+
+export interface ProposalInspection {
+  required: boolean;
+}
+
+export interface ProposalKyc {
+  /**
+   * S4-05; null nesta fase
+   * @nullable
+   */
+  requiredForAutomaticAcceptance?: boolean | null;
+  state: KycState;
+}
+
+/**
+ * Mediador (S4-06); null nas propostas do cliente
+ * @nullable
+ */
+export type ProposalOrganization = {
+  displayName: string;
+  id: string;
+} | null;
+
+export interface ProposalPolicyholder {
+  address?: string;
+  birthDate: string;
+  emailMasked?: string;
+  fullName: string;
+  idDocNumberMasked: string;
+  idDocType: string;
+  msisdnMasked?: string;
+  nuitMasked: string;
+  province: string;
+}
+
+export interface ProposalPremium {
+  charges: ProposalCharge[];
+  commercial: Money;
+  roundingAdjustment: Money;
+  total: Money;
+}
+
+export type ProposalProductType = (typeof ProposalProductType)[keyof typeof ProposalProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface ProposalProduct {
+  id: string;
+  name: string;
+  type: ProposalProductType;
+  versionId: string;
+}
+
+export interface ProposalResponse {
+  broker?: ProposalOrganization;
+  channel: ProposalChannel;
+  checklist: ProposalChecklist;
+  coverages: ProposalCoverage[];
+  createdAt: string;
+  decision?: ProposalDecision;
+  declarations?: ProposalDeclarations;
+  driver: ProposalDriver;
+  durationDays: number;
+  /** Exclusivo: 00:00 (Africa/Maputo) do dia seguinte ao último dia coberto */
+  endAt: string;
+  /** Último dia coberto (Africa/Maputo) */
+  endDate: string;
+  /**
+   * Fim do prazo sem acção do cliente; null em UNDER_REVIEW e nos finais
+   * @nullable
+   */
+  expiresAt?: string | null;
+  id: string;
+  inspection: ProposalInspection;
+  insurer: ProposalOrganization;
+  kyc: ProposalKyc;
+  number: string;
+  policyholder: ProposalPolicyholder;
+  premium: ProposalPremium;
+  product: ProposalProduct;
+  quoteId: string;
+  signature?: ProposalSignature;
+  /** 00:00 do primeiro dia em Africa/Maputo */
+  startAt: string;
+  status: ProposalStatus;
+  /**
+   * Primeira submissão (S4-05)
+   * @nullable
+   */
+  submittedAt?: string | null;
+  suitability?: ProposalSuitability;
+  updatedAt: string;
+  vehicle: ProposalVehicle;
+  /** Versão para as escritas; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+/**
+ * Assinatura da proposta (S4-04); null antes de existir.
+ */
+export interface ProposalSignature {
+  [key: string]: unknown;
+}
+
+export type ProposalStatus = (typeof ProposalStatus)[keyof typeof ProposalStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalStatus = {
+  DRAFT: 'DRAFT',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  INFO_REQUESTED: 'INFO_REQUESTED',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED',
+  PAID: 'PAID',
+  CONVERTED: 'CONVERTED',
+} as const;
+
+/**
+ * null até ser respondido
+ * @nullable
+ */
+export type ProposalSuitability = {
+  /**
+   * Confirmação consciente dos avisos (só em WARNED)
+   * @nullable
+   */
+  acknowledgedAt?: string | null;
+  answeredAt: string;
+  answers: SuitabilityAnswerResponse[];
+  /** Vazia em SUITABLE */
+  reasons: SuitabilityReason[];
+  result: SuitabilityResult;
+} | null;
+
+export type ProposalSummaryResponseProductType =
+  (typeof ProposalSummaryResponseProductType)[keyof typeof ProposalSummaryResponseProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalSummaryResponseProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface ProposalSummaryResponse {
+  createdAt: string;
+  /** @nullable */
+  expiresAt?: string | null;
+  id: string;
+  insurer: ProposalOrganization;
+  number: string;
+  productName: string;
+  productType: ProposalSummaryResponseProductType;
+  startAt: string;
+  status: ProposalStatus;
+  total: Money;
+  vehiclePlate: string;
+}
+
+export interface ProposalVehicle {
+  category: VehicleCategory;
+  commercialValue?: Money;
+  id: string;
+  make: string;
+  model: string;
+  plate: string;
+  usage: VehicleUsage;
+  year: number;
 }
 
 export interface PublicPlateFormatResponse {
@@ -2255,6 +2607,22 @@ export interface RuleError {
   field: string;
 }
 
+export interface SaveDeclarationsRequest {
+  /** Uma resposta por pergunta (as cinco de api/proposal-questions.json) */
+  answers?: DeclarationAnswerRequest[];
+  /** Tem de ser true */
+  truthfulnessConfirmed: boolean;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export interface SaveSuitabilityRequest {
+  /** Uma resposta por pergunta (as cinco de api/proposal-questions.json) */
+  answers?: SuitabilityAnswerRequest[];
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface SimulateRatingRequest {
   /**
    * @maxItems 10
@@ -2385,6 +2753,54 @@ export interface StartContactVerificationRequest {
   /** Telemóvel (841234567, +258841234567) ou e-mail */
   value: string;
 }
+
+export interface SuitabilityAnswerRequest {
+  /** Uma das options da pergunta */
+  answer: string;
+  /** Código de api/proposal-questions.json (suitability) */
+  questionCode: string;
+}
+
+export interface SuitabilityAnswerResponse {
+  answer: string;
+  questionCode: SuitabilityQuestion;
+}
+
+export type SuitabilityQuestion = (typeof SuitabilityQuestion)[keyof typeof SuitabilityQuestion];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SuitabilityQuestion = {
+  SUIT_NEED: 'SUIT_NEED',
+  SUIT_FINANCED: 'SUIT_FINANCED',
+  SUIT_CAN_AFFORD_REPAIR: 'SUIT_CAN_AFFORD_REPAIR',
+  SUIT_CROSS_BORDER: 'SUIT_CROSS_BORDER',
+  SUIT_DEDUCTIBLE: 'SUIT_DEDUCTIBLE',
+} as const;
+
+/**
+ * Vazia em SUITABLE
+ */
+export type SuitabilityReason = (typeof SuitabilityReason)[keyof typeof SuitabilityReason];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SuitabilityReason = {
+  NEED_NOT_COVERED_OWN_DAMAGE: 'NEED_NOT_COVERED_OWN_DAMAGE',
+  NEED_NOT_COVERED_THEFT_FIRE: 'NEED_NOT_COVERED_THEFT_FIRE',
+  COVER_ABOVE_NEED: 'COVER_ABOVE_NEED',
+  NEED_UNSURE: 'NEED_UNSURE',
+  FINANCED_WITHOUT_OWN_DAMAGE: 'FINANCED_WITHOUT_OWN_DAMAGE',
+  CANNOT_AFFORD_REPAIR: 'CANNOT_AFFORD_REPAIR',
+  CROSS_BORDER_NOT_COVERED: 'CROSS_BORDER_NOT_COVERED',
+  DEDUCTIBLE_NOT_WANTED: 'DEDUCTIBLE_NOT_WANTED',
+} as const;
+
+export type SuitabilityResult = (typeof SuitabilityResult)[keyof typeof SuitabilityResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SuitabilityResult = {
+  SUITABLE: 'SUITABLE',
+  WARNED: 'WARNED',
+} as const;
 
 export interface SuspendOrganizationRequest {
   /**
@@ -2709,6 +3125,13 @@ export interface UpdateProductVersionRequest {
   changeNotes?: string;
   usages: VehicleUsage[];
   vehicleCategories: VehicleCategory[];
+  version: number;
+}
+
+export interface UpdateProposalRequest {
+  /** Entre hoje e hoje + 60 dias (Africa/Maputo); fora → START_DATE_OUT_OF_RANGE */
+  startDate: string;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
 }
 
@@ -3102,6 +3525,19 @@ export type SubmitMyKycBody = {
   /** Seguradora a quem a verificação é enviada */
   insurerId?: string;
   selfie?: Blob;
+};
+
+export type ListMyProposalsParams = {
+  /**
+   * Estados a incluir (repetível); vazio = todos
+   */
+  status?: ProposalStatus[];
+  page?: number;
+  size?: number;
+  /**
+   * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
 };
 
 export type ListMyQuoteRequestsParams = {
@@ -11242,6 +11678,127 @@ export const useUpdateMyProfile = <TError = ErrorType<ProblemDetail>, TContext =
 };
 
 /**
+ * Permissão self:proposals. Inclui as que um mediador criou em nome do cliente (S4-06). Filtro status repetível; ordenação por createdAt (defeito createdAt,desc).
+ * @summary Lista as propostas do cliente
+ */
+export const listMyProposals = (
+  params?: ListMyProposalsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseProposalSummaryResponse>(
+    { url: `/api/v1/me/proposals`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyProposalsQueryKey = (params?: ListMyProposalsParams) => {
+  return [`/api/v1/me/proposals`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyProposalsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyProposalsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyProposals>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyProposalsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyProposals>>> = ({ signal }) =>
+    listMyProposals(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyProposals>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyProposalsQueryResult = NonNullable<Awaited<ReturnType<typeof listMyProposals>>>;
+export type ListMyProposalsQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyProposals<
+  TData = Awaited<ReturnType<typeof listMyProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyProposalsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyProposals>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyProposals>>,
+          TError,
+          Awaited<ReturnType<typeof listMyProposals>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyProposals<
+  TData = Awaited<ReturnType<typeof listMyProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyProposalsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyProposals>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyProposals>>,
+          TError,
+          Awaited<ReturnType<typeof listMyProposals>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyProposals<
+  TData = Awaited<ReturnType<typeof listMyProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyProposalsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyProposals>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as propostas do cliente
+ */
+
+export function useListMyProposals<
+  TData = Awaited<ReturnType<typeof listMyProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyProposalsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyProposals>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyProposalsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão self:quotes. Inclui os pedidos de um mediador em nome do cliente (origin = BROKER). offeredCount e bestTotal contam só as cotações ainda OFFERED. Ordenação por createdAt (defeito createdAt,desc).
  * @summary Lista os pedidos de cotações do cliente
  */
@@ -13721,6 +14278,565 @@ export function useListPublicPlatformSettings<
 
   return query;
 }
+
+/**
+ * Permissão self:proposals. Proposta DRAFT numerada (PR-AAAA-NNNNNN) com os dados da cotação congelados e o tomador do perfil; a cotação passa a USED. Cotação não visível ou de mediador → 404 QUOTE_NOT_FOUND; já usada numa proposta → 409 PROPOSAL_ALREADY_EXISTS (proposalId); QUOTE_NOT_AVAILABLE, QUOTE_ALREADY_USED, QUOTE_EXPIRED (409); seguradora não activa → 409 INSURER_NOT_ACTIVE; perfil incompleto → 409 PROFILE_INCOMPLETE; veículo ou condutor mudados desde a cotação → 409 QUOTE_DATA_CHANGED (fields); removidos → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND.
+ * @summary Cria uma proposta a partir de uma cotação
+ */
+export const createProposal = (
+  createProposalRequest: BodyType<CreateProposalRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createProposalRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateProposalMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createProposal>>,
+    TError,
+    { data: BodyType<CreateProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createProposal>>,
+  TError,
+  { data: BodyType<CreateProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['createProposal'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createProposal>>,
+    { data: BodyType<CreateProposalRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createProposal(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateProposalMutationResult = NonNullable<Awaited<ReturnType<typeof createProposal>>>;
+export type CreateProposalMutationBody = BodyType<CreateProposalRequest>;
+export type CreateProposalMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Cria uma proposta a partir de uma cotação
+ */
+export const useCreateProposal = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createProposal>>,
+      TError,
+      { data: BodyType<CreateProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createProposal>>,
+  TError,
+  { data: BodyType<CreateProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreateProposalMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals (o cliente dono) ou proposal:create-for-client (o mediador da proposta, S4-06). Outra → 404 PROPOSAL_NOT_FOUND. A seguradora usa getInsurerProposal (S4-05).
+ * @summary Consulta uma proposta
+ */
+export const getProposal = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>({ url: `/api/v1/proposals/${id}`, method: 'GET', signal }, options);
+};
+
+export const getGetProposalQueryKey = (id?: string) => {
+  return [`/api/v1/proposals/${id}`] as const;
+};
+
+export const getGetProposalQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProposal>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetProposalQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProposal>>> = ({ signal }) =>
+    getProposal(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getProposal>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetProposalQueryResult = NonNullable<Awaited<ReturnType<typeof getProposal>>>;
+export type GetProposalQueryError = ErrorType<ProblemDetail>;
+
+export function useGetProposal<
+  TData = Awaited<ReturnType<typeof getProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProposal>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getProposal>>,
+          TError,
+          Awaited<ReturnType<typeof getProposal>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetProposal<
+  TData = Awaited<ReturnType<typeof getProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProposal>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getProposal>>,
+          TError,
+          Awaited<ReturnType<typeof getProposal>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetProposal<
+  TData = Awaited<ReturnType<typeof getProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProposal>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma proposta
+ */
+
+export function useGetProposal<
+  TData = Awaited<ReturnType<typeof getProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProposal>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetProposalQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. startDate entre hoje e hoje + 60 dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE); a duração e o prémio não mudam; o tomador é copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
+ * @summary Altera a data de início da proposta
+ */
+export const updateProposal = (
+  id: string,
+  updateProposalRequest: BodyType<UpdateProposalRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateProposalRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateProposalMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateProposal>>,
+    TError,
+    { id: string; data: BodyType<UpdateProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateProposal>>,
+  TError,
+  { id: string; data: BodyType<UpdateProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateProposal'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateProposal>>,
+    { id: string; data: BodyType<UpdateProposalRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateProposal(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateProposalMutationResult = NonNullable<Awaited<ReturnType<typeof updateProposal>>>;
+export type UpdateProposalMutationBody = BodyType<UpdateProposalRequest>;
+export type UpdateProposalMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera a data de início da proposta
+ */
+export const useUpdateProposal = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateProposal>>,
+      TError,
+      { id: string; data: BodyType<UpdateProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateProposal>>,
+  TError,
+  { id: string; data: BodyType<UpdateProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateProposalMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. As cinco perguntas de api/proposal-questions.json, os campos de seguimento com resposta sim e truthfulnessConfirmed = true; erros juntos em errors[] (400 VALIDATION_ERROR). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
+ * @summary Grava as declarações de risco
+ */
+export const saveProposalDeclarations = (
+  id: string,
+  saveDeclarationsRequest: BodyType<SaveDeclarationsRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/declarations`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: saveDeclarationsRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSaveProposalDeclarationsMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof saveProposalDeclarations>>,
+    TError,
+    { id: string; data: BodyType<SaveDeclarationsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof saveProposalDeclarations>>,
+  TError,
+  { id: string; data: BodyType<SaveDeclarationsRequest> },
+  TContext
+> => {
+  const mutationKey = ['saveProposalDeclarations'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof saveProposalDeclarations>>,
+    { id: string; data: BodyType<SaveDeclarationsRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return saveProposalDeclarations(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SaveProposalDeclarationsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof saveProposalDeclarations>>
+>;
+export type SaveProposalDeclarationsMutationBody = BodyType<SaveDeclarationsRequest>;
+export type SaveProposalDeclarationsMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Grava as declarações de risco
+ */
+export const useSaveProposalDeclarations = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof saveProposalDeclarations>>,
+      TError,
+      { id: string; data: BodyType<SaveDeclarationsRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof saveProposalDeclarations>>,
+  TError,
+  { id: string; data: BodyType<SaveDeclarationsRequest> },
+  TContext
+> => {
+  const mutationOptions = getSaveProposalDeclarationsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. Devolve suitability.result (SUITABLE ou WARNED) e os motivos; limpa uma confirmação anterior dos avisos; erros juntos em errors[] (400 VALIDATION_ERROR). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
+ * @summary Grava o questionário de adequação
+ */
+export const saveProposalSuitability = (
+  id: string,
+  saveSuitabilityRequest: BodyType<SaveSuitabilityRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/suitability`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: saveSuitabilityRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSaveProposalSuitabilityMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof saveProposalSuitability>>,
+    TError,
+    { id: string; data: BodyType<SaveSuitabilityRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof saveProposalSuitability>>,
+  TError,
+  { id: string; data: BodyType<SaveSuitabilityRequest> },
+  TContext
+> => {
+  const mutationKey = ['saveProposalSuitability'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof saveProposalSuitability>>,
+    { id: string; data: BodyType<SaveSuitabilityRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return saveProposalSuitability(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SaveProposalSuitabilityMutationResult = NonNullable<
+  Awaited<ReturnType<typeof saveProposalSuitability>>
+>;
+export type SaveProposalSuitabilityMutationBody = BodyType<SaveSuitabilityRequest>;
+export type SaveProposalSuitabilityMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Grava o questionário de adequação
+ */
+export const useSaveProposalSuitability = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof saveProposalSuitability>>,
+      TError,
+      { id: string; data: BodyType<SaveSuitabilityRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof saveProposalSuitability>>,
+  TError,
+  { id: string; data: BodyType<SaveSuitabilityRequest> },
+  TContext
+> => {
+  const mutationOptions = getSaveProposalSuitabilityMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. O cliente leu os avisos e quer continuar: preenche suitability.acknowledgedAt. Sem WARNED → 409 SUITABILITY_NOT_WARNED. Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
+ * @summary Confirma os avisos de adequação
+ */
+export const acknowledgeProposalSuitability = (
+  id: string,
+  acknowledgeSuitabilityRequest: BodyType<AcknowledgeSuitabilityRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/suitability/acknowledge`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: acknowledgeSuitabilityRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getAcknowledgeProposalSuitabilityMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof acknowledgeProposalSuitability>>,
+    TError,
+    { id: string; data: BodyType<AcknowledgeSuitabilityRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof acknowledgeProposalSuitability>>,
+  TError,
+  { id: string; data: BodyType<AcknowledgeSuitabilityRequest> },
+  TContext
+> => {
+  const mutationKey = ['acknowledgeProposalSuitability'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof acknowledgeProposalSuitability>>,
+    { id: string; data: BodyType<AcknowledgeSuitabilityRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return acknowledgeProposalSuitability(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AcknowledgeProposalSuitabilityMutationResult = NonNullable<
+  Awaited<ReturnType<typeof acknowledgeProposalSuitability>>
+>;
+export type AcknowledgeProposalSuitabilityMutationBody = BodyType<AcknowledgeSuitabilityRequest>;
+export type AcknowledgeProposalSuitabilityMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Confirma os avisos de adequação
+ */
+export const useAcknowledgeProposalSuitability = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof acknowledgeProposalSuitability>>,
+      TError,
+      { id: string; data: BodyType<AcknowledgeSuitabilityRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof acknowledgeProposalSuitability>>,
+  TError,
+  { id: string; data: BodyType<AcknowledgeSuitabilityRequest> },
+  TContext
+> => {
+  const mutationOptions = getAcknowledgeProposalSuitabilityMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 
 /**
  * Permissão self:quotes. Uma cotação por produto publicado compatível de cada seguradora activa (OFFERED, ou NOT_AVAILABLE com unavailableReason), em menos de 3 s, ordenadas por preço; valem 15 dias. Veículo ou condutor de outro cliente → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND. Danos próprios sem valor comercial → 400 VEHICLE_VALUE_REQUIRED. Mais de 30 pedidos numa hora → 429 QUOTE_RATE_LIMITED (Retry-After). Sem produtos compatíveis → quotes: [].
