@@ -4,10 +4,60 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/auth/session_controller.dart';
 import '../../core/widgets/cta_button.dart';
+import '../../core/widgets/message_banner.dart';
 import '../../l10n/app_localizations.dart';
+import '../inspection/inspection_repository.dart';
+import '../proposals/proposal_controller.dart';
+import '../proposals/proposals_screen.dart' show ProposalCard;
 import '../quote/quote_repository.dart';
 import '../quote/widgets/recent_quotes.dart';
 import '../quote/widgets/step_scaffold.dart' show QuoteSteps;
+
+/// "Propostas em curso" (S4-09 §1): até 3, "Ver todas" e as fotografias da
+/// vistoria por enviar.
+class _ProposalsCard extends ConsumerWidget {
+  const _ProposalsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final proposals = ref.watch(homeProposalsProvider).value ?? const [];
+    final pending = ref.watch(pendingUploadsProvider(null)).value ?? 0;
+    if (proposals.isEmpty && pending == 0) return const SizedBox.shrink();
+    return Card(
+      key: const Key('home-proposals'),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.homeProposalsTitle, style: theme.textTheme.titleLarge),
+            if (pending > 0) ...[
+              const SizedBox(height: 8),
+              MessageBanner(
+                l10n.inspectionPendingUploads(pending),
+                key: const Key('home-pending-uploads'),
+                kind: MessageKind.info,
+              ),
+            ],
+            const SizedBox(height: 8),
+            for (final proposal in proposals) ProposalCard(proposal: proposal),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                key: const Key('home-proposals-all'),
+                style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                onPressed: () => context.push('/proposals'),
+                child: Text(l10n.homeProposalsSeeAll),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _RecentQuotesCard extends ConsumerWidget {
   const _RecentQuotesCard();
@@ -102,6 +152,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            // Propostas em curso (S4-09 §1), só quando existem.
+            const _ProposalsCard(),
             const SizedBox(height: 16),
             // As 3 simulações mais recentes, só quando existem (S3-05 §7).
             const _RecentQuotesCard(),

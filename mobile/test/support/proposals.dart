@@ -1,8 +1,85 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:moseguros/core/clock.dart';
+import 'package:moseguros/core/db/app_database.dart';
 import 'package:moseguros/core/location/location_service.dart';
 import 'package:moseguros/core/network/connectivity.dart';
+import 'package:moseguros/core/router.dart';
+import 'package:moseguros/features/inspection/inspection_screen.dart'
+    show locationRationaleKey;
+import 'package:moseguros/features/quote/quote_labels.dart';
+
+import 'mock_api.dart';
+import 'vehicles.dart';
+
+/// "Hoje" dos testes das propostas (o início é 15/01/2027).
+final proposalToday = DateTime.utc(2027, 1, 10, 9);
+
+/// Abre a app com sessão (cliente de teste), o relógio fixo, e vai para [path].
+Future<(ProviderContainer, GoRouter)> openAt(
+  WidgetTester tester,
+  MockApi api,
+  String path, {
+  List<Override> overrides = const [],
+  AppDatabase? database,
+  ConnectivityMonitor? connectivity,
+  LocationService? location,
+  Directory? filesDirectory,
+  bool locationAsked = true,
+  List<Map<String, Object?>> proposals = const [],
+}) async {
+  stubCustomerSession(api);
+  // A lista (`/proposals` fica por baixo de `/proposals/:id`) e o início.
+  api.on('GET', myProposalsPath, 200, ProposalFixtures.page(proposals));
+  final container = await pumpMoSeguros(
+    tester,
+    api,
+    refreshToken: 'refresh-0',
+    database: database,
+    connectivity: connectivity,
+    location: location,
+    filesDirectory: filesDirectory,
+    preferencesValues: {if (locationAsked) locationRationaleKey: true},
+    overrides: [
+      clockProvider.overrideWithValue(() => proposalToday),
+      quoteTodayProvider.overrideWithValue(() => proposalToday),
+      ...overrides,
+    ],
+  );
+  final router = container.read(routerProvider)..go(path);
+  await settle(tester);
+  return (container, router);
+}
+
+/// `pumpAndSettle` que também deixa correr os pedidos simulados (temporizadores
+/// de duração zero criados no último frame).
+Future<void> settle(WidgetTester tester) async {
+  await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds: 50));
+  await tester.pumpAndSettle();
+}
+
+/// Toca num elemento de uma lista com scroll, fazendo scroll até ele.
+Future<void> tapInList(
+  WidgetTester tester,
+  Finder target, {
+  Finder? scrollable,
+}) async {
+  await tester.scrollUntilVisible(
+    target,
+    200,
+    scrollable: scrollable ?? find.byType(Scrollable).last,
+  );
+  await tester.pumpAndSettle();
+  await tester.tap(target);
+  await tester.pumpAndSettle();
+}
 
 /// Ids e números usados nas respostas simuladas das propostas.
 const proposalId = '01940000-0000-7000-8000-000000000301';

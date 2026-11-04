@@ -28,7 +28,20 @@
 		<string>en</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>A MoSeguros usa a câmara para fotografar o livrete e outros documentos.</string>
+	<string>A MoSeguros usa a câmara para fotografar o livrete, o veículo na vistoria e os documentos de identificação.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>A localização ajuda a seguradora a confirmar onde as fotografias da vistoria foram tiradas. É opcional.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>mz.co.moseguros.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>moseguros</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>A MoSeguros só acede às fotografias que escolher enviar.</string>
 	<key>LSRequiresIPhoneOS</key>

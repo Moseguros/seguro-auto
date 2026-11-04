@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moseguros_api/moseguros_api.dart';
 
 import '../../../core/format/dates.dart';
+import '../../../core/widgets/cta_button.dart';
 import '../../../core/widgets/message_banner.dart';
 import '../../../l10n/app_localizations.dart';
 import '../quote_labels.dart';
@@ -223,12 +225,20 @@ class _Detail extends StatelessWidget {
           name: 'informacao-pre-contratual',
         ),
       ],
-      const SizedBox(height: 16),
-      MessageBanner(
-        l10n.quoteProposalSoon,
-        key: const Key('quote-proposal-soon'),
-        kind: MessageKind.info,
-      ),
+      // S4-09 §2: o único botão laranja do ecrã abre a proposta.
+      if (status == QuoteResponseStatusEnum.OFFERED) ...[
+        const SizedBox(height: 24),
+        CtaButton(
+          key: const Key('quote-acquire'),
+          label: l10n.quoteAcquire,
+          onPressed: () => context.push(
+            Uri(
+              path: '/proposals/new',
+              queryParameters: {'quoteId': quote.id},
+            ).toString(),
+          ),
+        ),
+      ],
     ]);
     return ListView(padding: const EdgeInsets.all(16), children: children);
   }
