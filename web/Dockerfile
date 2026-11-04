@@ -13,6 +13,9 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 
 COPY . .
 # VITE_API_BASE_URL vazio: a API é pedida na mesma origem e o nginx faz o proxy de /api.
+# VITE_DEMO_BANNER=true mostra a faixa "DADOS DE DEMONSTRAÇÃO" (QA); vazio nos outros ambientes.
+ARG VITE_DEMO_BANNER=
+ENV VITE_DEMO_BANNER=$VITE_DEMO_BANNER
 RUN pnpm build
 
 # --- runtime ---
