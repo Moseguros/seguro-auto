@@ -227,7 +227,13 @@
     "PROPOSAL_NOT_FOUND": "Proposal not found.",
     "PROPOSAL_NOT_EDITABLE": "This proposal can no longer be changed.",
     "INSURER_NOT_ACTIVE": "This insurer is not accepting proposals at the moment.",
-    "SUITABILITY_NOT_WARNED": "There are no suitability warnings to confirm."
+    "SUITABILITY_NOT_WARNED": "There are no suitability warnings to confirm.",
+    "PDF_TEMPLATE_NOT_FOUND": "We could not generate the document. Try again.",
+    "PDF_RENDER_FAILED": "We could not generate the document. Try again.",
+    "SIGNER_CONTACT_MISSING": "There is no phone number or verified e-mail to send the code to.",
+    "PROPOSAL_INCOMPLETE": "There are still steps to complete in this proposal.",
+    "SIGN_REQUEST_NOT_FOUND": "This code is no longer valid. Request a new one.",
+    "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST": "The proposal changed after the code was requested. Request a new one."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -1723,6 +1729,16 @@
       "offers": "Offers",
       "best": "Best price",
       "validity": "Validity"
+    }
+  },
+  "proposal": {
+    "missing": {
+      "DECLARATIONS": "Risk declarations",
+      "SUITABILITY": "Suitability questionnaire",
+      "SUITABILITY_ACKNOWLEDGEMENT": "Confirm the suitability warnings",
+      "INSPECTION": "Vehicle inspection",
+      "START_DATE": "Start date",
+      "SIGNATURE": "Signature"
     }
   }
 }

@@ -165,6 +165,12 @@ export interface Charge {
  */
 export type ChargeValue = string | number;
 
+export interface ConfirmSignatureRequest {
+  /** O challengeId do pedido em curso */
+  challengeId: string;
+  code: string;
+}
+
 export type ContactResponseType = (typeof ContactResponseType)[keyof typeof ContactResponseType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -1906,10 +1912,31 @@ export const ProposalProductType = {
 } as const;
 
 export interface ProposalProduct {
+  /** Condições Gerais e Informação Pré-contratual da versão, na língua do tomador (ou pt); descarregam-se em GET /api/v1/files/{fileId} */
+  documents: ProposalProductDocument[];
   id: string;
   name: string;
   type: ProposalProductType;
   versionId: string;
+}
+
+export type ProposalProductDocumentType =
+  (typeof ProposalProductDocumentType)[keyof typeof ProposalProductDocumentType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalProductDocumentType = {
+  GENERAL_CONDITIONS: 'GENERAL_CONDITIONS',
+  PRE_CONTRACT_INFO: 'PRE_CONTRACT_INFO',
+  SPECIAL_CONDITIONS: 'SPECIAL_CONDITIONS',
+  OTHER: 'OTHER',
+} as const;
+
+/**
+ * Condições Gerais e Informação Pré-contratual da versão, na língua do tomador (ou pt); descarregam-se em GET /api/v1/files/{fileId}
+ */
+export interface ProposalProductDocument {
+  fileId: string;
+  type: ProposalProductDocumentType;
 }
 
 export interface ProposalResponse {
@@ -1956,12 +1983,30 @@ export interface ProposalResponse {
   version: number;
 }
 
+export type ProposalSignatureChannel =
+  (typeof ProposalSignatureChannel)[keyof typeof ProposalSignatureChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalSignatureChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
 /**
- * Assinatura da proposta (S4-04); null antes de existir.
+ * Assinatura válida (S4-04); null sem ela ou depois de uma alteração
+ * @nullable
  */
-export interface ProposalSignature {
-  [key: string]: unknown;
-}
+export type ProposalSignature = {
+  /** Assinatura com a ajuda de um mediador (S4-06) */
+  assisted: boolean;
+  channel: ProposalSignatureChannel;
+  destinationMasked: string;
+  documentFileId: string;
+  /** SHA-256 do PDF, hexadecimal minúsculo */
+  documentHash: string;
+  signedAt: string;
+} | null;
 
 export type ProposalStatus = (typeof ProposalStatus)[keyof typeof ProposalStatus];
 
@@ -2531,6 +2576,28 @@ export interface RequestOtpRequest {
   identifierType: RequestOtpRequestIdentifierType;
 }
 
+/**
+ * Canal escolhido (se as definições o permitirem); omitido = o canal por defeito
+ */
+export type RequestSignatureRequestChannel =
+  (typeof RequestSignatureRequestChannel)[keyof typeof RequestSignatureRequestChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RequestSignatureRequestChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface RequestSignatureRequest {
+  /** Canal escolhido (se as definições o permitirem); omitido = o canal por defeito */
+  channel?: RequestSignatureRequestChannel;
+  /** O tomador leu as Condições Gerais e a Informação Pré-contratual (tem de ser true) */
+  documentsAcknowledged: boolean;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export type RequestedCoverageRequestCode =
   (typeof RequestedCoverageRequestCode)[keyof typeof RequestedCoverageRequestCode];
 
@@ -2621,6 +2688,35 @@ export interface SaveSuitabilityRequest {
   answers?: SuitabilityAnswerRequest[];
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
+}
+
+/**
+ * Canal efectivamente usado
+ */
+export type SignatureRequestResponseChannel =
+  (typeof SignatureRequestResponseChannel)[keyof typeof SignatureRequestResponseChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SignatureRequestResponseChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface SignatureRequestResponse {
+  /** Enviar na confirmação */
+  challengeId: string;
+  /** Canal efectivamente usado */
+  channel: SignatureRequestResponseChannel;
+  destinationMasked: string;
+  /** PDF da proposta a assinar; descarrega-se em GET /api/v1/files/{documentFileId} */
+  documentFileId: string;
+  /** SHA-256 do PDF, hexadecimal minúsculo */
+  documentHash: string;
+  expiresAt: string;
+  /** O canal mudou por falha do primeiro */
+  fallbackUsed: boolean;
+  resendAfterSeconds: number;
 }
 
 export interface SimulateRatingRequest {
@@ -14653,6 +14749,184 @@ export const useSaveProposalDeclarations = <TError = ErrorType<ProblemDetail>, T
   TContext
 > => {
   const mutationOptions = getSaveProposalDeclarationsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature = DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura.
+ * @summary Confirma a assinatura com o código recebido
+ */
+export const confirmProposalSignature = (
+  id: string,
+  confirmSignatureRequest: BodyType<ConfirmSignatureRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/sign/confirm`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: confirmSignatureRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getConfirmProposalSignatureMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof confirmProposalSignature>>,
+    TError,
+    { id: string; data: BodyType<ConfirmSignatureRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof confirmProposalSignature>>,
+  TError,
+  { id: string; data: BodyType<ConfirmSignatureRequest> },
+  TContext
+> => {
+  const mutationKey = ['confirmProposalSignature'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof confirmProposalSignature>>,
+    { id: string; data: BodyType<ConfirmSignatureRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return confirmProposalSignature(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConfirmProposalSignatureMutationResult = NonNullable<
+  Awaited<ReturnType<typeof confirmProposalSignature>>
+>;
+export type ConfirmProposalSignatureMutationBody = BodyType<ConfirmSignatureRequest>;
+export type ConfirmProposalSignatureMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Confirma a assinatura com o código recebido
+ */
+export const useConfirmProposalSignature = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof confirmProposalSignature>>,
+      TError,
+      { id: string; data: BodyType<ConfirmSignatureRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof confirmProposalSignature>>,
+  TError,
+  { id: string; data: BodyType<ConfirmSignatureRequest> },
+  TContext
+> => {
+  const mutationOptions = getConfirmProposalSignatureMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. Por esta ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT, INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND.
+ * @summary Gera o PDF da proposta e envia o código de assinatura
+ */
+export const requestProposalSignature = (
+  id: string,
+  requestSignatureRequest: BodyType<RequestSignatureRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<SignatureRequestResponse>(
+    {
+      url: `/api/v1/proposals/${id}/sign/request`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: requestSignatureRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRequestProposalSignatureMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestProposalSignature>>,
+    TError,
+    { id: string; data: BodyType<RequestSignatureRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof requestProposalSignature>>,
+  TError,
+  { id: string; data: BodyType<RequestSignatureRequest> },
+  TContext
+> => {
+  const mutationKey = ['requestProposalSignature'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof requestProposalSignature>>,
+    { id: string; data: BodyType<RequestSignatureRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return requestProposalSignature(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RequestProposalSignatureMutationResult = NonNullable<
+  Awaited<ReturnType<typeof requestProposalSignature>>
+>;
+export type RequestProposalSignatureMutationBody = BodyType<RequestSignatureRequest>;
+export type RequestProposalSignatureMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Gera o PDF da proposta e envia o código de assinatura
+ */
+export const useRequestProposalSignature = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof requestProposalSignature>>,
+      TError,
+      { id: string; data: BodyType<RequestSignatureRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof requestProposalSignature>>,
+  TError,
+  { id: string; data: BodyType<RequestSignatureRequest> },
+  TContext
+> => {
+  const mutationOptions = getRequestProposalSignatureMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
