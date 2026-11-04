@@ -31,7 +31,8 @@
       "payments": "Pagamentos",
       "claims": "Sinistros",
       "complaints": "Reclamações",
-      "profile": "Perfil"
+      "profile": "Perfil",
+      "proposals": "Propostas"
     },
     "admin": {
       "home": "Painel",
@@ -60,7 +61,8 @@
       "quotes": "Cotações",
       "policies": "Apólices",
       "reports": "Relatórios",
-      "users": "Utilizadores"
+      "users": "Utilizadores",
+      "proposals": "Propostas"
     },
     "perito": {
       "home": "Painel",
@@ -1630,7 +1632,7 @@
       "deductible": "Franquia",
       "premium": "Prémio",
       "period": "Período",
-      "comingSoon": "Em breve vai poder avançar daqui para a proposta."
+      "acquire": "Adquirir apólice"
     }
   },
   "quoteWizard": {
@@ -1763,6 +1765,168 @@
       "INSPECTION": "Vistoria do veículo",
       "START_DATE": "Data de início",
       "SIGNATURE": "Assinatura"
+    },
+    "steps": {
+      "tomador": "Tomador e data",
+      "declaracoes": "Declarações",
+      "adequacao": "Adequação",
+      "vistoria": "Vistoria",
+      "identidade": "Identidade",
+      "resumo": "Resumo e assinatura"
+    },
+    "wizard": {
+      "title": "Proposta {{number}}",
+      "stepOf": "Passo {{n}} de {{total}}",
+      "allSteps": "Passos",
+      "continue": "Continuar",
+      "back": "Voltar",
+      "concurrent": "A proposta foi alterada noutro lado."
+    },
+    "infoRequest": {
+      "title": "A {{insurer}} pediu mais informação",
+      "requestedAt": "Pedido em {{date}}"
+    },
+    "summary": {
+      "productTitle": "Seguro",
+      "insurer": "Seguradora",
+      "product": "Produto",
+      "productType": "Tipo",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "capital": "Capital: {{amount}}",
+      "deductible": "Franquia",
+      "noDeductible": "Sem franquia",
+      "premium": "Prémio",
+      "premiumTitle": "Prémio",
+      "commercial": "Prémio comercial",
+      "rounding": "Arredondamento",
+      "total": "Total",
+      "vehicle": "Veículo",
+      "plate": "Matrícula",
+      "makeModel": "Marca e modelo",
+      "year": "Ano",
+      "category": "Categoria",
+      "usage": "Uso",
+      "commercialValue": "Valor comercial",
+      "driver": "Condutor",
+      "fullName": "Nome",
+      "licenceIssueDate": "Data de emissão da carta",
+      "period": "Período",
+      "periodValue": "De {{start}} a {{end}}",
+      "broker": "Mediador",
+      "msisdn": "Telemóvel",
+      "email": "E-mail",
+      "photos_one": "{{count}} fotografia",
+      "photos_other": "{{count}} fotografias"
+    },
+    "policyholder": {
+      "title": "Tomador do seguro",
+      "fromProfile": "Estes dados vêm do seu perfil.",
+      "fromClientProfile": "Estes dados vêm do perfil do cliente.",
+      "filledByBroker": "O perfil do cliente estava incompleto: os dados do tomador foram preenchidos pelo mediador.",
+      "editProfile": "Editar perfil",
+      "refresh": "Actualizar com o perfil",
+      "startTitle": "Início do seguro",
+      "startDate": "Data de início",
+      "end": "Fim: {{date}}"
+    },
+    "declarations": {
+      "truthRequired": "Confirme que as respostas são verdadeiras para continuar."
+    },
+    "suitability": {
+      "warningsTitle": "Avisos sobre esta proposta",
+      "acknowledge": "Li os avisos e quero continuar com esta proposta",
+      "otherQuote": "Pedir outra cotação",
+      "reconfirm": "Mudou as respostas: vai ter de confirmar os avisos de novo."
+    },
+    "inspection": {
+      "intro": "Para os danos próprios, a seguradora precisa de fotografias do veículo. Tire-as de dia, com o veículo limpo e inteiro na imagem.",
+      "choose": "Escolher fotografia",
+      "replace": "Substituir",
+      "remove": "Retirar",
+      "removeConfirm": "Retirar esta fotografia da vistoria?",
+      "addExtra": "Acrescentar fotografia",
+      "extraTitle": "Fotografias extra",
+      "extraN": "Fotografia extra {{n}}",
+      "missing": "Falta esta fotografia.",
+      "retake": "A seguradora pediu para repetir esta fotografia.",
+      "retakeList": "Repita: {{slots}}.",
+      "uploading": "A enviar a fotografia ({{slot}})",
+      "uploadFailed": "Não foi possível enviar a fotografia.",
+      "odometer": "Quilometragem actual",
+      "odometerHelp": "Em quilómetros, como no conta-quilómetros.",
+      "submit": "Enviar vistoria",
+      "submitted": "Vistoria enviada. A seguradora vai analisar as fotografias.",
+      "approved": "Vistoria aprovada.",
+      "rejected": "A seguradora recusou a vistoria: {{reason}}",
+      "onSiteRequested": "Pediu uma vistoria presencial. A seguradora vai contactá-lo para marcar a visita.",
+      "qrText": "Leia este código com o telemóvel para fazer a vistoria guiada na aplicação MoSeguros.",
+      "qrLabel": "Código QR para abrir a vistoria na aplicação",
+      "appText": "Também pode fazer a vistoria guiada na aplicação MoSeguros.",
+      "openInApp": "Abrir na aplicação",
+      "preferOnSite": "Prefiro vistoria presencial",
+      "onSiteTitle": "Vistoria presencial",
+      "onSiteText": "Um perito da seguradora vai ver o veículo. Diga onde e quando lhe dá jeito.",
+      "onSiteNotes": "Local e horas preferidas",
+      "onSiteSubmit": "Pedir vistoria presencial"
+    },
+    "identity": {
+      "required": "Verifique a sua identidade para a proposta poder ser aceite logo. Sem isto, a seguradora analisa-a e pode demorar até 15 dias.",
+      "optional": "Opcional: a verificação acelera propostas futuras.",
+      "later": "Agora não",
+      "broker": "O cliente envia as fotografias na aplicação MoSeguros ou em /cliente/identidade."
+    },
+    "review": {
+      "documents": "Documentos do produto",
+      "document": {
+        "GENERAL_CONDITIONS": "Condições Gerais",
+        "PRE_CONTRACT_INFO": "Informação Pré-contratual"
+      },
+      "missingTitle": "Ainda falta:",
+      "acknowledge": "Recebi e li as Condições Gerais e a Informação Pré-contratual.",
+      "acknowledgeRequired": "Confirme que recebeu e leu os documentos.",
+      "signAndSubmit": "Assinar e enviar à seguradora",
+      "submitOnly": "Enviar à seguradora"
+    },
+    "sign": {
+      "title": "Assinar a proposta",
+      "sentCustomer": "Enviámos um código por {{channel}} para {{destination}}.",
+      "sentBroker": "Enviámos um código para o telemóvel do cliente ({{destination}}). Peça-lhe que o diga.",
+      "fallback": "O código foi enviado por outro canal porque o primeiro falhou.",
+      "downloadPdf": "Descarregar a proposta (PDF)",
+      "sendBy": "Enviar por {{channel}}"
+    },
+    "status": {
+      "underReview": "A {{insurer}} está a analisar a sua proposta. Tem até {{date}} para responder.",
+      "underReviewNoDate": "A {{insurer}} está a analisar a sua proposta.",
+      "accepted": "Proposta aceite.",
+      "paymentSoon": "O pagamento fica disponível em breve.",
+      "expiresAt": "Expira em {{date}}",
+      "rejected": "A proposta não foi aceite.",
+      "expired": "Esta proposta expirou.",
+      "simulate": "Simular seguro",
+      "downloadSigned": "Descarregar a proposta assinada (PDF)",
+      "timeline": "Linha temporal",
+      "backToList": "Ver todas as propostas",
+      "event": {
+        "created": "Criada",
+        "submitted": "Enviada à seguradora",
+        "accepted": "Aceite",
+        "rejected": "Não aceite",
+        "decided": "Decisão da seguradora"
+      }
+    },
+    "list": {
+      "title": "Propostas",
+      "filter": "Mostrar",
+      "open": "Em curso",
+      "all": "Todas",
+      "empty": "Ainda não tem propostas.",
+      "emptyOpen": "Não tem propostas em curso.",
+      "expiresAt": "Expira em {{date}}",
+      "continue": "Continuar",
+      "view": "Ver",
+      "loadMore": "Ver mais"
     }
   },
   "inspection": {
@@ -1784,6 +1948,15 @@
     "mode": {
       "SELF_PHOTOS": "Fotografias do cliente",
       "ON_SITE": "Presencial"
+    },
+    "instruction": {
+      "FRONT": "A frente do veículo inteira, com a matrícula legível.",
+      "REAR": "A traseira inteira, com a matrícula legível.",
+      "LEFT": "O lado esquerdo inteiro, de uma ponta à outra.",
+      "RIGHT": "O lado direito inteiro, de uma ponta à outra.",
+      "ODOMETER": "O painel com o conta-quilómetros legível, com a ignição ligada.",
+      "CHASSIS": "O número do chassis gravado no veículo (normalmente no pára-brisas ou na porta do condutor).",
+      "EXTRA": "Danos que o veículo já tenha, ou outros pormenores."
     }
   },
   "proposalStatus": {
@@ -1949,6 +2122,34 @@
       "DATA_MISMATCH": "Dados diferentes do perfil",
       "SELFIE_MISMATCH": "Selfie não corresponde",
       "OTHER": "Outro motivo"
+    },
+    "view": {
+      "title": "Verificação de identidade",
+      "verified": "Identidade verificada",
+      "pending": "Em verificação",
+      "outdated": "Os dados do seu perfil mudaram. Verifique de novo a sua identidade.",
+      "rejected": "A verificação foi recusada. Envie de novo as fotografias.",
+      "rejectedWith": "A verificação foi recusada: {{reason}}. Envie de novo as fotografias.",
+      "noProposal": "A verificação de identidade é pedida quando faz uma proposta."
+    },
+    "form": {
+      "docFront": "Documento de identificação — frente",
+      "docBack": "Documento de identificação — verso",
+      "docHint": "O documento inteiro, sem reflexos e com o texto legível.",
+      "selfie": "Selfie",
+      "selfieTitle": "Tirar uma selfie",
+      "selfieInstruction": "Olhe de frente para a câmara, sem óculos escuros nem chapéu, num sítio com boa luz.",
+      "choose": "Escolher fotografia",
+      "replace": "Substituir",
+      "chosen": "Escolhida: {{name}}",
+      "takeSelfie": "Tirar selfie",
+      "retakeSelfie": "Tirar outra selfie",
+      "cameraPreview": "Imagem da câmara",
+      "take": "Tirar fotografia",
+      "retake": "Repetir",
+      "use": "Usar",
+      "cameraUnavailable": "Não foi possível usar a câmara. Escolha uma fotografia sua.",
+      "submit": "Enviar"
     }
   },
   "insurerProposals": {
@@ -2262,5 +2463,40 @@
     "notEditable": "Esta versão já não pode ser alterada",
     "conflict": "Outra pessoa alterou esta versão",
     "saved": "Regras de aceitação guardadas"
+  },
+  "brokerProposals": {
+    "title": "Propostas",
+    "empty": "Ainda não há propostas. As propostas novas começam numa cotação.",
+    "filters": {
+      "status": "Estado",
+      "all": "Todos",
+      "search": "Número ou nome do cliente"
+    },
+    "columns": {
+      "number": "Número",
+      "customer": "Cliente",
+      "msisdn": "Telemóvel",
+      "insurer": "Seguradora",
+      "total": "Total",
+      "status": "Estado",
+      "expiresAt": "Expira em",
+      "missing": "Falta"
+    },
+    "missingValue": "Falta: {{items}}",
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "pageOf": "Página {{page}} de {{pages}}",
+    "new": {
+      "title": "Nova proposta"
+    },
+    "form": {
+      "lockedNote": "Estes dados foram usados na simulação. Para os mudar, faça uma nova simulação.",
+      "vehicle": "Veículo",
+      "driver": "Condutor",
+      "isOwner": "O condutor é o tomador",
+      "policyholder": "Tomador do seguro",
+      "profileIncomplete": "O perfil deste cliente está incompleto. Preencha os dados do tomador.",
+      "vehicleAlreadyRegistered": "Este cliente já tem um veículo com esta matrícula e outro chassis. Confirme o chassis."
+    }
   }
 }

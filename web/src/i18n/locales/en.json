@@ -31,7 +31,8 @@
       "payments": "Payments",
       "claims": "Claims",
       "complaints": "Complaints",
-      "profile": "Profile"
+      "profile": "Profile",
+      "proposals": "Proposals"
     },
     "admin": {
       "home": "Dashboard",
@@ -60,7 +61,8 @@
       "quotes": "Quotes",
       "policies": "Policies",
       "reports": "Reports",
-      "users": "Users"
+      "users": "Users",
+      "proposals": "Proposals"
     },
     "perito": {
       "home": "Dashboard",
@@ -1630,7 +1632,7 @@
       "deductible": "Deductible",
       "premium": "Premium",
       "period": "Period",
-      "comingSoon": "Soon you will be able to move on from here to the proposal."
+      "acquire": "Buy policy"
     }
   },
   "quoteWizard": {
@@ -1763,6 +1765,168 @@
       "INSPECTION": "Vehicle inspection",
       "START_DATE": "Start date",
       "SIGNATURE": "Signature"
+    },
+    "steps": {
+      "tomador": "Policyholder and date",
+      "declaracoes": "Declarations",
+      "adequacao": "Suitability",
+      "vistoria": "Inspection",
+      "identidade": "Identity",
+      "resumo": "Summary and signature"
+    },
+    "wizard": {
+      "title": "Proposal {{number}}",
+      "stepOf": "Step {{n}} of {{total}}",
+      "allSteps": "Steps",
+      "continue": "Continue",
+      "back": "Back",
+      "concurrent": "The proposal was changed elsewhere."
+    },
+    "infoRequest": {
+      "title": "{{insurer}} asked for more information",
+      "requestedAt": "Requested on {{date}}"
+    },
+    "summary": {
+      "productTitle": "Insurance",
+      "insurer": "Insurer",
+      "product": "Product",
+      "productType": "Type",
+      "coverages": "Coverages",
+      "coverage": "Coverage",
+      "capital": "Sum insured: {{amount}}",
+      "deductible": "Deductible",
+      "noDeductible": "No deductible",
+      "premium": "Premium",
+      "premiumTitle": "Premium",
+      "commercial": "Commercial premium",
+      "rounding": "Rounding",
+      "total": "Total",
+      "vehicle": "Vehicle",
+      "plate": "Number plate",
+      "makeModel": "Make and model",
+      "year": "Year",
+      "category": "Category",
+      "usage": "Use",
+      "commercialValue": "Market value",
+      "driver": "Driver",
+      "fullName": "Name",
+      "licenceIssueDate": "Licence issue date",
+      "period": "Period",
+      "periodValue": "From {{start}} to {{end}}",
+      "broker": "Broker",
+      "msisdn": "Mobile",
+      "email": "Email",
+      "photos_one": "{{count}} photo",
+      "photos_other": "{{count}} photos"
+    },
+    "policyholder": {
+      "title": "Policyholder",
+      "fromProfile": "These details come from your profile.",
+      "fromClientProfile": "These details come from the customer's profile.",
+      "filledByBroker": "The customer's profile was incomplete: the policyholder details were filled in by the broker.",
+      "editProfile": "Edit profile",
+      "refresh": "Update from profile",
+      "startTitle": "Start of cover",
+      "startDate": "Start date",
+      "end": "End: {{date}}"
+    },
+    "declarations": {
+      "truthRequired": "Confirm that your answers are true to continue."
+    },
+    "suitability": {
+      "warningsTitle": "Warnings about this proposal",
+      "acknowledge": "I have read the warnings and want to continue with this proposal",
+      "otherQuote": "Ask for another quote",
+      "reconfirm": "You changed your answers: you will have to confirm the warnings again."
+    },
+    "inspection": {
+      "intro": "For own damage cover, the insurer needs photos of the vehicle. Take them in daylight, with the vehicle clean and whole in the picture.",
+      "choose": "Choose photo",
+      "replace": "Replace",
+      "remove": "Remove",
+      "removeConfirm": "Remove this photo from the inspection?",
+      "addExtra": "Add photo",
+      "extraTitle": "Extra photos",
+      "extraN": "Extra photo {{n}}",
+      "missing": "This photo is missing.",
+      "retake": "The insurer asked you to take this photo again.",
+      "retakeList": "Take again: {{slots}}.",
+      "uploading": "Uploading the photo ({{slot}})",
+      "uploadFailed": "The photo could not be uploaded.",
+      "odometer": "Current mileage",
+      "odometerHelp": "In kilometres, as shown on the odometer.",
+      "submit": "Send inspection",
+      "submitted": "Inspection sent. The insurer will review the photos.",
+      "approved": "Inspection approved.",
+      "rejected": "The insurer rejected the inspection: {{reason}}",
+      "onSiteRequested": "You asked for an on-site inspection. The insurer will contact you to arrange the visit.",
+      "qrText": "Scan this code with your phone to do the guided inspection in the MoSeguros app.",
+      "qrLabel": "QR code to open the inspection in the app",
+      "appText": "You can also do the guided inspection in the MoSeguros app.",
+      "openInApp": "Open in the app",
+      "preferOnSite": "I prefer an on-site inspection",
+      "onSiteTitle": "On-site inspection",
+      "onSiteText": "An assessor from the insurer will look at the vehicle. Tell us where and when suits you.",
+      "onSiteNotes": "Preferred place and times",
+      "onSiteSubmit": "Ask for an on-site inspection"
+    },
+    "identity": {
+      "required": "Verify your identity so that the proposal can be accepted straight away. Without it, the insurer reviews it and it may take up to 15 days.",
+      "optional": "Optional: verification speeds up future proposals.",
+      "later": "Not now",
+      "broker": "The customer sends the photos in the MoSeguros app or at /cliente/identidade."
+    },
+    "review": {
+      "documents": "Product documents",
+      "document": {
+        "GENERAL_CONDITIONS": "General Conditions",
+        "PRE_CONTRACT_INFO": "Pre-contract Information"
+      },
+      "missingTitle": "Still missing:",
+      "acknowledge": "I have received and read the General Conditions and the Pre-contract Information.",
+      "acknowledgeRequired": "Confirm that you have received and read the documents.",
+      "signAndSubmit": "Sign and send to the insurer",
+      "submitOnly": "Send to the insurer"
+    },
+    "sign": {
+      "title": "Sign the proposal",
+      "sentCustomer": "We sent a code by {{channel}} to {{destination}}.",
+      "sentBroker": "We sent a code to the customer's mobile ({{destination}}). Ask them to tell you the code.",
+      "fallback": "The code was sent by another channel because the first one failed.",
+      "downloadPdf": "Download the proposal (PDF)",
+      "sendBy": "Send by {{channel}}"
+    },
+    "status": {
+      "underReview": "{{insurer}} is reviewing your proposal. It has until {{date}} to reply.",
+      "underReviewNoDate": "{{insurer}} is reviewing your proposal.",
+      "accepted": "Proposal accepted.",
+      "paymentSoon": "Payment will be available soon.",
+      "expiresAt": "Expires on {{date}}",
+      "rejected": "The proposal was not accepted.",
+      "expired": "This proposal has expired.",
+      "simulate": "Get a quote",
+      "downloadSigned": "Download the signed proposal (PDF)",
+      "timeline": "Timeline",
+      "backToList": "See all proposals",
+      "event": {
+        "created": "Created",
+        "submitted": "Sent to the insurer",
+        "accepted": "Accepted",
+        "rejected": "Not accepted",
+        "decided": "Insurer's decision"
+      }
+    },
+    "list": {
+      "title": "Proposals",
+      "filter": "Show",
+      "open": "In progress",
+      "all": "All",
+      "empty": "You have no proposals yet.",
+      "emptyOpen": "You have no proposals in progress.",
+      "expiresAt": "Expires on {{date}}",
+      "continue": "Continue",
+      "view": "View",
+      "loadMore": "Show more"
     }
   },
   "inspection": {
@@ -1784,6 +1948,15 @@
     "mode": {
       "SELF_PHOTOS": "Customer photos",
       "ON_SITE": "On site"
+    },
+    "instruction": {
+      "FRONT": "The whole front of the vehicle, with the number plate readable.",
+      "REAR": "The whole rear, with the number plate readable.",
+      "LEFT": "The whole left side, from end to end.",
+      "RIGHT": "The whole right side, from end to end.",
+      "ODOMETER": "The dashboard with the odometer readable, with the ignition on.",
+      "CHASSIS": "The chassis number on the vehicle (usually on the windscreen or the driver's door).",
+      "EXTRA": "Any existing damage, or other details."
     }
   },
   "proposalStatus": {
@@ -1949,6 +2122,34 @@
       "DATA_MISMATCH": "Details differ from the profile",
       "SELFIE_MISMATCH": "Selfie does not match",
       "OTHER": "Other reason"
+    },
+    "view": {
+      "title": "Identity verification",
+      "verified": "Identity verified",
+      "pending": "Being verified",
+      "outdated": "Your profile details have changed. Verify your identity again.",
+      "rejected": "The verification was rejected. Send the photos again.",
+      "rejectedWith": "The verification was rejected: {{reason}}. Send the photos again.",
+      "noProposal": "Identity verification is requested when you make a proposal."
+    },
+    "form": {
+      "docFront": "Identity document — front",
+      "docBack": "Identity document — back",
+      "docHint": "The whole document, without glare and with the text readable.",
+      "selfie": "Selfie",
+      "selfieTitle": "Take a selfie",
+      "selfieInstruction": "Look straight at the camera, without sunglasses or a hat, somewhere with good light.",
+      "choose": "Choose photo",
+      "replace": "Replace",
+      "chosen": "Chosen: {{name}}",
+      "takeSelfie": "Take selfie",
+      "retakeSelfie": "Take another selfie",
+      "cameraPreview": "Camera image",
+      "take": "Take photo",
+      "retake": "Retake",
+      "use": "Use",
+      "cameraUnavailable": "The camera could not be used. Choose a photo of yourself.",
+      "submit": "Send"
     }
   },
   "insurerProposals": {
@@ -2262,5 +2463,40 @@
     "notEditable": "This version can no longer be changed",
     "conflict": "Someone else changed this version",
     "saved": "Acceptance rules saved"
+  },
+  "brokerProposals": {
+    "title": "Proposals",
+    "empty": "There are no proposals yet. New proposals start from a quote.",
+    "filters": {
+      "status": "Status",
+      "all": "All",
+      "search": "Number or customer name"
+    },
+    "columns": {
+      "number": "Number",
+      "customer": "Customer",
+      "msisdn": "Mobile",
+      "insurer": "Insurer",
+      "total": "Total",
+      "status": "Status",
+      "expiresAt": "Expires on",
+      "missing": "Missing"
+    },
+    "missingValue": "Missing: {{items}}",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{pages}}",
+    "new": {
+      "title": "New proposal"
+    },
+    "form": {
+      "lockedNote": "These details were used in the quote. To change them, get a new quote.",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "isOwner": "The driver is the policyholder",
+      "policyholder": "Policyholder",
+      "profileIncomplete": "This customer's profile is incomplete. Fill in the policyholder details.",
+      "vehicleAlreadyRegistered": "This customer already has a vehicle with this number plate and another chassis. Check the chassis."
+    }
   }
 }

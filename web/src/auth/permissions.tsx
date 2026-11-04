@@ -17,6 +17,7 @@ export const Permissions = {
   ratingManage: 'rating:manage',
   referenceManage: 'reference:manage',
   quoteCreateForClient: 'quote:create-for-client',
+  proposalCreateForClient: 'proposal:create-for-client',
   proposalRead: 'proposal:read',
   proposalDecide: 'proposal:decide',
   kycReview: 'kyc:review',
