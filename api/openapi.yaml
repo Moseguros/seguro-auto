@@ -9,9 +9,6 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- description: "Propostas: criação a partir de uma cotação, declarações de risco,\
-    \ adequação"
-  name: Proposal
 - description: Informação técnica da aplicação
   name: Meta
 - description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
@@ -27,6 +24,9 @@ tags:
   name: Organization
 - description: "Identidade, sessões e utilizador autenticado"
   name: Identity
+- description: "Propostas: criação a partir de uma cotação, declarações de risco,\
+    \ adequação e assinatura"
+  name: Proposal
 - description: Veículos e condutores do cliente
   name: Vehicle
 paths:
@@ -4240,6 +4240,101 @@ paths:
       summary: Grava as declarações de risco
       tags:
       - Proposal
+  /api/v1/proposals/{id}/sign/confirm:
+    post:
+      description: "Permissão self:proposals ou proposal:create-for-client. Proposta\
+        \ em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido\
+        \ em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta\
+        \ alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir\
+        \ de novo); erros do código como no login (OTP_INVALID com attemptsRemaining,\
+        \ OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava\
+        \ a assinatura ligada ao hash do PDF (bloco signature, checklist.signature\
+        \ = DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida\
+        \ a assinatura."
+      operationId: confirmProposalSignature
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmSignatureRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Confirma a assinatura com o código recebido
+      tags:
+      - Proposal
+  /api/v1/proposals/{id}/sign/request:
+    post:
+      description: "Permissão self:proposals ou proposal:create-for-client. Por esta\
+        \ ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE);\
+        \ version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠\
+        \ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta\
+        \ → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT,\
+        \ INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING.\
+        \ Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só\
+        \ assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED\
+        \ / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido\
+        \ anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND."
+      operationId: requestProposalSignature
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestSignatureRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestResponse"
+          description: Código enviado
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Gera o PDF da proposta e envia o código de assinatura
+      tags:
+      - Proposal
   /api/v1/proposals/{id}/suitability:
     post:
       description: "Permissão self:proposals ou proposal:create-for-client. Devolve\
@@ -4952,6 +5047,19 @@ components:
         format: int64
         maximum: 100000000
         minimum: 0
+    ConfirmSignatureRequest:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: O challengeId do pedido em curso
+        code:
+          type: string
+          example: "123456"
+      required:
+      - challengeId
+      - code
     ContactResponse:
       type: object
       properties:
@@ -7485,6 +7593,12 @@ components:
     ProposalProduct:
       type: object
       properties:
+        documents:
+          type: array
+          description: "Condições Gerais e Informação Pré-contratual da versão, na\
+            \ língua do tomador (ou pt); descarregam-se em GET /api/v1/files/{fileId}"
+          items:
+            $ref: "#/components/schemas/ProposalProductDocument"
         id:
           type: string
           format: uuid
@@ -7503,10 +7617,29 @@ components:
           type: string
           format: uuid
       required:
+      - documents
       - id
       - name
       - type
       - versionId
+    ProposalProductDocument:
+      type: object
+      description: "Condições Gerais e Informação Pré-contratual da versão, na lí\
+        ngua do tomador (ou pt); descarregam-se em GET /api/v1/files/{fileId}"
+      properties:
+        fileId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - GENERAL_CONDITIONS
+          - PRE_CONTRACT_INFO
+          - SPECIAL_CONDITIONS
+          - OTHER
+      required:
+      - fileId
+      - type
     ProposalResponse:
       type: object
       properties:
@@ -7618,8 +7751,38 @@ components:
       - version
     ProposalSignature:
       type: object
-      additionalProperties: true
-      description: Assinatura da proposta (S4-04); null antes de existir.
+      description: Assinatura válida (S4-04); null sem ela ou depois de uma alteração
+      nullable: true
+      properties:
+        assisted:
+          type: boolean
+          description: Assinatura com a ajuda de um mediador (S4-06)
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        destinationMasked:
+          type: string
+          example: +258*****4567
+        documentFileId:
+          type: string
+          format: uuid
+        documentHash:
+          type: string
+          description: "SHA-256 do PDF, hexadecimal minúsculo"
+          example: 9f2c4b7e0d1a3c5e7f9b2d4a6c8e0f1b3d5a7c9e1f3b5d7a9c1e3f5b7d9a1c3e
+        signedAt:
+          type: string
+          format: date-time
+      required:
+      - assisted
+      - channel
+      - destinationMasked
+      - documentFileId
+      - documentHash
+      - signedAt
     ProposalStatus:
       type: string
       enum:
@@ -8528,6 +8691,28 @@ components:
       required:
       - identifier
       - identifierType
+    RequestSignatureRequest:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Canal escolhido (se as definições o permitirem); omitido =
+            o canal por defeito
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        documentsAcknowledged:
+          type: boolean
+          description: O tomador leu as Condições Gerais e a Informação Pré-contratual
+            (tem de ser true)
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - documentsAcknowledged
+      - version
     RequestedCoverageRequest:
       type: object
       properties:
@@ -8654,6 +8839,50 @@ components:
           description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
       required:
       - version
+    SignatureRequestResponse:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          format: uuid
+          description: Enviar na confirmação
+        channel:
+          type: string
+          description: Canal efectivamente usado
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        destinationMasked:
+          type: string
+          example: +258*****4567
+        documentFileId:
+          type: string
+          format: uuid
+          description: "PDF da proposta a assinar; descarrega-se em GET /api/v1/files/{documentFileId}"
+        documentHash:
+          type: string
+          description: "SHA-256 do PDF, hexadecimal minúsculo"
+          example: 9f2c4b7e0d1a3c5e7f9b2d4a6c8e0f1b3d5a7c9e1f3b5d7a9c1e3f5b7d9a1c3e
+        expiresAt:
+          type: string
+          format: date-time
+        fallbackUsed:
+          type: boolean
+          description: O canal mudou por falha do primeiro
+        resendAfterSeconds:
+          type: integer
+          format: int32
+          example: 60
+      required:
+      - challengeId
+      - channel
+      - destinationMasked
+      - documentFileId
+      - documentHash
+      - expiresAt
+      - fallbackUsed
+      - resendAfterSeconds
     SimulateRatingRequest:
       type: object
       properties:
