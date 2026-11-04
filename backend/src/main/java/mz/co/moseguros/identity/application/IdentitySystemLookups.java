@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import mz.co.moseguros.identity.StaffContact;
 import mz.co.moseguros.identity.domain.AccountStatus;
 import mz.co.moseguros.identity.domain.AccountType;
 import mz.co.moseguros.identity.domain.Invitation;
@@ -63,6 +64,21 @@ public class IdentitySystemLookups {
                 .map(a -> new CustomerContact(a.getMsisdn(),
                         a.getEmail() != null && a.isEmailVerified() ? a.getEmail() : null,
                         a.getPreferredLanguage()));
+    }
+
+    /**
+     * Contas de staff {@code ACTIVE} da organização com algum perfil que tenha a permissão, ordenadas
+     * por {@code displayName} ({@code IdentityApi.staffWithPermission}, S4-05 §10; decisão D10).
+     */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public List<StaffContact> staffWithPermission(UUID organizationId, String permission) {
+        if (organizationId == null || permission == null || permission.isBlank()) {
+            return List.of();
+        }
+        return accounts.findActiveStaffWithPermission(organizationId, permission).stream()
+                .map(a -> new StaffContact(a.getId(), a.getDisplayName(), a.getEmail(), a.getPreferredLanguage()))
+                .toList();
     }
 
     /** Conta de staff com o e-mail (normalizado), em qualquer organização ou na plataforma. */

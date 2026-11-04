@@ -1,10 +1,12 @@
 package mz.co.moseguros.identity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import mz.co.moseguros.identity.application.CustomerAccountFactory;
 import mz.co.moseguros.identity.application.CustomerViewService;
+import mz.co.moseguros.identity.application.IdentitySystemLookups;
 import mz.co.moseguros.identity.application.OtpService;
 import mz.co.moseguros.identity.application.TokenService;
 import mz.co.moseguros.identity.domain.UserAccount;
@@ -16,7 +18,8 @@ import org.springframework.stereotype.Service;
  * login por OTP e de staff) e contas de cliente pelo telemóvel ({@link #findOrCreateCustomerByMsisdn},
  * usado pelo {@code rating} desde o S3-02), dados e estado KYC de um cliente ({@link #customer},
  * {@link #kycStatus}, S4-01) e códigos de assinatura de documentos ({@link #requestSignOtp},
- * {@link #verifySignOtp}, S4-04).
+ * {@link #verifySignOtp}, S4-04) e contactos do staff por permissão ({@link #staffWithPermission},
+ * S4-05).
  */
 @Service
 public class IdentityApi {
@@ -25,13 +28,25 @@ public class IdentityApi {
     private final CustomerAccountFactory customerAccounts;
     private final CustomerViewService customerViews;
     private final OtpService otpService;
+    private final IdentitySystemLookups lookups;
 
     public IdentityApi(TokenService tokenService, CustomerAccountFactory customerAccounts,
-                       CustomerViewService customerViews, OtpService otpService) {
+                       CustomerViewService customerViews, OtpService otpService, IdentitySystemLookups lookups) {
         this.tokenService = tokenService;
         this.customerAccounts = customerAccounts;
         this.customerViews = customerViews;
         this.otpService = otpService;
+        this.lookups = lookups;
+    }
+
+    /**
+     * Contas {@code STAFF} {@code ACTIVE} da organização com algum perfil que tenha a permissão,
+     * ordenadas por {@code displayName} (S4-05 §10). É o método único de consulta de staff por
+     * permissão (decisão D10): o S8 e o S10 acrescentam {@code staffDisplayNames} e
+     * {@code staffMember} com o mesmo {@link StaffContact}. Corre em {@code SYSTEM}.
+     */
+    public List<StaffContact> staffWithPermission(UUID orgId, String permission) {
+        return lookups.staffWithPermission(orgId, permission);
     }
 
     /**
