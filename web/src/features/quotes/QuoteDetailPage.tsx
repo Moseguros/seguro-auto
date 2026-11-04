@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Permissions, usePermission } from '../../auth/permissions';
 import { LoadingScreen } from '../../auth/RequireAuth';
 import { FileOpenButton } from '../../files/FileOpenButton';
 import { formatMoney } from '../../format/money';
@@ -36,6 +37,7 @@ export function QuoteDetailPage({ mode }: { mode: QuoteMode }) {
   const query = useQuoteRequest(requestId);
   const reason = useUnavailableReason();
   const [fileError, setFileError] = useState<string | null>(null);
+  const canCreateProposal = usePermission(Permissions.proposalCreateForClient);
   const language = i18n.language;
 
   if (query.isPending) return <LoadingScreen />;
@@ -96,6 +98,16 @@ export function QuoteDetailPage({ mode }: { mode: QuoteMode }) {
       </Container>
     );
   }
+
+  // "Adquirir apólice" (S4-08): o único laranja do detalhe, só numa cotação em vigor.
+  const acquirePath =
+    quote.status !== 'OFFERED'
+      ? null
+      : mode === 'customer'
+        ? `/cliente/propostas/nova?cotacao=${quote.id}`
+        : canCreateProposal
+          ? `/mediador/propostas/nova?pedido=${request.id}&cotacao=${quote.id}`
+          : null;
 
   const totals: { key: string; label: string; value?: { amount: number }; strong?: boolean }[] = [
     { key: 'commercial', label: t('quote.commercialPremium'), value: quote.commercialPremium },
@@ -201,7 +213,17 @@ export function QuoteDetailPage({ mode }: { mode: QuoteMode }) {
           </CardContent>
         </Card>
 
-        <Typography color="text.secondary">{t('quote.detail.comingSoon')}</Typography>
+        {acquirePath && (
+          <Button
+            variant="cta"
+            size="large"
+            component={RouterLink}
+            to={acquirePath}
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            {t('quote.detail.acquire')}
+          </Button>
+        )}
         {back}
       </Stack>
       <Snackbar

@@ -20,6 +20,15 @@ import { OrganizationCreatePage } from './features/organizations/OrganizationCre
 import { OrganizationDetailPage } from './features/organizations/OrganizationDetailPage';
 import { OrganizationListPage } from './features/organizations/OrganizationListPage';
 import { ProductDetailPage } from './features/products/ProductDetailPage';
+import {
+  BrokerNewProposalPage,
+  BrokerProposalPage,
+  BrokerProposalsPage,
+  CustomerProposalPage,
+  IdentityPage,
+  MyProposalsPage,
+  NewProposalPage,
+} from './features/proposal-wizard/lazyPages';
 import { ProductListPage } from './features/products/ProductListPage';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
 import { BrokerQuotesPage } from './features/quotes/BrokerQuotesPage';
@@ -168,6 +177,19 @@ const brokerRoutes: RouteObject[] = [
     path: 'cotacoes/:requestId/:quoteId',
     element: withPermission(Permissions.quoteCreateForClient, <QuoteDetailPage mode="broker" />),
   },
+  // Propostas em nome do cliente (S4-08): só com `proposal:create-for-client`.
+  {
+    path: 'propostas',
+    element: withPermission(Permissions.proposalCreateForClient, <BrokerProposalsPage />),
+  },
+  {
+    path: 'propostas/nova',
+    element: withPermission(Permissions.proposalCreateForClient, <BrokerNewProposalPage />),
+  },
+  {
+    path: 'propostas/:id',
+    element: withPermission(Permissions.proposalCreateForClient, <BrokerProposalPage />),
+  },
 ];
 
 /** Páginas próprias de cada área de staff, além das comuns. */
@@ -229,6 +251,11 @@ const customerRoutes: RouteObject = {
     { path: 'simular/:requestId/comparar', element: <QuoteComparePage mode="customer" /> },
     { path: 'simular/:requestId/:quoteId', element: <QuoteDetailPage mode="customer" /> },
     { path: 'cotacoes', element: <MyQuotesPage /> },
+    // Propostas e verificação de identidade (S4-08).
+    { path: 'propostas', element: <MyProposalsPage /> },
+    { path: 'propostas/nova', element: <NewProposalPage /> },
+    { path: 'propostas/:id', element: <CustomerProposalPage /> },
+    { path: 'identidade', element: <IdentityPage /> },
     { path: '*', element: <UnderConstructionPage /> },
   ],
 };

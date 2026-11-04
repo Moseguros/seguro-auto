@@ -17,6 +17,7 @@ import {
 import { meQueryKey } from '../../auth/AuthProvider';
 import { LoadingScreen } from '../../auth/RequireAuth';
 import { getProblem, problemMessage } from '../../errors/problem';
+import { customerReturnPath } from '../quotes/config';
 import { ContactsSection } from './ContactsSection';
 import { ProfileForm } from './ProfileForm';
 
@@ -27,6 +28,8 @@ export function ProfilePage() {
   const queryClient = useQueryClient();
   const [params] = useSearchParams();
   const completing = params.get('completar') === '1';
+  // `?voltar=/cliente/…` (S4-08): depois de gravar volta para lá; outros valores são ignorados.
+  const returnTo = customerReturnPath(params.get('voltar'));
   const [saved, setSaved] = useState(false);
   const queryKey = getGetMyProfileQueryKey();
   const profile = useQuery({
@@ -38,7 +41,9 @@ export function ProfilePage() {
     queryClient.setQueryData(queryKey, value);
     // O nome e `profileComplete` do utilizador mudaram.
     await queryClient.invalidateQueries({ queryKey: meQueryKey });
-    if (completing && value.complete) {
+    if (returnTo && (value.complete || !completing)) {
+      navigate(returnTo, { replace: true });
+    } else if (completing && value.complete) {
       navigate('/cliente', { replace: true, state: { profileSaved: true } });
     } else {
       setSaved(true);
