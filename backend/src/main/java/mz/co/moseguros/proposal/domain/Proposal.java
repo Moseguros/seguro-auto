@@ -116,6 +116,11 @@ public class Proposal extends BaseEntity {
     @Column(name = "policyholder_nuit_enc", nullable = false)
     private String policyholderNuit;
 
+    /** Origem do tomador (S4-06 §1): o perfil do cliente ou o mediador. */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "policyholder_source", nullable = false, updatable = false, length = 10)
+    private PolicyholderSource policyholderSource = PolicyholderSource.PROFILE;
+
     /** Nesta fase sempre {@code {"sameAsPolicyholder": true}}. */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "insured", nullable = false, updatable = false, columnDefinition = "jsonb")
@@ -297,10 +302,23 @@ public class Proposal extends BaseEntity {
                         long totalAmount, CoverPeriod period, int durationDays) {
     }
 
-    /** Proposta {@code DRAFT}, com {@code content_revision = 1} e a expiração em {@code now + expiry}. */
+    /** Proposta {@code DRAFT} com o tomador copiado do perfil ({@link PolicyholderSource#PROFILE}). */
     public static Proposal draft(Draft d, Instant now, Duration expiry) {
+        return draft(d, PolicyholderSource.PROFILE, now, expiry);
+    }
+
+    /**
+     * Proposta {@code DRAFT}, com {@code content_revision = 1} e a expiração em {@code now + expiry}. O
+     * tomador preenchido pelo mediador ({@link PolicyholderSource#BROKER}) só existe no canal
+     * {@code BROKER} (S4-06 §1).
+     */
+    public static Proposal draft(Draft d, PolicyholderSource policyholderSource, Instant now, Duration expiry) {
         if ((d.channel() == ProposalChannel.BROKER) != (d.brokerOrgId() != null)) {
             throw new IllegalArgumentException("brokerOrgId is required exactly with channel BROKER");
+        }
+        Objects.requireNonNull(policyholderSource, "policyholderSource");
+        if (policyholderSource == PolicyholderSource.BROKER && d.channel() != ProposalChannel.BROKER) {
+            throw new IllegalArgumentException("Only a broker proposal can have a policyholder filled by the broker");
         }
         if (d.totalAmount() <= 0) {
             throw new IllegalArgumentException("totalAmount must be positive");
@@ -322,6 +340,7 @@ public class Proposal extends BaseEntity {
         p.vehicleId = Objects.requireNonNull(d.vehicleId(), "vehicleId");
         p.driverId = Objects.requireNonNull(d.driverId(), "driverId");
         p.setPolicyholder(d.policyholder(), d.idDocNumber(), d.nuit());
+        p.policyholderSource = policyholderSource;
         p.insured = canonical(Objects.requireNonNull(d.insured(), "insured"));
         p.vehicleSnapshot = canonical(Objects.requireNonNull(d.vehicleSnapshot(), "vehicleSnapshot"));
         p.driverSnapshot = canonical(Objects.requireNonNull(d.driverSnapshot(), "driverSnapshot"));
@@ -735,6 +754,10 @@ public class Proposal extends BaseEntity {
     /** Em claro: mesmas regras de {@link #getPolicyholderIdDocNumber}. */
     public String getPolicyholderNuit() {
         return policyholderNuit;
+    }
+
+    public PolicyholderSource getPolicyholderSource() {
+        return policyholderSource;
     }
 
     public JsonNode getInsured() {
