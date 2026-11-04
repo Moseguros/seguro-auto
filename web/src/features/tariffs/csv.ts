@@ -35,7 +35,8 @@ export interface CsvError {
 
 export type CsvImportResult = { ok: true; rows: TariffRow[] } | { ok: false; errors: CsvError[] };
 
-const bom = '﻿';
+/** Marca de ordem dos bytes (U+FEFF) no início da exportação. */
+const bom = String.fromCharCode(0xfeff);
 
 /** Centavos → meticais com ponto e 2 casas (`450000` → `"4500.00"`). */
 function centsToText(cents: number): string {

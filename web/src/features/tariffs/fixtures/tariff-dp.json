@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "rating-v1",
+  "coverages": [
+    {
+      "coverageCode": "MTPL",
+      "base": {
+        "type": "AMOUNT",
+        "rows": [
+          { "label": "Ligeiro de passageiros, particular", "when": { "vehicleCategory": { "in": ["LIGHT_PASSENGER"] }, "vehicleUsage": { "in": ["PRIVATE"] } }, "value": 450000 },
+          { "label": "Ligeiro de passageiros, táxi ou aluguer", "when": { "vehicleCategory": { "in": ["LIGHT_PASSENGER"] }, "vehicleUsage": { "in": ["TAXI", "RENTAL"] } }, "value": 900000 },
+          { "label": "Ligeiro misto", "when": { "vehicleCategory": { "in": ["LIGHT_MIXED"] } }, "value": 600000 },
+          { "label": "Motociclo", "when": { "vehicleCategory": { "in": ["MOTORCYCLE"] } }, "value": 250000 },
+          { "label": "Pesado", "when": { "vehicleCategory": { "in": ["HEAVY"] } }, "value": 1500000 }
+        ]
+      },
+      "factors": [
+        { "code": "DRIVER_AGE", "label": "Idade do condutor", "rows": [
+          { "when": { "driverAgeYears": { "lt": 25 } }, "value": "1.30" },
+          { "when": { "driverAgeYears": { "gte": 25, "lt": 70 } }, "value": "1.00" },
+          { "when": { "driverAgeYears": { "gte": 70 } }, "value": "1.15" } ] },
+        { "code": "LICENCE_YEARS", "label": "Antiguidade da carta", "rows": [
+          { "when": { "licenceYears": { "lt": 2 } }, "value": "1.25" },
+          { "when": { "licenceYears": { "gte": 2 } }, "value": "1.00" } ] },
+        { "code": "PROVINCE", "label": "Província de circulação", "rows": [
+          { "when": { "province": { "in": ["MAPUTO_CITY", "MAPUTO"] } }, "value": "1.10" },
+          { "when": {}, "value": "1.00" } ] }
+      ]
+    },
+    {
+      "coverageCode": "VTPL",
+      "base": {
+        "type": "RATE_OF_CAPITAL",
+        "rows": [
+          { "when": { "capital": { "lt": 600000000 } }, "value": "0.0004" },
+          { "when": {}, "value": "0.0003" }
+        ]
+      }
+    },
+    {
+      "coverageCode": "OD_COLLISION",
+      "base": {
+        "type": "RATE_OF_VEHICLE_VALUE",
+        "rows": [
+          { "label": "Até 4 anos", "when": { "vehicleAgeYears": { "lt": 5 } }, "value": "0.025" },
+          { "label": "5 a 10 anos", "when": { "vehicleAgeYears": { "gte": 5, "lt": 11 } }, "value": "0.030" }
+        ]
+      },
+      "factors": [
+        { "code": "DRIVER_AGE", "label": "Idade do condutor", "rows": [
+          { "when": { "driverAgeYears": { "lt": 25 } }, "value": "1.30" },
+          { "when": {}, "value": "1.00" } ] },
+        { "code": "TRACKER", "label": "Localizador", "rows": [
+          { "when": { "hasTracker": true }, "value": "0.90" },
+          { "when": {}, "value": "1.00" } ] },
+        { "code": "PROVINCE", "label": "Província de circulação", "rows": [
+          { "when": { "province": { "in": ["MAPUTO_CITY"] } }, "value": "1.15" },
+          { "when": {}, "value": "1.00" } ] }
+      ]
+    },
+    {
+      "coverageCode": "OD_FIRE",
+      "base": { "type": "RATE_OF_VEHICLE_VALUE", "rows": [ { "when": {}, "value": "0.0015" } ] }
+    },
+    {
+      "coverageCode": "OD_NATURE",
+      "base": { "type": "RATE_OF_VEHICLE_VALUE", "rows": [ { "when": {}, "value": "0.0020" } ] }
+    },
+    {
+      "coverageCode": "OD_THEFT",
+      "base": { "type": "RATE_OF_VEHICLE_VALUE", "rows": [ { "when": {}, "value": "0.0050" } ] },
+      "factors": [
+        { "code": "TRACKER", "label": "Localizador", "rows": [
+          { "when": { "hasTracker": true }, "value": "0.70" },
+          { "when": {}, "value": "1.00" } ] }
+      ]
+    }
+  ]
+}
