@@ -3461,6 +3461,198 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ver todas'**
   String get myQuotesSeeAll;
+
+  /// No description provided for @errorKycNotVerified.
+  ///
+  /// In pt, this message translates to:
+  /// **'A identidade do cliente ainda não foi verificada.'**
+  String get errorKycNotVerified;
+
+  /// No description provided for @errorInspectionNotApproved.
+  ///
+  /// In pt, this message translates to:
+  /// **'A vistoria ainda não foi aprovada.'**
+  String get errorInspectionNotApproved;
+
+  /// No description provided for @validationInvalidRules.
+  ///
+  /// In pt, this message translates to:
+  /// **'Regra inválida.'**
+  String get validationInvalidRules;
+
+  /// No description provided for @proposalUnderwritingFailureAutoAcceptDisabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceitação automática desligada no produto'**
+  String get proposalUnderwritingFailureAutoAcceptDisabled;
+
+  /// No description provided for @proposalUnderwritingFailureKycRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Identidade por verificar e prémio acima do limite do KYC simplificado'**
+  String get proposalUnderwritingFailureKycRequired;
+
+  /// No description provided for @proposalUnderwritingFailureDeclarationPositive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Há declarações de risco com resposta \"sim\"'**
+  String get proposalUnderwritingFailureDeclarationPositive;
+
+  /// No description provided for @proposalUnderwritingFailureInspectionNotApproved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria por aprovar'**
+  String get proposalUnderwritingFailureInspectionNotApproved;
+
+  /// No description provided for @proposalUnderwritingFailureVehicleValueMissing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor do veículo não declarado'**
+  String get proposalUnderwritingFailureVehicleValueMissing;
+
+  /// No description provided for @proposalUnderwritingFailureVehicleValueAboveLimit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Valor do veículo acima do limite de aceitação automática'**
+  String get proposalUnderwritingFailureVehicleValueAboveLimit;
+
+  /// No description provided for @proposalRejectionReasonRiskNotAccepted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Risco não aceite'**
+  String get proposalRejectionReasonRiskNotAccepted;
+
+  /// No description provided for @proposalRejectionReasonKycFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Identidade não confirmada'**
+  String get proposalRejectionReasonKycFailed;
+
+  /// No description provided for @proposalRejectionReasonInspectionFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria não aprovada'**
+  String get proposalRejectionReasonInspectionFailed;
+
+  /// No description provided for @proposalRejectionReasonFalseDeclaration.
+  ///
+  /// In pt, this message translates to:
+  /// **'Declarações incorrectas'**
+  String get proposalRejectionReasonFalseDeclaration;
+
+  /// No description provided for @proposalRejectionReasonDocumentsInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Documentos inválidos'**
+  String get proposalRejectionReasonDocumentsInvalid;
+
+  /// No description provided for @proposalRejectionReasonOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outro motivo'**
+  String get proposalRejectionReasonOther;
+
+  /// No description provided for @proposalInfoRequestItemDeclarations.
+  ///
+  /// In pt, this message translates to:
+  /// **'Declarações de risco'**
+  String get proposalInfoRequestItemDeclarations;
+
+  /// No description provided for @proposalInfoRequestItemSuitability.
+  ///
+  /// In pt, this message translates to:
+  /// **'Questionário de adequação'**
+  String get proposalInfoRequestItemSuitability;
+
+  /// No description provided for @proposalInfoRequestItemInspection.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vistoria'**
+  String get proposalInfoRequestItemInspection;
+
+  /// No description provided for @proposalInfoRequestItemKyc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Verificação de identidade'**
+  String get proposalInfoRequestItemKyc;
+
+  /// No description provided for @proposalInfoRequestItemPolicyholder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados do tomador'**
+  String get proposalInfoRequestItemPolicyholder;
+
+  /// No description provided for @proposalInfoRequestItemOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outro'**
+  String get proposalInfoRequestItemOther;
+
+  /// No description provided for @proposalSlaStatusOnTime.
+  ///
+  /// In pt, this message translates to:
+  /// **'No prazo'**
+  String get proposalSlaStatusOnTime;
+
+  /// No description provided for @proposalSlaStatusAlert.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo a terminar'**
+  String get proposalSlaStatusAlert;
+
+  /// No description provided for @proposalSlaStatusOverdue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo ultrapassado'**
+  String get proposalSlaStatusOverdue;
+
+  /// No description provided for @proposalStatusDraft.
+  ///
+  /// In pt, this message translates to:
+  /// **'Rascunho'**
+  String get proposalStatusDraft;
+
+  /// No description provided for @proposalStatusUnderReview.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em análise'**
+  String get proposalStatusUnderReview;
+
+  /// No description provided for @proposalStatusInfoRequested.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informação pedida'**
+  String get proposalStatusInfoRequested;
+
+  /// No description provided for @proposalStatusAccepted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aceite'**
+  String get proposalStatusAccepted;
+
+  /// No description provided for @proposalStatusRejected.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não aceite'**
+  String get proposalStatusRejected;
+
+  /// No description provided for @proposalStatusExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expirada'**
+  String get proposalStatusExpired;
+
+  /// No description provided for @proposalStatusPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Paga'**
+  String get proposalStatusPaid;
+
+  /// No description provided for @proposalStatusConverted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólice emitida'**
+  String get proposalStatusConverted;
 }
 
 class _AppLocalizationsDelegate

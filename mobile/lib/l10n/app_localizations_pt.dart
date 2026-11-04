@@ -1967,4 +1967,108 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get myQuotesSeeAll => 'Ver todas';
+
+  @override
+  String get errorKycNotVerified =>
+      'A identidade do cliente ainda não foi verificada.';
+
+  @override
+  String get errorInspectionNotApproved => 'A vistoria ainda não foi aprovada.';
+
+  @override
+  String get validationInvalidRules => 'Regra inválida.';
+
+  @override
+  String get proposalUnderwritingFailureAutoAcceptDisabled =>
+      'Aceitação automática desligada no produto';
+
+  @override
+  String get proposalUnderwritingFailureKycRequired =>
+      'Identidade por verificar e prémio acima do limite do KYC simplificado';
+
+  @override
+  String get proposalUnderwritingFailureDeclarationPositive =>
+      'Há declarações de risco com resposta \"sim\"';
+
+  @override
+  String get proposalUnderwritingFailureInspectionNotApproved =>
+      'Vistoria por aprovar';
+
+  @override
+  String get proposalUnderwritingFailureVehicleValueMissing =>
+      'Valor do veículo não declarado';
+
+  @override
+  String get proposalUnderwritingFailureVehicleValueAboveLimit =>
+      'Valor do veículo acima do limite de aceitação automática';
+
+  @override
+  String get proposalRejectionReasonRiskNotAccepted => 'Risco não aceite';
+
+  @override
+  String get proposalRejectionReasonKycFailed => 'Identidade não confirmada';
+
+  @override
+  String get proposalRejectionReasonInspectionFailed => 'Vistoria não aprovada';
+
+  @override
+  String get proposalRejectionReasonFalseDeclaration =>
+      'Declarações incorrectas';
+
+  @override
+  String get proposalRejectionReasonDocumentsInvalid => 'Documentos inválidos';
+
+  @override
+  String get proposalRejectionReasonOther => 'Outro motivo';
+
+  @override
+  String get proposalInfoRequestItemDeclarations => 'Declarações de risco';
+
+  @override
+  String get proposalInfoRequestItemSuitability => 'Questionário de adequação';
+
+  @override
+  String get proposalInfoRequestItemInspection => 'Vistoria';
+
+  @override
+  String get proposalInfoRequestItemKyc => 'Verificação de identidade';
+
+  @override
+  String get proposalInfoRequestItemPolicyholder => 'Dados do tomador';
+
+  @override
+  String get proposalInfoRequestItemOther => 'Outro';
+
+  @override
+  String get proposalSlaStatusOnTime => 'No prazo';
+
+  @override
+  String get proposalSlaStatusAlert => 'Prazo a terminar';
+
+  @override
+  String get proposalSlaStatusOverdue => 'Prazo ultrapassado';
+
+  @override
+  String get proposalStatusDraft => 'Rascunho';
+
+  @override
+  String get proposalStatusUnderReview => 'Em análise';
+
+  @override
+  String get proposalStatusInfoRequested => 'Informação pedida';
+
+  @override
+  String get proposalStatusAccepted => 'Aceite';
+
+  @override
+  String get proposalStatusRejected => 'Não aceite';
+
+  @override
+  String get proposalStatusExpired => 'Expirada';
+
+  @override
+  String get proposalStatusPaid => 'Paga';
+
+  @override
+  String get proposalStatusConverted => 'Apólice emitida';
 }

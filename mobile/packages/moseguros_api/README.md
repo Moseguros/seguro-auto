@@ -78,6 +78,7 @@ Class | Method | HTTP request | Description
 [*CatalogApi*](doc/CatalogApi.md) | [**getInsurerBranding**](doc/CatalogApi.md#getinsurerbranding) | **GET** /api/v1/insurer/branding | Consulta o logótipo da seguradora
 [*CatalogApi*](doc/CatalogApi.md) | [**getInsurerProduct**](doc/CatalogApi.md#getinsurerproduct) | **GET** /api/v1/insurer/products/{id} | Consulta um produto
 [*CatalogApi*](doc/CatalogApi.md) | [**getProductVersion**](doc/CatalogApi.md#getproductversion) | **GET** /api/v1/insurer/product-versions/{id} | Consulta uma versão de um produto
+[*CatalogApi*](doc/CatalogApi.md) | [**getUnderwritingRules**](doc/CatalogApi.md#getunderwritingrules) | **GET** /api/v1/insurer/product-versions/{id}/underwriting-rules | Consulta as regras de aceitação de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**listActivePlateFormats**](doc/CatalogApi.md#listactiveplateformats) | **GET** /api/v1/plate-formats | Lista os formatos de matrícula aceites
 [*CatalogApi*](doc/CatalogApi.md) | [**listAdminReferenceValues**](doc/CatalogApi.md#listadminreferencevalues) | **GET** /api/v1/admin/reference-domains/{domain}/values | Lista os valores de um domínio (administração)
 [*CatalogApi*](doc/CatalogApi.md) | [**listCatalogProducts**](doc/CatalogApi.md#listcatalogproducts) | **GET** /api/v1/catalog/products | Lista os produtos publicados
@@ -96,6 +97,7 @@ Class | Method | HTTP request | Description
 [*CatalogApi*](doc/CatalogApi.md) | [**updatePlatformSetting**](doc/CatalogApi.md#updateplatformsetting) | **PUT** /api/v1/admin/platform-settings/{key} | Altera o valor de um parâmetro
 [*CatalogApi*](doc/CatalogApi.md) | [**updateProductVersion**](doc/CatalogApi.md#updateproductversion) | **PUT** /api/v1/insurer/product-versions/{id} | Altera a elegibilidade de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**updateReferenceValue**](doc/CatalogApi.md#updatereferencevalue) | **PUT** /api/v1/admin/reference-domains/{domain}/values/{id} | Altera um valor de referência
+[*CatalogApi*](doc/CatalogApi.md) | [**updateUnderwritingRules**](doc/CatalogApi.md#updateunderwritingrules) | **PUT** /api/v1/insurer/product-versions/{id}/underwriting-rules | Altera as regras de aceitação de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**uploadInsurerLogo**](doc/CatalogApi.md#uploadinsurerlogo) | **POST** /api/v1/insurer/branding/logo | Envia o logótipo da seguradora
 [*CatalogApi*](doc/CatalogApi.md) | [**uploadProductVersionDocument**](doc/CatalogApi.md#uploadproductversiondocument) | **POST** /api/v1/insurer/product-versions/{id}/documents | Envia um documento de uma versão
 [*CatalogApi*](doc/CatalogApi.md) | [**validateProductVersion**](doc/CatalogApi.md#validateproductversion) | **POST** /api/v1/insurer/product-versions/{id}/validate | Verifica as regras de publicação
@@ -157,21 +159,27 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateInsurerRatingSettings**](doc/OrganizationApi.md#updateinsurerratingsettings) | **PUT** /api/v1/insurer/rating-settings | Altera os encargos da seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**acceptProposal**](doc/ProposalApi.md#acceptproposal) | **POST** /api/v1/insurer/proposals/{id}/accept | Aceita uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**confirmProposalSignature**](doc/ProposalApi.md#confirmproposalsignature) | **POST** /api/v1/proposals/{id}/sign/confirm | Confirma a assinatura com o código recebido
 [*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
 [*ProposalApi*](doc/ProposalApi.md) | [**getInsurerInspection**](doc/ProposalApi.md#getinsurerinspection) | **GET** /api/v1/insurer/inspections/{id} | Consulta uma vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**getInsurerProposal**](doc/ProposalApi.md#getinsurerproposal) | **GET** /api/v1/insurer/proposals/{id} | Consulta uma proposta submetida
 [*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**listInsurerInspections**](doc/ProposalApi.md#listinsurerinspections) | **GET** /api/v1/insurer/inspections | Lista as vistorias da seguradora
+[*ProposalApi*](doc/ProposalApi.md) | [**listInsurerProposals**](doc/ProposalApi.md#listinsurerproposals) | **GET** /api/v1/insurer/proposals | Lista as propostas submetidas à seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
 [*ProposalApi*](doc/ProposalApi.md) | [**rejectInspection**](doc/ProposalApi.md#rejectinspection) | **POST** /api/v1/insurer/inspections/{id}/reject | Recusa uma vistoria
+[*ProposalApi*](doc/ProposalApi.md) | [**rejectProposal**](doc/ProposalApi.md#rejectproposal) | **POST** /api/v1/insurer/proposals/{id}/reject | Recusa uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**removeInspectionPhoto**](doc/ProposalApi.md#removeinspectionphoto) | **DELETE** /api/v1/proposals/{id}/inspection/photos/{photoId} | Retira uma fotografia da vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**requestOnSiteInspection**](doc/ProposalApi.md#requestonsiteinspection) | **POST** /api/v1/proposals/{id}/inspection/request-on-site | Pede uma vistoria presencial
+[*ProposalApi*](doc/ProposalApi.md) | [**requestProposalInfo**](doc/ProposalApi.md#requestproposalinfo) | **POST** /api/v1/insurer/proposals/{id}/request-info | Pede informação ao cliente
 [*ProposalApi*](doc/ProposalApi.md) | [**requestProposalSignature**](doc/ProposalApi.md#requestproposalsignature) | **POST** /api/v1/proposals/{id}/sign/request | Gera o PDF da proposta e envia o código de assinatura
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalDeclarations**](doc/ProposalApi.md#saveproposaldeclarations) | **POST** /api/v1/proposals/{id}/declarations | Grava as declarações de risco
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**submitInspection**](doc/ProposalApi.md#submitinspection) | **POST** /api/v1/proposals/{id}/inspection/submit | Submete a vistoria por fotografias
+[*ProposalApi*](doc/ProposalApi.md) | [**submitProposal**](doc/ProposalApi.md#submitproposal) | **POST** /api/v1/proposals/{id}/submit | Submete a proposta à seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**updateProposal**](doc/ProposalApi.md#updateproposal) | **PUT** /api/v1/proposals/{id} | Altera a data de início da proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**uploadInspectionPhoto**](doc/ProposalApi.md#uploadinspectionphoto) | **POST** /api/v1/proposals/{id}/inspection/photos | Envia uma fotografia da vistoria
 [*RatingApi*](doc/RatingApi.md) | [**createBrokerQuoteRequest**](doc/RatingApi.md#createbrokerquoterequest) | **POST** /api/v1/broker/quotes | Pede cotações em nome de um cliente
@@ -201,6 +209,8 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [AcceptInvitationRequest](doc/AcceptInvitationRequest.md)
+ - [AcceptProposalRequest](doc/AcceptProposalRequest.md)
+ - [AcceptanceMode](doc/AcceptanceMode.md)
  - [AcknowledgeSuitabilityRequest](doc/AcknowledgeSuitabilityRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
  - [ApproveInspectionRequest](doc/ApproveInspectionRequest.md)
@@ -232,6 +242,7 @@ Class | Method | HTTP request | Description
  - [DriverResponse](doc/DriverResponse.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
+ - [InfoRequestItem](doc/InfoRequestItem.md)
  - [InspectionMode](doc/InspectionMode.md)
  - [InspectionPhotoResponse](doc/InspectionPhotoResponse.md)
  - [InspectionResponse](doc/InspectionResponse.md)
@@ -242,6 +253,13 @@ Class | Method | HTTP request | Description
  - [InsurerKycCheckResponse](doc/InsurerKycCheckResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
+ - [InsurerProposalDriver](doc/InsurerProposalDriver.md)
+ - [InsurerProposalKyc](doc/InsurerProposalKyc.md)
+ - [InsurerProposalResponse](doc/InsurerProposalResponse.md)
+ - [InsurerProposalSignature](doc/InsurerProposalSignature.md)
+ - [InsurerProposalSla](doc/InsurerProposalSla.md)
+ - [InsurerProposalSummaryResponse](doc/InsurerProposalSummaryResponse.md)
+ - [InsurerProposalVehicle](doc/InsurerProposalVehicle.md)
  - [InsurerRatingSettingsResponse](doc/InsurerRatingSettingsResponse.md)
  - [InvitationDetailsResponse](doc/InvitationDetailsResponse.md)
  - [InvitationOrganization](doc/InvitationOrganization.md)
@@ -274,6 +292,7 @@ Class | Method | HTTP request | Description
  - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
  - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
+ - [PageResponseInsurerProposalSummaryResponse](doc/PageResponseInsurerProposalSummaryResponse.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
@@ -300,9 +319,11 @@ Class | Method | HTTP request | Description
  - [ProposalCharge](doc/ProposalCharge.md)
  - [ProposalChecklist](doc/ProposalChecklist.md)
  - [ProposalCoverage](doc/ProposalCoverage.md)
+ - [ProposalDecision](doc/ProposalDecision.md)
  - [ProposalDeclarations](doc/ProposalDeclarations.md)
  - [ProposalDeductible](doc/ProposalDeductible.md)
  - [ProposalDriver](doc/ProposalDriver.md)
+ - [ProposalInfoRequest](doc/ProposalInfoRequest.md)
  - [ProposalKyc](doc/ProposalKyc.md)
  - [ProposalOrganization](doc/ProposalOrganization.md)
  - [ProposalPolicyholder](doc/ProposalPolicyholder.md)
@@ -345,9 +366,12 @@ Class | Method | HTTP request | Description
  - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
  - [RejectInspectionRequest](doc/RejectInspectionRequest.md)
  - [RejectKycCheckRequest](doc/RejectKycCheckRequest.md)
+ - [RejectProposalRequest](doc/RejectProposalRequest.md)
+ - [RejectionReasonCode](doc/RejectionReasonCode.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOnSiteInspectionRequest](doc/RequestOnSiteInspectionRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
+ - [RequestProposalInfoRequest](doc/RequestProposalInfoRequest.md)
  - [RequestSignatureRequest](doc/RequestSignatureRequest.md)
  - [RequestedCoverageRequest](doc/RequestedCoverageRequest.md)
  - [RequestedCoverageResponse](doc/RequestedCoverageResponse.md)
@@ -359,10 +383,12 @@ Class | Method | HTTP request | Description
  - [SignatureRequestResponse](doc/SignatureRequestResponse.md)
  - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
  - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
+ - [SlaStatus](doc/SlaStatus.md)
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
  - [SubmitInspectionRequest](doc/SubmitInspectionRequest.md)
+ - [SubmitProposalRequest](doc/SubmitProposalRequest.md)
  - [SuitabilityAnswerRequest](doc/SuitabilityAnswerRequest.md)
  - [SuitabilityAnswerResponse](doc/SuitabilityAnswerResponse.md)
  - [SuitabilityQuestion](doc/SuitabilityQuestion.md)
@@ -374,6 +400,11 @@ Class | Method | HTTP request | Description
  - [TokenResponse](doc/TokenResponse.md)
  - [TotpSetupResponse](doc/TotpSetupResponse.md)
  - [UnavailableReason](doc/UnavailableReason.md)
+ - [UnderwritingFailure](doc/UnderwritingFailure.md)
+ - [UnderwritingInputs](doc/UnderwritingInputs.md)
+ - [UnderwritingOutcome](doc/UnderwritingOutcome.md)
+ - [UnderwritingResult](doc/UnderwritingResult.md)
+ - [UnderwritingRulesResponse](doc/UnderwritingRulesResponse.md)
  - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
  - [UpdateInsurerRatingSettingsRequest](doc/UpdateInsurerRatingSettingsRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
@@ -388,6 +419,7 @@ Class | Method | HTTP request | Description
  - [UpdateRatingIntegrationRequest](doc/UpdateRatingIntegrationRequest.md)
  - [UpdateRatingRulesRequest](doc/UpdateRatingRulesRequest.md)
  - [UpdateReferenceValueRequest](doc/UpdateReferenceValueRequest.md)
+ - [UpdateUnderwritingRulesRequest](doc/UpdateUnderwritingRulesRequest.md)
  - [UpdateUserRolesRequest](doc/UpdateUserRolesRequest.md)
  - [UpdateVehicleDriversRequest](doc/UpdateVehicleDriversRequest.md)
  - [UpdateVehicleRequest](doc/UpdateVehicleRequest.md)

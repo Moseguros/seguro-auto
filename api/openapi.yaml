@@ -2319,6 +2319,83 @@ paths:
       summary: Valida uma tarifa sem a gravar
       tags:
       - Rating
+  /api/v1/insurer/product-versions/{id}/underwriting-rules:
+    get:
+      description: "Permissão product:read. Sem regras próprias devolve os valores\
+        \ por defeito (isDefault = true): aceitação automática ligada, KYC simplificado\
+        \ abaixo de 10 000 MT e danos próprios até 1 500 000 MT com todas as declaraç\
+        ões \"não\" (provisórios)."
+      operationId: getUnderwritingRules
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnderwritingRulesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta as regras de aceitação de uma versão
+      tags:
+      - Catalog
+    put:
+      description: "Permissão product:manage. Só em DRAFT (senão 409 PRODUCT_VERSION_NOT_EDITABLE);\
+        \ version diferente → 409 CONCURRENT_MODIFICATION. As regras seguem o schema\
+        \ underwriting-v1 (campos desconhecidos recusados): erros → 400 VALIDATION_ERROR\
+        \ com errors[] = { field: rules.<caminho>, code: INVALID_RULES }."
+      operationId: updateUnderwritingRules
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUnderwritingRulesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnderwritingRulesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as regras de aceitação de uma versão
+      tags:
+      - Catalog
   /api/v1/insurer/product-versions/{id}/validate:
     post:
       description: "Permissão product:read. As mesmas regras da publicação, sem gravar;\
@@ -2600,6 +2677,269 @@ paths:
       summary: Cria uma nova versão do produto
       tags:
       - Catalog
+  /api/v1/insurer/proposals:
+    get:
+      description: "Permissão proposal:read. status repetível (por defeito UNDER_REVIEW);\
+        \ slaStatus (ON_TIME, ALERT, OVERDUE; só propostas UNDER_REVIEW); productType;\
+        \ channel; q = número exacto ou parte do nome do tomador; submittedFrom e\
+        \ submittedTo em datas de Africa/Maputo (inclusivas). Ordenação por submittedAt\
+        \ (defeito, asc) ou slaDueAt."
+      operationId: listInsurerProposals
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProposalStatus"
+      - in: query
+        name: slaStatus
+        required: false
+        schema:
+          $ref: "#/components/schemas/SlaStatus"
+      - in: query
+        name: productType
+        required: false
+        schema:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+      - in: query
+        name: channel
+        required: false
+        schema:
+          $ref: "#/components/schemas/ProposalChannel"
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: submittedFrom
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: submittedTo
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "submittedAt ou slaDueAt, com ,asc ou ,desc"
+        example: "submittedAt,asc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInsurerProposalSummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as propostas submetidas à seguradora
+      tags:
+      - Proposal
+  /api/v1/insurer/proposals/{id}:
+    get:
+      description: "Permissão proposal:read. A proposta com o condutor e o veículo\
+        \ completos, o KYC, o registo das regras de aceitação (underwriting), o SLA\
+        \ e o histórico das assinaturas."
+      operationId: getInsurerProposal
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma proposta submetida
+      tags:
+      - Proposal
+  /api/v1/insurer/proposals/{id}/accept:
+    post:
+      description: "Permissão proposal:decide. UNDER_REVIEW → ACCEPTED (acceptanceMode\
+        \ = MANUAL), com o prazo para pagar (expiresAt). Com vistoria, tem de estar\
+        \ APPROVED (409 INSPECTION_NOT_APPROVED); KYC VERIFIED ou total abaixo do\
+        \ limiar do KYC simplificado (409 KYC_NOT_VERIFIED). note até 1000 (TOO_LONG).\
+        \ Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente\
+        \ → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver\
+        \ verificado)."
+      operationId: acceptProposal
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptProposalRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Aceita uma proposta
+      tags:
+      - Proposal
+  /api/v1/insurer/proposals/{id}/reject:
+    post:
+      description: "Permissão proposal:decide. UNDER_REVIEW → REJECTED. reasonCode\
+        \ obrigatório (REQUIRED, INVALID_VALUE); reason 10–1000 (REQUIRED, TOO_SHORT,\
+        \ TOO_LONG); o motivo vai no e-mail ao cliente. Só em UNDER_REVIEW (senão\
+        \ 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION;\
+        \ o cliente é avisado por e-mail (se o tiver verificado)."
+      operationId: rejectProposal
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectProposalRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Recusa uma proposta
+      tags:
+      - Proposal
+  /api/v1/insurer/proposals/{id}/request-info:
+    post:
+      description: "Permissão proposal:decide. UNDER_REVIEW → INFO_REQUESTED, com\
+        \ o prazo do cliente (expiresAt). message 10–1000 (REQUIRED, TOO_SHORT, TOO_LONG);\
+        \ items 1+ sem repetidos (REQUIRED, INVALID_VALUE, ANSWER_DUPLICATED). A assinatura\
+        \ deixa de valer (o cliente assina de novo); com o item INSPECTION a vistoria\
+        \ volta a PENDING. Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW);\
+        \ version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por\
+        \ e-mail (se o tiver verificado)."
+      operationId: requestProposalInfo
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestProposalInfoRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Pede informação ao cliente
+      tags:
+      - Proposal
   /api/v1/insurer/rating-settings:
     get:
       description: "Permissão rating:manage ou product:read, staff de uma seguradora\
@@ -4724,6 +5064,52 @@ paths:
       summary: Gera o PDF da proposta e envia o código de assinatura
       tags:
       - Proposal
+  /api/v1/proposals/{id}/submit:
+    post:
+      description: "Permissão self:proposals ou proposal:create-for-client. Só em\
+        \ DRAFT ou INFO_REQUESTED (senão 409 INVALID_STATE_TRANSITION); version diferente\
+        \ → 409 CONCURRENT_MODIFICATION; proposta incompleta ou sem assinatura vá\
+        lida → 409 PROPOSAL_INCOMPLETE (missing); seguradora não activa → 409 INSURER_NOT_ACTIVE.\
+        \ As regras de aceitação do produto decidem logo: ACCEPTED (aceitação automá\
+        tica, expiresAt = prazo para pagar) ou UNDER_REVIEW (decision.insurerDueAt\
+        \ = prazo da seguradora). Depois de submetida, a proposta só se altera se\
+        \ a seguradora pedir informação."
+      operationId: submitProposal
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitProposalRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Submete a proposta à seguradora
+      tags:
+      - Proposal
   /api/v1/proposals/{id}/suitability:
     post:
       description: "Permissão self:proposals ou proposal:create-for-client. Devolve\
@@ -5202,6 +5588,26 @@ components:
             \ mais comuns (400 PASSWORD_TOO_WEAK com os motivos em errors[])"
       required:
       - password
+    AcceptProposalRequest:
+      type: object
+      properties:
+        note:
+          type: string
+          description: Nota opcional (até 1000 caracteres)
+          maxLength: 1000
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - version
+    AcceptanceMode:
+      type: string
+      description: Só em ACCEPTED (e nos estados seguintes)
+      enum:
+      - AUTOMATIC
+      - MANUAL
+      nullable: true
     AcknowledgeSuitabilityRequest:
       type: object
       properties:
@@ -6229,6 +6635,15 @@ components:
           minLength: 0
       required:
       - email
+    InfoRequestItem:
+      type: string
+      enum:
+      - DECLARATIONS
+      - SUITABILITY
+      - INSPECTION
+      - KYC
+      - POLICYHOLDER
+      - OTHER
     InspectionMode:
       type: string
       enum:
@@ -6462,6 +6877,341 @@ components:
       required:
       - complaintsEmail
       - shortCode
+    InsurerProposalDriver:
+      type: object
+      properties:
+        birthDate:
+          type: string
+          format: date
+          nullable: true
+        fullName:
+          type: string
+          example: Ana Maria Mussa
+        id:
+          type: string
+          format: uuid
+        licenceCategories:
+          type: array
+          example:
+          - B
+          items:
+            type: string
+            example: "[\"B\"]"
+        licenceIssueDate:
+          type: string
+          format: date
+        licenceNumberMasked:
+          type: string
+          example: '****4567'
+      required:
+      - fullName
+      - id
+      - licenceCategories
+      - licenceIssueDate
+      - licenceNumberMasked
+    InsurerProposalKyc:
+      type: object
+      properties:
+        checkId:
+          type: string
+          format: uuid
+          nullable: true
+        requiredForAutomaticAcceptance:
+          type: boolean
+        state:
+          $ref: "#/components/schemas/KycState"
+        verifiedAt:
+          type: string
+          format: date-time
+          description: Só em VERIFIED e OUTDATED
+          nullable: true
+        verifiedByThisInsurer:
+          type: boolean
+      required:
+      - requiredForAutomaticAcceptance
+      - state
+      - verifiedByThisInsurer
+    InsurerProposalResponse:
+      type: object
+      properties:
+        broker:
+          $ref: "#/components/schemas/ProposalOrganization"
+        channel:
+          $ref: "#/components/schemas/ProposalChannel"
+        checklist:
+          $ref: "#/components/schemas/ProposalChecklist"
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProposalCoverage"
+        createdAt:
+          type: string
+          format: date-time
+        decision:
+          $ref: "#/components/schemas/ProposalDecision"
+        declarations:
+          $ref: "#/components/schemas/ProposalDeclarations"
+        driver:
+          $ref: "#/components/schemas/InsurerProposalDriver"
+        durationDays:
+          type: integer
+          format: int32
+        endAt:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        id:
+          type: string
+          format: uuid
+        inspection:
+          $ref: "#/components/schemas/InspectionResponse"
+        insurer:
+          $ref: "#/components/schemas/ProposalOrganization"
+        kyc:
+          $ref: "#/components/schemas/InsurerProposalKyc"
+        number:
+          type: string
+          example: PR-2027-000123
+        policyholder:
+          $ref: "#/components/schemas/ProposalPolicyholder"
+        premium:
+          $ref: "#/components/schemas/ProposalPremium"
+        product:
+          $ref: "#/components/schemas/ProposalProduct"
+        quoteId:
+          type: string
+          format: uuid
+        signature:
+          $ref: "#/components/schemas/ProposalSignature"
+        signatures:
+          type: array
+          description: "Todas as assinaturas (válida e invalidadas), as mais recentes\
+            \ primeiro"
+          items:
+            $ref: "#/components/schemas/InsurerProposalSignature"
+        sla:
+          $ref: "#/components/schemas/InsurerProposalSla"
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/ProposalStatus"
+        submittedAt:
+          type: string
+          format: date-time
+        suitability:
+          $ref: "#/components/schemas/ProposalSuitability"
+        underwriting:
+          $ref: "#/components/schemas/UnderwritingResult"
+        updatedAt:
+          type: string
+          format: date-time
+        vehicle:
+          $ref: "#/components/schemas/InsurerProposalVehicle"
+        version:
+          type: integer
+          format: int64
+          description: Versão para as decisões; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
+      - channel
+      - checklist
+      - coverages
+      - createdAt
+      - driver
+      - durationDays
+      - endAt
+      - endDate
+      - id
+      - inspection
+      - insurer
+      - kyc
+      - number
+      - policyholder
+      - premium
+      - product
+      - quoteId
+      - signatures
+      - sla
+      - startAt
+      - status
+      - submittedAt
+      - updatedAt
+      - vehicle
+      - version
+    InsurerProposalSignature:
+      type: object
+      description: "Todas as assinaturas (válida e invalidadas), as mais recentes\
+        \ primeiro"
+      properties:
+        assisted:
+          type: boolean
+        channel:
+          type: string
+          enum:
+          - SMS
+          - WHATSAPP
+          - EMAIL
+        destinationMasked:
+          type: string
+          example: +258*****4567
+        documentFileId:
+          type: string
+          format: uuid
+        documentHash:
+          type: string
+        invalidatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        invalidatedReason:
+          type: string
+          enum:
+          - CONTENT_CHANGED
+          - INFO_REQUESTED
+          nullable: true
+        signedAt:
+          type: string
+          format: date-time
+      required:
+      - assisted
+      - channel
+      - destinationMasked
+      - documentFileId
+      - documentHash
+      - signedAt
+    InsurerProposalSla:
+      type: object
+      properties:
+        alertAt:
+          type: string
+          format: date-time
+          nullable: true
+        alertedAt:
+          type: string
+          format: date-time
+          nullable: true
+        dueAt:
+          type: string
+          format: date-time
+          nullable: true
+        reviewStartedAt:
+          type: string
+          format: date-time
+          description: Entrada em UNDER_REVIEW (reinicia em cada submissão)
+          nullable: true
+        status:
+          $ref: "#/components/schemas/SlaStatus"
+    InsurerProposalSummaryResponse:
+      type: object
+      properties:
+        acceptanceMode:
+          $ref: "#/components/schemas/AcceptanceMode"
+        brokerName:
+          type: string
+          example: Corretora Demo
+          nullable: true
+        channel:
+          $ref: "#/components/schemas/ProposalChannel"
+        customerName:
+          type: string
+          example: Ana Maria Mussa
+        id:
+          type: string
+          format: uuid
+        inspectionStatus:
+          $ref: "#/components/schemas/InspectionStatus"
+        kycState:
+          $ref: "#/components/schemas/KycState"
+        number:
+          type: string
+          example: PR-2027-000123
+        productName:
+          type: string
+          example: Auto Base
+        productType:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+        slaDueAt:
+          type: string
+          format: date-time
+          description: Fim do prazo de decisão; só em UNDER_REVIEW
+          nullable: true
+        slaStatus:
+          $ref: "#/components/schemas/SlaStatus"
+        status:
+          $ref: "#/components/schemas/ProposalStatus"
+        submittedAt:
+          type: string
+          format: date-time
+        total:
+          $ref: "#/components/schemas/Money"
+        vehiclePlate:
+          type: string
+          example: ABC-123-MC
+      required:
+      - channel
+      - customerName
+      - id
+      - kycState
+      - number
+      - productName
+      - productType
+      - status
+      - submittedAt
+      - total
+      - vehiclePlate
+    InsurerProposalVehicle:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/VehicleCategory"
+        chassisNumber:
+          type: string
+          nullable: true
+        commercialValue:
+          $ref: "#/components/schemas/Money"
+        id:
+          type: string
+          format: uuid
+        make:
+          type: string
+          example: Toyota
+        model:
+          type: string
+          example: Corolla
+        plate:
+          type: string
+          example: ABC-123-MC
+        seats:
+          type: integer
+          format: int32
+          example: 5
+        usage:
+          $ref: "#/components/schemas/VehicleUsage"
+        year:
+          type: integer
+          format: int32
+          example: 2018
+      required:
+      - category
+      - id
+      - make
+      - model
+      - plate
+      - seats
+      - usage
+      - year
     InsurerRatingSettingsResponse:
       type: object
       properties:
@@ -7332,6 +8082,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseInsurerProposalSummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsurerProposalSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInvitationResponse:
       type: object
       properties:
@@ -8042,8 +8815,29 @@ components:
       - premium
     ProposalDecision:
       type: object
-      additionalProperties: true
-      description: Decisão da seguradora (S4-05); null antes de existir.
+      description: Decisão da seguradora (S4-05); null em DRAFT antes da primeira
+        submissão
+      nullable: true
+      properties:
+        decidedAt:
+          type: string
+          format: date-time
+          nullable: true
+        infoRequest:
+          $ref: "#/components/schemas/ProposalInfoRequest"
+        insurerDueAt:
+          type: string
+          format: date-time
+          description: "Prazo de decisão da seguradora (sla_due_at), só em UNDER_REVIEW"
+          nullable: true
+        mode:
+          $ref: "#/components/schemas/AcceptanceMode"
+        reason:
+          type: string
+          description: Motivo da recusa ou nota da aceitação
+          nullable: true
+        rejectionReasonCode:
+          $ref: "#/components/schemas/RejectionReasonCode"
     ProposalDeclarations:
       type: object
       description: null até serem gravadas
@@ -8097,16 +8891,35 @@ components:
       - id
       - licenceIssueDate
       - licenceNumberMasked
+    ProposalInfoRequest:
+      type: object
+      description: Pedido de informação em curso (INFO_REQUESTED)
+      nullable: true
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InfoRequestItem"
+        message:
+          type: string
+          example: Envie de novo a fotografia do chassis.
+        requestedAt:
+          type: string
+          format: date-time
+      required:
+      - items
+      - message
+      - requestedAt
     ProposalKyc:
       type: object
       properties:
         requiredForAutomaticAcceptance:
           type: boolean
-          description: S4-05; null nesta fase
-          nullable: true
+          description: Os ecrãs recomendam verificar a identidade antes de submeter
         state:
           $ref: "#/components/schemas/KycState"
       required:
+      - requiredForAutomaticAcceptance
       - state
     ProposalOrganization:
       type: object
@@ -9261,6 +10074,41 @@ components:
       required:
       - reasonCode
       - version
+    RejectProposalRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: Histórico de sinistros acima do aceitável.
+          maxLength: 1000
+          minLength: 10
+        reasonCode:
+          type: string
+          enum:
+          - RISK_NOT_ACCEPTED
+          - KYC_FAILED
+          - INSPECTION_FAILED
+          - FALSE_DECLARATION
+          - DOCUMENTS_INVALID
+          - OTHER
+        version:
+          type: integer
+          format: int64
+      required:
+      - reason
+      - reasonCode
+      - version
+    RejectionReasonCode:
+      type: string
+      description: Só em REJECTED
+      enum:
+      - RISK_NOT_ACCEPTED
+      - KYC_FAILED
+      - INSPECTION_FAILED
+      - FALSE_DECLARATION
+      - DOCUMENTS_INVALID
+      - OTHER
+      nullable: true
     ReplaceCoveragesRequest:
       type: object
       properties:
@@ -9314,6 +10162,29 @@ components:
       required:
       - identifier
       - identifierType
+    RequestProposalInfoRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          description: "1 ou mais, sem repetidos: DECLARATIONS, SUITABILITY, INSPECTION,\
+            \ KYC, POLICYHOLDER, OTHER"
+          items:
+            type: string
+            description: "1 ou mais, sem repetidos: DECLARATIONS, SUITABILITY, INSPECTION,\
+              \ KYC, POLICYHOLDER, OTHER"
+        message:
+          type: string
+          example: Envie de novo a fotografia do chassis.
+          maxLength: 1000
+          minLength: 10
+        version:
+          type: integer
+          format: int64
+      required:
+      - items
+      - message
+      - version
     RequestSignatureRequest:
       type: object
       properties:
@@ -9593,6 +10464,14 @@ components:
       - provinceOfCirculation
       - usage
       - year
+    SlaStatus:
+      type: string
+      description: Só em UNDER_REVIEW
+      enum:
+      - ON_TIME
+      - ALERT
+      - OVERDUE
+      nullable: true
     StaffLoginRequest:
       type: object
       properties:
@@ -9696,6 +10575,15 @@ components:
           description: Versão da proposta; diferente da gravada → 409 CONCURRENT_MODIFICATION
       required:
       - odometerKm
+      - version
+    SubmitProposalRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+          description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
+      required:
       - version
     SuitabilityAnswerRequest:
       type: object
@@ -9842,6 +10730,107 @@ components:
       - EXTERNAL_INVALID_RESPONSE
       - EVALUATION_ERROR
       nullable: true
+    UnderwritingFailure:
+      type: string
+      enum:
+      - AUTO_ACCEPT_DISABLED
+      - KYC_REQUIRED
+      - DECLARATION_POSITIVE
+      - INSPECTION_NOT_APPROVED
+      - VEHICLE_VALUE_MISSING
+      - VEHICLE_VALUE_ABOVE_LIMIT
+    UnderwritingInputs:
+      type: object
+      properties:
+        hasOwnDamage:
+          type: boolean
+        inspectionStatus:
+          $ref: "#/components/schemas/InspectionStatus"
+        kycState:
+          $ref: "#/components/schemas/KycState"
+        maxVehicleValue:
+          type: integer
+          format: int64
+        positiveDeclarations:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeclarationQuestion"
+        simplifiedKycMaxPremium:
+          type: integer
+          format: int64
+        totalAmount:
+          type: integer
+          format: int64
+        vehicleValue:
+          type: integer
+          format: int64
+          nullable: true
+      required:
+      - hasOwnDamage
+      - kycState
+      - maxVehicleValue
+      - positiveDeclarations
+      - simplifiedKycMaxPremium
+      - totalAmount
+    UnderwritingOutcome:
+      type: string
+      enum:
+      - AUTOMATIC
+      - MANUAL_REVIEW
+    UnderwritingResult:
+      type: object
+      description: Última avaliação das regras de aceitação (underwriting_result)
+      nullable: true
+      properties:
+        evaluatedAt:
+          type: string
+          format: date-time
+        failures:
+          type: array
+          items:
+            $ref: "#/components/schemas/UnderwritingFailure"
+        inputs:
+          $ref: "#/components/schemas/UnderwritingInputs"
+        outcome:
+          $ref: "#/components/schemas/UnderwritingOutcome"
+        rulesSchemaVersion:
+          type: integer
+          format: int32
+          example: 1
+        rulesSource:
+          type: string
+          enum:
+          - PRODUCT
+          - DEFAULT
+      required:
+      - evaluatedAt
+      - failures
+      - inputs
+      - outcome
+      - rulesSchemaVersion
+      - rulesSource
+    UnderwritingRules:
+      type: object
+      description: "Regras de aceitação no formato underwriting-v1 (backend/src/main/resources/schemas/underwriting-v1.json):\
+        \ schemaVersion = 1 e autoAccept { enabled, simplifiedKycMaxPremium, liability\
+        \ { requireAllDeclarationsNegative }, ownDamage { maxVehicleValue, requireAllDeclarationsNegative\
+        \ } }. Dinheiro em centavos."
+    UnderwritingRulesResponse:
+      type: object
+      properties:
+        isDefault:
+          type: boolean
+          description: "true: a versão não tem regras próprias e valem as por defeito"
+        rules:
+          $ref: "#/components/schemas/UnderwritingRules"
+        version:
+          type: integer
+          format: int64
+          description: version da versão do produto
+      required:
+      - isDefault
+      - rules
+      - version
     UpdateDriverRequest:
       type: object
       properties:
@@ -10265,6 +11254,18 @@ components:
           description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
       required:
       - labelPt
+      - version
+    UpdateUnderwritingRulesRequest:
+      type: object
+      properties:
+        rules:
+          $ref: "#/components/schemas/UnderwritingRules"
+        version:
+          type: integer
+          format: int64
+          description: version da versão do produto
+      required:
+      - rules
       - version
     UpdateUserRolesRequest:
       type: object

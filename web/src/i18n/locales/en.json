@@ -239,7 +239,9 @@
     "INSPECTION_NOT_EDITABLE": "The inspection has been sent and cannot be changed.",
     "INSPECTION_PHOTOS_MISSING": "Required photos are missing.",
     "PHOTO_NOT_FOUND": "Photo not found.",
-    "PROPOSAL_NOT_UNDER_REVIEW": "The proposal is not under review."
+    "PROPOSAL_NOT_UNDER_REVIEW": "The proposal is not under review.",
+    "KYC_NOT_VERIFIED": "The customer's identity has not been verified yet.",
+    "INSPECTION_NOT_APPROVED": "The inspection has not been approved yet."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -334,7 +336,8 @@
     "EXTRA_PHOTOS_LIMIT": "You have already sent the maximum number of extra photos.",
     "PHOTO_TOO_OLD": "This photo was taken more than 7 days ago. Take a new one.",
     "PHOTO_IN_FUTURE": "The photo date is invalid. Check your phone's clock.",
-    "INVALID_COORDINATES": "Invalid location."
+    "INVALID_COORDINATES": "Invalid location.",
+    "INVALID_RULES": "Invalid rule."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -1750,6 +1753,47 @@
       "INSPECTION": "Vehicle inspection",
       "START_DATE": "Start date",
       "SIGNATURE": "Signature"
+    },
+    "underwriting": {
+      "failure": {
+        "AUTO_ACCEPT_DISABLED": "Automatic acceptance is turned off for the product",
+        "KYC_REQUIRED": "Identity not verified and premium above the simplified KYC limit",
+        "DECLARATION_POSITIVE": "Some risk declarations were answered \"yes\"",
+        "INSPECTION_NOT_APPROVED": "Inspection not approved yet",
+        "VEHICLE_VALUE_MISSING": "Vehicle value not declared",
+        "VEHICLE_VALUE_ABOVE_LIMIT": "Vehicle value above the automatic acceptance limit"
+      }
+    },
+    "rejectionReason": {
+      "RISK_NOT_ACCEPTED": "Risk not accepted",
+      "KYC_FAILED": "Identity not confirmed",
+      "INSPECTION_FAILED": "Inspection not approved",
+      "FALSE_DECLARATION": "Incorrect declarations",
+      "DOCUMENTS_INVALID": "Invalid documents",
+      "OTHER": "Other reason"
+    },
+    "infoRequestItem": {
+      "DECLARATIONS": "Risk declarations",
+      "SUITABILITY": "Suitability questionnaire",
+      "INSPECTION": "Inspection",
+      "KYC": "Identity check",
+      "POLICYHOLDER": "Policyholder details",
+      "OTHER": "Other"
+    },
+    "slaStatus": {
+      "ON_TIME": "On time",
+      "ALERT": "Deadline approaching",
+      "OVERDUE": "Overdue"
+    },
+    "proposalStatus": {
+      "DRAFT": "Draft",
+      "UNDER_REVIEW": "Under review",
+      "INFO_REQUESTED": "Information requested",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Not accepted",
+      "EXPIRED": "Expired",
+      "PAID": "Paid",
+      "CONVERTED": "Policy issued"
     }
   },
   "inspection": {

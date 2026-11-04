@@ -21,6 +21,8 @@ lib/src/auth/bearer_auth.dart
 lib/src/auth/oauth.dart
 lib/src/date_serializer.dart
 lib/src/model/accept_invitation_request.dart
+lib/src/model/accept_proposal_request.dart
+lib/src/model/acceptance_mode.dart
 lib/src/model/acknowledge_suitability_request.dart
 lib/src/model/activate_invitation_request.dart
 lib/src/model/approve_inspection_request.dart
@@ -53,6 +55,7 @@ lib/src/model/delivery_receipt_request.dart
 lib/src/model/driver_response.dart
 lib/src/model/field_error.dart
 lib/src/model/forgot_password_request.dart
+lib/src/model/info_request_item.dart
 lib/src/model/inspection_mode.dart
 lib/src/model/inspection_photo_response.dart
 lib/src/model/inspection_response.dart
@@ -63,6 +66,13 @@ lib/src/model/insurer_inspection_summary_response.dart
 lib/src/model/insurer_kyc_check_response.dart
 lib/src/model/insurer_profile_request.dart
 lib/src/model/insurer_profile_response.dart
+lib/src/model/insurer_proposal_driver.dart
+lib/src/model/insurer_proposal_kyc.dart
+lib/src/model/insurer_proposal_response.dart
+lib/src/model/insurer_proposal_signature.dart
+lib/src/model/insurer_proposal_sla.dart
+lib/src/model/insurer_proposal_summary_response.dart
+lib/src/model/insurer_proposal_vehicle.dart
 lib/src/model/insurer_rating_settings_response.dart
 lib/src/model/invitation_details_response.dart
 lib/src/model/invitation_organization.dart
@@ -95,6 +105,7 @@ lib/src/model/otp_verify_response.dart
 lib/src/model/page_response_catalog_product_response.dart
 lib/src/model/page_response_driver_response.dart
 lib/src/model/page_response_insurer_inspection_summary_response.dart
+lib/src/model/page_response_insurer_proposal_summary_response.dart
 lib/src/model/page_response_invitation_response.dart
 lib/src/model/page_response_kyc_check_summary_response.dart
 lib/src/model/page_response_organization_summary_response.dart
@@ -121,9 +132,11 @@ lib/src/model/proposal_channel.dart
 lib/src/model/proposal_charge.dart
 lib/src/model/proposal_checklist.dart
 lib/src/model/proposal_coverage.dart
+lib/src/model/proposal_decision.dart
 lib/src/model/proposal_declarations.dart
 lib/src/model/proposal_deductible.dart
 lib/src/model/proposal_driver.dart
+lib/src/model/proposal_info_request.dart
 lib/src/model/proposal_kyc.dart
 lib/src/model/proposal_organization.dart
 lib/src/model/proposal_policyholder.dart
@@ -166,9 +179,12 @@ lib/src/model/registration_doc_response.dart
 lib/src/model/registry_lookup_response.dart
 lib/src/model/reject_inspection_request.dart
 lib/src/model/reject_kyc_check_request.dart
+lib/src/model/reject_proposal_request.dart
+lib/src/model/rejection_reason_code.dart
 lib/src/model/replace_coverages_request.dart
 lib/src/model/request_on_site_inspection_request.dart
 lib/src/model/request_otp_request.dart
+lib/src/model/request_proposal_info_request.dart
 lib/src/model/request_signature_request.dart
 lib/src/model/requested_coverage_request.dart
 lib/src/model/requested_coverage_response.dart
@@ -180,10 +196,12 @@ lib/src/model/save_suitability_request.dart
 lib/src/model/signature_request_response.dart
 lib/src/model/simulate_rating_request.dart
 lib/src/model/simulation_vehicle_request.dart
+lib/src/model/sla_status.dart
 lib/src/model/staff_login_request.dart
 lib/src/model/staff_user_response.dart
 lib/src/model/start_contact_verification_request.dart
 lib/src/model/submit_inspection_request.dart
+lib/src/model/submit_proposal_request.dart
 lib/src/model/suitability_answer_request.dart
 lib/src/model/suitability_answer_response.dart
 lib/src/model/suitability_question.dart
@@ -195,6 +213,11 @@ lib/src/model/test_plate_format_response.dart
 lib/src/model/token_response.dart
 lib/src/model/totp_setup_response.dart
 lib/src/model/unavailable_reason.dart
+lib/src/model/underwriting_failure.dart
+lib/src/model/underwriting_inputs.dart
+lib/src/model/underwriting_outcome.dart
+lib/src/model/underwriting_result.dart
+lib/src/model/underwriting_rules_response.dart
 lib/src/model/update_driver_request.dart
 lib/src/model/update_insurer_rating_settings_request.dart
 lib/src/model/update_me_request.dart
@@ -209,6 +232,7 @@ lib/src/model/update_proposal_request.dart
 lib/src/model/update_rating_integration_request.dart
 lib/src/model/update_rating_rules_request.dart
 lib/src/model/update_reference_value_request.dart
+lib/src/model/update_underwriting_rules_request.dart
 lib/src/model/update_user_roles_request.dart
 lib/src/model/update_vehicle_drivers_request.dart
 lib/src/model/update_vehicle_request.dart

@@ -10,28 +10,37 @@ import 'package:dio/dio.dart';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:moseguros_api/src/api_util.dart';
+import 'package:moseguros_api/src/model/accept_proposal_request.dart';
 import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/approve_inspection_request.dart';
 import 'package:moseguros_api/src/model/confirm_signature_request.dart';
 import 'package:moseguros_api/src/model/create_proposal_request.dart';
+import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/inspection_mode.dart';
 import 'package:moseguros_api/src/model/inspection_photo_response.dart';
 import 'package:moseguros_api/src/model/inspection_response.dart';
 import 'package:moseguros_api/src/model/inspection_status.dart';
+import 'package:moseguros_api/src/model/insurer_proposal_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_inspection_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_insurer_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/photo_slot.dart';
 import 'package:moseguros_api/src/model/photo_source.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
+import 'package:moseguros_api/src/model/proposal_channel.dart';
 import 'package:moseguros_api/src/model/proposal_response.dart';
 import 'package:moseguros_api/src/model/proposal_status.dart';
 import 'package:moseguros_api/src/model/reject_inspection_request.dart';
+import 'package:moseguros_api/src/model/reject_proposal_request.dart';
 import 'package:moseguros_api/src/model/request_on_site_inspection_request.dart';
+import 'package:moseguros_api/src/model/request_proposal_info_request.dart';
 import 'package:moseguros_api/src/model/request_signature_request.dart';
 import 'package:moseguros_api/src/model/save_declarations_request.dart';
 import 'package:moseguros_api/src/model/save_suitability_request.dart';
 import 'package:moseguros_api/src/model/signature_request_response.dart';
+import 'package:moseguros_api/src/model/sla_status.dart';
 import 'package:moseguros_api/src/model/submit_inspection_request.dart';
+import 'package:moseguros_api/src/model/submit_proposal_request.dart';
 import 'package:moseguros_api/src/model/update_proposal_request.dart';
 
 class ProposalApi {
@@ -41,6 +50,109 @@ class ProposalApi {
   final Serializers _serializers;
 
   const ProposalApi(this._dio, this._serializers);
+
+  /// Aceita uma proposta
+  /// Permissão proposal:decide. UNDER_REVIEW → ACCEPTED (acceptanceMode &#x3D; MANUAL), com o prazo para pagar (expiresAt). Com vistoria, tem de estar APPROVED (409 INSPECTION_NOT_APPROVED); KYC VERIFIED ou total abaixo do limiar do KYC simplificado (409 KYC_NOT_VERIFIED). note até 1000 (TOO_LONG). Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver verificado).
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [acceptProposalRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [InsurerProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<InsurerProposalResponse>> acceptProposal({ 
+    required String id,
+    required AcceptProposalRequest acceptProposalRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/proposals/{id}/accept'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(AcceptProposalRequest);
+      _bodyData = _serializers.serialize(acceptProposalRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    InsurerProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(InsurerProposalResponse),
+      ) as InsurerProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<InsurerProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
 
   /// Confirma os avisos de adequação
   /// Permissão self:proposals ou proposal:create-for-client. O cliente leu os avisos e quer continuar: preenche suitability.acknowledgedAt. Sem WARNED → 409 SUITABILITY_NOT_WARNED. Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
@@ -533,6 +645,87 @@ class ProposalApi {
     );
   }
 
+  /// Consulta uma proposta submetida
+  /// Permissão proposal:read. A proposta com o condutor e o veículo completos, o KYC, o registo das regras de aceitação (underwriting), o SLA e o histórico das assinaturas.
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [InsurerProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<InsurerProposalResponse>> getInsurerProposal({ 
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/proposals/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    InsurerProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(InsurerProposalResponse),
+      ) as InsurerProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<InsurerProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Consulta uma proposta
   /// Permissão self:proposals (o cliente dono) ou proposal:create-for-client (o mediador da proposta, S4-06). Outra → 404 PROPOSAL_NOT_FOUND. A seguradora usa getInsurerProposal (S4-05).
   ///
@@ -701,6 +894,119 @@ class ProposalApi {
     }
 
     return Response<PageResponseInsurerInspectionSummaryResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Lista as propostas submetidas à seguradora
+  /// Permissão proposal:read. status repetível (por defeito UNDER_REVIEW); slaStatus (ON_TIME, ALERT, OVERDUE; só propostas UNDER_REVIEW); productType; channel; q &#x3D; número exacto ou parte do nome do tomador; submittedFrom e submittedTo em datas de Africa/Maputo (inclusivas). Ordenação por submittedAt (defeito, asc) ou slaDueAt.
+  ///
+  /// Parameters:
+  /// * [status] 
+  /// * [slaStatus] 
+  /// * [productType] 
+  /// * [channel] 
+  /// * [q] 
+  /// * [submittedFrom] 
+  /// * [submittedTo] 
+  /// * [page] 
+  /// * [size] 
+  /// * [sort] - submittedAt ou slaDueAt, com ,asc ou ,desc
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [PageResponseInsurerProposalSummaryResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<PageResponseInsurerProposalSummaryResponse>> listInsurerProposals({ 
+    BuiltList<ProposalStatus>? status,
+    SlaStatus? slaStatus,
+    String? productType,
+    ProposalChannel? channel,
+    String? q,
+    Date? submittedFrom,
+    Date? submittedTo,
+    int? page,
+    int? size,
+    String? sort,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/proposals';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (status != null) r'status': encodeCollectionQueryParameter<ProposalStatus>(_serializers, status, const FullType(BuiltList, [FullType(ProposalStatus)]), format: ListFormat.multi,),
+      if (slaStatus != null) r'slaStatus': encodeQueryParameter(_serializers, slaStatus, const FullType(SlaStatus)),
+      if (productType != null) r'productType': encodeQueryParameter(_serializers, productType, const FullType(String)),
+      if (channel != null) r'channel': encodeQueryParameter(_serializers, channel, const FullType(ProposalChannel)),
+      if (q != null) r'q': encodeQueryParameter(_serializers, q, const FullType(String)),
+      if (submittedFrom != null) r'submittedFrom': encodeQueryParameter(_serializers, submittedFrom, const FullType(Date)),
+      if (submittedTo != null) r'submittedTo': encodeQueryParameter(_serializers, submittedTo, const FullType(Date)),
+      if (page != null) r'page': encodeQueryParameter(_serializers, page, const FullType(int)),
+      if (size != null) r'size': encodeQueryParameter(_serializers, size, const FullType(int)),
+      if (sort != null) r'sort': encodeQueryParameter(_serializers, sort, const FullType(String)),
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    PageResponseInsurerProposalSummaryResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(PageResponseInsurerProposalSummaryResponse),
+      ) as PageResponseInsurerProposalSummaryResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<PageResponseInsurerProposalSummaryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -910,6 +1216,109 @@ class ProposalApi {
     );
   }
 
+  /// Recusa uma proposta
+  /// Permissão proposal:decide. UNDER_REVIEW → REJECTED. reasonCode obrigatório (REQUIRED, INVALID_VALUE); reason 10–1000 (REQUIRED, TOO_SHORT, TOO_LONG); o motivo vai no e-mail ao cliente. Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver verificado).
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [rejectProposalRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [InsurerProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<InsurerProposalResponse>> rejectProposal({ 
+    required String id,
+    required RejectProposalRequest rejectProposalRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/proposals/{id}/reject'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(RejectProposalRequest);
+      _bodyData = _serializers.serialize(rejectProposalRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    InsurerProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(InsurerProposalResponse),
+      ) as InsurerProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<InsurerProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Retira uma fotografia da vistoria
   /// Permissão self:proposals ou proposal:create-for-client. Fica guardada com removedAt. Inexistente ou já retirada → 404 PHOTO_NOT_FOUND. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND; sem coberturas OD_* → 409 INSPECTION_NOT_REQUIRED; proposta fora de DRAFT/INFO_REQUESTED → 409 PROPOSAL_NOT_EDITABLE; vistoria fora de PENDING/REJECTED → 409 INSPECTION_NOT_EDITABLE. Aumenta contentRevision e renova expiresAt.
   ///
@@ -1057,6 +1466,109 @@ class ProposalApi {
     }
 
     return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Pede informação ao cliente
+  /// Permissão proposal:decide. UNDER_REVIEW → INFO_REQUESTED, com o prazo do cliente (expiresAt). message 10–1000 (REQUIRED, TOO_SHORT, TOO_LONG); items 1+ sem repetidos (REQUIRED, INVALID_VALUE, ANSWER_DUPLICATED). A assinatura deixa de valer (o cliente assina de novo); com o item INSPECTION a vistoria volta a PENDING. Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver verificado).
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [requestProposalInfoRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [InsurerProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<InsurerProposalResponse>> requestProposalInfo({ 
+    required String id,
+    required RequestProposalInfoRequest requestProposalInfoRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/insurer/proposals/{id}/request-info'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(RequestProposalInfoRequest);
+      _bodyData = _serializers.serialize(requestProposalInfoRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    InsurerProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(InsurerProposalResponse),
+      ) as InsurerProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<InsurerProposalResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -1427,6 +1939,109 @@ class ProposalApi {
     try {
       const _type = FullType(SubmitInspectionRequest);
       _bodyData = _serializers.serialize(submitInspectionRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ProposalResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(ProposalResponse),
+      ) as ProposalResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Submete a proposta à seguradora
+  /// Permissão self:proposals ou proposal:create-for-client. Só em DRAFT ou INFO_REQUESTED (senão 409 INVALID_STATE_TRANSITION); version diferente → 409 CONCURRENT_MODIFICATION; proposta incompleta ou sem assinatura válida → 409 PROPOSAL_INCOMPLETE (missing); seguradora não activa → 409 INSURER_NOT_ACTIVE. As regras de aceitação do produto decidem logo: ACCEPTED (aceitação automática, expiresAt &#x3D; prazo para pagar) ou UNDER_REVIEW (decision.insurerDueAt &#x3D; prazo da seguradora). Depois de submetida, a proposta só se altera se a seguradora pedir informação.
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [submitProposalRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ProposalResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ProposalResponse>> submitProposal({ 
+    required String id,
+    required SubmitProposalRequest submitProposalRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/proposals/{id}/submit'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(SubmitProposalRequest);
+      _bodyData = _serializers.serialize(submitProposalRequest, specifiedType: _type);
 
     } catch(error, stackTrace) {
       throw DioException(

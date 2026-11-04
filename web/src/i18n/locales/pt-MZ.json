@@ -239,7 +239,9 @@
     "INSPECTION_NOT_EDITABLE": "A vistoria já foi enviada e não pode ser alterada.",
     "INSPECTION_PHOTOS_MISSING": "Faltam fotografias obrigatórias.",
     "PHOTO_NOT_FOUND": "Fotografia não encontrada.",
-    "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise."
+    "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise.",
+    "KYC_NOT_VERIFIED": "A identidade do cliente ainda não foi verificada.",
+    "INSPECTION_NOT_APPROVED": "A vistoria ainda não foi aprovada."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -334,7 +336,8 @@
     "EXTRA_PHOTOS_LIMIT": "Já enviou o número máximo de fotografias extra.",
     "PHOTO_TOO_OLD": "Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.",
     "PHOTO_IN_FUTURE": "A data da fotografia é inválida. Confirme a hora do telemóvel.",
-    "INVALID_COORDINATES": "Localização inválida."
+    "INVALID_COORDINATES": "Localização inválida.",
+    "INVALID_RULES": "Regra inválida."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -1750,6 +1753,47 @@
       "INSPECTION": "Vistoria do veículo",
       "START_DATE": "Data de início",
       "SIGNATURE": "Assinatura"
+    },
+    "underwriting": {
+      "failure": {
+        "AUTO_ACCEPT_DISABLED": "Aceitação automática desligada no produto",
+        "KYC_REQUIRED": "Identidade por verificar e prémio acima do limite do KYC simplificado",
+        "DECLARATION_POSITIVE": "Há declarações de risco com resposta \"sim\"",
+        "INSPECTION_NOT_APPROVED": "Vistoria por aprovar",
+        "VEHICLE_VALUE_MISSING": "Valor do veículo não declarado",
+        "VEHICLE_VALUE_ABOVE_LIMIT": "Valor do veículo acima do limite de aceitação automática"
+      }
+    },
+    "rejectionReason": {
+      "RISK_NOT_ACCEPTED": "Risco não aceite",
+      "KYC_FAILED": "Identidade não confirmada",
+      "INSPECTION_FAILED": "Vistoria não aprovada",
+      "FALSE_DECLARATION": "Declarações incorrectas",
+      "DOCUMENTS_INVALID": "Documentos inválidos",
+      "OTHER": "Outro motivo"
+    },
+    "infoRequestItem": {
+      "DECLARATIONS": "Declarações de risco",
+      "SUITABILITY": "Questionário de adequação",
+      "INSPECTION": "Vistoria",
+      "KYC": "Verificação de identidade",
+      "POLICYHOLDER": "Dados do tomador",
+      "OTHER": "Outro"
+    },
+    "slaStatus": {
+      "ON_TIME": "No prazo",
+      "ALERT": "Prazo a terminar",
+      "OVERDUE": "Prazo ultrapassado"
+    },
+    "proposalStatus": {
+      "DRAFT": "Rascunho",
+      "UNDER_REVIEW": "Em análise",
+      "INFO_REQUESTED": "Informação pedida",
+      "ACCEPTED": "Aceite",
+      "REJECTED": "Não aceite",
+      "EXPIRED": "Expirada",
+      "PAID": "Paga",
+      "CONVERTED": "Apólice emitida"
     }
   },
   "inspection": {

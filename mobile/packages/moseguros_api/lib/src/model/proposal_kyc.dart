@@ -12,13 +12,13 @@ part 'proposal_kyc.g.dart';
 /// ProposalKyc
 ///
 /// Properties:
-/// * [requiredForAutomaticAcceptance] - S4-05; null nesta fase
+/// * [requiredForAutomaticAcceptance] - Os ecrãs recomendam verificar a identidade antes de submeter
 /// * [state] 
 @BuiltValue()
 abstract class ProposalKyc implements Built<ProposalKyc, ProposalKycBuilder> {
-  /// S4-05; null nesta fase
+  /// Os ecrãs recomendam verificar a identidade antes de submeter
   @BuiltValueField(wireName: r'requiredForAutomaticAcceptance')
-  bool? get requiredForAutomaticAcceptance;
+  bool get requiredForAutomaticAcceptance;
 
   @BuiltValueField(wireName: r'state')
   KycState get state;
@@ -47,13 +47,11 @@ class _$ProposalKycSerializer implements PrimitiveSerializer<ProposalKyc> {
     ProposalKyc object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
-    if (object.requiredForAutomaticAcceptance != null) {
-      yield r'requiredForAutomaticAcceptance';
-      yield serializers.serialize(
-        object.requiredForAutomaticAcceptance,
-        specifiedType: const FullType.nullable(bool),
-      );
-    }
+    yield r'requiredForAutomaticAcceptance';
+    yield serializers.serialize(
+      object.requiredForAutomaticAcceptance,
+      specifiedType: const FullType(bool),
+    );
     yield r'state';
     yield serializers.serialize(
       object.state,
@@ -85,9 +83,8 @@ class _$ProposalKycSerializer implements PrimitiveSerializer<ProposalKyc> {
         case r'requiredForAutomaticAcceptance':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType.nullable(bool),
-          ) as bool?;
-          if (valueDes == null) continue;
+            specifiedType: const FullType(bool),
+          ) as bool;
           result.requiredForAutomaticAcceptance = valueDes;
           break;
         case r'state':

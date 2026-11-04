@@ -8,14 +8,15 @@ part of 'proposal_kyc.dart';
 
 class _$ProposalKyc extends ProposalKyc {
   @override
-  final bool? requiredForAutomaticAcceptance;
+  final bool requiredForAutomaticAcceptance;
   @override
   final KycState state;
 
   factory _$ProposalKyc([void Function(ProposalKycBuilder)? updates]) =>
       (ProposalKycBuilder()..update(updates))._build();
 
-  _$ProposalKyc._({this.requiredForAutomaticAcceptance, required this.state})
+  _$ProposalKyc._(
+      {required this.requiredForAutomaticAcceptance, required this.state})
       : super._();
   @override
   ProposalKyc rebuild(void Function(ProposalKycBuilder) updates) =>
@@ -95,7 +96,10 @@ class ProposalKycBuilder implements Builder<ProposalKyc, ProposalKycBuilder> {
   _$ProposalKyc _build() {
     final _$result = _$v ??
         _$ProposalKyc._(
-          requiredForAutomaticAcceptance: requiredForAutomaticAcceptance,
+          requiredForAutomaticAcceptance: BuiltValueNullFieldError.checkNotNull(
+              requiredForAutomaticAcceptance,
+              r'ProposalKyc',
+              'requiredForAutomaticAcceptance'),
           state: BuiltValueNullFieldError.checkNotNull(
               state, r'ProposalKyc', 'state'),
         );

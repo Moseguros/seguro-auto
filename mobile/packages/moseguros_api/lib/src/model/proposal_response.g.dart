@@ -18,7 +18,7 @@ class _$ProposalResponse extends ProposalResponse {
   @override
   final DateTime createdAt;
   @override
-  final BuiltMap<String, JsonObject?>? decision;
+  final ProposalDecision? decision;
   @override
   final ProposalDeclarations? declarations;
   @override
@@ -245,10 +245,10 @@ class ProposalResponseBuilder
   DateTime? get createdAt => _$this._createdAt;
   set createdAt(DateTime? createdAt) => _$this._createdAt = createdAt;
 
-  MapBuilder<String, JsonObject?>? _decision;
-  MapBuilder<String, JsonObject?> get decision =>
-      _$this._decision ??= MapBuilder<String, JsonObject?>();
-  set decision(MapBuilder<String, JsonObject?>? decision) =>
+  ProposalDecisionBuilder? _decision;
+  ProposalDecisionBuilder get decision =>
+      _$this._decision ??= ProposalDecisionBuilder();
+  set decision(ProposalDecisionBuilder? decision) =>
       _$this._decision = decision;
 
   ProposalDeclarationsBuilder? _declarations;

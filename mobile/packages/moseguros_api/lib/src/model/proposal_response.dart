@@ -8,6 +8,7 @@ import 'package:moseguros_api/src/model/proposal_policyholder.dart';
 import 'package:moseguros_api/src/model/proposal_kyc.dart';
 import 'package:moseguros_api/src/model/proposal_channel.dart';
 import 'package:moseguros_api/src/model/inspection_response.dart';
+import 'package:moseguros_api/src/model/proposal_decision.dart';
 import 'package:moseguros_api/src/model/proposal_product.dart';
 import 'package:moseguros_api/src/model/proposal_suitability.dart';
 import 'package:moseguros_api/src/model/proposal_checklist.dart';
@@ -18,7 +19,6 @@ import 'package:built_collection/built_collection.dart';
 import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/proposal_driver.dart';
 import 'package:moseguros_api/src/model/proposal_vehicle.dart';
-import 'package:built_value/json_object.dart';
 import 'package:moseguros_api/src/model/proposal_declarations.dart';
 import 'package:moseguros_api/src/model/proposal_premium.dart';
 import 'package:built_value/built_value.dart';
@@ -34,7 +34,7 @@ part 'proposal_response.g.dart';
 /// * [checklist] 
 /// * [coverages] 
 /// * [createdAt] 
-/// * [decision] - Decisão da seguradora (S4-05); null antes de existir.
+/// * [decision] 
 /// * [declarations] 
 /// * [driver] 
 /// * [durationDays] 
@@ -76,9 +76,8 @@ abstract class ProposalResponse implements Built<ProposalResponse, ProposalRespo
   @BuiltValueField(wireName: r'createdAt')
   DateTime get createdAt;
 
-  /// Decisão da seguradora (S4-05); null antes de existir.
   @BuiltValueField(wireName: r'decision')
-  BuiltMap<String, JsonObject?>? get decision;
+  ProposalDecision? get decision;
 
   @BuiltValueField(wireName: r'declarations')
   ProposalDeclarations? get declarations;
@@ -210,7 +209,7 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
       yield r'decision';
       yield serializers.serialize(
         object.decision,
-        specifiedType: const FullType(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
+        specifiedType: const FullType.nullable(ProposalDecision),
       );
     }
     if (object.declarations != null) {
@@ -400,8 +399,9 @@ class _$ProposalResponseSerializer implements PrimitiveSerializer<ProposalRespon
         case r'decision':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
-          ) as BuiltMap<String, JsonObject?>;
+            specifiedType: const FullType.nullable(ProposalDecision),
+          ) as ProposalDecision?;
+          if (valueDes == null) continue;
           result.decision.replace(valueDes);
           break;
         case r'declarations':

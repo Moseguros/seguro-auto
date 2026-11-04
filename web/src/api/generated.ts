@@ -28,6 +28,28 @@ export interface AcceptInvitationRequest {
   password: string;
 }
 
+export interface AcceptProposalRequest {
+  /**
+   * Nota opcional (até 1000 caracteres)
+   * @maxLength 1000
+   */
+  note?: string;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+/**
+ * Só em ACCEPTED (e nos estados seguintes)
+ * @nullable
+ */
+export type AcceptanceMode = (typeof AcceptanceMode)[keyof typeof AcceptanceMode] | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AcceptanceMode = {
+  AUTOMATIC: 'AUTOMATIC',
+  MANUAL: 'MANUAL',
+} as const;
+
 export interface AcknowledgeSuitabilityRequest {
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
@@ -765,6 +787,18 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
+export type InfoRequestItem = (typeof InfoRequestItem)[keyof typeof InfoRequestItem];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InfoRequestItem = {
+  DECLARATIONS: 'DECLARATIONS',
+  SUITABILITY: 'SUITABILITY',
+  INSPECTION: 'INSPECTION',
+  KYC: 'KYC',
+  POLICYHOLDER: 'POLICYHOLDER',
+  OTHER: 'OTHER',
+} as const;
+
 export type InspectionMode = (typeof InspectionMode)[keyof typeof InspectionMode];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -880,6 +914,171 @@ export interface InsurerProfileResponse {
   complaintsEmail: string;
   ombudsmanOrganizationId?: string;
   shortCode: string;
+}
+
+export interface InsurerProposalDriver {
+  /** @nullable */
+  birthDate?: string | null;
+  fullName: string;
+  id: string;
+  licenceCategories: string[];
+  licenceIssueDate: string;
+  licenceNumberMasked: string;
+}
+
+export interface InsurerProposalKyc {
+  /** @nullable */
+  checkId?: string | null;
+  requiredForAutomaticAcceptance: boolean;
+  state: KycState;
+  /**
+   * Só em VERIFIED e OUTDATED
+   * @nullable
+   */
+  verifiedAt?: string | null;
+  verifiedByThisInsurer: boolean;
+}
+
+export interface InsurerProposalResponse {
+  broker?: ProposalOrganization;
+  channel: ProposalChannel;
+  checklist: ProposalChecklist;
+  coverages: ProposalCoverage[];
+  createdAt: string;
+  decision?: ProposalDecision;
+  declarations?: ProposalDeclarations;
+  driver: InsurerProposalDriver;
+  durationDays: number;
+  endAt: string;
+  endDate: string;
+  /** @nullable */
+  expiresAt?: string | null;
+  id: string;
+  inspection: InspectionResponse;
+  insurer: ProposalOrganization;
+  kyc: InsurerProposalKyc;
+  number: string;
+  policyholder: ProposalPolicyholder;
+  premium: ProposalPremium;
+  product: ProposalProduct;
+  quoteId: string;
+  signature?: ProposalSignature;
+  /** Todas as assinaturas (válida e invalidadas), as mais recentes primeiro */
+  signatures: InsurerProposalSignature[];
+  sla: InsurerProposalSla;
+  startAt: string;
+  status: ProposalStatus;
+  submittedAt: string;
+  suitability?: ProposalSuitability;
+  underwriting?: UnderwritingResult;
+  updatedAt: string;
+  vehicle: InsurerProposalVehicle;
+  /** Versão para as decisões; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export type InsurerProposalSignatureChannel =
+  (typeof InsurerProposalSignatureChannel)[keyof typeof InsurerProposalSignatureChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerProposalSignatureChannel = {
+  SMS: 'SMS',
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+} as const;
+
+/**
+ * @nullable
+ */
+export type InsurerProposalSignatureInvalidatedReason =
+  | (typeof InsurerProposalSignatureInvalidatedReason)[keyof typeof InsurerProposalSignatureInvalidatedReason]
+  | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerProposalSignatureInvalidatedReason = {
+  CONTENT_CHANGED: 'CONTENT_CHANGED',
+  INFO_REQUESTED: 'INFO_REQUESTED',
+} as const;
+
+/**
+ * Todas as assinaturas (válida e invalidadas), as mais recentes primeiro
+ */
+export interface InsurerProposalSignature {
+  assisted: boolean;
+  channel: InsurerProposalSignatureChannel;
+  destinationMasked: string;
+  documentFileId: string;
+  documentHash: string;
+  /** @nullable */
+  invalidatedAt?: string | null;
+  /** @nullable */
+  invalidatedReason?: InsurerProposalSignatureInvalidatedReason;
+  signedAt: string;
+}
+
+export interface InsurerProposalSla {
+  /** @nullable */
+  alertAt?: string | null;
+  /** @nullable */
+  alertedAt?: string | null;
+  /** @nullable */
+  dueAt?: string | null;
+  /**
+   * Entrada em UNDER_REVIEW (reinicia em cada submissão)
+   * @nullable
+   */
+  reviewStartedAt?: string | null;
+  status?: SlaStatus;
+}
+
+export type InsurerProposalSummaryResponseProductType =
+  (typeof InsurerProposalSummaryResponseProductType)[keyof typeof InsurerProposalSummaryResponseProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerProposalSummaryResponseProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface InsurerProposalSummaryResponse {
+  acceptanceMode?: AcceptanceMode;
+  /** @nullable */
+  brokerName?: string | null;
+  channel: ProposalChannel;
+  customerName: string;
+  id: string;
+  inspectionStatus?: InspectionStatus;
+  kycState: KycState;
+  number: string;
+  productName: string;
+  productType: InsurerProposalSummaryResponseProductType;
+  /**
+   * Fim do prazo de decisão; só em UNDER_REVIEW
+   * @nullable
+   */
+  slaDueAt?: string | null;
+  slaStatus?: SlaStatus;
+  status: ProposalStatus;
+  submittedAt: string;
+  total: Money;
+  vehiclePlate: string;
+}
+
+export interface InsurerProposalVehicle {
+  category: VehicleCategory;
+  /** @nullable */
+  chassisNumber?: string | null;
+  commercialValue?: Money;
+  id: string;
+  make: string;
+  model: string;
+  plate: string;
+  seats: number;
+  usage: VehicleUsage;
+  year: number;
 }
 
 export type InsurerRatingSettingsResponseRatingMode =
@@ -1526,6 +1725,13 @@ export interface PageResponseInsurerInspectionSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseInsurerProposalSummaryResponse {
+  content: InsurerProposalSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseInvitationResponse {
   content: InvitationResponse[];
   page: number;
@@ -1936,11 +2142,26 @@ export interface ProposalCoverage {
 }
 
 /**
- * Decisão da seguradora (S4-05); null antes de existir.
+ * Decisão da seguradora (S4-05); null em DRAFT antes da primeira submissão
+ * @nullable
  */
-export interface ProposalDecision {
-  [key: string]: unknown;
-}
+export type ProposalDecision = {
+  /** @nullable */
+  decidedAt?: string | null;
+  infoRequest?: ProposalInfoRequest;
+  /**
+   * Prazo de decisão da seguradora (sla_due_at), só em UNDER_REVIEW
+   * @nullable
+   */
+  insurerDueAt?: string | null;
+  mode?: AcceptanceMode;
+  /**
+   * Motivo da recusa ou nota da aceitação
+   * @nullable
+   */
+  reason?: string | null;
+  rejectionReasonCode?: RejectionReasonCode;
+} | null;
 
 /**
  * null até serem gravadas
@@ -1975,12 +2196,19 @@ export interface ProposalDriver {
   licenceNumberMasked: string;
 }
 
+/**
+ * Pedido de informação em curso (INFO_REQUESTED)
+ * @nullable
+ */
+export type ProposalInfoRequest = {
+  items: InfoRequestItem[];
+  message: string;
+  requestedAt: string;
+} | null;
+
 export interface ProposalKyc {
-  /**
-   * S4-05; null nesta fase
-   * @nullable
-   */
-  requiredForAutomaticAcceptance?: boolean | null;
+  /** Os ecrãs recomendam verificar a identidade antes de submeter */
+  requiredForAutomaticAcceptance: boolean;
   state: KycState;
 }
 
@@ -2665,6 +2893,46 @@ export interface RejectKycCheckRequest {
   version: number;
 }
 
+export type RejectProposalRequestReasonCode =
+  (typeof RejectProposalRequestReasonCode)[keyof typeof RejectProposalRequestReasonCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RejectProposalRequestReasonCode = {
+  RISK_NOT_ACCEPTED: 'RISK_NOT_ACCEPTED',
+  KYC_FAILED: 'KYC_FAILED',
+  INSPECTION_FAILED: 'INSPECTION_FAILED',
+  FALSE_DECLARATION: 'FALSE_DECLARATION',
+  DOCUMENTS_INVALID: 'DOCUMENTS_INVALID',
+  OTHER: 'OTHER',
+} as const;
+
+export interface RejectProposalRequest {
+  /**
+   * @minLength 10
+   * @maxLength 1000
+   */
+  reason: string;
+  reasonCode: RejectProposalRequestReasonCode;
+  version: number;
+}
+
+/**
+ * Só em REJECTED
+ * @nullable
+ */
+export type RejectionReasonCode =
+  (typeof RejectionReasonCode)[keyof typeof RejectionReasonCode] | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RejectionReasonCode = {
+  RISK_NOT_ACCEPTED: 'RISK_NOT_ACCEPTED',
+  KYC_FAILED: 'KYC_FAILED',
+  INSPECTION_FAILED: 'INSPECTION_FAILED',
+  FALSE_DECLARATION: 'FALSE_DECLARATION',
+  DOCUMENTS_INVALID: 'DOCUMENTS_INVALID',
+  OTHER: 'OTHER',
+} as const;
+
 export interface ReplaceCoveragesRequest {
   coverages: CoverageRequest[];
   version: number;
@@ -2709,6 +2977,17 @@ export interface RequestOtpRequest {
   /** Telemóvel (841234567, +258841234567) ou e-mail */
   identifier: string;
   identifierType: RequestOtpRequestIdentifierType;
+}
+
+export interface RequestProposalInfoRequest {
+  /** 1 ou mais, sem repetidos: DECLARATIONS, SUITABILITY, INSPECTION, KYC, POLICYHOLDER, OTHER */
+  items: string[];
+  /**
+   * @minLength 10
+   * @maxLength 1000
+   */
+  message: string;
+  version: number;
 }
 
 /**
@@ -2908,6 +3187,19 @@ export interface SimulationVehicleRequest {
   year: number;
 }
 
+/**
+ * Só em UNDER_REVIEW
+ * @nullable
+ */
+export type SlaStatus = (typeof SlaStatus)[keyof typeof SlaStatus] | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SlaStatus = {
+  ON_TIME: 'ON_TIME',
+  ALERT: 'ALERT',
+  OVERDUE: 'OVERDUE',
+} as const;
+
 export interface StaffLoginRequest {
   /**
    * @minLength 0
@@ -2993,6 +3285,11 @@ export interface SubmitInspectionRequest {
    */
   odometerKm: number;
   /** Versão da proposta; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export interface SubmitProposalRequest {
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
 }
 
@@ -3117,6 +3414,75 @@ export const UnavailableReason = {
   EXTERNAL_INVALID_RESPONSE: 'EXTERNAL_INVALID_RESPONSE',
   EVALUATION_ERROR: 'EVALUATION_ERROR',
 } as const;
+
+export type UnderwritingFailure = (typeof UnderwritingFailure)[keyof typeof UnderwritingFailure];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UnderwritingFailure = {
+  AUTO_ACCEPT_DISABLED: 'AUTO_ACCEPT_DISABLED',
+  KYC_REQUIRED: 'KYC_REQUIRED',
+  DECLARATION_POSITIVE: 'DECLARATION_POSITIVE',
+  INSPECTION_NOT_APPROVED: 'INSPECTION_NOT_APPROVED',
+  VEHICLE_VALUE_MISSING: 'VEHICLE_VALUE_MISSING',
+  VEHICLE_VALUE_ABOVE_LIMIT: 'VEHICLE_VALUE_ABOVE_LIMIT',
+} as const;
+
+export interface UnderwritingInputs {
+  hasOwnDamage: boolean;
+  inspectionStatus?: InspectionStatus;
+  kycState: KycState;
+  maxVehicleValue: number;
+  positiveDeclarations: DeclarationQuestion[];
+  simplifiedKycMaxPremium: number;
+  totalAmount: number;
+  /** @nullable */
+  vehicleValue?: number | null;
+}
+
+export type UnderwritingOutcome = (typeof UnderwritingOutcome)[keyof typeof UnderwritingOutcome];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UnderwritingOutcome = {
+  AUTOMATIC: 'AUTOMATIC',
+  MANUAL_REVIEW: 'MANUAL_REVIEW',
+} as const;
+
+export type UnderwritingResultRulesSource =
+  (typeof UnderwritingResultRulesSource)[keyof typeof UnderwritingResultRulesSource];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UnderwritingResultRulesSource = {
+  PRODUCT: 'PRODUCT',
+  DEFAULT: 'DEFAULT',
+} as const;
+
+/**
+ * Última avaliação das regras de aceitação (underwriting_result)
+ * @nullable
+ */
+export type UnderwritingResult = {
+  evaluatedAt: string;
+  failures: UnderwritingFailure[];
+  inputs: UnderwritingInputs;
+  outcome: UnderwritingOutcome;
+  rulesSchemaVersion: number;
+  rulesSource: UnderwritingResultRulesSource;
+} | null;
+
+/**
+ * Regras de aceitação no formato underwriting-v1 (backend/src/main/resources/schemas/underwriting-v1.json): schemaVersion = 1 e autoAccept { enabled, simplifiedKycMaxPremium, liability { requireAllDeclarationsNegative }, ownDamage { maxVehicleValue, requireAllDeclarationsNegative } }. Dinheiro em centavos.
+ */
+export interface UnderwritingRules {
+  [key: string]: unknown;
+}
+
+export interface UnderwritingRulesResponse {
+  /** true: a versão não tem regras próprias e valem as por defeito */
+  isDefault: boolean;
+  rules: UnderwritingRules;
+  /** version da versão do produto */
+  version: number;
+}
 
 export interface UpdateDriverRequest {
   birthDate: string;
@@ -3413,6 +3779,12 @@ export interface UpdateReferenceValueRequest {
   labelPt: string;
   sortOrder?: number;
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
+export interface UpdateUnderwritingRulesRequest {
+  rules: UnderwritingRules;
+  /** version da versão do produto */
   version: number;
 }
 
@@ -3756,6 +4128,34 @@ export type ListInsurerProductsType =
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ListInsurerProductsType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export type ListInsurerProposalsParams = {
+  status?: ProposalStatus[];
+  slaStatus?: SlaStatus;
+  productType?: ListInsurerProposalsProductType;
+  channel?: ProposalChannel;
+  q?: string;
+  submittedFrom?: string;
+  submittedTo?: string;
+  page?: number;
+  size?: number;
+  /**
+   * submittedAt ou slaDueAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListInsurerProposalsProductType =
+  (typeof ListInsurerProposalsProductType)[keyof typeof ListInsurerProposalsProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListInsurerProposalsProductType = {
   MTPL_ONLY: 'MTPL_ONLY',
   COMPREHENSIVE: 'COMPREHENSIVE',
   TEMPORARY: 'TEMPORARY',
@@ -9813,6 +10213,226 @@ export const useValidateRatingRules = <TError = ErrorType<ProblemDetail>, TConte
 };
 
 /**
+ * Permissão product:read. Sem regras próprias devolve os valores por defeito (isDefault = true): aceitação automática ligada, KYC simplificado abaixo de 10 000 MT e danos próprios até 1 500 000 MT com todas as declarações "não" (provisórios).
+ * @summary Consulta as regras de aceitação de uma versão
+ */
+export const getUnderwritingRules = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<UnderwritingRulesResponse>(
+    { url: `/api/v1/insurer/product-versions/${id}/underwriting-rules`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetUnderwritingRulesQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/product-versions/${id}/underwriting-rules`] as const;
+};
+
+export const getGetUnderwritingRulesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUnderwritingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUnderwritingRules>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetUnderwritingRulesQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUnderwritingRules>>> = ({ signal }) =>
+    getUnderwritingRules(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUnderwritingRules>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetUnderwritingRulesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUnderwritingRules>>
+>;
+export type GetUnderwritingRulesQueryError = ErrorType<ProblemDetail>;
+
+export function useGetUnderwritingRules<
+  TData = Awaited<ReturnType<typeof getUnderwritingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUnderwritingRules>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUnderwritingRules>>,
+          TError,
+          Awaited<ReturnType<typeof getUnderwritingRules>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUnderwritingRules<
+  TData = Awaited<ReturnType<typeof getUnderwritingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUnderwritingRules>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUnderwritingRules>>,
+          TError,
+          Awaited<ReturnType<typeof getUnderwritingRules>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUnderwritingRules<
+  TData = Awaited<ReturnType<typeof getUnderwritingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUnderwritingRules>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta as regras de aceitação de uma versão
+ */
+
+export function useGetUnderwritingRules<
+  TData = Awaited<ReturnType<typeof getUnderwritingRules>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getUnderwritingRules>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetUnderwritingRulesQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão product:manage. Só em DRAFT (senão 409 PRODUCT_VERSION_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION. As regras seguem o schema underwriting-v1 (campos desconhecidos recusados): erros → 400 VALIDATION_ERROR com errors[] = { field: rules.<caminho>, code: INVALID_RULES }.
+ * @summary Altera as regras de aceitação de uma versão
+ */
+export const updateUnderwritingRules = (
+  id: string,
+  updateUnderwritingRulesRequest: BodyType<UpdateUnderwritingRulesRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<UnderwritingRulesResponse>(
+    {
+      url: `/api/v1/insurer/product-versions/${id}/underwriting-rules`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateUnderwritingRulesRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateUnderwritingRulesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateUnderwritingRules>>,
+    TError,
+    { id: string; data: BodyType<UpdateUnderwritingRulesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateUnderwritingRules>>,
+  TError,
+  { id: string; data: BodyType<UpdateUnderwritingRulesRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateUnderwritingRules'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateUnderwritingRules>>,
+    { id: string; data: BodyType<UpdateUnderwritingRulesRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateUnderwritingRules(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateUnderwritingRulesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateUnderwritingRules>>
+>;
+export type UpdateUnderwritingRulesMutationBody = BodyType<UpdateUnderwritingRulesRequest>;
+export type UpdateUnderwritingRulesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera as regras de aceitação de uma versão
+ */
+export const useUpdateUnderwritingRules = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateUnderwritingRules>>,
+      TError,
+      { id: string; data: BodyType<UpdateUnderwritingRulesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateUnderwritingRules>>,
+  TError,
+  { id: string; data: BodyType<UpdateUnderwritingRulesRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateUnderwritingRulesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão product:read. As mesmas regras da publicação, sem gravar; todas as falhas em errors[].
  * @summary Verifica as regras de publicação
  */
@@ -10485,6 +11105,527 @@ export const useCreateProductVersion = <TError = ErrorType<ProblemDetail>, TCont
   TContext
 > => {
   const mutationOptions = getCreateProductVersionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão proposal:read. status repetível (por defeito UNDER_REVIEW); slaStatus (ON_TIME, ALERT, OVERDUE; só propostas UNDER_REVIEW); productType; channel; q = número exacto ou parte do nome do tomador; submittedFrom e submittedTo em datas de Africa/Maputo (inclusivas). Ordenação por submittedAt (defeito, asc) ou slaDueAt.
+ * @summary Lista as propostas submetidas à seguradora
+ */
+export const listInsurerProposals = (
+  params?: ListInsurerProposalsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInsurerProposalSummaryResponse>(
+    { url: `/api/v1/insurer/proposals`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListInsurerProposalsQueryKey = (params?: ListInsurerProposalsParams) => {
+  return [`/api/v1/insurer/proposals`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInsurerProposalsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerProposals>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerProposalsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerProposals>>> = ({ signal }) =>
+    listInsurerProposals(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerProposals>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerProposalsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerProposals>>
+>;
+export type ListInsurerProposalsQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerProposals<
+  TData = Awaited<ReturnType<typeof listInsurerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListInsurerProposalsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerProposals>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerProposals>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerProposals>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerProposals<
+  TData = Awaited<ReturnType<typeof listInsurerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerProposals>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerProposals>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerProposals>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerProposals<
+  TData = Awaited<ReturnType<typeof listInsurerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerProposals>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as propostas submetidas à seguradora
+ */
+
+export function useListInsurerProposals<
+  TData = Awaited<ReturnType<typeof listInsurerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerProposals>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerProposalsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão proposal:read. A proposta com o condutor e o veículo completos, o KYC, o registo das regras de aceitação (underwriting), o SLA e o histórico das assinaturas.
+ * @summary Consulta uma proposta submetida
+ */
+export const getInsurerProposal = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerProposalResponse>(
+    { url: `/api/v1/insurer/proposals/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerProposalQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/proposals/${id}`] as const;
+};
+
+export const getGetInsurerProposalQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerProposal>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerProposalQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerProposal>>> = ({ signal }) =>
+    getInsurerProposal(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerProposal>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerProposalQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInsurerProposal>>
+>;
+export type GetInsurerProposalQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerProposal<
+  TData = Awaited<ReturnType<typeof getInsurerProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerProposal>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerProposal>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerProposal>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerProposal<
+  TData = Awaited<ReturnType<typeof getInsurerProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getInsurerProposal>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerProposal>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerProposal>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerProposal<
+  TData = Awaited<ReturnType<typeof getInsurerProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerProposal>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma proposta submetida
+ */
+
+export function useGetInsurerProposal<
+  TData = Awaited<ReturnType<typeof getInsurerProposal>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerProposal>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerProposalQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão proposal:decide. UNDER_REVIEW → ACCEPTED (acceptanceMode = MANUAL), com o prazo para pagar (expiresAt). Com vistoria, tem de estar APPROVED (409 INSPECTION_NOT_APPROVED); KYC VERIFIED ou total abaixo do limiar do KYC simplificado (409 KYC_NOT_VERIFIED). note até 1000 (TOO_LONG). Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver verificado).
+ * @summary Aceita uma proposta
+ */
+export const acceptProposal = (
+  id: string,
+  acceptProposalRequest: BodyType<AcceptProposalRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerProposalResponse>(
+    {
+      url: `/api/v1/insurer/proposals/${id}/accept`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: acceptProposalRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getAcceptProposalMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof acceptProposal>>,
+    TError,
+    { id: string; data: BodyType<AcceptProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof acceptProposal>>,
+  TError,
+  { id: string; data: BodyType<AcceptProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['acceptProposal'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof acceptProposal>>,
+    { id: string; data: BodyType<AcceptProposalRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return acceptProposal(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AcceptProposalMutationResult = NonNullable<Awaited<ReturnType<typeof acceptProposal>>>;
+export type AcceptProposalMutationBody = BodyType<AcceptProposalRequest>;
+export type AcceptProposalMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Aceita uma proposta
+ */
+export const useAcceptProposal = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof acceptProposal>>,
+      TError,
+      { id: string; data: BodyType<AcceptProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof acceptProposal>>,
+  TError,
+  { id: string; data: BodyType<AcceptProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getAcceptProposalMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão proposal:decide. UNDER_REVIEW → REJECTED. reasonCode obrigatório (REQUIRED, INVALID_VALUE); reason 10–1000 (REQUIRED, TOO_SHORT, TOO_LONG); o motivo vai no e-mail ao cliente. Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver verificado).
+ * @summary Recusa uma proposta
+ */
+export const rejectProposal = (
+  id: string,
+  rejectProposalRequest: BodyType<RejectProposalRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerProposalResponse>(
+    {
+      url: `/api/v1/insurer/proposals/${id}/reject`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: rejectProposalRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRejectProposalMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectProposal>>,
+    TError,
+    { id: string; data: BodyType<RejectProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rejectProposal>>,
+  TError,
+  { id: string; data: BodyType<RejectProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['rejectProposal'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rejectProposal>>,
+    { id: string; data: BodyType<RejectProposalRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return rejectProposal(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RejectProposalMutationResult = NonNullable<Awaited<ReturnType<typeof rejectProposal>>>;
+export type RejectProposalMutationBody = BodyType<RejectProposalRequest>;
+export type RejectProposalMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Recusa uma proposta
+ */
+export const useRejectProposal = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rejectProposal>>,
+      TError,
+      { id: string; data: BodyType<RejectProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof rejectProposal>>,
+  TError,
+  { id: string; data: BodyType<RejectProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getRejectProposalMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão proposal:decide. UNDER_REVIEW → INFO_REQUESTED, com o prazo do cliente (expiresAt). message 10–1000 (REQUIRED, TOO_SHORT, TOO_LONG); items 1+ sem repetidos (REQUIRED, INVALID_VALUE, ANSWER_DUPLICATED). A assinatura deixa de valer (o cliente assina de novo); com o item INSPECTION a vistoria volta a PENDING. Só em UNDER_REVIEW (senão 409 PROPOSAL_NOT_UNDER_REVIEW); version diferente → 409 CONCURRENT_MODIFICATION; o cliente é avisado por e-mail (se o tiver verificado).
+ * @summary Pede informação ao cliente
+ */
+export const requestProposalInfo = (
+  id: string,
+  requestProposalInfoRequest: BodyType<RequestProposalInfoRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerProposalResponse>(
+    {
+      url: `/api/v1/insurer/proposals/${id}/request-info`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: requestProposalInfoRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRequestProposalInfoMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestProposalInfo>>,
+    TError,
+    { id: string; data: BodyType<RequestProposalInfoRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof requestProposalInfo>>,
+  TError,
+  { id: string; data: BodyType<RequestProposalInfoRequest> },
+  TContext
+> => {
+  const mutationKey = ['requestProposalInfo'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof requestProposalInfo>>,
+    { id: string; data: BodyType<RequestProposalInfoRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return requestProposalInfo(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RequestProposalInfoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof requestProposalInfo>>
+>;
+export type RequestProposalInfoMutationBody = BodyType<RequestProposalInfoRequest>;
+export type RequestProposalInfoMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pede informação ao cliente
+ */
+export const useRequestProposalInfo = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof requestProposalInfo>>,
+      TError,
+      { id: string; data: BodyType<RequestProposalInfoRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof requestProposalInfo>>,
+  TError,
+  { id: string; data: BodyType<RequestProposalInfoRequest> },
+  TContext
+> => {
+  const mutationOptions = getRequestProposalInfoMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -15912,6 +17053,93 @@ export const useRequestProposalSignature = <TError = ErrorType<ProblemDetail>, T
   TContext
 > => {
   const mutationOptions = getRequestProposalSignatureMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:proposals ou proposal:create-for-client. Só em DRAFT ou INFO_REQUESTED (senão 409 INVALID_STATE_TRANSITION); version diferente → 409 CONCURRENT_MODIFICATION; proposta incompleta ou sem assinatura válida → 409 PROPOSAL_INCOMPLETE (missing); seguradora não activa → 409 INSURER_NOT_ACTIVE. As regras de aceitação do produto decidem logo: ACCEPTED (aceitação automática, expiresAt = prazo para pagar) ou UNDER_REVIEW (decision.insurerDueAt = prazo da seguradora). Depois de submetida, a proposta só se altera se a seguradora pedir informação.
+ * @summary Submete a proposta à seguradora
+ */
+export const submitProposal = (
+  id: string,
+  submitProposalRequest: BodyType<SubmitProposalRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/proposals/${id}/submit`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: submitProposalRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSubmitProposalMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof submitProposal>>,
+    TError,
+    { id: string; data: BodyType<SubmitProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof submitProposal>>,
+  TError,
+  { id: string; data: BodyType<SubmitProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['submitProposal'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof submitProposal>>,
+    { id: string; data: BodyType<SubmitProposalRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return submitProposal(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SubmitProposalMutationResult = NonNullable<Awaited<ReturnType<typeof submitProposal>>>;
+export type SubmitProposalMutationBody = BodyType<SubmitProposalRequest>;
+export type SubmitProposalMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Submete a proposta à seguradora
+ */
+export const useSubmitProposal = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof submitProposal>>,
+      TError,
+      { id: string; data: BodyType<SubmitProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof submitProposal>>,
+  TError,
+  { id: string; data: BodyType<SubmitProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getSubmitProposalMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

@@ -73,6 +73,10 @@
       "status" : 403
     },
     {
+      "code" : "INSPECTION_NOT_APPROVED",
+      "status" : 409
+    },
+    {
       "code" : "INSPECTION_NOT_EDITABLE",
       "status" : 409
     },
@@ -147,6 +151,10 @@
     {
       "code" : "KYC_NOT_FOUND",
       "status" : 404
+    },
+    {
+      "code" : "KYC_NOT_VERIFIED",
+      "status" : 409
     },
     {
       "code" : "LAST_ACTIVE_PLATE_FORMAT",
@@ -509,6 +517,7 @@
     "INVALID_PLATE",
     "INVALID_RANGE",
     "INVALID_REQUIREMENT",
+    "INVALID_RULES",
     "INVALID_SECRET_REF",
     "INVALID_SLOT",
     "INVALID_SORT",
