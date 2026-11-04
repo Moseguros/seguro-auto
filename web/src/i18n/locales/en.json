@@ -241,7 +241,8 @@
     "PHOTO_NOT_FOUND": "Photo not found.",
     "PROPOSAL_NOT_UNDER_REVIEW": "The proposal is not under review.",
     "KYC_NOT_VERIFIED": "The customer's identity has not been verified yet.",
-    "INSPECTION_NOT_APPROVED": "The inspection has not been approved yet."
+    "INSPECTION_NOT_APPROVED": "The inspection has not been approved yet.",
+    "CLIENT_ACCOUNT_DISABLED": "This customer's account is disabled. Contact MoSeguros support."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",

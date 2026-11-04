@@ -241,7 +241,8 @@
     "PHOTO_NOT_FOUND": "Fotografia não encontrada.",
     "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise.",
     "KYC_NOT_VERIFIED": "A identidade do cliente ainda não foi verificada.",
-    "INSPECTION_NOT_APPROVED": "A vistoria ainda não foi aprovada."
+    "INSPECTION_NOT_APPROVED": "A vistoria ainda não foi aprovada.",
+    "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",

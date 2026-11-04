@@ -76,6 +76,132 @@ export interface AssignableRolesResponse {
   roles: string[];
 }
 
+export type BrokerPolicyholderRequestIdDocType =
+  (typeof BrokerPolicyholderRequestIdDocType)[keyof typeof BrokerPolicyholderRequestIdDocType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const BrokerPolicyholderRequestIdDocType = {
+  BI: 'BI',
+  PASSPORT: 'PASSPORT',
+  DIRE: 'DIRE',
+} as const;
+
+export type BrokerPolicyholderRequestProvince =
+  (typeof BrokerPolicyholderRequestProvince)[keyof typeof BrokerPolicyholderRequestProvince];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const BrokerPolicyholderRequestProvince = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+/**
+ * Só com policyholderSource = BROKER (senão NOT_ALLOWED); omitido mantém o actual
+ */
+export interface BrokerPolicyholderRequest {
+  /** @maxLength 300 */
+  address?: string;
+  /** Pelo menos 18 anos, no máximo 120 */
+  birthDate: string;
+  /**
+   * Letras, espaços, apóstrofo e hífen; pelo menos duas palavras
+   * @minLength 2
+   * @maxLength 120
+   */
+  fullName: string;
+  /** Maiúsculas e dígitos, 5–20 (espaços ignorados). Obrigatório na criação; no updateBrokerProposal, omitido mantém o actual (se o tipo não mudar). */
+  idDocNumber?: string;
+  idDocType: BrokerPolicyholderRequestIdDocType;
+  /** 9 dígitos. Obrigatório na criação; no updateBrokerProposal, omitido mantém o actual. */
+  nuit?: string;
+  province: BrokerPolicyholderRequestProvince;
+}
+
+export interface BrokerProposalDriverRequest {
+  birthDate: string;
+  /**
+   * Letras, espaços, apóstrofo e hífen; pelo menos duas palavras
+   * @minLength 2
+   * @maxLength 120
+   */
+  fullName: string;
+  /** O condutor é o próprio cliente (defeito false); só um por cliente */
+  isOwner?: boolean;
+  /** 1–12 códigos activos em LICENCE_CATEGORY, sem repetidos */
+  licenceCategories: string[];
+  licenceIssueDate: string;
+  /** 5–20 letras, dígitos, / ou - (espaços ignorados). Nunca é devolvido. */
+  licenceNumber: string;
+}
+
+export interface BrokerProposalSummaryResponse {
+  checklist: ProposalChecklist;
+  createdAt: string;
+  customerMsisdnMasked?: string;
+  /** Nome do tomador */
+  customerName: string;
+  /** @nullable */
+  expiresAt?: string | null;
+  id: string;
+  insurer: ProposalOrganization;
+  number: string;
+  productName: string;
+  status: ProposalStatus;
+  total: Money;
+}
+
+export type BrokerProposalVehicleRequestProvinceOfCirculation =
+  (typeof BrokerProposalVehicleRequestProvinceOfCirculation)[keyof typeof BrokerProposalVehicleRequestProvinceOfCirculation];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const BrokerProposalVehicleRequestProvinceOfCirculation = {
+  MAPUTO_CITY: 'MAPUTO_CITY',
+  MAPUTO: 'MAPUTO',
+  GAZA: 'GAZA',
+  INHAMBANE: 'INHAMBANE',
+  SOFALA: 'SOFALA',
+  MANICA: 'MANICA',
+  TETE: 'TETE',
+  ZAMBEZIA: 'ZAMBEZIA',
+  NAMPULA: 'NAMPULA',
+  CABO_DELGADO: 'CABO_DELGADO',
+  NIASSA: 'NIASSA',
+} as const;
+
+export interface BrokerProposalVehicleRequest {
+  category: VehicleCategory;
+  /** 5–30 letras ou dígitos (espaços e hífens ignorados) */
+  chassisNumber: string;
+  commercialValue?: Money;
+  /** 1–30 000; obrigatório excepto em TRAILER, onde tem de faltar */
+  engineCc?: number;
+  /** 1–100 000; obrigatório em HEAVY e TRAILER */
+  grossWeightKg?: number;
+  /** Localizador instalado (defeito false) */
+  hasTracker?: boolean;
+  /** @maxLength 60 */
+  make: string;
+  /** @maxLength 60 */
+  model: string;
+  /** Num dos formatos activos (espaços, hífens e minúsculas aceites) */
+  plate: string;
+  provinceOfCirculation: BrokerProposalVehicleRequestProvinceOfCirculation;
+  /** TRAILER: 0; MOTORCYCLE: 1–3; outras: 1–100 */
+  seats: number;
+  usage: VehicleUsage;
+  /** De 1900 ao próximo ano (em Africa/Maputo) */
+  year: number;
+}
+
 export type BrokerVehicleRequestProvinceOfCirculation =
   (typeof BrokerVehicleRequestProvinceOfCirculation)[keyof typeof BrokerVehicleRequestProvinceOfCirculation];
 
@@ -383,6 +509,14 @@ export interface CoverageResponse {
   mandatory: boolean;
   requiresCodes?: CoverageResponseRequiresCodesItem[];
   territorialScope?: string[];
+}
+
+export interface CreateBrokerProposalRequest {
+  driver: BrokerProposalDriverRequest;
+  policyholder?: BrokerPolicyholderRequest;
+  /** Cotação OFFERED do mediador */
+  quoteId: string;
+  vehicle: BrokerProposalVehicleRequest;
 }
 
 /**
@@ -1704,6 +1838,13 @@ export interface OtpVerifyResponse {
   refreshToken: string;
 }
 
+export interface PageResponseBrokerProposalSummaryResponse {
+  content: BrokerProposalSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseCatalogProductResponse {
   content: CatalogProductResponse[];
   page: number;
@@ -1858,6 +1999,17 @@ export interface PlatformSettingResponse {
 export interface PlatformSettingsResponse {
   settings: PlatformSettingResponse[];
 }
+
+/**
+ * PROFILE: tomador copiado do perfil do cliente; BROKER: preenchido pelo mediador porque o perfil estava incompleto (S4-06)
+ */
+export type PolicyholderSource = (typeof PolicyholderSource)[keyof typeof PolicyholderSource];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyholderSource = {
+  PROFILE: 'PROFILE',
+  BROKER: 'BROKER',
+} as const;
 
 /**
  * Decomposição do prémio (S3-01 §10): provider, variables, durationFactor, coverages (capitalAmount, deductible, base, factors, bonusMalusFactor, exactPremium, premiumAmount), commercialPremiumAmount, charges, subtotalAmount, roundingAdjustmentAmount e totalAmount. Decimais em texto, centavos em inteiro.
@@ -2304,6 +2456,7 @@ export interface ProposalResponse {
   kyc: ProposalKyc;
   number: string;
   policyholder: ProposalPolicyholder;
+  policyholderSource: PolicyholderSource;
   premium: ProposalPremium;
   product: ProposalProduct;
   quoteId: string;
@@ -3484,6 +3637,14 @@ export interface UnderwritingRulesResponse {
   version: number;
 }
 
+export interface UpdateBrokerProposalRequest {
+  policyholder?: BrokerPolicyholderRequest;
+  /** Nova data de início (hoje a hoje + 60 dias, Africa/Maputo); omitida mantém a actual */
+  startDate?: string;
+  /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
+  version: number;
+}
+
 export interface UpdateDriverRequest {
   birthDate: string;
   /**
@@ -4006,6 +4167,23 @@ export const ListPlatformUsersStatus = {
   LOCKED: 'LOCKED',
   DISABLED: 'DISABLED',
 } as const;
+
+export type ListBrokerProposalsParams = {
+  /**
+   * Estados a incluir (repetível); vazio = todos
+   */
+  status?: ProposalStatus[];
+  /**
+   * Número exacto ou parte do nome do tomador
+   */
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
 
 export type ListBrokerQuoteRequestsParams = {
   /**
@@ -7488,6 +7666,314 @@ export const useRefreshToken = <TError = ErrorType<ProblemDetail>, TContext = un
   TContext
 > => {
   const mutationOptions = getRefreshTokenMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão proposal:create-for-client (corretor ou agente). Propostas criadas por qualquer utilizador da organização; status repetível (vazio = todos); q = número exacto ou parte do nome do tomador. Ordenação por createdAt (defeito createdAt,desc).
+ * @summary Lista as propostas da organização do mediador
+ */
+export const listBrokerProposals = (
+  params?: ListBrokerProposalsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseBrokerProposalSummaryResponse>(
+    { url: `/api/v1/broker/proposals`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListBrokerProposalsQueryKey = (params?: ListBrokerProposalsParams) => {
+  return [`/api/v1/broker/proposals`, ...(params ? [params] : [])] as const;
+};
+
+export const getListBrokerProposalsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listBrokerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerProposals>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListBrokerProposalsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listBrokerProposals>>> = ({ signal }) =>
+    listBrokerProposals(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listBrokerProposals>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListBrokerProposalsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listBrokerProposals>>
+>;
+export type ListBrokerProposalsQueryError = ErrorType<ProblemDetail>;
+
+export function useListBrokerProposals<
+  TData = Awaited<ReturnType<typeof listBrokerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListBrokerProposalsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerProposals>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listBrokerProposals>>,
+          TError,
+          Awaited<ReturnType<typeof listBrokerProposals>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListBrokerProposals<
+  TData = Awaited<ReturnType<typeof listBrokerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerProposals>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listBrokerProposals>>,
+          TError,
+          Awaited<ReturnType<typeof listBrokerProposals>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListBrokerProposals<
+  TData = Awaited<ReturnType<typeof listBrokerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerProposals>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as propostas da organização do mediador
+ */
+
+export function useListBrokerProposals<
+  TData = Awaited<ReturnType<typeof listBrokerProposals>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListBrokerProposalsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listBrokerProposals>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListBrokerProposalsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão proposal:create-for-client (corretor ou agente). Por esta ordem: cotação não visível, do cliente ou de outra organização → 404 QUOTE_NOT_FOUND; já usada numa proposta → 409 PROPOSAL_ALREADY_EXISTS; QUOTE_NOT_AVAILABLE, QUOTE_ALREADY_USED, QUOTE_EXPIRED (409); seguradora não activa → 409 INSURER_NOT_ACTIVE; vehicle ou driver em falta → 400 REQUIRED; campos usados na tarifa diferentes dos da cotação → 409 QUOTE_DATA_CHANGED (fields, ex.: vehicle.year); conta do cliente desactivada → 409 CLIENT_ACCOUNT_DISABLED; perfil do cliente completo e policyholder enviado → 400 NOT_ALLOWED (policyholder); perfil incompleto sem policyholder → 400 REQUIRED (policyholder), com as regras do perfil (errors[].field policyholder.*); regras do veículo e do condutor do S2-03 (errors[].field vehicle.* e driver.*; VEHICLE_ALREADY_REGISTERED com a mesma matrícula e outro chassis, VEHICLE_LIMIT_REACHED, DRIVER_LIMIT_REACHED). Regista o veículo e o condutor na conta do cliente (reutiliza os iguais), grava a proposta DRAFT com channel = BROKER e a cotação passa a USED. Qualquer erro desfaz tudo. O cliente vê a proposta em listMyProposals e recebe um e-mail se tiver e-mail verificado.
+ * @summary Cria uma proposta a partir da cotação do mediador
+ */
+export const createProposalForClient = (
+  createBrokerProposalRequest: BodyType<CreateBrokerProposalRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/broker/proposals`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createBrokerProposalRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateProposalForClientMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createProposalForClient>>,
+    TError,
+    { data: BodyType<CreateBrokerProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createProposalForClient>>,
+  TError,
+  { data: BodyType<CreateBrokerProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['createProposalForClient'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createProposalForClient>>,
+    { data: BodyType<CreateBrokerProposalRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createProposalForClient(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateProposalForClientMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createProposalForClient>>
+>;
+export type CreateProposalForClientMutationBody = BodyType<CreateBrokerProposalRequest>;
+export type CreateProposalForClientMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Cria uma proposta a partir da cotação do mediador
+ */
+export const useCreateProposalForClient = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createProposalForClient>>,
+      TError,
+      { data: BodyType<CreateBrokerProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createProposalForClient>>,
+  TError,
+  { data: BodyType<CreateBrokerProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreateProposalForClientMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão proposal:create-for-client (corretor ou agente). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outra organização → 404 PROPOSAL_NOT_FOUND. startDate entre hoje e hoje + 60 dias (START_DATE_OUT_OF_RANGE); policyholder só com policyholderSource = BROKER (senão 400 NOT_ALLOWED), com as regras do perfil (idDocNumber e nuit omitidos mantêm os actuais); sem nenhum dos dois → 400 REQUIRED (startDate). Com policyholderSource = PROFILE o tomador é copiado de novo do perfil. Aumenta contentRevision, invalida a assinatura e renova expiresAt. O veículo e o condutor não mudam (mudar o risco exige nova cotação).
+ * @summary Altera a data de início ou o tomador
+ */
+export const updateBrokerProposal = (
+  id: string,
+  updateBrokerProposalRequest: BodyType<UpdateBrokerProposalRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<ProposalResponse>(
+    {
+      url: `/api/v1/broker/proposals/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateBrokerProposalRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateBrokerProposalMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateBrokerProposal>>,
+    TError,
+    { id: string; data: BodyType<UpdateBrokerProposalRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateBrokerProposal>>,
+  TError,
+  { id: string; data: BodyType<UpdateBrokerProposalRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateBrokerProposal'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateBrokerProposal>>,
+    { id: string; data: BodyType<UpdateBrokerProposalRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateBrokerProposal(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateBrokerProposalMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateBrokerProposal>>
+>;
+export type UpdateBrokerProposalMutationBody = BodyType<UpdateBrokerProposalRequest>;
+export type UpdateBrokerProposalMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera a data de início ou o tomador
+ */
+export const useUpdateBrokerProposal = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateBrokerProposal>>,
+      TError,
+      { id: string; data: BodyType<UpdateBrokerProposalRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateBrokerProposal>>,
+  TError,
+  { id: string; data: BodyType<UpdateBrokerProposalRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateBrokerProposalMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -16334,7 +16820,7 @@ export function useGetProposal<
 }
 
 /**
- * Permissão self:proposals ou proposal:create-for-client. startDate entre hoje e hoje + 60 dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE); a duração e o prémio não mudam; o tomador é copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE). Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
+ * Permissão self:proposals ou proposal:create-for-client. startDate entre hoje e hoje + 60 dias (Africa/Maputo; senão START_DATE_OUT_OF_RANGE); a duração e o prémio não mudam; o tomador é copiado de novo do perfil (perfil incompleto → 409 PROFILE_INCOMPLETE); com policyholderSource = BROKER (S4-06) mantém o tomador preenchido pelo mediador. Só em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Aumenta contentRevision e renova expiresAt (+15 dias).
  * @summary Altera a data de início da proposta
  */
 export const updateProposal = (
@@ -16880,7 +17366,7 @@ export const useSubmitInspection = <TError = ErrorType<ProblemDetail>, TContext 
 };
 
 /**
- * Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature = DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura.
+ * Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature = DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura. Confirmada por um utilizador do mediador (S4-06) → signature.assisted = true; pelo próprio cliente → não assistida.
  * @summary Confirma a assinatura com o código recebido
  */
 export const confirmProposalSignature = (
@@ -16969,7 +17455,7 @@ export const useConfirmProposalSignature = <TError = ErrorType<ProblemDetail>, T
 };
 
 /**
- * Permissão self:proposals ou proposal:create-for-client. Por esta ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT, INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND.
+ * Permissão self:proposals ou proposal:create-for-client. Por esta ordem: proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); version diferente → 409 CONCURRENT_MODIFICATION; documentsAcknowledged ≠ true → 400 (campo documentsAcknowledged, MUST_BE_TRUE); passos em falta → 409 PROPOSAL_INCOMPLETE com missing (DECLARATIONS, SUITABILITY, SUITABILITY_ACKNOWLEDGEMENT, INSPECTION, START_DATE); sem telemóvel nem e-mail verificado → 409 SIGNER_CONTACT_MISSING. Gera o PDF (SHA-256 em documentHash) e envia ao tomador um código que só assina esse PDF; os limites do código são os do login (429 OTP_RATE_LIMITED / OTP_RESEND_TOO_SOON com Retry-After). Pedir de novo substitui o pedido anterior; não altera contentRevision. Proposta de outro cliente → 404 PROPOSAL_NOT_FOUND. Pedido pelo mediador da proposta (S4-06): assinatura assistida, o código vai para o telemóvel da conta do cliente com o nome do mediador na mensagem.
  * @summary Gera o PDF da proposta e envia o código de assinatura
  */
 export const requestProposalSignature = (
