@@ -161,6 +161,10 @@ public final class FieldErrorCodes {
     /** Referência de segredo fora do formato {@code config:<chave>}. */
     public static final String INVALID_SECRET_REF = "INVALID_SECRET_REF";
 
+    // KYC do cliente (S4-01)
+    /** Seguradora inexistente, que não é seguradora ou que não está activa. */
+    public static final String INVALID_INSURER = "INVALID_INSURER";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

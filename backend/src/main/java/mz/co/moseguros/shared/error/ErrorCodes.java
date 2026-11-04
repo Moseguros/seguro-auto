@@ -219,6 +219,16 @@ public final class ErrorCodes {
     /** A organização não é uma seguradora (400). */
     public static final String ORGANIZATION_NOT_INSURER = "ORGANIZATION_NOT_INSURER";
 
+    // KYC do cliente (S4-01)
+    /** O perfil do cliente está incompleto ({@code CustomerProfile.isComplete()}) (409). */
+    public static final String PROFILE_INCOMPLETE = "PROFILE_INCOMPLETE";
+    /** O cliente já tem uma verificação de identidade {@code PENDING} (409). */
+    public static final String KYC_ALREADY_PENDING = "KYC_ALREADY_PENDING";
+    /** A identidade do cliente já está verificada e o perfil não mudou (409). */
+    public static final String KYC_ALREADY_VERIFIED = "KYC_ALREADY_VERIFIED";
+    /** Verificação de identidade inexistente ou de outra seguradora (404). */
+    public static final String KYC_NOT_FOUND = "KYC_NOT_FOUND";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -313,7 +323,11 @@ public final class ErrorCodes {
             Map.entry(QUOTE_ALREADY_USED, 409),
             Map.entry(QUOTE_RATE_LIMITED, 429),
             Map.entry(VEHICLE_VALUE_REQUIRED, 400),
-            Map.entry(ORGANIZATION_NOT_INSURER, 400));
+            Map.entry(ORGANIZATION_NOT_INSURER, 400),
+            Map.entry(PROFILE_INCOMPLETE, 409),
+            Map.entry(KYC_ALREADY_PENDING, 409),
+            Map.entry(KYC_ALREADY_VERIFIED, 409),
+            Map.entry(KYC_NOT_FOUND, 404));
 
     private ErrorCodes() {
     }
