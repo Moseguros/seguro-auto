@@ -181,3 +181,9 @@ moseguros:
       bulkhead:
         max-concurrent-calls: 20
     secrets: {}
+  # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
+  # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365). O S4-05 acrescenta
+  # decision-sla-days e decision-alert-days.
+  proposal:
+    expiry-days: 15
+    max-start-days: 60
