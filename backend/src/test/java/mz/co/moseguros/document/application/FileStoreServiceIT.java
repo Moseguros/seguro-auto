@@ -109,7 +109,9 @@ class FileStoreServiceIT {
             assertThat(content.ref()).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(ref);
             assertThat(content.ref().createdAt()).isCloseTo(ref.createdAt(), within(1, ChronoUnit.MICROS));
         }
-        assertThat(as(TenantSnapshot.customer(customer), () -> documents.metadata(ref.id()))).isEqualTo(ref);
+        FileRef metadata = as(TenantSnapshot.customer(customer), () -> documents.metadata(ref.id()));
+        assertThat(metadata).usingRecursiveComparison().ignoringFields("createdAt").isEqualTo(ref);
+        assertThat(metadata.createdAt()).isCloseTo(ref.createdAt(), within(1, ChronoUnit.MICROS));
     }
 
     @Test
