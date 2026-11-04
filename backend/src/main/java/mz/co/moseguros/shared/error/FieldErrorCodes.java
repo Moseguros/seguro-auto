@@ -165,6 +165,18 @@ public final class FieldErrorCodes {
     /** Seguradora inexistente, que não é seguradora ou que não está activa. */
     public static final String INVALID_INSURER = "INVALID_INSURER";
 
+    // Propostas: declarações e adequação (S4-02)
+    /** Falta resposta a alguma das perguntas fixas. */
+    public static final String ANSWERS_INCOMPLETE = "ANSWERS_INCOMPLETE";
+    /** A mesma pergunta respondida mais de uma vez. */
+    public static final String ANSWER_DUPLICATED = "ANSWER_DUPLICATED";
+    /** Código de pergunta desconhecido. */
+    public static final String UNKNOWN_QUESTION = "UNKNOWN_QUESTION";
+    /** Resposta fora das permitidas para o tipo da pergunta. */
+    public static final String INVALID_ANSWER = "INVALID_ANSWER";
+    /** Confirmação obrigatória ({@code true}). */
+    public static final String MUST_BE_TRUE = "MUST_BE_TRUE";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

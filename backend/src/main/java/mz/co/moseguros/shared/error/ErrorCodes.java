@@ -229,6 +229,20 @@ public final class ErrorCodes {
     /** Verificação de identidade inexistente ou de outra seguradora (404). */
     public static final String KYC_NOT_FOUND = "KYC_NOT_FOUND";
 
+    // Propostas (S4-02)
+    /** Já existe uma proposta para esta cotação; propriedade {@code proposalId} (409). */
+    public static final String PROPOSAL_ALREADY_EXISTS = "PROPOSAL_ALREADY_EXISTS";
+    /** Proposta inexistente ou de outro cliente, mediador ou seguradora (404). */
+    public static final String PROPOSAL_NOT_FOUND = "PROPOSAL_NOT_FOUND";
+    /** A proposta não está em {@code DRAFT} nem {@code INFO_REQUESTED} (409). */
+    public static final String PROPOSAL_NOT_EDITABLE = "PROPOSAL_NOT_EDITABLE";
+    /** A seguradora da cotação não está activa (409). */
+    public static final String INSURER_NOT_ACTIVE = "INSURER_NOT_ACTIVE";
+    /** O questionário de adequação não deu {@code WARNED}: não há avisos para confirmar (409). */
+    public static final String SUITABILITY_NOT_WARNED = "SUITABILITY_NOT_WARNED";
+    /** Dados do veículo ou do condutor usados na tarifa mudaram depois da cotação; propriedade {@code fields} (409). */
+    public static final String QUOTE_DATA_CHANGED = "QUOTE_DATA_CHANGED";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -327,7 +341,13 @@ public final class ErrorCodes {
             Map.entry(PROFILE_INCOMPLETE, 409),
             Map.entry(KYC_ALREADY_PENDING, 409),
             Map.entry(KYC_ALREADY_VERIFIED, 409),
-            Map.entry(KYC_NOT_FOUND, 404));
+            Map.entry(KYC_NOT_FOUND, 404),
+            Map.entry(PROPOSAL_ALREADY_EXISTS, 409),
+            Map.entry(PROPOSAL_NOT_FOUND, 404),
+            Map.entry(PROPOSAL_NOT_EDITABLE, 409),
+            Map.entry(INSURER_NOT_ACTIVE, 409),
+            Map.entry(SUITABILITY_NOT_WARNED, 409),
+            Map.entry(QUOTE_DATA_CHANGED, 409));
 
     private ErrorCodes() {
     }
