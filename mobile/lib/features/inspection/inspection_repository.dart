@@ -65,17 +65,20 @@ class InspectionRepository {
 
   /// Fotografias por enviar (`QUEUED`, `UPLOADING`, `FAILED`), de uma proposta
   /// ou de todas.
-  Stream<int> watchPendingCount({String? proposalId}) {
+  Stream<int> watchPendingCount({String? proposalId}) =>
+      _countQuery(proposalId).watchSingle();
+
+  /// O mesmo que [watchPendingCount], lido uma vez.
+  Future<int> pendingCount({String? proposalId}) =>
+      _countQuery(proposalId).getSingle();
+
+  Selectable<int> _countQuery(String? proposalId) {
     final count = db.inspectionUploads.clientPhotoId.count();
     final query = db.selectOnly(db.inspectionUploads)
       ..addColumns([count])
       ..where(_pending(proposalId));
-    return query.map((row) => row.read(count) ?? 0).watchSingle();
+    return query.map((row) => row.read(count) ?? 0);
   }
-
-  /// O mesmo que [watchPendingCount], lido uma vez.
-  Future<int> pendingCount({String? proposalId}) =>
-      watchPendingCount(proposalId: proposalId).first;
 
   Expression<bool> _pending(String? proposalId) {
     final t = db.inspectionUploads;

@@ -230,7 +230,7 @@ class _SignSheetState extends ConsumerState<SignSheet> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                   const SizedBox(width: 12),
-                  Text(l10n.signSubmitting),
+                  Expanded(child: Text(l10n.signSubmitting)),
                 ],
               ),
             ],

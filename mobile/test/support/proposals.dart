@@ -57,6 +57,21 @@ Future<(ProviderContainer, GoRouter)> openAt(
   return (container, router);
 }
 
+/// Deixa correr I/O real (ficheiros da fila) até [done], com frames pelo meio.
+Future<void> pumpUntil(
+  WidgetTester tester,
+  bool Function() done, {
+  int tries = 50,
+}) async {
+  for (var i = 0; i < tries && !done(); i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  await settle(tester);
+}
+
 /// `pumpAndSettle` que também deixa correr os pedidos simulados (temporizadores
 /// de duração zero criados no último frame).
 Future<void> settle(WidgetTester tester) async {

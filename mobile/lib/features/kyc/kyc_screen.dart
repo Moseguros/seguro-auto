@@ -315,11 +315,23 @@ class _ShotTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Expanded(child: Text(label)),
-            TextButton(
-              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: busy ? null : onCapture,
-              child: Text(photo == null ? l10n.kycTakePhoto : l10n.kycRetakePhoto),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(48, 48),
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: busy ? null : onCapture,
+                    child: Text(
+                      photo == null ? l10n.kycTakePhoto : l10n.kycRetakePhoto,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -75,6 +75,8 @@ class ReviewStepState extends ConsumerState<ReviewStep> with ProposalStepState {
         version: _proposal.version,
       );
       if (!mounted) return;
+      // A folha tem o seu próprio indicador.
+      setState(() => _busy = false);
       final outcome = await showSignSheet(
         context,
         proposal: _proposal,

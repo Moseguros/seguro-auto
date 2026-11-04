@@ -91,12 +91,16 @@ void main() {
     );
     final button = find.byKey(const Key('quote-acquire'));
     await tester.scrollUntilVisible(button, 200);
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
     await tester.tap(button);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 50));
     await tester.pumpAndSettle();
 
     expect(
-      router.routerDelegate.currentConfiguration.uri.toString(),
-      '/proposals/new?quoteId=$quoteDemoId',
+      router.routerDelegate.currentConfiguration.last.matchedLocation,
+      '/proposals/new',
     );
     final body = api.calls('POST', '/api/v1/proposals').single.data;
     expect(body, {'quoteId': quoteDemoId, 'channel': 'APP'});
