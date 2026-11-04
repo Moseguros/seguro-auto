@@ -72,7 +72,7 @@ As cinco tarefas juntas, com os conflitos resolvidos, estão no branch local de 
 | S4-06 Proposta criada pelo mediador em nome do cliente | S4-05 | pronta |
 | S4-07 Web seguradora: fila de propostas, KYC e vistorias | S4-05 | pronta |
 | S4-08 Web cliente `/cliente/propostas` e web mediador `/mediador/propostas` | S4-06 | pronta |
-| S4-09 Mobile: proposta, vistoria guiada offline, assinatura | S4-05 | pronta |
+| S4-09 Mobile: proposta, vistoria guiada offline, assinatura | S4-05 | em revisão (branch `task/S4-09-mobile-proposta`, sobre o `task/S4-05-submissao-e-aceitacao`) |
 
 ### Sprint 5 — Pagamentos
 
