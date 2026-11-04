@@ -1,5 +1,7 @@
 package mz.co.moseguros.proposal.domain;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,6 +15,8 @@ import org.springframework.data.repository.query.Param;
 public interface InspectionRepository extends JpaRepository<Inspection, UUID> {
 
     Optional<Inspection> findByProposalId(UUID proposalId);
+
+    List<Inspection> findByProposalIdIn(Collection<UUID> proposalIds);
 
     /**
      * Vistorias da seguradora de propostas já submetidas ({@code listInsurerInspections}).

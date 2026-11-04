@@ -10,11 +10,12 @@ import mz.co.moseguros.proposal.ProposalStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /** Propostas visíveis no âmbito da transacção (Row Level Security). */
-public interface ProposalRepository extends JpaRepository<Proposal, UUID> {
+public interface ProposalRepository extends JpaRepository<Proposal, UUID>, JpaSpecificationExecutor<Proposal> {
 
     Optional<Proposal> findByQuoteId(UUID quoteId);
 
@@ -30,4 +31,15 @@ public interface ProposalRepository extends JpaRepository<Proposal, UUID> {
              order by p.expiresAt, p.id""")
     List<UUID> findExpiredIds(@Param("statuses") Collection<ProposalStatus> statuses, @Param("now") Instant now,
                               Pageable pageable);
+
+    /**
+     * Ids das propostas em análise cujo alerta de SLA já devia ter sido enviado e não foi
+     * ({@code ProposalSlaJob}, S4-05 §10), as mais antigas primeiro.
+     */
+    @Query("""
+            select p.id from Proposal p
+             where p.status = mz.co.moseguros.proposal.ProposalStatus.UNDER_REVIEW
+               and p.slaAlertAt is not null and p.slaAlertAt <= :now and p.slaAlertedAt is null
+             order by p.slaAlertAt, p.id""")
+    List<UUID> findSlaAlertDueIds(@Param("now") Instant now, Pageable pageable);
 }

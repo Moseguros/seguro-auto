@@ -20,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import mz.co.moseguros.catalog.ProductType;
+import mz.co.moseguros.proposal.AcceptanceMode;
 import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.shared.crypto.EncryptedStringConverter;
 import mz.co.moseguros.shared.error.DomainException;
@@ -46,6 +47,11 @@ public class Proposal extends BaseEntity {
 
     /** Fuso dos dias de início e de fim. */
     public static final ZoneId ZONE = ZoneId.of("Africa/Maputo");
+
+    /** {@code decided_by} das decisões automáticas (S4-05 §6). */
+    public static final String SYSTEM_DECIDER = "system";
+    /** Limite de {@code decision_reason} e {@code info_request_message}. */
+    public static final int DECISION_TEXT_MAX = 1000;
 
     private static final com.fasterxml.jackson.databind.ObjectMapper CANONICAL =
             new com.fasterxml.jackson.databind.ObjectMapper();
@@ -201,6 +207,51 @@ public class Proposal extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_signature_id")
     private Signature currentSignature;
+
+    /** Última avaliação das regras de aceitação (S4-05 §3). */
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "underwriting_result", columnDefinition = "jsonb")
+    private JsonNode underwritingResult;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "acceptance_mode", length = 10)
+    private AcceptanceMode acceptanceMode;
+
+    @Column(name = "review_started_at")
+    private Instant reviewStartedAt;
+
+    @Column(name = "sla_alert_at")
+    private Instant slaAlertAt;
+
+    @Column(name = "sla_due_at")
+    private Instant slaDueAt;
+
+    @Column(name = "sla_alerted_at")
+    private Instant slaAlertedAt;
+
+    /** {@code sub} do subscritor ou {@value #SYSTEM_DECIDER}. */
+    @Column(name = "decided_by", length = 64)
+    private String decidedBy;
+
+    @Column(name = "decided_at")
+    private Instant decidedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rejection_reason_code", length = 30)
+    private RejectionReasonCode rejectionReasonCode;
+
+    @Column(name = "decision_reason", length = 1000)
+    private String decisionReason;
+
+    @Column(name = "info_request_message", length = 1000)
+    private String infoRequestMessage;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "info_request_items", columnDefinition = "text[]")
+    private List<String> infoRequestItems;
+
+    @Column(name = "info_requested_at")
+    private Instant infoRequestedAt;
 
     protected Proposal() {
     }
@@ -445,6 +496,135 @@ public class Proposal extends BaseEntity {
         this.expiresAt = target.expires() ? now.plus(expiry) : null;
     }
 
+    // --- Submissão e decisão (S4-05) ---
+
+    /**
+     * Submissão (S4-05 §6, passos 1 e 4): só de {@code DRAFT} ou {@code INFO_REQUESTED};
+     * {@code submitted_at} guarda a primeira submissão; o pedido de informação anterior é limpo. O
+     * estado muda a seguir, com o resultado das regras ({@link #acceptAutomatically} ou
+     * {@link #startReview}).
+     *
+     * @throws DomainException 409 {@code INVALID_STATE_TRANSITION}
+     */
+    public void submit(Instant now) {
+        requireSubmittable();
+        if (submittedAt == null) {
+            submittedAt = now;
+        }
+        infoRequestMessage = null;
+        infoRequestItems = null;
+        infoRequestedAt = null;
+    }
+
+    /** @throws DomainException 409 {@code INVALID_STATE_TRANSITION} fora de {@code DRAFT}/{@code INFO_REQUESTED} */
+    public void requireSubmittable() {
+        if (!status.isEditable()) {
+            throw DomainException.of(ErrorCodes.INVALID_STATE_TRANSITION,
+                    "Only a DRAFT or INFO_REQUESTED proposal can be submitted (status " + status + ")");
+        }
+    }
+
+    /** @throws DomainException 409 {@code PROPOSAL_NOT_UNDER_REVIEW} fora de {@code UNDER_REVIEW} */
+    public void requireUnderReview() {
+        if (status != ProposalStatus.UNDER_REVIEW) {
+            throw DomainException.of(ErrorCodes.PROPOSAL_NOT_UNDER_REVIEW,
+                    "The proposal is not under review (status " + status + ")");
+        }
+    }
+
+    /** Grava o registo da última avaliação das regras de aceitação. */
+    public void recordUnderwriting(JsonNode result) {
+        this.underwritingResult = canonical(Objects.requireNonNull(result, "result"));
+    }
+
+    /**
+     * Aceitação automática (S4-05 §6, passo 5): {@code ACCEPTED} com {@code acceptance_mode = AUTOMATIC},
+     * {@code decided_by = system}, o prazo para pagar ({@code now + expiry}) e o SLA limpo. Vale na
+     * submissão e na reavaliação ao aprovar a vistoria (§8).
+     */
+    public void acceptAutomatically(Instant now, Duration expiry) {
+        transitionTo(ProposalStatus.ACCEPTED, now, expiry);
+        this.acceptanceMode = AcceptanceMode.AUTOMATIC;
+        decided(SYSTEM_DECIDER, now);
+        this.rejectionReasonCode = null;
+        this.decisionReason = null;
+        clearSla();
+    }
+
+    /**
+     * Entrada em análise (S4-05 §6, passo 5): {@code UNDER_REVIEW} sem prazo de expiração; o SLA
+     * (re)começa agora, em dias de calendário contados em instantes.
+     */
+    public void startReview(Instant now, Duration alertAfter, Duration dueAfter) {
+        transitionTo(ProposalStatus.UNDER_REVIEW, now, Duration.ZERO);
+        this.reviewStartedAt = now;
+        this.slaAlertAt = now.plus(alertAfter);
+        this.slaDueAt = now.plus(dueAfter);
+        this.slaAlertedAt = null;
+        this.acceptanceMode = null;
+        this.decidedBy = null;
+        this.decidedAt = null;
+        this.rejectionReasonCode = null;
+        this.decisionReason = null;
+    }
+
+    /** Aceitação pelo subscritor (S4-05 §7): {@code note} opcional; prazo para pagar; SLA limpo. */
+    public void acceptManually(String decider, String note, Instant now, Duration expiry) {
+        requireUnderReview();
+        transitionTo(ProposalStatus.ACCEPTED, now, expiry);
+        this.acceptanceMode = AcceptanceMode.MANUAL;
+        decided(decider, now);
+        this.rejectionReasonCode = null;
+        this.decisionReason = note;
+        clearSla();
+    }
+
+    /** Recusa pelo subscritor (S4-05 §7): {@code REJECTED} (final, sem prazo) com o motivo; SLA limpo. */
+    public void reject(String decider, RejectionReasonCode code, String reason, Instant now) {
+        requireUnderReview();
+        transitionTo(ProposalStatus.REJECTED, now, Duration.ZERO);
+        this.acceptanceMode = null;
+        decided(decider, now);
+        this.rejectionReasonCode = Objects.requireNonNull(code, "code");
+        this.decisionReason = Objects.requireNonNull(reason, "reason");
+        clearSla();
+    }
+
+    /**
+     * Pedido de informação (S4-05 §7): {@code INFO_REQUESTED} com o prazo do cliente
+     * ({@code now + expiry}), a mensagem e os itens; SLA limpo. A assinatura deixa de valer
+     * ({@link #contentChanged} com {@code INFO_REQUESTED}): o cliente assina de novo depois de corrigir.
+     */
+    public void requestInfo(String message, List<InfoRequestItem> items, Instant now, Duration expiry) {
+        requireUnderReview();
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("At least one item is required");
+        }
+        transitionTo(ProposalStatus.INFO_REQUESTED, now, expiry);
+        this.infoRequestMessage = Objects.requireNonNull(message, "message");
+        this.infoRequestItems = new ArrayList<>(items.stream().map(Enum::name).toList());
+        this.infoRequestedAt = now;
+        contentChanged(Signature.InvalidationReason.INFO_REQUESTED, now);
+        clearSla();
+    }
+
+    /** O alerta de SLA foi enviado ({@code ProposalSlaJob}); não muda o estado. */
+    public void markSlaAlerted(Instant now) {
+        this.slaAlertedAt = Objects.requireNonNull(now, "now");
+    }
+
+    private void decided(String decider, Instant now) {
+        this.decidedBy = Objects.requireNonNull(decider, "decider");
+        this.decidedAt = now;
+    }
+
+    /** Fim da análise: deixa de haver prazo da seguradora ({@code review_started_at} fica como histórico). */
+    private void clearSla() {
+        this.slaAlertAt = null;
+        this.slaDueAt = null;
+        this.slaAlertedAt = null;
+    }
+
     /** {@code ProposalExpiryJob}: passa a {@code EXPIRED} e limpa o prazo. */
     public ProposalStatus expire(Instant now) {
         ProposalStatus from = status;
@@ -658,5 +838,61 @@ public class Proposal extends BaseEntity {
     /** Assinatura válida, ou {@code null}. */
     public Signature getCurrentSignature() {
         return currentSignature;
+    }
+
+    /** {@code underwriting_result}, ou {@code null} antes da primeira submissão. */
+    public JsonNode getUnderwritingResult() {
+        return underwritingResult == null ? null : underwritingResult.deepCopy();
+    }
+
+    public AcceptanceMode getAcceptanceMode() {
+        return acceptanceMode;
+    }
+
+    public Instant getReviewStartedAt() {
+        return reviewStartedAt;
+    }
+
+    public Instant getSlaAlertAt() {
+        return slaAlertAt;
+    }
+
+    public Instant getSlaDueAt() {
+        return slaDueAt;
+    }
+
+    public Instant getSlaAlertedAt() {
+        return slaAlertedAt;
+    }
+
+    /** {@code sub} de quem decidiu; nunca sai para o cliente nem para o mediador. */
+    public String getDecidedBy() {
+        return decidedBy;
+    }
+
+    public Instant getDecidedAt() {
+        return decidedAt;
+    }
+
+    public RejectionReasonCode getRejectionReasonCode() {
+        return rejectionReasonCode;
+    }
+
+    public String getDecisionReason() {
+        return decisionReason;
+    }
+
+    public String getInfoRequestMessage() {
+        return infoRequestMessage;
+    }
+
+    /** Itens do pedido de informação, pela ordem pedida; vazio sem pedido. */
+    public List<InfoRequestItem> getInfoRequestItems() {
+        return infoRequestItems == null ? List.of()
+                : infoRequestItems.stream().map(InfoRequestItem::valueOf).toList();
+    }
+
+    public Instant getInfoRequestedAt() {
+        return infoRequestedAt;
     }
 }
