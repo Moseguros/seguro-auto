@@ -204,6 +204,7 @@ class ProposalController extends AsyncNotifier<ProposalResponse> {
 
   /// Resposta de uma escrita.
   void replace(ProposalResponse proposal) {
+    if (!ref.mounted) return;
     state = AsyncData(proposal);
     ref
       ..invalidate(myProposalsProvider)
@@ -212,9 +213,10 @@ class ProposalController extends AsyncNotifier<ProposalResponse> {
 
   /// Volta a ler (depois de um 409 ou ao puxar para actualizar).
   Future<void> reload() async {
-    final next = await AsyncValue.guard(
-      () => ref.read(proposalRepositoryProvider).get(id),
-    );
+    final repository = ref.read(proposalRepositoryProvider);
+    final next = await AsyncValue.guard(() => repository.get(id));
+    // O ecrã pode ter saído entretanto.
+    if (!ref.mounted) return;
     // Um erro de rede ao recarregar não esconde a proposta já mostrada.
     if (next.hasError && state.hasValue) return;
     state = next;
