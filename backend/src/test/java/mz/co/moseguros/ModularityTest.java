@@ -91,15 +91,19 @@ class ModularityTest {
     }
 
     /**
-     * S4-02: proposal usa rating, catalog, vehicle, identity e organization (modelo transversal §1:
-     * {@code proposal → rating, catalog, vehicle, identity, organization, document, notification,
-     * payment}; document, notification e payment entram no S4-03/S4-04, S6 e S5) e nenhum módulo
-     * depende de proposal nesta fase.
+     * S4-02 e S4-04: proposal usa rating, catalog, vehicle, identity, organization e document (PDF e
+     * assinatura, S4-04; modelo transversal §1: {@code proposal → rating, catalog, vehicle, identity,
+     * organization, document, notification, payment}; notification e payment entram no S6 e S5) e nenhum
+     * módulo depende de proposal nesta fase. O código de assinatura passa pelo identity
+     * ({@code identity → notification}); o document continua a depender só do shared.
      */
     @Test
-    void proposalDependsOnRatingCatalogVehicleIdentityAndOrganizationOnly() {
-        assertThat(dependenciesOf("proposal")).contains("rating", "catalog", "vehicle", "identity", "organization")
-                .isSubsetOf("shared", "rating", "catalog", "vehicle", "identity", "organization");
+    void proposalDependsOnRatingCatalogVehicleIdentityOrganizationAndDocumentOnly() {
+        assertThat(dependenciesOf("proposal"))
+                .contains("rating", "catalog", "vehicle", "identity", "organization", "document")
+                .isSubsetOf("shared", "rating", "catalog", "vehicle", "identity", "organization", "document");
+        assertThat(dependenciesOf("identity")).contains("notification");
+        assertThat(dependenciesOf("document")).isSubsetOf("shared");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("proposal"))
                 .filter(m -> dependenciesOf(m.getName()).contains("proposal"))

@@ -229,6 +229,14 @@
       "status" : 400
     },
     {
+      "code" : "PDF_RENDER_FAILED",
+      "status" : 500
+    },
+    {
+      "code" : "PDF_TEMPLATE_NOT_FOUND",
+      "status" : 500
+    },
+    {
       "code" : "PLATE_FORMAT_CODE_ALREADY_EXISTS",
       "status" : 409
     },
@@ -286,6 +294,14 @@
     },
     {
       "code" : "PROPOSAL_ALREADY_EXISTS",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_CHANGED_SINCE_SIGN_REQUEST",
+      "status" : 409
+    },
+    {
+      "code" : "PROPOSAL_INCOMPLETE",
       "status" : 409
     },
     {
@@ -358,6 +374,14 @@
     },
     {
       "code" : "SHORT_CODE_ALREADY_IN_USE",
+      "status" : 409
+    },
+    {
+      "code" : "SIGNER_CONTACT_MISSING",
+      "status" : 409
+    },
+    {
+      "code" : "SIGN_REQUEST_NOT_FOUND",
       "status" : 409
     },
     {

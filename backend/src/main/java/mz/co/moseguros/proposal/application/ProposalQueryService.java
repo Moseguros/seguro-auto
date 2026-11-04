@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import mz.co.moseguros.catalog.CatalogApi;
 import mz.co.moseguros.identity.IdentityApi;
 import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.ProposalView;
@@ -14,6 +15,7 @@ import mz.co.moseguros.proposal.domain.DeclarationRepository;
 import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.Proposal;
 import mz.co.moseguros.proposal.domain.ProposalRepository;
+import mz.co.moseguros.proposal.domain.Signature;
 import mz.co.moseguros.proposal.domain.SuitabilityAnswer;
 import mz.co.moseguros.proposal.domain.SuitabilityAnswerRepository;
 import mz.co.moseguros.shared.domain.Money;
@@ -23,6 +25,7 @@ import mz.co.moseguros.shared.security.CurrentUser;
 import mz.co.moseguros.shared.tenant.Scope;
 import mz.co.moseguros.shared.tenant.TenantContext;
 import mz.co.moseguros.shared.tenant.TenantSnapshot;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,16 +46,18 @@ public class ProposalQueryService {
     private final SuitabilityAnswerRepository suitabilityAnswers;
     private final IdentityApi identity;
     private final ProposalJson json;
+    private final CatalogApi catalog;
     private final CurrentUser currentUser;
 
     public ProposalQueryService(ProposalRepository proposals, DeclarationRepository declarations,
                                 SuitabilityAnswerRepository suitabilityAnswers, IdentityApi identity,
-                                ProposalJson json, CurrentUser currentUser) {
+                                ProposalJson json, CatalogApi catalog, CurrentUser currentUser) {
         this.proposals = proposals;
         this.declarations = declarations;
         this.suitabilityAnswers = suitabilityAnswers;
         this.identity = identity;
         this.json = json;
+        this.catalog = catalog;
         this.currentUser = currentUser;
     }
 
@@ -89,14 +94,24 @@ public class ProposalQueryService {
         return proposal;
     }
 
-    /** Proposta com as respostas e o estado KYC do cliente. */
+    /**
+     * Proposta com as respostas, o estado KYC do cliente, a assinatura válida e os documentos do produto
+     * (na língua do tomador, S4-04 §8).
+     */
     @Transactional(readOnly = true)
     public ProposalDetails details(Proposal proposal) {
         List<Declaration> decl = declarations.findByProposalId(proposal.getId()).stream()
                 .sorted(Comparator.comparing(Declaration::getQuestionCode)).toList();
         List<SuitabilityAnswer> suit = suitabilityAnswers.findByProposalId(proposal.getId()).stream()
                 .sorted(Comparator.comparing(SuitabilityAnswer::getQuestionCode)).toList();
-        return new ProposalDetails(proposal, decl, suit, identity.kycStatus(proposal.getCustomerUserId()).state());
+        // A assinatura é LAZY: a resposta é montada fora da transacção.
+        Signature signature = proposal.getCurrentSignature() == null ? null
+                : Hibernate.unproxy(proposal.getCurrentSignature(), Signature.class);
+        String language = ProposalPdfModelBuilder.language(json.policyholder(proposal.getPolicyholder()));
+        List<ProductDocuments.Selected> documents = ProductDocuments.select(
+                catalog.version(proposal.getProductVersionId()).documents(), language);
+        return new ProposalDetails(proposal, decl, suit, identity.kycStatus(proposal.getCustomerUserId()).state(),
+                signature, documents);
     }
 
     /** {@code ProposalApi.view}: no âmbito de quem chama, sem a verificação do serviço. */
@@ -112,7 +127,8 @@ public class ProposalQueryService {
                 p.getBrokerOrgId(), p.getVehicleId(), p.getDriverId(), p.getVehicleSnapshot(), p.getDriverSnapshot(),
                 json.coverages(p.getCoverages()).stream().map(ProposalJson::view).toList(), p.getStartAt(),
                 p.getEndAt(), p.getDurationDays(), Money.ofCentavos(p.getTotalAmount()),
-                json.premium(p.getPremiumBreakdown()).commercial(), null);
+                json.premium(p.getPremiumBreakdown()).commercial(),
+                p.getCurrentSignature() == null ? null : p.getCurrentSignature().getDocumentFileId());
     }
 
     static boolean canAccess(Proposal proposal, TenantSnapshot tenant) {

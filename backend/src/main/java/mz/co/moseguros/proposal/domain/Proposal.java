@@ -15,6 +15,9 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import mz.co.moseguros.catalog.ProductType;
 import mz.co.moseguros.proposal.ProposalStatus;
@@ -31,6 +34,11 @@ import org.hibernate.type.SqlTypes;
  * As transições de estado validam-se aqui ({@link #transitionTo}); o conteúdo só se altera em
  * {@code DRAFT} e {@code INFO_REQUESTED} ({@link #requireEditable}). Cada alteração de conteúdo
  * aumenta {@code content_revision} e renova o prazo de expiração ({@link #touchContent}). Não se apaga.
+ *
+ * <p>Assinatura (S4-04): o pedido em curso ({@code sign_request_*}, {@link #requestSignature}) e a
+ * assinatura válida ({@code current_signature_id}, {@link #sign}). Qualquer alteração de conteúdo e o
+ * pedido de informação da seguradora (S4-05) passam por {@link #contentChanged}, que invalida a
+ * assinatura; o pedido em curso deixa de servir porque a revisão mudou.
  */
 @Entity
 @Table(schema = "proposal", name = "proposal")
@@ -170,6 +178,30 @@ public class Proposal extends BaseEntity {
     @Column(name = "submitted_at")
     private Instant submittedAt;
 
+    /** PDF do pedido de assinatura em curso (S4-04). */
+    @Column(name = "sign_request_file_id")
+    private UUID signRequestFileId;
+
+    @Column(name = "sign_request_hash", length = 64)
+    private String signRequestHash;
+
+    /** Desafio OTP raiz do pedido em curso. */
+    @Column(name = "sign_request_challenge_id")
+    private UUID signRequestChallengeId;
+
+    /** {@code content_revision} quando o pedido foi feito. */
+    @Column(name = "sign_request_revision")
+    private Integer signRequestRevision;
+
+    /** Utilizador do mediador que pediu a assinatura (S4-06). */
+    @Column(name = "sign_request_assisted_by_user_id")
+    private UUID signRequestAssistedByUserId;
+
+    /** Assinatura válida, se houver. */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_signature_id")
+    private Signature currentSignature;
+
     protected Proposal() {
     }
 
@@ -284,8 +316,82 @@ public class Proposal extends BaseEntity {
      */
     public void touchContent(Instant now, Duration expiry) {
         requireEditable();
+        contentChanged(Signature.InvalidationReason.CONTENT_CHANGED, now);
         contentRevision++;
         expiresAt = now.plus(expiry);
+    }
+
+    /**
+     * A proposta mudou ({@code CONTENT_CHANGED}, chamado por {@link #touchContent}) ou a seguradora
+     * pediu informação ({@code INFO_REQUESTED}, S4-05): a assinatura actual fica invalidada e deixa de
+     * haver assinatura válida (S4-04 §7, "Invalidação"). Único ponto de invalidação; sem assinatura não
+     * faz nada.
+     *
+     * <p>O pedido de assinatura em curso fica gravado com a revisão antiga: deixa de servir
+     * ({@link #requireSignRequest} → 409 {@code PROPOSAL_CHANGED_SINCE_SIGN_REQUEST}, critério de
+     * aceitação do S4-04) e o próximo pedido substitui-o. Limpá-lo aqui daria
+     * {@code SIGN_REQUEST_NOT_FOUND} e o ecrã não saberia que a proposta mudou (decisão registada na ficha).
+     */
+    public void contentChanged(Signature.InvalidationReason reason, Instant now) {
+        Objects.requireNonNull(reason, "reason");
+        if (currentSignature != null) {
+            currentSignature.invalidate(reason, now);
+            currentSignature = null;
+        }
+    }
+
+    /**
+     * Novo pedido de assinatura da revisão actual (S4-04 §7): substitui o anterior; não altera
+     * {@code content_revision}.
+     *
+     * @param assistedByUserId utilizador do mediador (S4-06) ou {@code null}
+     */
+    public void requestSignature(UUID documentFileId, String documentHash, UUID challengeId, UUID assistedByUserId) {
+        requireEditable();
+        this.signRequestFileId = Objects.requireNonNull(documentFileId, "documentFileId");
+        this.signRequestHash = Objects.requireNonNull(documentHash, "documentHash");
+        this.signRequestChallengeId = Objects.requireNonNull(challengeId, "challengeId");
+        this.signRequestRevision = contentRevision;
+        this.signRequestAssistedByUserId = assistedByUserId;
+    }
+
+    /**
+     * O pedido de assinatura em curso é o do desafio indicado e a proposta não mudou desde então.
+     *
+     * @throws DomainException 409 {@code SIGN_REQUEST_NOT_FOUND} sem pedido ou com outro desafio; 409
+     *                         {@code PROPOSAL_CHANGED_SINCE_SIGN_REQUEST} se a revisão mudou
+     */
+    public void requireSignRequest(UUID challengeId) {
+        if (signRequestChallengeId == null || !signRequestChallengeId.equals(challengeId)) {
+            throw DomainException.of(ErrorCodes.SIGN_REQUEST_NOT_FOUND, "There is no signature request for this code");
+        }
+        if (signRequestRevision == null || signRequestRevision != contentRevision) {
+            throw DomainException.of(ErrorCodes.PROPOSAL_CHANGED_SINCE_SIGN_REQUEST,
+                    "The proposal changed after the code was requested");
+        }
+    }
+
+    /**
+     * Assinatura confirmada da revisão actual: passa a ser a assinatura válida, o pedido fica
+     * concluído e o prazo de expiração é renovado ({@code now + expiry}, S4-02).
+     */
+    public void sign(Signature signature, Instant now, Duration expiry) {
+        requireEditable();
+        Objects.requireNonNull(signature, "signature");
+        if (!getId().equals(signature.getProposalId()) || signature.getContentRevision() != contentRevision) {
+            throw new IllegalArgumentException("The signature is not of the current revision of this proposal");
+        }
+        this.currentSignature = signature;
+        clearSignRequest();
+        this.expiresAt = now.plus(expiry);
+    }
+
+    private void clearSignRequest() {
+        this.signRequestFileId = null;
+        this.signRequestHash = null;
+        this.signRequestChallengeId = null;
+        this.signRequestRevision = null;
+        this.signRequestAssistedByUserId = null;
     }
 
     /** Nova data de início, com o tomador copiado de novo do perfil (S4-02 §9, {@code updateProposal}). */
@@ -527,5 +633,30 @@ public class Proposal extends BaseEntity {
 
     public Instant getSubmittedAt() {
         return submittedAt;
+    }
+
+    public UUID getSignRequestFileId() {
+        return signRequestFileId;
+    }
+
+    public String getSignRequestHash() {
+        return signRequestHash;
+    }
+
+    public UUID getSignRequestChallengeId() {
+        return signRequestChallengeId;
+    }
+
+    public Integer getSignRequestRevision() {
+        return signRequestRevision;
+    }
+
+    public UUID getSignRequestAssistedByUserId() {
+        return signRequestAssistedByUserId;
+    }
+
+    /** Assinatura válida, ou {@code null}. */
+    public Signature getCurrentSignature() {
+        return currentSignature;
     }
 }

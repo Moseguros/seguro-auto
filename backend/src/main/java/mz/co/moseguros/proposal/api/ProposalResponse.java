@@ -10,10 +10,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import mz.co.moseguros.catalog.CoverageCode;
 import mz.co.moseguros.catalog.DeductibleType;
+import mz.co.moseguros.catalog.ProductDocumentType;
 import mz.co.moseguros.catalog.ProductType;
 import mz.co.moseguros.identity.KycState;
 import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.application.ProposalDetails;
+import mz.co.moseguros.proposal.application.ProductDocuments;
 import mz.co.moseguros.proposal.application.ProposalJson;
 import mz.co.moseguros.proposal.domain.CoverageLine;
 import mz.co.moseguros.proposal.domain.Declaration;
@@ -22,18 +24,20 @@ import mz.co.moseguros.proposal.domain.PolicyholderSnapshot;
 import mz.co.moseguros.proposal.domain.PremiumBreakdown;
 import mz.co.moseguros.proposal.domain.Proposal;
 import mz.co.moseguros.proposal.domain.ProposalChannel;
+import mz.co.moseguros.proposal.domain.Signature;
 import mz.co.moseguros.proposal.domain.SuitabilityAnswer;
 import mz.co.moseguros.proposal.domain.SuitabilityQuestion;
 import mz.co.moseguros.proposal.domain.SuitabilityReason;
 import mz.co.moseguros.proposal.domain.SuitabilityResult;
+import mz.co.moseguros.shared.domain.Channel;
 import mz.co.moseguros.shared.domain.Money;
 import mz.co.moseguros.shared.domain.VehicleCategory;
 import mz.co.moseguros.shared.domain.VehicleUsage;
 
 /**
- * Proposta (S4-02 §10). Os blocos {@code signature} (S4-04), {@code decision} (S4-05) e
- * {@code broker} (S4-06) vêm a {@code null} nesta fase; {@code inspection} só tem {@code required}
- * (o S4-03 completa). O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta do condutor
+ * Proposta (S4-02 §10, S4-04 §8). {@code signature} é a assinatura válida ({@code null} sem ela); os
+ * blocos {@code decision} (S4-05) e {@code broker} (S4-06) vêm a {@code null} nesta fase;
+ * {@code inspection} só tem {@code required} (o S4-03 completa). O documento, o NUIT, o telemóvel e o e-mail do tomador e a carta do condutor
  * saem só mascarados; o chassis não sai.
  */
 public record ProposalResponse(
@@ -84,8 +88,8 @@ public record ProposalResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ProposalKyc kyc,
         @JsonInclude(JsonInclude.Include.ALWAYS)
-        @Schema(ref = ProposalSchemas.SIGNATURE_REF, nullable = true)
-        JsonNode signature,
+        @Schema(nullable = true, description = "Assinatura válida (S4-04); null sem ela ou depois de uma alteração")
+        ProposalSignature signature,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         ProposalChecklist checklist,
         @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -113,7 +117,7 @@ public record ProposalResponse(
             String displayName) {
     }
 
-    /** Produto e versão cotados (nome congelado). */
+    /** Produto e versão cotados (nome congelado) e os documentos a ler antes de assinar (S4-04 §8). */
     public record ProposalProduct(
             @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
             UUID id,
@@ -122,7 +126,44 @@ public record ProposalResponse(
             @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "Auto Base")
             String name,
             @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-            ProductType type) {
+            ProductType type,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                    description = "Condições Gerais e Informação Pré-contratual da versão, na língua do tomador "
+                            + "(ou pt); descarregam-se em GET /api/v1/files/{fileId}")
+            List<ProposalProductDocument> documents) {
+    }
+
+    /** Documento da versão do produto. */
+    public record ProposalProductDocument(
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            ProductDocumentType type,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            UUID fileId) {
+    }
+
+    /**
+     * Assinatura válida da proposta (S4-04 §8): o PDF assinado descarrega-se em
+     * {@code GET /api/v1/files/{documentFileId}} e o seu SHA-256 tem de ser {@code documentHash}.
+     */
+    public record ProposalSignature(
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            Instant signedAt,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            Channel channel,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "+258*****4567")
+            String destinationMasked,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+            UUID documentFileId,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "SHA-256 do PDF, hexadecimal minúsculo",
+                    example = "9f2c4b7e0d1a3c5e7f9b2d4a6c8e0f1b3d5a7c9e1f3b5d7a9c1e3f5b7d9a1c3e")
+            String documentHash,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Assinatura com a ajuda de um mediador (S4-06)")
+            boolean assisted) {
+
+        static ProposalSignature of(Signature s) {
+            return s == null ? null : new ProposalSignature(s.getSignedAt(), s.getOtpChannel(),
+                    s.getDestinationMasked(), s.getDocumentFileId(), s.getDocumentHash(), s.isAssisted());
+        }
     }
 
     /** Tomador copiado do perfil, com os dados sensíveis mascarados. */
@@ -311,7 +352,8 @@ public record ProposalResponse(
         return new ProposalResponse(p.getId(), p.getNumber(), p.getStatus(), p.getChannel(), p.getQuoteId(),
                 new ProposalOrganization(p.getInsurerId(), p.getInsurerName()),
                 p.getBrokerOrgId() == null ? null : new ProposalOrganization(p.getBrokerOrgId(), p.getBrokerName()),
-                new ProposalProduct(p.getProductId(), p.getProductVersionId(), p.getProductName(), p.getProductType()),
+                new ProposalProduct(p.getProductId(), p.getProductVersionId(), p.getProductName(), p.getProductType(),
+                        documents(details.productDocuments())),
                 new ProposalPolicyholder(holder.fullName(), holder.birthDate(), holder.idDocType(),
                         holder.idDocNumberMasked(), holder.nuitMasked(), holder.address(), holder.province(),
                         holder.msisdnMasked(), holder.emailMasked()),
@@ -326,12 +368,17 @@ public record ProposalResponse(
                         premium.roundingAdjustment(), premium.total()),
                 p.getStartAt(), p.getEndAt(), p.endDate(), p.getDurationDays(),
                 declarations(p, details.declarations()), suitability(p, details.suitabilityAnswers()),
-                new ProposalInspection(p.isInspectionRequired()), new ProposalKyc(details.kycState(), null), null,
-                checklist(p), null, p.getExpiresAt(), p.getSubmittedAt(), p.getCreatedAt(), p.getUpdatedAt(),
+                new ProposalInspection(p.isInspectionRequired()), new ProposalKyc(details.kycState(), null),
+                ProposalSignature.of(details.signature()), checklist(p, details.signature() != null), null, p.getExpiresAt(), p.getSubmittedAt(), p.getCreatedAt(), p.getUpdatedAt(),
                 p.getVersion());
     }
 
-    static ProposalChecklist checklist(Proposal p) {
+    private static List<ProposalProductDocument> documents(List<ProductDocuments.Selected> selected) {
+        return selected == null ? List.of()
+                : selected.stream().map(d -> new ProposalProductDocument(d.type(), d.fileId())).toList();
+    }
+
+    static ProposalChecklist checklist(Proposal p, boolean signed) {
         String declarations = p.getDeclarationsConfirmedAt() == null ? "MISSING" : "DONE";
         String suitability;
         if (p.getSuitabilityResult() == null) {
@@ -342,7 +389,7 @@ public record ProposalResponse(
             suitability = "DONE";
         }
         String inspection = p.isInspectionRequired() ? "MISSING" : "NOT_REQUIRED";
-        return new ProposalChecklist(declarations, suitability, inspection, "MISSING");
+        return new ProposalChecklist(declarations, suitability, inspection, signed ? "DONE" : "MISSING");
     }
 
     private static ProposalDeclarations declarations(Proposal p, List<Declaration> answers) {

@@ -17,7 +17,8 @@ import mz.co.moseguros.shared.domain.Money;
  * @param driverSnapshot          o {@code DriverSnapshot} gravado, só com a carta mascarada
  * @param endAt                   exclusivo: 00:00 (Maputo) do dia seguinte ao último dia coberto
  * @param commercialPremiumAmount prémio comercial da cotação; base das comissões (S11-02)
- * @param signedDocumentFileId    PDF assinado (S4-04); {@code null} antes
+ * @param signedDocumentFileId    PDF da assinatura válida ({@code document_file_id}, S4-04 §8); {@code null}
+ *                                sem assinatura válida. O S6-02 junta-o aos documentos da apólice
  */
 public record ProposalView(UUID id, String number, ProposalStatus status, UUID insurerId, UUID productVersionId,
                            String productType, UUID customerUserId, String policyholderName, String channel,
