@@ -1524,5 +1524,189 @@
     "PROVINCE": "Province of circulation",
     "VEHICLE_AGE": "Vehicle age",
     "TRACKER": "Tracker"
+  },
+  "quote": {
+    "simulate": "Get a quote",
+    "vehicle": "Vehicle",
+    "types": {
+      "MTPL_ONLY": {
+        "title": "Third-party liability only",
+        "text": "The mandatory insurance: covers the damage you cause to others."
+      },
+      "COMPREHENSIVE": {
+        "title": "Third-party liability + own damage",
+        "text": "Also covers the damage to your vehicle."
+      },
+      "TEMPORARY": {
+        "title": "Temporary insurance",
+        "text": "Third-party liability for 7 to 60 days, or one year."
+      }
+    },
+    "oneYear": "1 year",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "periodRange": "{{start}} to {{end}}",
+    "startsOn": "Starts on {{date}}",
+    "validUntil": "Valid until {{date}}",
+    "offeredCount_one": "{{count}} offer",
+    "offeredCount_other": "{{count}} offers",
+    "bestFrom": "from {{amount}}",
+    "byBroker": "By the intermediary",
+    "expired": "Expired",
+    "cheapest": "Cheapest",
+    "chargesIncluded": "Includes {{amount}} in charges",
+    "deductible": {
+      "label": "Deductible {{value}}",
+      "percent": "{{percent}} %",
+      "percentMin": "{{percent}} % (min. {{min}})"
+    },
+    "status": {
+      "OFFERED": "Available",
+      "EXPIRED": "Expired",
+      "USED": "Used in a proposal",
+      "NOT_AVAILABLE": "No offer"
+    },
+    "viewDetail": "View details",
+    "compare": "Compare",
+    "compareWith": "Compare {{insurer}} — {{product}}",
+    "totalPremium": "Total premium",
+    "commercialPremium": "Commercial premium",
+    "roundingAdjustment": "Rounding adjustment",
+    "generalConditions": "General conditions",
+    "preContractInfo": "Pre-contractual information",
+    "notFound": "Quote not found",
+    "backToList": "See the quotes",
+    "detail": {
+      "version": "version {{n}}",
+      "coverages": "Coverages",
+      "coverage": "Coverage",
+      "capital": "Sum insured",
+      "deductible": "Deductible",
+      "premium": "Premium",
+      "period": "Period",
+      "comingSoon": "Soon you will be able to move on from here to the proposal."
+    }
+  },
+  "quoteWizard": {
+    "title": {
+      "customer": "Get a quote",
+      "broker": "New quote"
+    },
+    "steps": {
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "type": "Type",
+      "coverages": "Coverages",
+      "period": "Start and duration",
+      "summary": "Summary"
+    },
+    "stepOf": "Step {{n}} of {{total}}",
+    "back": "Back",
+    "next": "Continue",
+    "startUpdated": "We updated the start date to today.",
+    "vehicle": {
+      "choose": "Choose the vehicle",
+      "noVehicles": "You have no vehicles registered yet.",
+      "addVehicle": "Add vehicle",
+      "driver": "Driver",
+      "chooseDriver": "Choose the driver",
+      "noDrivers": "You have no drivers registered yet.",
+      "addDriver": "Register driver"
+    },
+    "client": {
+      "msisdn": "Client's mobile number",
+      "help": "The quote is linked to this number. The client does not receive any message at this stage."
+    },
+    "brokerVehicle": {
+      "valueHelp": "Optional; needed for own damage."
+    },
+    "brokerDriver": {
+      "licenceIssueDate": "Licence date",
+      "licenceCategories": "Licence categories (optional)"
+    },
+    "type": {
+      "needsValue": "Needs the vehicle's commercial value",
+      "setValue": "Enter value",
+      "setValueBroker": "Enter the value in the Vehicle step"
+    },
+    "coverages": {
+      "included": "Included",
+      "optional": "Optional",
+      "mandatory": "Mandatory",
+      "availableIn": "Available in {{n}} of {{total}} products",
+      "perPerson": "{{capital}} per person",
+      "capital": "Sum insured for {{coverage}}",
+      "theftNotice": "Theft always includes collision, fire and natural events.",
+      "noProducts": "There are currently no products of this type for this vehicle."
+    },
+    "period": {
+      "startDate": "Start date",
+      "duration": "Duration",
+      "endsOn": "Ends on {{date}}"
+    },
+    "summary": {
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "type": "Type of insurance",
+      "coverages": "Coverages",
+      "period": "Start and duration",
+      "change": "Change",
+      "driverAge": "{{age}} years old",
+      "driverAgeLicence": "{{age}} years old, licence for {{years}} years",
+      "waiting": "Asking the insurers for offers…",
+      "retryIn_one": "You can try again in {{count}} minute.",
+      "retryIn_other": "You can try again in {{count}} minutes."
+    }
+  },
+  "quoteResults": {
+    "title": "Offers",
+    "change": "Change quote",
+    "savedText": "This quote is saved in My quotes and is valid until {{date}}.",
+    "byBroker": "Quote prepared by your intermediary.",
+    "brokerText": "Prices for the client {{msisdn}}. The proposal on behalf of the client comes in a future version.",
+    "none": "No insurer made an offer for these conditions.",
+    "expired": "This quote expired on {{date}}.",
+    "unavailable": "No offer ({{count}})",
+    "compareBar": "Comparison",
+    "selected": "{{count}} selected (maximum {{max}})",
+    "compare": "Compare offers",
+    "maxCompare": "You can compare up to 3 offers"
+  },
+  "compare": {
+    "title": "Compare offers",
+    "differencesHint": "The main differences are highlighted.",
+    "insurer": "Insurer",
+    "product": "Product",
+    "deductible": "deductible {{value}}",
+    "noDeductible": "no deductible",
+    "notIncluded": "Not included",
+    "validUntil": "Valid until",
+    "documents": "Documents",
+    "back": "Back to the offers"
+  },
+  "myQuotes": {
+    "title": "My quotes",
+    "recentTitle": "My quotes",
+    "seeAll": "See all",
+    "empty": "You have not requested any quotes yet.",
+    "loadMore": "Load more"
+  },
+  "brokerQuotes": {
+    "title": "Quotes",
+    "new": "New quote",
+    "empty": "There are no quotes yet.",
+    "filter": "Client's mobile number",
+    "apply": "Filter",
+    "columns": {
+      "date": "Date",
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "type": "Type",
+      "offers": "Offers",
+      "best": "Best price",
+      "validity": "Validity"
+    }
   }
 }

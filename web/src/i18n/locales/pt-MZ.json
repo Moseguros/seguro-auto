@@ -1524,5 +1524,189 @@
     "PROVINCE": "Província de circulação",
     "VEHICLE_AGE": "Idade do veículo",
     "TRACKER": "Localizador"
+  },
+  "quote": {
+    "simulate": "Simular seguro",
+    "vehicle": "Veículo",
+    "types": {
+      "MTPL_ONLY": {
+        "title": "Só responsabilidade civil",
+        "text": "O seguro obrigatório: cobre os danos que causar a outros."
+      },
+      "COMPREHENSIVE": {
+        "title": "Responsabilidade civil + danos próprios",
+        "text": "Cobre também os danos no seu veículo."
+      },
+      "TEMPORARY": {
+        "title": "Seguro temporário",
+        "text": "Responsabilidade civil por 7 a 60 dias, ou um ano."
+      }
+    },
+    "oneYear": "1 ano",
+    "days_one": "{{count}} dia",
+    "days_other": "{{count}} dias",
+    "periodRange": "{{start}} a {{end}}",
+    "startsOn": "Início a {{date}}",
+    "validUntil": "Válida até {{date}}",
+    "offeredCount_one": "{{count}} proposta",
+    "offeredCount_other": "{{count}} propostas",
+    "bestFrom": "desde {{amount}}",
+    "byBroker": "Pelo mediador",
+    "expired": "Expirada",
+    "cheapest": "Mais barata",
+    "chargesIncluded": "Inclui {{amount}} de encargos",
+    "deductible": {
+      "label": "Franquia {{value}}",
+      "percent": "{{percent}} %",
+      "percentMin": "{{percent}} % (mín. {{min}})"
+    },
+    "status": {
+      "OFFERED": "Disponível",
+      "EXPIRED": "Expirada",
+      "USED": "Usada numa proposta",
+      "NOT_AVAILABLE": "Sem proposta"
+    },
+    "viewDetail": "Ver detalhe",
+    "compare": "Comparar",
+    "compareWith": "Comparar {{insurer}} — {{product}}",
+    "totalPremium": "Prémio total",
+    "commercialPremium": "Prémio comercial",
+    "roundingAdjustment": "Ajuste de arredondamento",
+    "generalConditions": "Condições gerais",
+    "preContractInfo": "Informação pré-contratual",
+    "notFound": "Cotação não encontrada",
+    "backToList": "Ver as cotações",
+    "detail": {
+      "version": "versão {{n}}",
+      "coverages": "Coberturas",
+      "coverage": "Cobertura",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "premium": "Prémio",
+      "period": "Período",
+      "comingSoon": "Em breve vai poder avançar daqui para a proposta."
+    }
+  },
+  "quoteWizard": {
+    "title": {
+      "customer": "Simular seguro",
+      "broker": "Nova cotação"
+    },
+    "steps": {
+      "client": "Cliente",
+      "vehicle": "Veículo",
+      "driver": "Condutor",
+      "type": "Tipo",
+      "coverages": "Coberturas",
+      "period": "Início e duração",
+      "summary": "Resumo"
+    },
+    "stepOf": "Passo {{n}} de {{total}}",
+    "back": "Voltar",
+    "next": "Continuar",
+    "startUpdated": "Actualizámos a data de início para hoje.",
+    "vehicle": {
+      "choose": "Escolha o veículo",
+      "noVehicles": "Ainda não tem veículos registados.",
+      "addVehicle": "Acrescentar veículo",
+      "driver": "Condutor",
+      "chooseDriver": "Escolha o condutor",
+      "noDrivers": "Ainda não tem condutores registados.",
+      "addDriver": "Registar condutor"
+    },
+    "client": {
+      "msisdn": "Telemóvel do cliente",
+      "help": "A cotação fica associada a este número. O cliente não recebe nenhuma mensagem nesta fase."
+    },
+    "brokerVehicle": {
+      "valueHelp": "Opcional; necessário para danos próprios."
+    },
+    "brokerDriver": {
+      "licenceIssueDate": "Data da carta",
+      "licenceCategories": "Categorias da carta (opcional)"
+    },
+    "type": {
+      "needsValue": "Precisa do valor comercial do veículo",
+      "setValue": "Indicar valor",
+      "setValueBroker": "Indique o valor no passo Veículo"
+    },
+    "coverages": {
+      "included": "Incluídas",
+      "optional": "Opcionais",
+      "mandatory": "Obrigatória",
+      "availableIn": "Disponível em {{n}} de {{total}} produtos",
+      "perPerson": "{{capital}} por pessoa",
+      "capital": "Capital de {{coverage}}",
+      "theftNotice": "Furto ou roubo inclui obrigatoriamente choque, incêndio e fenómenos da natureza.",
+      "noProducts": "De momento não há produtos deste tipo para este veículo."
+    },
+    "period": {
+      "startDate": "Data de início",
+      "duration": "Duração",
+      "endsOn": "Termina a {{date}}"
+    },
+    "summary": {
+      "client": "Cliente",
+      "vehicle": "Veículo",
+      "driver": "Condutor",
+      "type": "Tipo de seguro",
+      "coverages": "Coberturas",
+      "period": "Início e duração",
+      "change": "Alterar",
+      "driverAge": "{{age}} anos",
+      "driverAgeLicence": "{{age}} anos, carta há {{years}} anos",
+      "waiting": "A pedir propostas às seguradoras…",
+      "retryIn_one": "Pode tentar de novo daqui a {{count}} minuto.",
+      "retryIn_other": "Pode tentar de novo daqui a {{count}} minutos."
+    }
+  },
+  "quoteResults": {
+    "title": "Propostas",
+    "change": "Alterar simulação",
+    "savedText": "Esta simulação fica guardada em As minhas cotações e é válida até {{date}}.",
+    "byBroker": "Cotação preparada pelo seu mediador.",
+    "brokerText": "Valores para o cliente {{msisdn}}. A proposta em nome do cliente chega numa próxima versão.",
+    "none": "Nenhuma seguradora apresentou proposta para estas condições.",
+    "expired": "Esta simulação expirou em {{date}}.",
+    "unavailable": "Sem proposta ({{count}})",
+    "compareBar": "Comparação",
+    "selected": "{{count}} seleccionadas (máximo {{max}})",
+    "compare": "Comparar propostas",
+    "maxCompare": "Pode comparar até 3 propostas"
+  },
+  "compare": {
+    "title": "Comparar propostas",
+    "differencesHint": "As principais diferenças estão destacadas.",
+    "insurer": "Seguradora",
+    "product": "Produto",
+    "deductible": "franquia {{value}}",
+    "noDeductible": "sem franquia",
+    "notIncluded": "Não incluída",
+    "validUntil": "Válida até",
+    "documents": "Documentos",
+    "back": "Voltar às propostas"
+  },
+  "myQuotes": {
+    "title": "As minhas cotações",
+    "recentTitle": "As minhas cotações",
+    "seeAll": "Ver todas",
+    "empty": "Ainda não fez simulações.",
+    "loadMore": "Carregar mais"
+  },
+  "brokerQuotes": {
+    "title": "Cotações",
+    "new": "Nova cotação",
+    "empty": "Ainda não há cotações.",
+    "filter": "Telemóvel do cliente",
+    "apply": "Filtrar",
+    "columns": {
+      "date": "Data",
+      "client": "Cliente",
+      "vehicle": "Veículo",
+      "type": "Tipo",
+      "offers": "Propostas",
+      "best": "Melhor preço",
+      "validity": "Validade"
+    }
   }
 }
