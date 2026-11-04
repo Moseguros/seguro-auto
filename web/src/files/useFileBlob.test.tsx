@@ -82,10 +82,7 @@ describe('useFileBlob', () => {
         <ProtectedImage fileId="nao" alt="Traseira" />
       </QueryClientProvider>,
     );
-    expect(await screen.findByRole('img', { name: 'Frente' })).toHaveAttribute(
-      'src',
-      'blob:url-1',
-    );
+    expect(await screen.findByRole('img', { name: 'Frente' })).toHaveAttribute('src', 'blob:url-1');
     expect(await screen.findByText('Não foi possível abrir o ficheiro.')).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Traseira' })).toBeInTheDocument();
   });
