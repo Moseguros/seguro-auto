@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import mz.co.moseguros.identity.application.CustomerAccountFactory;
 import mz.co.moseguros.identity.application.CustomerViewService;
+import mz.co.moseguros.identity.application.OtpService;
 import mz.co.moseguros.identity.application.TokenService;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.shared.domain.Msisdn;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Service;
  * Interface pública do módulo Identidade (modelo transversal §3): sessões ({@link #issueTokens},
  * login por OTP e de staff) e contas de cliente pelo telemóvel ({@link #findOrCreateCustomerByMsisdn},
  * usado pelo {@code rating} desde o S3-02), dados e estado KYC de um cliente ({@link #customer},
- * {@link #kycStatus}, S4-01).
+ * {@link #kycStatus}, S4-01) e códigos de assinatura de documentos ({@link #requestSignOtp},
+ * {@link #verifySignOtp}, S4-04).
  */
 @Service
 public class IdentityApi {
@@ -22,12 +24,40 @@ public class IdentityApi {
     private final TokenService tokenService;
     private final CustomerAccountFactory customerAccounts;
     private final CustomerViewService customerViews;
+    private final OtpService otpService;
 
     public IdentityApi(TokenService tokenService, CustomerAccountFactory customerAccounts,
-                       CustomerViewService customerViews) {
+                       CustomerViewService customerViews, OtpService otpService) {
         this.tokenService = tokenService;
         this.customerAccounts = customerAccounts;
         this.customerViews = customerViews;
+        this.otpService = otpService;
+    }
+
+    /**
+     * Envia ao signatário um código que assina o documento com {@code documentHash} (S4-04 §4):
+     * telemóvel da conta (verificado ou não) ou, sem ele, o e-mail verificado; canal, alternativa e
+     * limites do login (S1-03), contando também os códigos de assinatura. Os códigos de assinatura
+     * anteriores do utilizador ficam substituídos. Corre em {@code SYSTEM}.
+     *
+     * @throws mz.co.moseguros.shared.error.DomainException 409 {@code SIGNER_CONTACT_MISSING}; 429
+     *         {@code OTP_RATE_LIMITED} / {@code OTP_RESEND_TOO_SOON} (com {@code Retry-After}); os outros
+     *         códigos {@code OTP_*} do pedido de login
+     */
+    public SignOtpChallenge requestSignOtp(SignOtpRequest request) {
+        return otpService.requestSign(request);
+    }
+
+    /**
+     * Valida o código de assinatura do documento com {@code documentHash} (S4-04 §4): as regras e os
+     * códigos do login ({@code OTP_CHALLENGE_NOT_FOUND}, {@code OTP_ALREADY_USED}, {@code OTP_SUPERSEDED},
+     * {@code OTP_EXPIRED}, {@code OTP_ATTEMPTS_EXCEEDED}, {@code OTP_INVALID} com
+     * {@code attemptsRemaining}); desafio que não é de assinatura ou de outro utilizador → 404. As
+     * tentativas erradas ficam gravadas mesmo com erro: quem chama não pode fazer rollback por causa de
+     * uma {@code DomainException}. Corre em {@code SYSTEM}.
+     */
+    public SignOtpVerification verifySignOtp(UUID signerUserId, UUID challengeId, String code, String documentHash) {
+        return otpService.verifySign(signerUserId, challengeId, code, documentHash);
     }
 
     /**

@@ -15,7 +15,9 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Códigos OTP: geração ({@link SecureRandom}) e hash
  * {@code HMAC-SHA256(pepper, challengeId + ":" + code)} em hexadecimal, comparado em tempo
- * constante. O código nunca é gravado nem registado.
+ * constante. Os códigos de assinatura (S4-04) ligam-se ao documento:
+ * {@code HMAC-SHA256(pepper, challengeId + ":" + code + ":" + documentHash)}, e só servem para o
+ * documento com esse hash. O código nunca é gravado nem registado.
  */
 public class OtpCodeHasher {
 
@@ -47,13 +49,33 @@ public class OtpCodeHasher {
         return HexFormat.of().formatHex(mac(challengeId + ":" + code));
     }
 
+    /** Hash de um código de assinatura, ligado ao documento (S4-04 §4, regra 5). */
+    public String hash(UUID challengeId, String code, String documentHash) {
+        Objects.requireNonNull(challengeId, "challengeId");
+        Objects.requireNonNull(code, "code");
+        Objects.requireNonNull(documentHash, "documentHash");
+        return HexFormat.of().formatHex(mac(challengeId + ":" + code + ":" + documentHash));
+    }
+
     /** Compara em tempo constante ({@link MessageDigest#isEqual}). */
     public boolean matches(UUID challengeId, String code, String expectedHash) {
         if (code == null || expectedHash == null) {
             return false;
         }
-        byte[] actual = hash(challengeId, code).getBytes(StandardCharsets.US_ASCII);
-        return MessageDigest.isEqual(actual, expectedHash.getBytes(StandardCharsets.US_ASCII));
+        return equal(hash(challengeId, code), expectedHash);
+    }
+
+    /** Como {@link #matches(UUID, String, String)}, para um código de assinatura do documento indicado. */
+    public boolean matches(UUID challengeId, String code, String documentHash, String expectedHash) {
+        if (code == null || documentHash == null || expectedHash == null) {
+            return false;
+        }
+        return equal(hash(challengeId, code, documentHash), expectedHash);
+    }
+
+    private static boolean equal(String actual, String expected) {
+        return MessageDigest.isEqual(actual.getBytes(StandardCharsets.US_ASCII),
+                expected.getBytes(StandardCharsets.US_ASCII));
     }
 
     private byte[] mac(String value) {
