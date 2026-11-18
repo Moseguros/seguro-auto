@@ -257,6 +257,14 @@
       "status" : 400
     },
     {
+      "code" : "PAYMENT_METHOD_INCOMPLETE",
+      "status" : 409
+    },
+    {
+      "code" : "PAYMENT_METHOD_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "PDF_RENDER_FAILED",
       "status" : 500
     },
@@ -409,6 +417,10 @@
       "status" : 400
     },
     {
+      "code" : "SECRET_STORE_UNAVAILABLE",
+      "status" : 503
+    },
+    {
       "code" : "SHORT_CODE_ALREADY_IN_USE",
       "status" : 409
     },
@@ -488,6 +500,7 @@
     "COVERAGE_TARIFF_MISSING",
     "CROSS_BORDER_SCOPE_REQUIRED",
     "DEFAULT_CHANNEL_NOT_ENABLED",
+    "DIRECTORY_CONFLICT",
     "DOCUMENT_REQUIRED",
     "DUPLICATED",
     "DUPLICATE_CHARGE",
@@ -497,6 +510,7 @@
     "DURATION_365_NOT_ONE",
     "DURATION_FACTORS_REQUIRED",
     "DURATION_NOT_ALLOWED",
+    "ENTITY_IN_USE",
     "EXAMPLE_DOES_NOT_MATCH",
     "EXTRA_PHOTOS_LIMIT",
     "FALLBACK_ORDER_MISMATCH",
@@ -511,6 +525,7 @@
     "INVALID_DATE",
     "INVALID_DOCUMENT_NUMBER",
     "INVALID_EMAIL",
+    "INVALID_FORMAT",
     "INVALID_INSURER",
     "INVALID_LICENCE_NUMBER",
     "INVALID_MSISDN",
@@ -519,6 +534,7 @@
     "INVALID_PATTERN",
     "INVALID_PHONE",
     "INVALID_PLATE",
+    "INVALID_PUBLIC_KEY",
     "INVALID_RANGE",
     "INVALID_REQUIREMENT",
     "INVALID_RULES",
@@ -530,6 +546,7 @@
     "INVALID_YEAR",
     "LICENCE_CATEGORY_UNKNOWN",
     "LICENCE_ISSUE_DATE_INVALID",
+    "MIN_GREATER_THAN_MAX",
     "MTPL_CAPITAL_BELOW_MINIMUM",
     "MTPL_MUST_BE_MANDATORY",
     "MTPL_REQUIRED",

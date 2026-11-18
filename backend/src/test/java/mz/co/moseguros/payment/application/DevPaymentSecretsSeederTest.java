@@ -92,6 +92,6 @@ class DevPaymentSecretsSeederTest {
         if (java.nio.file.Files.exists(mock)) {
             assertThat(backend).isEqualTo(java.nio.file.Files.readString(mock, StandardCharsets.UTF_8));
         }
-        assertThat(backend).startsWith("Chave só para o simulador. Nunca usar fora do desenvolvimento.");
+        assertThat(backend).startsWith("# Chave só para o simulador. Nunca usar fora do desenvolvimento.");
     }
 }
