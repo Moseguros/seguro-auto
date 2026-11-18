@@ -88,3 +88,12 @@ O comando `cd backend && ./mvnw -B verify` continua a funcionar, com `-am` se fo
 **D34. Revisão contra o código do S0/S1 (03/11/2026).** As fichas S2–S12 foram revistas contra o código do S0/S1 (PR #22). O que estava especificado mas não chegou ao código é criado pela primeira ficha que precisa dele: `spring.flyway.out-of-order` e `client_max_body_size 12m` no S2-01; o schema `shared` no S4-02; o `ClientIpResolver` no S4-04. Cada finalidade nova de `notification.outbound_message` traz a sua migração (modelo §2). `findSummary` corre no âmbito de quem chama; para clientes, polícia e público usa-se `insurerProfile`. Convenções da web e da app no modelo §7.1.
 
 **D35. Decisões do proprietário do produto (03/11/2026).** (1) O link de assinatura da declaração amigável (S8-02) segue sempre por `NotificationApi.sendSms` com `purpose = CLAIM`; o modelo `STATEMENT_SIGNATURE_LINK` deixa de ter canal SMS. (2) "Adquirir apólice" em laranja só no detalhe da cotação, nunca nos cartões dos resultados (S4-08).
+
+**D36. Pagamentos (proprietário do produto, 18/11/2026).** ADR-007.
+- Só duas formas de pagamento: M-Pesa (API oficial da Vodacom, credenciais por seguradora) e entidade e referência (rede Ponto24 da InterBancos). O e-Mola e o cartão saem do âmbito: o S5-05 é cancelado e os métodos `EMOLA`/`CARD` desaparecem do enum `PaymentMethod`, das tabelas e dos ecrãs.
+- O algoritmo da referência e os layouts MEPS e BMEPS estão em `docs/specs/interbancos/`. O mock `MOCK_SIMO_V1` e o `simo-mock` deixam de existir; o S5-07 implementa o gerador real e o S5-08 os leitores reais mais o simulador `ponto24-mock`. O S5-13 e o S5-14 são cancelados (absorvidos).
+- Número de factura por entidade, a partir de `0000001`, nunca reutilizado; mês da emissão (`Africa/Maputo`); uma referência = um montante.
+- Formato (MEPS/BMEPS), entidade e, no BMEPS, ID da empresa e do perfil configuráveis por seguradora. O worker lê continuamente e nunca processa um ficheiro duas vezes (SHA-256 e identificador do ficheiro no formato).
+- Excepções (pagamento depois de a proposta expirar, referência paga duas vezes, desconhecida, montante diferente) numa fila da seguradora; a devolução é sempre fora da plataforma.
+- Pagamento confirmado → proposta `PAID` → apólice emitida automaticamente (S6-01) e e-mail a todos os actores da aquisição (cliente, mediador, seguradora; S5-02).
+- O alojamento tem de ter IP público de saída fixo (registo M-Pesa, S6-08).

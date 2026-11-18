@@ -2,7 +2,7 @@
 
 Este documento fixa o que tem de ser igual em todas as fichas dos Sprints 2 a 12: quem é dono de cada tabela, o sentido das dependências entre módulos, os contratos públicos (`<Modulo>Api` e eventos), as permissões, a numeração, os intervalos de migração e a lista de tarefas. As fichas detalham; este documento manda. Se uma ficha contradisser este documento, a ficha está errada: pare e escreva na secção "Questões" da ficha.
 
-As decisões tomadas ao reconciliar as fichas escritas em paralelo estão em `decisoes-reconciliacao.md` (D1–D33) e já estão reflectidas aqui.
+As decisões tomadas ao reconciliar as fichas escritas em paralelo estão em `decisoes-reconciliacao.md` (D1–D36) e já estão reflectidas aqui. As formas de pagamento e o pagamento por referência seguem o ADR-007 (decisões do proprietário do produto de 18/11/2026, D36).
 
 Regras gerais em `AGENTS.md`; isolamento em ADR-002 e adenda; fichas do Sprint 1 como exemplo do nível de detalhe esperado.
 
@@ -71,6 +71,7 @@ integration   → rating, proposal, payment, policy, verification, identity, veh
 - **Pagamento da proposta → emissão.** O `proposal` ouve `PaymentSucceeded` (alvo `PROPOSAL`), passa a `PAID` e publica `ProposalPaid`; é este evento que o `policy` ouve para emitir (S6). Assim não há corrida entre os dois módulos.
 - **Destinatários das notificações.** O `notification` não pode depender do `identity` (o `identity` já depende dele). Define a interface `NotificationRecipientResolver` (`Optional<NotificationRecipient> resolve(UUID userId)`, com `NotificationRecipient(userId, msisdn, msisdnVerified, email, emailVerified, language, active)`), implementada pelo `identity` (`IdentityRecipientResolver`, S6-04). Tem de existir exactamente um bean.
 - **Notificações.** Quem quer notificar chama `NotificationApi.notify(userId, templateCode, params, NotificationCategory)`. O `notification` nunca ouve eventos de outros módulos: os avisos saem de listeners nos módulos donos dos eventos (`ProposalNotificationsListener`, `PaymentNotificationsListener`, S6-04) ou de jobs (`QuoteExpiryNotifierJob` do `rating`, S6-04, D16).
+- **Aviso de pagamento recebido (S5-02, D36).** Quando um pagamento de proposta é confirmado (M-Pesa ou referência), o `proposal` (`ProposalPaymentNotifier`, chamado pelo `ProposalPaymentListener` ao passar a proposta a `PAID`) envia um e-mail com `NotificationApi.sendEmail` (`purpose = PAYMENT`) a todos os actores da aquisição: o cliente (e-mail verificado; sem ele, SMS), os utilizadores activos do mediador com `proposal:create-for-client` (se a proposta tiver `broker_org_id`) e os utilizadores activos da seguradora com `payment:read` (`IdentityApi.staffWithPermission`). O S6-04 passa só o aviso ao cliente para `notify`; os e-mails ao mediador e à seguradora ficam.
 
 ### 1.2 Eventos de domínio
 
@@ -141,10 +142,10 @@ or (s = 'CUSTOMER' and <coluna do cliente> = u)
 | 4 | proposal | `proposal.proposal` ganha `sign_request_file_id`, `sign_request_hash`, `sign_request_challenge_id`, `sign_request_revision`, `sign_request_assisted_by_user_id`, `current_signature_id` (S4-04); `underwriting_result`, `acceptance_mode`, `review_started_at`, `sla_alert_at`, `sla_due_at`, `sla_alerted_at`, `decided_by`, `decided_at`, `rejection_reason_code`, `decision_reason`, `info_request_message`, `info_request_items`, `info_requested_at` (S4-05); `policyholder_source` (`PROFILE`/`BROKER`, S4-06) |
 | 4 | shared | `shared.business_sequence` (numeração, S4-02). O schema `shared` **não existe** no S0/S1: a migração do S4-02 cria-o (`create schema if not exists`, como o S5-02) |
 | 1–12 | notification | `notification.outbound_message` (S1-03). O `purpose` tem a constraint `outbound_message_purpose_check` e o enum `OutboundMessage.Purpose`: S1 `OTP`, `INVITATION`, `PASSWORD_RESET`; `KYC` (S4-01), `SIGN_OTP` (S4-04, reutilizado no S8-02), `PROPOSAL` (S4-05), `PAYMENT` (S5-02), `NOTIFICATION_TEST` (S6-04), `CLAIM` (S8-02, link de assinatura por SMS), `COMPLAINT` (S10-01), `ASSISTANCE` (S10-04), `ACCOUNT_DELETION` (S12-10). Cada valor novo entra por uma migração `…__notification_purpose_<x>.sql` que faz `drop constraint` e a recria com **todos** os valores desta lista até ao seu sprint (tarefas paralelas incluem os valores umas das outras) |
-| 5 | payment | `payment.insurer_payment_method` (S5-01); `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.payment_exception` (S5-02); `payment.inbound_message`, `payment.file_import` (S5-10) |
+| 5 | payment | `payment.insurer_payment_method` (S5-01); `payment.payment_intent`, `payment.payment_event`, `payment.reference_payment`, `payment.payment_exception` (S5-02); `payment.reference_invoice_sequence` (numeração das facturas das referências por entidade, tabela de infra-estrutura, S5-07); `payment.inbound_message`, `payment.file_import` (S5-10) |
 | 5 | shared | `shared.idempotency_record` (idempotência de todos os módulos, `IdempotencyService`, S5-02) |
 | 5 | proposal | `proposal.proposal` ganha `paid_at`, `payment_intent_id` e `ck_proposal_paid`; `ck_proposal_status` recriada (S5-02, D4) |
-| 5 | (worker) | schema `payment_worker`: `processed_file`, `file_record`, `shedlock` (S5-09) |
+| 5 | (worker) | schema `payment_worker`: `processed_file` (com `format_file_id` e `unique (source_id, format_file_id)`), `file_record`, `shedlock` (S5-09) |
 | 6 | policy | `policy.policy`, `policy.instalment`, `policy.certificate`, `policy.policy_event` (S6-01); o `policy` implementa `VehicleRemovalGuard` do `vehicle` (§1.1) |
 | 6 | proposal | `proposal.proposal` ganha `policy_id` e `ck_proposal_converted` (S6-01) |
 | 6 | verification | `verification.check_log` (S6-03) |
@@ -262,7 +263,7 @@ Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por j
 | `IntentView intent(UUID intentId)` | S5-02 | |
 | `List<PaymentMethodOption> availableMethods(UUID insurerId, Money amount)` | S5-02 | |
 | `Optional<IntentView> activeIntent(PaymentTargetType, UUID targetId)` | S5-02 | `CREATED`, `PENDING` ou `UNKNOWN` |
-| `boolean hasBlockingIntent(PaymentTargetType, UUID targetId)` | S5-02 | M-Pesa ou e-Mola em curso |
+| `boolean hasBlockingIntent(PaymentTargetType, UUID targetId)` | S5-02 | M-Pesa em curso (`CREATED`, `PENDING` ou `UNKNOWN`) |
 | `boolean isPaid(PaymentTargetType, UUID targetId)` | S5-02 | |
 | `void raiseTargetNotPayable(UUID intentId, String detail)` | S5-02 | cria `payment_exception` `TARGET_NOT_PAYABLE` |
 | `RefundView refund(RefundCommand)` | S7-05 | `RefundCommand(UUID refundRequestId, UUID intentId, Money amount, String reason)`; idempotente por `refundRequestId` |
@@ -353,6 +354,8 @@ Não há `delete` na API: os ficheiros nunca ligados a um dono são limpos por j
 | `RC` reclamação | `RC-2027-000123` | 10 |
 | `AS` assistência | `AS-2027-000123` | 10 |
 | `EX` extracto de comissões | `EX-2027-000123` | 11 |
+
+O número de factura das referências de pagamento (S5-07) **não** usa o `BusinessNumberGenerator`: é uma sequência por entidade, sem ano, de `0000001` a `9999999`, nunca reutilizada (`payment.reference_invoice_sequence`; ADR-007).
 
 ## 5. Permissões
 
@@ -451,7 +454,7 @@ O worker de ficheiros (S5) tem o seu próprio histórico Flyway, no schema `paym
 | 6 | CAPTCHA | `CaptchaVerifier` com `TurnstileCaptchaVerifier` (Cloudflare Turnstile) e `AlwaysValidCaptchaVerifier` (local/testes). Decisão a confirmar pelo proprietário do produto |
 | 6 | Observabilidade | Micrometer + Prometheus (`/api/v1/prometheus`, rede interna), Grafana no compose `observability` |
 | 8 | Mapas | Web: Leaflet + OpenStreetMap; mobile: `flutter_map` + OpenStreetMap. Sem chave de API |
-| 5 | SIMO em mock | `MOCK_SIMO_V1` (S5-07, S5-08) e simulador `infra/mocks/simo-mock` (porta 8092) que entrega ficheiros por SFTP; permitido em `local`, `test`, `staging`; proibido em `prod` |
+| 5 | Entidade e referência (Ponto24) | Algoritmo da referência e ficheiros MEPS e BMEPS reais (`docs/specs/interbancos/`, ADR-007; S5-07, S5-08). Simulador `infra/mocks/ponto24-mock` (porta 8092), só para `local`, testes e QA: gera ficheiros MEPS ou BMEPS e deposita-os no SFTP local. O worker lê as fontes continuamente (`moseguros.worker.poll-interval`, S5-09) |
 | 12 | USSD | `UssdAggregatorPort` + simulador próprio em `infra/mocks/ussd-mock` |
 
 **Âmbito em listeners e jobs.** Os `@ApplicationModuleListener` e os jobs agendados correm sem utilizador autenticado (âmbito `NONE`, que não vê nada). Por isso as classes `…Listener` e `…Job` do pacote `application` usam `@RunAsSystem` (regra do S1-01). Têm de filtrar no código pela seguradora ou pelo cliente que vem no evento, e nunca devolvem dados a um utilizador.
@@ -523,7 +526,7 @@ As fichas usam exactamente estes IDs, títulos e dependências. "S{n-1}" quer di
 
 ### Sprint 5 — Pagamentos
 
-IDs do plano, com uma tarefa nova (S5-12):
+IDs do plano, com uma tarefa nova (S5-12). O S5-05, o S5-13 e o S5-14 foram cancelados em 18/11/2026 (ADR-007, D36); as fichas ficam no repositório com o motivo.
 
 | ID | Tarefa | Depende de |
 | --- | --- | --- |
@@ -531,16 +534,16 @@ IDs do plano, com uma tarefa nova (S5-12):
 | S5-02 | Núcleo de pagamentos: `payment_intent`, idempotência, estados, `PaymentSucceeded` → proposta `PAID` | S5-01 |
 | S5-03 | Simulador `mpesa-mock` fiel à API Vodacom | S4 |
 | S5-04 | Adaptador M-Pesa (C2B, consulta, reversão) contra o simulador | S5-02, S5-03 |
-| S5-05 | Adaptadores e-Mola e cartão: interface + mock | S5-02 |
+| S5-05 | ~~Adaptadores e-Mola e cartão: interface + mock~~ — **CANCELADA** (e-Mola e cartão fora do âmbito) | — |
 | S5-06 | Infra: RabbitMQ, SFTP local, Vault, `payment-contracts` | S4 |
-| S5-07 | Referências SIMO em mock: gerador `MOCK_SIMO_V1` e troca para o algoritmo real | S5-02 |
-| S5-08 | Ficheiro de liquidação SIMO em mock: parser `MOCK_SIMO_V1` e simulador `simo-mock` | S5-07, S5-09 |
-| S5-09 | `payment-file-worker` (SFTP, agendamento, publicação) | S5-06 |
+| S5-07 | Referências Ponto24: gerador real (numeração de facturas por entidade, dígitos de controlo MOD 97) | S5-02 |
+| S5-08 | Ficheiros de movimentos MEPS e BMEPS: leitores e simulador `ponto24-mock` | S5-07, S5-09 |
+| S5-09 | `payment-file-worker` (SFTP, leitura contínua, deduplicação, publicação) | S5-06 |
 | S5-10 | Consumidor, reconciliação e excepções | S5-02, S5-06, S5-07 |
 | S5-11 | Ecrãs de pagamento do cliente (web e app) | S5-02, S5-04 |
 | S5-12 | Web seguradora e admin: configuração, pagamentos, excepções, ficheiros, estado do worker | S5-01, S5-10 |
-| S5-13 | **Algoritmo SIMO real de referências — BLOQUEADA** | S5-07 |
-| S5-14 | **Layout SIMO real do ficheiro de liquidação — BLOQUEADA** | S5-08 |
+| S5-13 | ~~Algoritmo SIMO real de referências~~ — **CANCELADA** (absorvida pelo S5-07) | — |
+| S5-14 | ~~Layout SIMO real do ficheiro de liquidação~~ — **CANCELADA** (absorvida pelo S5-08) | — |
 
 ### Sprint 6 — Emissão, verificação, notificações, Release 1
 
@@ -647,8 +650,8 @@ As fichas registam-nas em "Questões". Quando uma decisão bloqueia a tarefa, a 
 | Encargos e impostos reais (selo, taxas) | S3-01 | não (configuráveis) |
 | Limiar do KYC simplificado e limites de aceitação automática | S4-05 | não (configuráveis) |
 | Validação jurídica da assinatura electrónica simples | S4-04 | não para desenvolvimento; sim para produção |
-| Algoritmo SIMO e layout do ficheiro reais | S5-13, S5-14 | **sim** para produção; não para desenvolvimento e `staging` (mock `MOCK_SIMO_V1`, S5-07 e S5-08) |
-| Documentação e credenciais e-Mola e adquirente de cartões | S5-05 | não (mock) |
+| Credenciais M-Pesa de produção de cada seguradora (API Key, Public Key, Service Provider Code, Initiator Identifier, Security Credential) e registo do IP de saída fixo da plataforma na Vodacom | S5-04, S6-08 | não para desenvolvimento (`mpesa-mock`); **sim** para produção |
+| Adesão de cada seguradora ao pagamento por referência: entidade, formato (MEPS/BMEPS, ID da empresa e do perfil) e SFTP onde o banco deposita os ficheiros | S5-01, S5-08 | não para desenvolvimento (`ponto24-mock`); sim para produção de cada seguradora |
 | Fornecedor de CAPTCHA | S6-03 | não (porta + mock) |
 | Alojamento de staging e produção, cofre de segredos gerido | S6-08 | **sim** para o deploy; não para preparar os ficheiros |
 | Projecto Firebase (FCM, App Distribution) | S6-04, S6-07 | não (mock) |
