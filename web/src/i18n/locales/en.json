@@ -244,7 +244,10 @@
     "PROPOSAL_NOT_UNDER_REVIEW": "The proposal is not under review.",
     "KYC_NOT_VERIFIED": "The customer's identity has not been verified yet.",
     "INSPECTION_NOT_APPROVED": "The inspection has not been approved yet.",
-    "CLIENT_ACCOUNT_DISABLED": "This customer's account is disabled. Contact MoSeguros support."
+    "CLIENT_ACCOUNT_DISABLED": "This customer's account is disabled. Contact MoSeguros support.",
+    "PAYMENT_METHOD_NOT_FOUND": "Payment method not found.",
+    "PAYMENT_METHOD_INCOMPLETE": "Some details are missing to enable this payment method. Fix the highlighted fields.",
+    "SECRET_STORE_UNAVAILABLE": "The secret store is unavailable. Nothing was saved; try again in a moment."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -340,7 +343,12 @@
     "PHOTO_TOO_OLD": "This photo was taken more than 7 days ago. Take a new one.",
     "PHOTO_IN_FUTURE": "The photo date is invalid. Check your phone's clock.",
     "INVALID_COORDINATES": "Invalid location.",
-    "INVALID_RULES": "Invalid rule."
+    "INVALID_RULES": "Invalid rule.",
+    "INVALID_FORMAT": "Invalid format.",
+    "DIRECTORY_CONFLICT": "The inbound, processed and error folders must be different.",
+    "INVALID_PUBLIC_KEY": "Invalid public key (RSA in PEM or Base64).",
+    "MIN_GREATER_THAN_MAX": "The minimum cannot be greater than the maximum.",
+    "ENTITY_IN_USE": "This entity is already used by another insurer."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

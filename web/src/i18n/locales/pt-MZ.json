@@ -244,7 +244,10 @@
     "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise.",
     "KYC_NOT_VERIFIED": "A identidade do cliente ainda não foi verificada.",
     "INSPECTION_NOT_APPROVED": "A vistoria ainda não foi aprovada.",
-    "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros."
+    "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros.",
+    "PAYMENT_METHOD_NOT_FOUND": "Forma de pagamento não encontrada.",
+    "PAYMENT_METHOD_INCOMPLETE": "Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.",
+    "SECRET_STORE_UNAVAILABLE": "O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -340,7 +343,12 @@
     "PHOTO_TOO_OLD": "Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.",
     "PHOTO_IN_FUTURE": "A data da fotografia é inválida. Confirme a hora do telemóvel.",
     "INVALID_COORDINATES": "Localização inválida.",
-    "INVALID_RULES": "Regra inválida."
+    "INVALID_RULES": "Regra inválida.",
+    "INVALID_FORMAT": "Formato inválido.",
+    "DIRECTORY_CONFLICT": "As pastas de entrada, de processados e de erros têm de ser diferentes.",
+    "INVALID_PUBLIC_KEY": "Chave pública inválida (RSA em PEM ou Base64).",
+    "MIN_GREATER_THAN_MAX": "O valor mínimo não pode ser maior que o máximo.",
+    "ENTITY_IN_USE": "Esta entidade já está a ser usada por outra seguradora."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",

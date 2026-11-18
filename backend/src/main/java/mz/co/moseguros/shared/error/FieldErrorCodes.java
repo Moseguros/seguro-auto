@@ -193,6 +193,18 @@ public final class FieldErrorCodes {
     /** As regras de aceitação não cumprem o {@code underwriting-v1.json} (um erro por violação). */
     public static final String INVALID_RULES = "INVALID_RULES";
 
+    // Formas de pagamento por seguradora (S5-01); field = settings.<caminho>, secrets.<campo> ou o campo do pedido
+    /** Valor que não cumpre o formato do campo ({@code pattern}, {@code enum}, tipo errado). */
+    public static final String INVALID_FORMAT = "INVALID_FORMAT";
+    /** Pastas do SFTP repetidas (entrada, processados e erros têm de ser diferentes). */
+    public static final String DIRECTORY_CONFLICT = "DIRECTORY_CONFLICT";
+    /** Chave pública que não é uma chave RSA em Base64 DER ou PEM. */
+    public static final String INVALID_PUBLIC_KEY = "INVALID_PUBLIC_KEY";
+    /** Valor mínimo maior que o máximo. */
+    public static final String MIN_GREATER_THAN_MAX = "MIN_GREATER_THAN_MAX";
+    /** Entidade de referências já usada por outra seguradora. */
+    public static final String ENTITY_IN_USE = "ENTITY_IN_USE";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

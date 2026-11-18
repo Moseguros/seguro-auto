@@ -280,6 +280,14 @@ public final class ErrorCodes {
     /** A conta do cliente da cotação do mediador está desactivada ({@code DISABLED}) (409). */
     public static final String CLIENT_ACCOUNT_DISABLED = "CLIENT_ACCOUNT_DISABLED";
 
+    // Formas de pagamento por seguradora (S5-01)
+    /** Método de pagamento desconhecido ({@code MPESA}, {@code BANK_REFERENCE}) ou ainda sem configuração (404). */
+    public static final String PAYMENT_METHOD_NOT_FOUND = "PAYMENT_METHOD_NOT_FOUND";
+    /** Activar um método com dados em falta ou inválidos; {@code errors[]} com os campos (409). */
+    public static final String PAYMENT_METHOD_INCOMPLETE = "PAYMENT_METHOD_INCOMPLETE";
+    /** O cofre de segredos não respondeu; nada foi gravado (503). */
+    public static final String SECRET_STORE_UNAVAILABLE = "SECRET_STORE_UNAVAILABLE";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -399,7 +407,10 @@ public final class ErrorCodes {
             Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409),
             Map.entry(KYC_NOT_VERIFIED, 409),
             Map.entry(INSPECTION_NOT_APPROVED, 409),
-            Map.entry(CLIENT_ACCOUNT_DISABLED, 409));
+            Map.entry(CLIENT_ACCOUNT_DISABLED, 409),
+            Map.entry(PAYMENT_METHOD_NOT_FOUND, 404),
+            Map.entry(PAYMENT_METHOD_INCOMPLETE, 409),
+            Map.entry(SECRET_STORE_UNAVAILABLE, 503));
 
     private ErrorCodes() {
     }

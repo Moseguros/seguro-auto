@@ -115,6 +115,21 @@ class ModularityTest {
                 .isEmpty();
     }
 
+    /**
+     * S5-01: payment só depende de shared e organization (modelo transversal §1: {@code payment →
+     * organization, notification, document}; notification e document entram nas tarefas seguintes do
+     * S5 e no S6). Nenhum módulo depende ainda de payment ({@code PaymentApi} entra no S5-02).
+     */
+    @Test
+    void paymentDependsOnSharedAndOrganizationOnly() {
+        assertThat(dependenciesOf("payment")).contains("organization").isSubsetOf("shared", "organization");
+        assertThat(modules.stream()
+                .filter(m -> !m.getName().equals("payment"))
+                .filter(m -> dependenciesOf(m.getName()).contains("payment"))
+                .map(ApplicationModule::getName))
+                .isEmpty();
+    }
+
     private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
         return module.getDependencies(modules).stream()

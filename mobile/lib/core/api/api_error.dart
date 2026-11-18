@@ -133,6 +133,9 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'KYC_NOT_VERIFIED' => l10n.errorKycNotVerified,
   'INSPECTION_NOT_APPROVED' => l10n.errorInspectionNotApproved,
   'CLIENT_ACCOUNT_DISABLED' => l10n.errorClientAccountDisabled,
+  'PAYMENT_METHOD_NOT_FOUND' => l10n.errorPaymentMethodNotFound,
+  'PAYMENT_METHOD_INCOMPLETE' => l10n.errorPaymentMethodIncomplete,
+  'SECRET_STORE_UNAVAILABLE' => l10n.errorSecretStoreUnavailable,
   _ => l10n.errorUnknown,
 };
 
@@ -300,6 +303,11 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'PHOTO_IN_FUTURE' => l10n.validationPhotoInFuture,
   'INVALID_COORDINATES' => l10n.validationInvalidCoordinates,
   'INVALID_RULES' => l10n.validationInvalidRules,
+  'INVALID_FORMAT' => l10n.validationInvalidFormat,
+  'DIRECTORY_CONFLICT' => l10n.validationDirectoryConflict,
+  'INVALID_PUBLIC_KEY' => l10n.validationInvalidPublicKey,
+  'MIN_GREATER_THAN_MAX' => l10n.validationMinGreaterThanMax,
+  'ENTITY_IN_USE' => l10n.validationEntityInUse,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,

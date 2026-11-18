@@ -121,6 +121,22 @@ class RunAsSystemUsageTest {
                 .containsExactly("VehicleSystemLookups.registerForCustomer");
     }
 
+    /** S5-01: as formas de pagamento lêem-se entre âmbitos só pelo PaymentSystemLookups. */
+    @Test
+    void paymentSystemLookupsIsAllowed() {
+        JavaClasses payment = new ClassFileImporter().importClasses(
+                mz.co.moseguros.payment.application.PaymentSystemLookups.class,
+                mz.co.moseguros.payment.application.DevPaymentSecretsSeeder.class,
+                mz.co.moseguros.payment.application.PaymentMethodConfigService.class);
+        RUN_AS_SYSTEM_OWNERS.check(payment);
+        org.assertj.core.api.Assertions.assertThat(payment.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("PaymentSystemLookups.enabledConfig", "PaymentSystemLookups.enabledConfigs",
+                        "PaymentSystemLookups.entityInUse", "PaymentSystemLookups.configsOf");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

@@ -70,6 +70,37 @@ public final class JsonSchemas {
                 .toList();
     }
 
+    /**
+     * Erro de validação com a palavra-chave do JSON Schema que falhou (S5-01: os erros de campo das
+     * formas de pagamento dependem dela).
+     *
+     * @param pointer  ponteiro JSON (RFC 6901) do elemento em causa; {@code ""} é a raiz
+     * @param keyword  palavra-chave que falhou ({@code required}, {@code pattern}, {@code maximum}…)
+     * @param property propriedade em falta ({@code required}) ou a mais ({@code additionalProperties});
+     *                 {@code null} nas outras
+     * @param message  mensagem técnica do validador, em inglês
+     */
+    public record Issue(String pointer, String keyword, String property, String message) {
+    }
+
+    /** Como {@link #validate}, mas com a palavra-chave e a propriedade de cada erro. */
+    public static List<Issue> issues(String schemaName, JsonNode document) {
+        Objects.requireNonNull(schemaName, "schemaName");
+        Objects.requireNonNull(document, "document");
+        return schema(schemaName).validate(document).stream()
+                .map(m -> new Issue(m.getInstanceLocation() == null ? "" : m.getInstanceLocation().toString(),
+                        m.getType(), m.getProperty(), m.getError() != null ? m.getError() : m.getMessage()))
+                .distinct()
+                .sorted(Comparator.comparing(Issue::pointer).thenComparing(Issue::keyword)
+                        .thenComparing(i -> i.property() == null ? "" : i.property()))
+                .toList();
+    }
+
+    /** Conteúdo do schema {@code schemaName} (cópia), ex.: para a web gerar um formulário. */
+    public static JsonNode schemaNode(String schemaName) {
+        return schema(schemaName).getSchemaNode().deepCopy();
+    }
+
     private static JsonSchema schema(String name) {
         return CACHE.computeIfAbsent(name, n -> {
             try {
