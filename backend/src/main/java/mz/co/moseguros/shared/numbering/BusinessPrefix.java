@@ -4,7 +4,7 @@ import java.util.Map;
 
 /**
  * Prefixos dos números de negócio e o número de dígitos de cada um (modelo transversal §4). Um
- * prefixo que não está aqui (ex.: {@code SIMO}, S5-07) usa {@value #DEFAULT_DIGITS} dígitos.
+ * prefixo que não está aqui (ex.: {@code ABCD}) usa {@value #DEFAULT_DIGITS} dígitos.
  */
 public final class BusinessPrefix {
 

@@ -2,9 +2,8 @@ package mz.co.moseguros.payment.application.reference;
 
 /**
  * Gerador das referências Ponto24 (contrato do S5-07 §1, criado no S5-02). Um só bean: o
- * {@code Ponto24ReferenceGenerator} do S5-07, igual em todos os ambientes, que segue
- * <b>exactamente</b> {@code docs/specs/interbancos/}. Até ele entrar, só os testes têm um gerador
- * ({@code TestReferenceGenerator}); sem bean, a entidade e referência não está disponível.
+ * {@link Ponto24ReferenceGenerator}, igual em todos os ambientes (incluindo {@code prod}), que segue
+ * <b>exactamente</b> {@code docs/specs/interbancos/}. Não há gerador mock.
  */
 public interface ReferenceGenerator {
 

@@ -24,7 +24,8 @@ import org.springframework.stereotype.Component;
  * na mesma transacção ({@link DispatchMode#SYNC}). A confirmação vem dos ficheiros MEPS/BMEPS do banco
  * (S5-10): a consulta de estado devolve sempre {@code STILL_UNKNOWN}.
  *
- * <p>Sem bean {@link ReferenceGenerator} (antes do S5-07) o método não está disponível.
+ * <p>O gerador é o {@link Ponto24ReferenceGenerator} (S5-07); sem bean {@link ReferenceGenerator} o método
+ * não estaria disponível.
  */
 @Component
 public class BankReferenceGateway implements PaymentGateway {
