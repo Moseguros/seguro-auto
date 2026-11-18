@@ -42,6 +42,7 @@ import mz.co.moseguros.payment.PaymentSucceeded;
 import mz.co.moseguros.payment.ReferenceGenerated;
 import mz.co.moseguros.payment.TestGateway;
 import mz.co.moseguros.payment.application.IntentStateService;
+import mz.co.moseguros.payment.application.reference.ReferenceGenerator;
 import mz.co.moseguros.payment.domain.ConfirmedBy;
 import mz.co.moseguros.proposal.ProposalPaid;
 import mz.co.moseguros.rating.QuoteTestSupport.Customer;
@@ -64,7 +65,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Pagamento de uma proposta de ponta a ponta (S5-02 §4, §7, §9): formas de pagamento, entidade e
- * referência (com o {@code TestReferenceGenerator}; o S5-07 troca-o pelo gerador real), M-Pesa (com o
+ * referência (com o gerador real do S5-07, {@code Ponto24ReferenceGenerator}), M-Pesa (com o
  * {@code TestGateway}), confirmação → {@code PaymentSucceeded} → proposta {@code PAID} →
  * {@code ProposalPaid}, excepções, link do mediador, isolamento e permissões.
  */
@@ -102,6 +103,9 @@ class ProposalPaymentFlowIT {
 
     @Autowired
     TestGateway gateway;
+
+    @Autowired
+    ReferenceGenerator referenceGenerator;
 
     @Autowired
     FakeOtpDeliveryChannels channels;
@@ -206,6 +210,10 @@ class ProposalPaymentFlowIT {
                 .body("nextAction.reference", matchesPattern("^\\d{11}$"))
                 .body("nextAction.amount.amount", equalTo((int) AMOUNT));
         UUID intentId = id(first);
+        // gerador real (S5-07): a referência valida com a entidade e o montante da proposta
+        String firstReference = first.path("nextAction.reference");
+        assertThat(referenceGenerator.isValid(entity, firstReference, AMOUNT)).isTrue();
+        assertThat(referenceGenerator.isValid(entity, firstReference, AMOUNT + 1)).isFalse();
         assertThat(Instant.parse(first.path("nextAction.validUntil"))).isEqualTo(deadline);
         assertThat(Instant.parse(first.path("expiresAt"))).isEqualTo(deadline);
         assertThat(events.of(ReferenceGenerated.class, e -> e.intentId().equals(intentId))).singleElement()
@@ -229,6 +237,7 @@ class ProposalPaymentFlowIT {
         second.then().statusCode(202).body("amount.amount", equalTo((int) AMOUNT + 10_000));
         assertThat(id(second)).isNotEqualTo(intentId);
         assertThat(second.<String>path("nextAction.reference")).isNotEqualTo(first.path("nextAction.reference"));
+        assertThat(referenceGenerator.isValid(entity, second.path("nextAction.reference"), AMOUNT + 10_000)).isTrue();
         assertThat(support.intentRow(intentId)).containsEntry("status", "CANCELLED")
                 .containsEntry("failure_code", "SUPERSEDED");
         assertThat(support.referenceStatus(intentId)).isEqualTo("CANCELLED");
@@ -237,6 +246,25 @@ class ProposalPaymentFlowIT {
         assertThat(support.owner().queryForList("select action from audit.audit_event where entity_id = ? "
                 + "order by occurred_at", String.class, intentId.toString()))
                 .contains("PAYMENT_INTENT.CREATE", "PAYMENT_INTENT.STATUS_CHANGE");
+    }
+
+    @Test
+    void anEntityWithoutInvoiceNumbersLeftGives503AndNoIntent() {
+        Seg exhausted = support.insurer("Seguradora Esgotada");
+        String exhaustedEntity = support.enable(exhausted.id(), "BANK_REFERENCE", null, null, 1, null);
+        support.owner().update("delete from payment.reference_invoice_sequence where entity = ?", exhaustedEntity);
+        support.owner().update("insert into payment.reference_invoice_sequence (entity, last_value) values (?, ?)",
+                exhaustedEntity, 9_999_999);
+        Customer c = support.customer();
+        UUID proposal = support.accepted(c.id(), exhausted);
+
+        payReference(c.token(), proposal).then().statusCode(503)
+                .body("code", equalTo("REFERENCE_GENERATION_FAILED"));
+        assertThat(support.owner().queryForObject("select count(*) from payment.payment_intent where target_id = ?",
+                Integer.class, proposal)).isZero();
+        assertThat(support.owner().queryForObject(
+                "select last_value from payment.reference_invoice_sequence where entity = ?", Integer.class,
+                exhaustedEntity)).isEqualTo(9_999_999);
     }
 
     // --- Confirmação ---
