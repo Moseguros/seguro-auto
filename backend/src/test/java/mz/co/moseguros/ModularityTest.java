@@ -100,11 +100,12 @@ class ModularityTest {
      * document continua a depender só do shared.
      */
     @Test
-    void proposalDependsOnRatingCatalogVehicleIdentityOrganizationDocumentAndNotificationOnly() {
+    void proposalDependsOnRatingCatalogVehicleIdentityOrganizationDocumentNotificationAndPaymentOnly() {
         assertThat(dependenciesOf("proposal"))
-                .contains("rating", "catalog", "vehicle", "identity", "organization", "document", "notification")
+                .contains("rating", "catalog", "vehicle", "identity", "organization", "document", "notification",
+                        "payment")
                 .isSubsetOf("shared", "rating", "catalog", "vehicle", "identity", "organization", "document",
-                        "notification");
+                        "notification", "payment");
         assertThat(dependenciesOf("catalog")).doesNotContain("proposal");
         assertThat(dependenciesOf("identity")).contains("notification");
         assertThat(dependenciesOf("document")).isSubsetOf("shared");
@@ -116,18 +117,21 @@ class ModularityTest {
     }
 
     /**
-     * S5-01: payment só depende de shared e organization (modelo transversal §1: {@code payment →
-     * organization, notification, document}; notification e document entram nas tarefas seguintes do
-     * S5 e no S6). Nenhum módulo depende ainda de payment ({@code PaymentApi} entra no S5-02).
+     * S5-01 e S5-02: payment só depende de organization, notification e document (modelo transversal §1:
+     * {@code payment → organization, notification, document}) e não conhece o proposal (usa o
+     * {@code PaymentTargetResolver} que o proposal implementa). Só o proposal depende de payment
+     * ({@code PaymentApi}; o policy entra no S6).
      */
     @Test
-    void paymentDependsOnSharedAndOrganizationOnly() {
-        assertThat(dependenciesOf("payment")).contains("organization").isSubsetOf("shared", "organization");
+    void paymentDependsOnOrganizationNotificationAndDocumentOnlyAndOnlyProposalDependsOnPayment() {
+        assertThat(dependenciesOf("payment")).contains("organization", "notification", "document")
+                .isSubsetOf("shared", "organization", "notification", "document");
+        assertThat(dependenciesOf("payment")).doesNotContain("proposal");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("payment"))
                 .filter(m -> dependenciesOf(m.getName()).contains("payment"))
                 .map(ApplicationModule::getName))
-                .isEmpty();
+                .containsOnly("proposal");
     }
 
     private Set<String> dependenciesOf(String name) {
