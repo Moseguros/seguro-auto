@@ -2,6 +2,7 @@ package mz.co.moseguros;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.util.StringUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -17,12 +19,15 @@ import org.testcontainers.utility.DockerImageName;
  * <p>Como em produção, a aplicação liga-se com {@code moseguros_app_user} (sem privilégios de
  * dono, o RLS aplica-se a ela) e o Flyway com o dono das tabelas (o utilizador do contentor).
  * O {@code db/init-roles.sql} cria os papéis antes das migrações (ADR-002, adenda).
+ *
+ * <p>Também um RabbitMQ real (S5-06), onde o backend declara a topologia dos pagamentos.
  */
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
 
     public static final String APP_USER = "moseguros_app_user";
     public static final String APP_PASSWORD = "moseguros_app";
+    public static final String RABBITMQ_IMAGE = "rabbitmq:4.1-management";
 
     @Bean
     PostgreSQLContainer<?> postgres(DynamicPropertyRegistry registry) {
@@ -38,21 +43,41 @@ public class TestcontainersConfiguration {
     }
 
     /**
-     * Sem {@code @ServiceConnection}, nada obriga o contentor a ser criado antes da
-     * {@code DataSource} e do Flyway; sem isto as propriedades acima ainda não existem quando
-     * eles são criados e a aplicação liga-se a {@code localhost:5432}.
+     * RabbitMQ real (S5-06, decisão D19): a mesma imagem do {@code infra/docker-compose.yml}. Um
+     * por contexto Spring, partilhado pelos testes que reutilizam o contexto, como o Postgres.
+     */
+    @Bean
+    RabbitMQContainer rabbitmq(DynamicPropertyRegistry registry) {
+        var c = new RabbitMQContainer(DockerImageName.parse(RABBITMQ_IMAGE));
+        registry.add("spring.rabbitmq.host", c::getHost);
+        registry.add("spring.rabbitmq.port", c::getAmqpPort);
+        registry.add("spring.rabbitmq.username", c::getAdminUsername);
+        registry.add("spring.rabbitmq.password", c::getAdminPassword);
+        return c;
+    }
+
+    /**
+     * Sem {@code @ServiceConnection}, nada obriga os contentores a serem criados antes da
+     * {@code DataSource}, do Flyway e da ligação ao RabbitMQ; sem isto as propriedades acima ainda
+     * não existem quando eles são criados e a aplicação liga-se a {@code localhost:5432} (ou
+     * {@code localhost:5672}).
      */
     @Bean
     static BeanFactoryPostProcessor postgresBeforeDataSource() {
         return beanFactory -> {
-            for (String name : new String[] {"dataSource", "flyway"}) {
-                if (beanFactory.containsBeanDefinition(name)) {
-                    BeanDefinition definition = beanFactory.getBeanDefinition(name);
-                    String[] dependsOn = definition.getDependsOn();
-                    definition.setDependsOn(StringUtils.addStringToArray(dependsOn, "postgres"));
-                }
-            }
+            dependOn(beanFactory, "postgres", "dataSource", "flyway");
+            dependOn(beanFactory, "rabbitmq", "rabbitConnectionFactory");
         };
+    }
+
+    private static void dependOn(ConfigurableListableBeanFactory beanFactory, String container, String... beans) {
+        for (String name : beans) {
+            if (beanFactory.containsBeanDefinition(name)) {
+                BeanDefinition definition = beanFactory.getBeanDefinition(name);
+                String[] dependsOn = definition.getDependsOn();
+                definition.setDependsOn(StringUtils.addStringToArray(dependsOn, container));
+            }
+        }
     }
 
     /**

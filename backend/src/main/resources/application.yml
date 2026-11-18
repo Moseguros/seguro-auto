@@ -44,6 +44,15 @@ spring:
       mail.smtp.connectiontimeout: 5000
       mail.smtp.timeout: 5000
       mail.smtp.writetimeout: 5000
+  # RabbitMQ (S5-06, ADR-004): o backend declara a topologia dos pagamentos por referência
+  # (payment.infrastructure.amqp.PaymentsAmqpConfig). Em staging e produção o utilizador é
+  # moseguros_backend e a palavra-passe vem do cofre (infra/README.md, "RabbitMQ — utilizadores").
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:moseguros}
+    password: ${RABBITMQ_PASSWORD:moseguros}
+    connection-timeout: 5s
 
 server:
   port: ${SERVER_PORT:8080}
