@@ -329,7 +329,7 @@ class InsurerPaymentMethodIT {
                 .body("secrets.'sftp.privateKey'.required", equalTo(true));
         assertThat(secretStore.exists(path("BANK_REFERENCE", "sftp.password"))).isFalse();
         assertThat(support.owner().queryForObject("""
-                select secret_refs ? 'sftp.password' from payment.insurer_payment_method
+                select jsonb_exists(secret_refs, 'sftp.password') from payment.insurer_payment_method
                  where insurer_id = ? and method = 'BANK_REFERENCE'""", Boolean.class, insurer.id())).isFalse();
 
         // a palavra-passe já não se aplica com KEY
@@ -342,7 +342,9 @@ class InsurerPaymentMethodIT {
         put(admin, "MPESA", body(mpesaSettings(), null, null)).then().statusCode(200);
         put(admin, "MPESA", body(mpesaSettings(), null, null)).then().statusCode(409)
                 .body("code", equalTo("CONCURRENT_MODIFICATION"));
-        put(admin, "MPESA", body(mpesaSettings(), null, 0L)).then().statusCode(200);
+        Map<String, Object> changed = mpesaSettings();
+        changed.put("c2bTimeoutSeconds", 120);
+        put(admin, "MPESA", body(changed, null, 0L)).then().statusCode(200).body("version", equalTo(1));
         put(admin, "MPESA", body(mpesaSettings(), null, 0L)).then().statusCode(409)
                 .body("code", equalTo("CONCURRENT_MODIFICATION"));
         action(admin, "MPESA", "enable", 0L).then().statusCode(409).body("code", equalTo("CONCURRENT_MODIFICATION"));
