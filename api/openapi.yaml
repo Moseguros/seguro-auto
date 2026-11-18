@@ -13,6 +13,10 @@ tags:
   name: Meta
 - description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
   name: Rating
+- description: "Pagamentos: formas de pagamento das seguradoras (M-Pesa e entidade\
+    \ e referência), intenções de pagamento e pagamentos recebidos. O dinheiro vai\
+    \ directamente para a conta da seguradora"
+  name: Payment
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
 - description: Envio de mensagens e recibos de entrega
@@ -27,9 +31,6 @@ tags:
 - description: "Propostas: criação a partir de uma cotação, declarações de risco,\
     \ adequação, vistoria e assinatura"
   name: Proposal
-- description: "Pagamentos: formas de pagamento das seguradoras (M-Pesa e entidade\
-    \ e referência)"
-  name: Payment
 - description: Veículos e condutores do cliente
   name: Vehicle
 paths:
@@ -1386,6 +1387,43 @@ paths:
       summary: Altera a data de início ou o tomador
       tags:
       - Proposal
+  /api/v1/broker/proposals/{id}/payment-link:
+    post:
+      description: "Permissão payment:link-for-client. SMS ao telemóvel do cliente\
+        \ com o link {web}/cliente/propostas/{id}/pagar?origem=mediador. Só propostas\
+        \ deste mediador (senão 404 PROPOSAL_NOT_FOUND) em ACCEPTED (409 PAYMENT_TARGET_NOT_PAYABLE);\
+        \ cliente sem telemóvel → 409 CUSTOMER_HAS_NO_MSISDN; no máximo 3 envios por\
+        \ proposta em 24 h (429 PAYMENT_LINK_RATE_LIMITED, retryAfterSeconds)."
+      operationId: sendProposalPaymentLink
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentLinkResponse"
+          description: Accepted
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia ao cliente o link de pagamento
+      tags:
+      - Proposal
   /api/v1/broker/quotes:
     get:
       description: "Permissão quote:create-for-client. Pedidos de todos os utilizadores\
@@ -2258,6 +2296,186 @@ paths:
                 $ref: "#/components/schemas/ProblemDetail"
           description: Server error (RFC 7807)
       summary: Testa uma forma de pagamento
+      tags:
+      - Payment
+  /api/v1/insurer/payments:
+    get:
+      description: "Permissão payment:read. Filtros: status repetível; method; from\
+        \ e to em datas de Africa/Maputo (inclusivas, sobre createdAt); q igual à\
+        \ referência PG-…, ao número do alvo ou ao id do fornecedor. Ordenação createdAt\
+        \ (defeito, desc) ou amount."
+      operationId: listInsurerPayments
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentStatus"
+      - in: query
+        name: method
+        required: false
+        schema:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+      - in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt ou amount, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInsurerPaymentSummary"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os pagamentos da seguradora
+      tags:
+      - Payment
+  /api/v1/insurer/payments/export:
+    get:
+      description: "Permissão payment:read. Os mesmos filtros da lista. Filtros: status\
+        \ repetível; method; from e to em datas de Africa/Maputo (inclusivas, sobre\
+        \ createdAt); q igual à referência PG-…, ao número do alvo ou ao id do fornecedor.\
+        \ CSV UTF-8 com BOM, separador ;, datas em Africa/Maputo (yyyy-MM-dd HH:mm:ss),\
+        \ amount em meticais com vírgula decimal. Mais de 10 000 linhas → 400 EXPORT_TOO_LARGE."
+      operationId: exportInsurerPayments
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentStatus"
+      - in: query
+        name: method
+        required: false
+        schema:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+      - in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+          description: Ficheiro CSV
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Exporta os pagamentos da seguradora em CSV
+      tags:
+      - Payment
+  /api/v1/insurer/payments/{id}:
+    get:
+      description: "Permissão payment:read. O pagamento com o alvo, o telemóvel mascarado,\
+        \ a referência bancária, o histórico e as excepções. De outra seguradora →\
+        \ 404 PAYMENT_INTENT_NOT_FOUND."
+      operationId: getInsurerPayment
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsurerPaymentDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um pagamento da seguradora
       tags:
       - Payment
   /api/v1/insurer/product-versions/{id}:
@@ -3903,6 +4121,60 @@ paths:
       summary: Envia o documento e a selfie para verificação
       tags:
       - Identity
+  /api/v1/me/payments:
+    get:
+      description: "Permissão self:payments. As intenções do próprio cliente, as mais\
+        \ recentes primeiro; status repetível (vazio = todos)."
+      operationId: listMyPayments
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentStatus"
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseIntentView"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os pagamentos do cliente
+      tags:
+      - Payment
   /api/v1/me/profile:
     get:
       description: O documento e o NUIT vêm mascarados; os campos por preencher são
@@ -4899,6 +5171,121 @@ paths:
       summary: Convida staff de uma organização
       tags:
       - Identity
+  /api/v1/payment-intents/{id}:
+    get:
+      description: "Permissão self:payments. A intenção do próprio cliente, com o\
+        \ estado e a próxima acção (nextAction: confirmar no telemóvel, a consultar\
+        \ o estado, pagar por entidade e referência, ou nada). De outro cliente →\
+        \ 404 PAYMENT_INTENT_NOT_FOUND."
+      operationId: getPaymentIntent
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntentView"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma intenção de pagamento
+      tags:
+      - Payment
+  /api/v1/payment-intents/{id}/reference-document:
+    post:
+      description: "Permissão self:payments. Devolve o fileId do PDF (gerado uma vez),\
+        \ que se descarrega em GET /api/v1/files/{fileId}. Intenção que não é BANK_REFERENCE\
+        \ → 409 NOT_A_REFERENCE_PAYMENT. Língua da Accept-Language (pt ou en; outra\
+        \ → pt)."
+      operationId: createReferenceDocument
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferenceDocumentResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Gera o PDF da entidade e referência
+      tags:
+      - Payment
+  /api/v1/payment-intents/{id}/reference-sms:
+    post:
+      description: Permissão self:payments. msisdn obrigatório (qualquer operadora).
+        Intenção que não é BANK_REFERENCE → 409 NOT_A_REFERENCE_PAYMENT; referência
+        não activa → 409 REFERENCE_NOT_ACTIVE; no máximo 3 envios por referência (429
+        REFERENCE_SMS_RATE_LIMITED). Língua da Accept-Language (pt ou en; outra →
+        pt).
+      operationId: sendReferenceSms
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReferenceSmsRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferenceSmsResponse"
+          description: Accepted
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia a entidade e referência por SMS
+      tags:
+      - Payment
   /api/v1/plate-formats:
     get:
       description: "Público. Só os activos, pela ordem de teste, com rótulo e exemplo\
@@ -5323,6 +5710,94 @@ paths:
                 $ref: "#/components/schemas/ProblemDetail"
           description: Server error (RFC 7807)
       summary: Submete a vistoria por fotografias
+      tags:
+      - Proposal
+  /api/v1/proposals/{id}/payment-intents:
+    post:
+      description: "Permissão self:payments. Cabeçalho Idempotency-Key obrigatório\
+        \ (UUID; a mesma chave devolve a mesma resposta durante 24 h; outro pedido\
+        \ com a mesma chave → 422 IDEMPOTENCY_KEY_REUSED). MPESA exige payerMsisdn\
+        \ a começar por 84 ou 85 (REQUIRED, MSISDN_NOT_MPESA); BANK_REFERENCE devolve\
+        \ já a entidade e a referência (nextAction PAY_BY_REFERENCE) e reutiliza a\
+        \ referência activa com o mesmo montante. Erros: 404 PROPOSAL_NOT_FOUND; 409\
+        \ PAYMENT_TARGET_NOT_PAYABLE, PAYMENT_TARGET_ALREADY_PAID, PAYMENT_METHOD_NOT_AVAILABLE,\
+        \ PAYMENT_IN_PROGRESS (intentId)."
+      operationId: createProposalPaymentIntent
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProposalPaymentIntentRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntentView"
+          description: Intenção criada
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Paga uma proposta aceite
+      tags:
+      - Proposal
+  /api/v1/proposals/{id}/payment-methods:
+    get:
+      description: "Permissão self:payments. As formas de pagamento activas da seguradora,\
+        \ dentro dos limites do montante, por sortOrder, e a intenção em curso (activeIntent)\
+        \ para retomar. Proposta paga → paid = true sem métodos; fora de ACCEPTED\
+        \ → 409 PAYMENT_TARGET_NOT_PAYABLE; de outro cliente → 404 PROPOSAL_NOT_FOUND."
+      operationId: listProposalPaymentMethods
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProposalPaymentMethodsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Formas de pagamento de uma proposta aceite
       tags:
       - Proposal
   /api/v1/proposals/{id}/sign/confirm:
@@ -6869,6 +7344,21 @@ components:
       - code
       - name
       - type
+    CreateProposalPaymentIntentRequest:
+      type: object
+      properties:
+        channel:
+          $ref: "#/components/schemas/ProposalPaymentChannel"
+        method:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+        payerMsisdn:
+          $ref: "#/components/schemas/Msisdn"
+      required:
+      - channel
+      - method
     CreateProposalRequest:
       type: object
       properties:
@@ -7193,6 +7683,19 @@ components:
       - updatedAt
       - vehicleIds
       - version
+    FailureCode:
+      type: string
+      enum:
+      - CUSTOMER_CANCELLED
+      - INSUFFICIENT_BALANCE
+      - INVALID_MSISDN
+      - PROVIDER_REJECTED
+      - PROVIDER_CONFIG_ERROR
+      - PROVIDER_UNAVAILABLE
+      - TIMEOUT_EXPIRED
+      - EXPIRED
+      - SUPERSEDED
+      - MANUAL
     FieldError:
       type: object
       description: Erro de um campo do pedido
@@ -7430,6 +7933,145 @@ components:
       - status
       - submittedAt
       - version
+    InsurerPaymentBankReference:
+      type: object
+      properties:
+        bankTransactionId:
+          type: string
+        entity:
+          type: string
+          example: "90002"
+        paidAt:
+          type: string
+          format: date-time
+        reference:
+          type: string
+          example: "00001230126"
+        status:
+          $ref: "#/components/schemas/ReferenceStatus"
+      required:
+      - entity
+      - reference
+      - status
+    InsurerPaymentDetail:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        bankReference:
+          $ref: "#/components/schemas/InsurerPaymentBankReference"
+        confirmedBy:
+          $ref: "#/components/schemas/PaymentConfirmedBy"
+        createdAt:
+          type: string
+          format: date-time
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsurerPaymentEvent"
+        exceptionIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+        failureCode:
+          $ref: "#/components/schemas/FailureCode"
+        id:
+          type: string
+          format: uuid
+        method:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+        payerMsisdnMasked:
+          type: string
+        providerTxId:
+          type: string
+        purpose:
+          $ref: "#/components/schemas/PaymentPurpose"
+        reference:
+          type: string
+          example: PG-2027-0001234
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        succeededAt:
+          type: string
+          format: date-time
+        target:
+          $ref: "#/components/schemas/PaymentTargetRef"
+        targetLabel:
+          type: string
+      required:
+      - amount
+      - createdAt
+      - events
+      - exceptionIds
+      - expiresAt
+      - id
+      - method
+      - purpose
+      - reference
+      - status
+      - target
+      - targetLabel
+    InsurerPaymentEvent:
+      type: object
+      properties:
+        fromStatus:
+          $ref: "#/components/schemas/PaymentStatus"
+        receivedAt:
+          type: string
+          format: date-time
+        toStatus:
+          $ref: "#/components/schemas/PaymentStatus"
+        type:
+          $ref: "#/components/schemas/PaymentEventType"
+      required:
+      - receivedAt
+      - type
+    InsurerPaymentSummary:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        createdAt:
+          type: string
+          format: date-time
+        failureCode:
+          $ref: "#/components/schemas/FailureCode"
+        id:
+          type: string
+          format: uuid
+        method:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+        providerTxId:
+          type: string
+        reference:
+          type: string
+          example: PG-2027-0001234
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        succeededAt:
+          type: string
+          format: date-time
+        targetLabel:
+          type: string
+          example: PR-2027-000123
+      required:
+      - amount
+      - createdAt
+      - id
+      - method
+      - reference
+      - status
+      - targetLabel
     InsurerProfileRequest:
       type: object
       properties:
@@ -7817,6 +8459,61 @@ components:
       - charges
       - ratingMode
       - version
+    IntentView:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        failureCode:
+          $ref: "#/components/schemas/FailureCode"
+        id:
+          type: string
+          format: uuid
+        insurer:
+          $ref: "#/components/schemas/PaymentInsurerRef"
+        method:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+        nextAction:
+          $ref: "#/components/schemas/PaymentNextAction"
+        payerMsisdnMasked:
+          type: string
+        payerUserId:
+          type: string
+          format: uuid
+        purpose:
+          $ref: "#/components/schemas/PaymentPurpose"
+        reference:
+          type: string
+          example: PG-2027-0001234
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        succeededAt:
+          type: string
+          format: date-time
+        target:
+          $ref: "#/components/schemas/PaymentTargetRef"
+      required:
+      - amount
+      - createdAt
+      - expiresAt
+      - id
+      - insurer
+      - method
+      - nextAction
+      - payerUserId
+      - purpose
+      - reference
+      - status
+      - target
     InvitationDetailsResponse:
       type: object
       properties:
@@ -8722,6 +9419,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseInsurerPaymentSummary:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsurerPaymentSummary"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInsurerProposalSummaryResponse:
       type: object
       properties:
@@ -8729,6 +9449,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/InsurerProposalSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseIntentView:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntentView"
         page:
           type: integer
           format: int32
@@ -8952,6 +9695,61 @@ components:
       - page
       - size
       - totalElements
+    PaymentConfirmedBy:
+      type: string
+      enum:
+      - PROVIDER
+      - STATUS_QUERY
+      - REFERENCE_FILE
+      - MANUAL
+    PaymentEventType:
+      type: string
+      enum:
+      - CREATED
+      - DISPATCHED
+      - PROVIDER_RESPONSE
+      - STATUS_QUERY
+      - STATUS_CHANGED
+      - REFERENCE_PAID
+      - MANUAL_RESOLUTION
+    PaymentInsurerRef:
+      type: object
+      properties:
+        displayName:
+          type: string
+        id:
+          type: string
+          format: uuid
+      required:
+      - id
+    PaymentLinkResponse:
+      type: object
+      properties:
+        sentAt:
+          type: string
+          format: date-time
+        sentTo:
+          type: string
+          example: +258*****4567
+      required:
+      - sentAt
+      - sentTo
+    PaymentMethodOption:
+      type: object
+      properties:
+        displayName:
+          type: string
+        method:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+        sortOrder:
+          type: integer
+          format: int32
+      required:
+      - method
+      - sortOrder
     PaymentMethodResponse:
       type: object
       properties:
@@ -9058,6 +9856,77 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PaymentMethodResponse"
+    PaymentNextAction:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        entity:
+          type: string
+        nextCheckAt:
+          type: string
+          format: date-time
+        reference:
+          type: string
+        timeoutAt:
+          type: string
+          format: date-time
+        type:
+          $ref: "#/components/schemas/PaymentNextActionType"
+        validUntil:
+          type: string
+          format: date-time
+      required:
+      - type
+    PaymentNextActionType:
+      type: string
+      enum:
+      - AWAIT_CUSTOMER_CONFIRMATION
+      - CHECKING_STATUS
+      - PAY_BY_REFERENCE
+      - NONE
+    PaymentPurpose:
+      type: string
+      enum:
+      - NEW_POLICY
+      - INSTALMENT
+      - RENEWAL
+      - ENDORSEMENT
+      - FLEET_INCLUSION
+    PaymentStatus:
+      type: string
+      enum:
+      - CREATED
+      - PENDING
+      - UNKNOWN
+      - SUCCEEDED
+      - FAILED
+      - EXPIRED
+      - CANCELLED
+      - REFUNDED
+    PaymentTargetRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+          example: PR-2027-000123
+        type:
+          $ref: "#/components/schemas/PaymentTargetType"
+      required:
+      - id
+      - label
+      - type
+    PaymentTargetType:
+      type: string
+      enum:
+      - PROPOSAL
+      - INSTALMENT
+      - RENEWAL
+      - ENDORSEMENT
+      - FLEET_INCLUSION
     PhotoSlot:
       type: string
       enum:
@@ -9688,6 +10557,43 @@ components:
       required:
       - displayName
       - id
+    ProposalPaymentChannel:
+      type: string
+      enum:
+      - WEB
+      - APP
+      - BROKER_LINK
+    ProposalPaymentMethodsResponse:
+      type: object
+      properties:
+        activeIntent:
+          $ref: "#/components/schemas/IntentView"
+        amount:
+          $ref: "#/components/schemas/Money"
+        expiresAt:
+          type: string
+          format: date-time
+        insurer:
+          $ref: "#/components/schemas/PaymentInsurerRef"
+        methods:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentMethodOption"
+        paid:
+          type: boolean
+        proposalId:
+          type: string
+          format: uuid
+        proposalNumber:
+          type: string
+          example: PR-2027-000123
+      required:
+      - amount
+      - insurer
+      - methods
+      - paid
+      - proposalId
+      - proposalNumber
     ProposalPolicyholder:
       type: object
       properties:
@@ -10675,6 +11581,36 @@ components:
           $ref: "#/components/schemas/UnavailableReason"
       required:
       - status
+    ReferenceDocumentResponse:
+      type: object
+      properties:
+        fileId:
+          type: string
+          format: uuid
+      required:
+      - fileId
+    ReferenceSmsRequest:
+      type: object
+      properties:
+        msisdn:
+          $ref: "#/components/schemas/Msisdn"
+      required:
+      - msisdn
+    ReferenceSmsResponse:
+      type: object
+      properties:
+        sentTo:
+          type: string
+          example: +258*****4567
+      required:
+      - sentTo
+    ReferenceStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - PAID
+      - EXPIRED
+      - CANCELLED
     ReferenceValueResponse:
       type: object
       properties:
