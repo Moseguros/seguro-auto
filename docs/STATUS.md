@@ -1,6 +1,6 @@
 # Estado do projecto
 
-Actualizado em 03/11/2026.
+Actualizado em 18/11/2026.
 
 ## Onde estamos
 
@@ -64,17 +64,17 @@ As cinco tarefas entraram juntas no `main` pelo PR de integração #37 (`task/S3
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S4-01 KYC do cliente (documento e selfie) e revisão pela seguradora | S3 | em revisão (branch `task/S4-01-kyc-cliente`) |
-| S4-02 Propostas: numeração, estados, criação a partir da cotação, declarações, adequação, expiração | S4-01 | em revisão (branch `task/S4-02-propostas-base`) |
-| S4-03 Vistoria de danos próprios (fotos por ângulo) e revisão | S4-02 | em revisão (branch `task/S4-03-vistoria`) |
-| S4-04 PDF da proposta e assinatura por OTP | S4-02 | em revisão (branch `task/S4-04-pdf-e-assinatura`) |
-| S4-05 Submissão e aceitação (regras automáticas, decisão manual, SLA) | S4-03, S4-04 | em revisão (branch `task/S4-05-submissao-e-aceitacao`, com o S4-03 junto) |
-| S4-06 Proposta criada pelo mediador em nome do cliente | S4-05 | em revisão (branch `task/S4-06-proposta-mediador`, empilhado sobre o S4-05) |
-| S4-07 Web seguradora: fila de propostas, KYC e vistorias | S4-05 | em revisão (branch `task/S4-07-web-seguradora-propostas`, empilhado no S4-05) |
-| S4-08 Web cliente `/cliente/propostas` e web mediador `/mediador/propostas` | S4-06 | em revisão (branch `task/S4-08-web-propostas`, empilhado no S4-06, com o S4-07 junto) |
-| S4-09 Mobile: proposta, vistoria guiada offline, assinatura | S4-05 | em revisão (branch `task/S4-09-mobile-proposta`, sobre o `task/S4-05-submissao-e-aceitacao`) |
+| S4-01 KYC do cliente (documento e selfie) e revisão pela seguradora | S3 | concluída (no `main` pelo PR de integração #47) |
+| S4-02 Propostas: numeração, estados, criação a partir da cotação, declarações, adequação, expiração | S4-01 | concluída (no `main` pelo PR de integração #47) |
+| S4-03 Vistoria de danos próprios (fotos por ângulo) e revisão | S4-02 | concluída (no `main` pelo PR de integração #47) |
+| S4-04 PDF da proposta e assinatura por OTP | S4-02 | concluída (no `main` pelo PR de integração #47) |
+| S4-05 Submissão e aceitação (regras automáticas, decisão manual, SLA) | S4-03, S4-04 | concluída (no `main` pelo PR de integração #47) |
+| S4-06 Proposta criada pelo mediador em nome do cliente | S4-05 | concluída (no `main` pelo PR de integração #47) |
+| S4-07 Web seguradora: fila de propostas, KYC e vistorias | S4-05 | concluída (no `main` pelo PR de integração #47) |
+| S4-08 Web cliente `/cliente/propostas` e web mediador `/mediador/propostas` | S4-06 | concluída (no `main` pelo PR de integração #47) |
+| S4-09 Mobile: proposta, vistoria guiada offline, assinatura | S4-05 | concluída (no `main` pelo PR de integração #47) |
 
-As nove tarefas juntas, com os conflitos resolvidos e os ficheiros gerados regenerados, estão no branch local de verificação `task/S4-integracao` (S4-08, que já contém S4-01 a S4-07, + S4-09).
+As nove tarefas entraram juntas no `main` pelo PR de integração #47 (`task/S4-integracao`: S4-08, que já contém S4-01 a S4-07, + S4-09).
 
 ### Sprint 5 — Pagamentos
 
