@@ -4,6 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMemo, useState, type ReactNode } from 'react';
 import { RouterProvider } from 'react-router-dom';
+import { DemoBanner } from './components/DemoBanner';
 import { createAppRouter } from './router';
 import { createAppTheme } from './theme/theme';
 
@@ -33,6 +34,7 @@ export function App() {
   return (
     <AppProviders queryClient={queryClient}>
       <RouterProvider router={router} future={{ v7_startTransition: true }} />
+      <DemoBanner />
     </AppProviders>
   );
 }

@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "MoSeguros"
+    "name": "MoSeguros",
+    "demoBanner": "DADOS DE DEMONSTRAÇÃO"
   },
   "language": {
     "label": "Língua",
