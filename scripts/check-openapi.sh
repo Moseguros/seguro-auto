@@ -28,24 +28,27 @@ for file in "$SPEC" "$CODES" "$QUESTIONS"; do
   fi
 done
 
-cd "$ROOT/backend"
-mkdir -p target
-echo "A gerar $SPEC (./mvnw -Popenapi verify)..."
-if ! ./mvnw -B -q -Popenapi verify > "$ROOT/backend/target/check-openapi.log" 2>&1; then
+# Na raiz, com -pl backend -am: o payment-contracts constrói-se no reactor (S5-06, D18), sem instalar.
+cd "$ROOT"
+mkdir -p backend/target
+echo "A gerar $SPEC (./mvnw -pl backend -am -Popenapi verify)..."
+if ! ./mvnw -B -q -pl backend -am -Popenapi verify > "$ROOT/backend/target/check-openapi.log" 2>&1; then
   echo "ERRO: a geração do contrato falhou. Últimas linhas de backend/target/check-openapi.log:" >&2
   tail -n 40 "$ROOT/backend/target/check-openapi.log" >&2
   exit 1
 fi
 
 echo "A gerar $CODES (ErrorCodesExportTest)..."
-if ! ./mvnw -B -q test -Dtest=ErrorCodesExportTest -Derror-codes.export=true     > "$ROOT/backend/target/check-error-codes.log" 2>&1; then
+if ! ./mvnw -B -q -pl backend -am test -Dtest=ErrorCodesExportTest -Dsurefire.failIfNoSpecifiedTests=false -Derror-codes.export=true \
+    > "$ROOT/backend/target/check-error-codes.log" 2>&1; then
   echo "ERRO: a geração dos códigos de erro falhou. Últimas linhas de backend/target/check-error-codes.log:" >&2
   tail -n 40 "$ROOT/backend/target/check-error-codes.log" >&2
   exit 1
 fi
 
 echo "A gerar $QUESTIONS (ProposalQuestionsExportTest)..."
-if ! ./mvnw -B -q test -Dtest=ProposalQuestionsExportTest -Dproposal-questions.export=true     > "$ROOT/backend/target/check-proposal-questions.log" 2>&1; then
+if ! ./mvnw -B -q -pl backend -am test -Dtest=ProposalQuestionsExportTest -Dsurefire.failIfNoSpecifiedTests=false -Dproposal-questions.export=true \
+    > "$ROOT/backend/target/check-proposal-questions.log" 2>&1; then
   echo "ERRO: a geração das perguntas da proposta falhou. Últimas linhas de backend/target/check-proposal-questions.log:" >&2
   tail -n 40 "$ROOT/backend/target/check-proposal-questions.log" >&2
   exit 1

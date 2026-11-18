@@ -1,14 +1,23 @@
 name: backend
 
+# Reactor Maven na raiz (S5-06, decisão D18): o backend usa o payment-contracts sem o publicar.
 on:
   pull_request:
     paths:
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
       - ".github/workflows/backend.yml"
   push:
     branches: [main]
     paths:
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
       - ".github/workflows/backend.yml"
 
 concurrency:
@@ -19,11 +28,8 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  payment-contracts:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v4
 
@@ -33,9 +39,31 @@ jobs:
           java-version: "17"
           cache: maven
 
-      # Testcontainers usa o Docker do runner.
+      - name: Build e testes dos contratos
+        run: ./mvnw -B -pl payment-contracts verify
+
+      - name: Relatórios de testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: payment-contracts-test-reports
+          path: payment-contracts/target/surefire-reports/
+          if-no-files-found: ignore
+
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # Na raiz, com -am (constrói o payment-contracts no reactor). Testcontainers usa o Docker do runner.
       - name: Build e testes
-        run: ./mvnw -B verify
+        run: ./mvnw -B -pl backend -am verify
 
       - name: Relatório JaCoCo
         if: always()

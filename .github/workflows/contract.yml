@@ -4,12 +4,22 @@ on:
   pull_request:
     paths:
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
       - "api/**"
+      - "scripts/check-openapi.sh"
   push:
     branches: [main]
     paths:
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
       - "api/**"
+      - "scripts/check-openapi.sh"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}

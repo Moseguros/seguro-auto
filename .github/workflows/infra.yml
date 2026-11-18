@@ -5,12 +5,22 @@ on:
     paths:
       - "infra/**"
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
+      - ".dockerignore"
       - "web/**"
   push:
     branches: [main]
     paths:
       - "infra/**"
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
+      - ".dockerignore"
       - "web/**"
 
 concurrency:
@@ -44,6 +54,15 @@ jobs:
           echo
           curl -fsS http://localhost:3000/api/v1/meta/version
           echo
+
+      # O backend declara a topologia dos pagamentos no arranque (S5-06).
+      - name: Filas do RabbitMQ
+        run: |
+          queues=$(curl -fsS -u moseguros:moseguros http://localhost:15672/api/queues | grep -o '"name":"core[^"]*"' | sort)
+          echo "$queues"
+          for q in core.reference-payments core.payment-file-events core.reference-payments.dlq core.payment-file-events.dlq; do
+            echo "$queues" | grep -q "\"name\":\"$q\"" || { echo "falta a fila $q"; exit 1; }
+          done
 
       - name: Estado e registos
         if: failure()
