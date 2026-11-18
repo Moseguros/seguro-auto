@@ -1,0 +1,12 @@
+{
+  "messageId": "6f1c2a4e-3b7d-4c8e-9a0f-1d2e3f4a5b6c",
+  "schemaVersion": 1,
+  "insurerId": "01930000-0000-7000-8000-000000000001",
+  "sourceId": "01930000-0000-7000-8000-000000000501",
+  "startedAt": "2027-01-15T09:12:40Z",
+  "finishedAt": "2027-01-15T09:12:44.512Z",
+  "outcome": "OK",
+  "filesFound": 1,
+  "filesProcessed": 1,
+  "filesRejected": 0
+}

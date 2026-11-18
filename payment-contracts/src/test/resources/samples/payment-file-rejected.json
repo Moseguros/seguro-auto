@@ -1,0 +1,14 @@
+{
+  "messageId": "74737c2f35b2365404568708363e6fcf224a206e54374f4e21943dc91a49474a",
+  "schemaVersion": 1,
+  "insurerId": "01930000-0000-7000-8000-000000000320",
+  "sourceId": "01930000-0000-7000-8000-000000000502",
+  "fileFormat": "BMEPS",
+  "fileName": "exemplo-ficheiro-bmeps.txt",
+  "sha256": "851bd3a0f75a2b7b96b9662b9f98218f97f48fdd145459520d91f11ec9cb383a",
+  "formatFileId": "800-02-00001",
+  "reason": "ENTITY_MISMATCH",
+  "detail": "BMEPS company/profile 800-02 differ from the source configuration",
+  "lineNo": 1,
+  "rejectedAt": "2027-01-15T09:12:44Z"
+}
