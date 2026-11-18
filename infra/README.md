@@ -31,6 +31,7 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | `postgres` | `localhost:5432` | BD, utilizador e palavra-passe `moseguros` (dono; ver `.env.example`); a aplicação usa `moseguros_app_user` (ver "Base de dados — papéis"); dados no volume `pgdata` |
 | `mailpit` | <http://localhost:8025> (web), `localhost:1025` (SMTP) | caixa de correio de teste: todo o e-mail enviado fica aqui |
 | `sms-mock` | <http://localhost:8090> | SMS e WhatsApp recebidos (coluna "canal"), actualizados a cada 3 s; botões para pôr cada canal em `OK`, `FAIL` ou `FAIL_RECEIPT` |
+| `mpesa-mock` | <http://localhost:18352> | simulador da API M-Pesa (C2B 18352, consulta 18353, reversão 18354); página com as transacções, actualizada a cada 3 s; ver "Simulador M-Pesa" |
 
 API do `sms-mock` (alvo do `MockSmsSender` e do `MockWhatsAppSender` do backend, S1-03):
 
@@ -59,6 +60,30 @@ curl -s -D - -X POST localhost:8080/api/v1/auth/otp/request -H 'content-type: ap
 ```
 
 O SMS aparece em <http://localhost:8090>. Com o SMS em `FAIL` (botão na página), o pedido seguinte (passados 60 s) chega por WhatsApp (`"channel":"WHATSAPP","fallbackUsed":true`); com `FAIL_RECEIPT`, o SMS é aceite e, 2 s depois, o recibo de falha faz o backend reenviar por WhatsApp (`GET /api/v1/auth/otp/challenges/{challengeId}` passa a mostrar `WHATSAPP`). Os e-mails chegam ao Mailpit (<http://localhost:8025>).
+
+## Simulador M-Pesa
+
+O `mpesa-mock` (S5-03, `mocks/mpesa-mock/`) comporta-se como a API M-Pesa da Vodacom Moçambique: C2B em `POST :18352/ipg/v1x/c2bPayment/singleStage/`, consulta em `GET :18353/ipg/v1x/queryTransactionStatus/` e reversão em `PUT :18354/ipg/v1x/reversal/`, com `Authorization: Bearer <token>` (API Key cifrada com `mocks/mpesa-mock/src/main/resources/keys/mock-public.pem`) e `Origin: developer.mpesa.vm.co.mz`. Credenciais de desenvolvimento: API Key `dev-mpesa-api-key`, Service Provider Code `171717`, Initiator `dev-initiator`, Security Credential `dev-security-credential`. O backend do compose chega-lhe por `http://mpesa-mock` (o `host` da Seguradora Demo, S5-01).
+
+```bash
+docker compose up -d --build mpesa-mock
+curl -s localhost:18352/__mock/transactions          # transacções registadas
+curl -s -X POST localhost:18352/__mock/reset         # limpa
+```
+
+O resultado do C2B depende dos três últimos dígitos do telemóvel (`258…`):
+
+| Final | Resultado |
+| --- | --- |
+| `000` | sucesso (INS-0) depois de 5 s |
+| `001` | cancelado pelo cliente (INS-5) depois de 2 s |
+| `002` | saldo insuficiente (INS-2006) depois de 2 s |
+| `003` | sucesso só depois de 120 s (o cliente desiste antes; a transacção fica `Completed` na mesma) |
+| `004` | duplicado (INS-10) imediatamente |
+| `005` | a transacção falhou (INS-6) depois de 2 s |
+| outro | sucesso (INS-0) depois de 2 s |
+
+Os atrasos mudam em execução com `PUT localhost:18352/__mock/config`. Como gerar um token à mão, os códigos de erro e as variáveis: `mocks/mpesa-mock/README.md`. As transacções ficam só em memória. Nunca usar o par de chaves do simulador fora do desenvolvimento.
 
 ## Base de dados — papéis
 
@@ -145,7 +170,7 @@ Para correr o backend ou a web fora do Docker (ex.: no IDE), suba só o que prec
 ## Notas
 
 - As imagens têm versão fixada; quem mudar uma imagem aqui ou num `Dockerfile` actualiza `scripts/images.txt` no mesmo PR.
-- Os contentores do backend e do `sms-mock` correm como `app` (uid 10001) e o da web como `nginx` (uid 101).
+- Os contentores do backend, do `sms-mock` e do `mpesa-mock` correm como `app` (uid 10001) e o da web como `nginx` (uid 101).
 - O nginx escuta em IPv4 e IPv6 dentro do contentor (o healthcheck usa `localhost`, que resolve para `::1`).
 - Se o Docker Hub responder 429 (limite de pedidos), ver as notas em `docs/STATUS.md`.
-- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP, cofre de segredos e `mpesa-mock` (Sprint 5) ainda não fazem parte do compose.
+- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP e cofre de segredos (Sprint 5) ainda não fazem parte do compose.

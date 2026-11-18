@@ -18,6 +18,8 @@ Thumbs.db
 *.jks
 *.keystore
 !infra/mocks/**/*.pem
+# Chave pública do mpesa-mock (S5-03), igual à do simulador: não é segredo.
+!backend/src/main/resources/dev/mpesa-mock-public.pem
 
 # Java / Maven
 target/
