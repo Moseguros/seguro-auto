@@ -131,6 +131,8 @@ services:
       MOSEGUROS_SECRETS_STORE: vault
       VAULT_URI: http://vault:8200
       VAULT_TOKEN: ${VAULT_DEV_ROOT_TOKEN:-dev-root-token}
+      # Cliente de serviço do payment-file-worker (S5-09): o mesmo segredo nos dois lados.
+      MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET: ${SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:-local-worker-secret}
       JAVA_OPTS: -XX:MaxRAMPercentage=75
     ports:
       - "8080:8080"
@@ -144,6 +146,43 @@ services:
       vault:
         condition: service_healthy
     # Healthcheck: o HEALTHCHECK do backend/Dockerfile (GET /api/v1/health).
+    restart: unless-stopped
+
+  # Worker dos ficheiros de pagamento (S5-09): pede as fontes ao backend (token de serviço), lê o SFTP de
+  # cada seguradora de minuto a minuto e publica os pagamentos no RabbitMQ. Actuator em http://localhost:8081.
+  payment-file-worker:
+    build:
+      context: ..
+      dockerfile: payment-file-worker/Dockerfile
+    image: moseguros/payment-file-worker:local
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-moseguros}
+      # Sem privilégios de dono (schema payment_worker); o Flyway do worker usa o dono.
+      DB_USERNAME: moseguros_worker_user
+      DB_PASSWORD: moseguros_worker
+      DB_OWNER_USERNAME: ${POSTGRES_USER:-moseguros}
+      DB_OWNER_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-moseguros}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-moseguros}
+      VAULT_URI: http://vault:8200
+      VAULT_TOKEN: ${VAULT_DEV_ROOT_TOKEN:-dev-root-token}
+      WORKER_BACKEND_BASE_URL: http://backend:8080
+      WORKER_CLIENT_SECRET: ${SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:-local-worker-secret}
+      JAVA_OPTS: -XX:MaxRAMPercentage=75
+    ports:
+      - "8081:8081"
+    depends_on:
+      backend:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+      sftp:
+        condition: service_healthy
+    # Healthcheck: o HEALTHCHECK do payment-file-worker/Dockerfile (GET /actuator/health).
     restart: unless-stopped
 
   web:

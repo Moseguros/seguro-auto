@@ -6,6 +6,7 @@ on:
       - "infra/**"
       - "backend/**"
       - "payment-contracts/**"
+      - "payment-file-worker/**"
       - "pom.xml"
       - ".mvn/**"
       - "mvnw"
@@ -17,6 +18,7 @@ on:
       - "infra/**"
       - "backend/**"
       - "payment-contracts/**"
+      - "payment-file-worker/**"
       - "pom.xml"
       - ".mvn/**"
       - "mvnw"
@@ -63,6 +65,13 @@ jobs:
           for q in core.reference-payments core.payment-file-events core.reference-payments.dlq core.payment-file-events.dlq; do
             echo "$queues" | grep -q "\"name\":\"$q\"" || { echo "falta a fila $q"; exit 1; }
           done
+
+      # O worker obtém o token de serviço e lê as fontes do backend (S5-09).
+      - name: Worker de ficheiros de pagamento
+        run: |
+          curl -fsS http://localhost:8081/actuator/health
+          echo
+          docker compose logs --no-color payment-file-worker | grep -q "Source .* scheduled" || { echo "o worker não agendou as fontes de demonstração"; exit 1; }
 
       - name: Estado e registos
         if: failure()

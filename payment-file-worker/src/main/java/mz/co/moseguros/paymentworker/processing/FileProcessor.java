@@ -370,12 +370,15 @@ public class FileProcessor {
             return;
         }
         String lastId = last.get().getFormatFileId();
-        boolean gap;
+        boolean gap = false;
         if (header.bmepsFileSequence() != null) {
+            // BMEPS: o ID do ficheiro soma 1 a cada ficheiro
             Integer lastSequence = bmepsSequence(lastId);
             gap = lastSequence == null || header.bmepsFileSequence() != lastSequence + 1;
-        } else {
-            gap = !Objects.equals(header.previousFormatFileId(), lastId);
+        }
+        if (header.bmepsFileSequence() == null || header.previousFormatFileId() != null) {
+            // MEPS: A007 identifica o ficheiro anterior (zeros só no primeiro)
+            gap |= !Objects.equals(header.previousFormatFileId(), lastId);
         }
         if (gap) {
             log.warn("alert=PAYMENT_FILE_SEQUENCE_GAP source={} insurer={} file={} formatFileId={} previous={} "

@@ -13,6 +13,8 @@ COPY mvnw pom.xml ./
 RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
 
 COPY payment-contracts/ payment-contracts/
+# O pom.xml da raiz lista também o payment-file-worker (S5-09): só o pom, não é construído com -pl.
+COPY payment-file-worker/pom.xml payment-file-worker/pom.xml
 COPY backend/ backend/
 RUN --mount=type=cache,target=/root/.m2 \
     ./mvnw -B -pl backend -am -DskipTests package \

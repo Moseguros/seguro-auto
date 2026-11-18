@@ -56,7 +56,9 @@ public class TestStubParser implements PaymentFileParser {
         if (h.length != 4) {
             throw new PaymentFileParseException(FileRejectionReason.PARSE_ERROR, 1, "Invalid header");
         }
-        FileHeader header = new FileHeader(h[1], h[2], h[3].isEmpty() ? null : h[3], null, null, null, null,
+        // id numérico → também sequência (como o BMEPS), para os testes da sequência ("3;1" depois de "1")
+        Integer sequence = h[2].matches("[0-9]{1,9}") ? Integer.valueOf(h[2]) : null;
+        FileHeader header = new FileHeader(h[1], h[2], h[3].isEmpty() ? null : h[3], null, null, sequence, null,
                 lines.get(0));
         List<ParsedRecord> records = new ArrayList<>();
         for (int i = 1; i < lines.size() - 1; i++) {

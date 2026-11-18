@@ -34,6 +34,7 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | `rabbitmq` | <http://localhost:15672> (consola), `localhost:5672` (AMQP) | RabbitMQ 4.1 (ADR-004); utilizador e palavra-passe `moseguros` (`RABBITMQ_DEFAULT_USER`/`PASS` do `.env`); o backend declara a topologia dos pagamentos no arranque (ver "RabbitMQ — topologia"); dados no volume `rabbitdata` |
 | `sftp` | `localhost:2222` | SFTP onde o "banco" deposita os ficheiros MEPS/BMEPS (S5-09 lê-os); utilizadores `demo` e `demob` (ver [`mocks/sftp/README.md`](mocks/sftp/README.md)) |
 | `vault` | <http://localhost:8200> | cofre de segredos em modo dev (em memória); entrar na interface com o token `dev-root-token` (`VAULT_DEV_ROOT_TOKEN` do `.env`) |
+| `payment-file-worker` | <http://localhost:8081/actuator/health> | lê os ficheiros de movimentos do SFTP de cada seguradora e publica os pagamentos no RabbitMQ (ver "Worker de ficheiros de pagamento") |
 
 API do `sms-mock` (alvo do `MockSmsSender` e do `MockWhatsAppSender` do backend, S1-03):
 
@@ -116,6 +117,8 @@ A partir do S1-01 a aplicação **não** se liga à base de dados como dona das 
 | dono (`POSTGRES_USER` do `.env`, por defeito `moseguros`) | corre as migrações Flyway; dono de todas as tabelas | `DB_OWNER_USERNAME` / `DB_OWNER_PASSWORD` do backend |
 | `moseguros_app` (sem login) | recebe os privilégios (`select`, `insert`, `update`; `delete` só em `identity.user_role` e `public.event_publication`) | criado por `postgres/init/01-roles.sql` |
 | `moseguros_app_user` (login, membro de `moseguros_app`) | a aplicação; sem `SUPERUSER`, sem `BYPASSRLS` e sem ser dona de nenhuma tabela, para que o Row Level Security se aplique a ela | `DB_USERNAME=moseguros_app_user`, `DB_PASSWORD=moseguros_app` |
+| `moseguros_worker` (sem login) | privilégios (`select`, `insert`, `update`) só no schema `payment_worker` do `payment-file-worker` (S5-09); nenhum nos schemas do backend | criado por `postgres/init/02-worker-role.sql` (e pela migração do worker, se faltar) |
+| `moseguros_worker_user` (login, membro de `moseguros_worker`) | o `payment-file-worker` | `DB_USERNAME=moseguros_worker_user`, `DB_PASSWORD=moseguros_worker` |
 
 O Postgres só corre os scripts de `postgres/init` (`/docker-entrypoint-initdb.d`) quando o volume está **vazio**. Quem já tinha o volume `pgdata` de antes do S1-01 apaga-o uma vez:
 
@@ -126,6 +129,28 @@ docker compose down -v && docker compose up -d --build
 Sem isto o backend não arranca (`password authentication failed for user "moseguros_app_user"`).
 
 **Staging e produção:** os papéis são criados pela equipa de operações antes do primeiro deploy, com o mesmo conteúdo de `postgres/init/01-roles.sql` (a palavra-passe de `moseguros_app_user` vem do cofre de segredos, não a do ficheiro). O dono das tabelas não precisa de ser superutilizador: basta ser dono da base de dados. O backend recebe `DB_URL`, `DB_USERNAME`/`DB_PASSWORD` (`moseguros_app_user`), `DB_OWNER_USERNAME`/`DB_OWNER_PASSWORD` (dono, só para o Flyway) e `MOSEGUROS_DATA_KEY_1` (chave de cifra das colunas, 32 bytes em Base64; sem ela a aplicação não arranca), e `MOSEGUROS_BLIND_INDEX_KEY` (chave do índice cego, 32 bytes em Base64, diferente da anterior; sem ela a aplicação não arranca).
+
+## Worker de ficheiros de pagamento
+
+O `payment-file-worker` (S5-09, ADR-004 e ADR-007) é um executável à parte do backend: isola as credenciais SFTP e o processamento dos ficheiros da API pública. Tem BD própria (schema `payment_worker`, histórico Flyway em `payment_worker.flyway_schema_history`) e só fala com o backend por HTTP interno e pelo RabbitMQ.
+
+1. No arranque e de minuto a minuto pede um **token de serviço** ao backend (`POST /internal/v1/auth/token`, `client_credentials` com Basic `payment-file-worker` / `SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET`) e as **fontes** (`GET /internal/v1/payment-file-sources`): as configurações `BANK_REFERENCE` activas de todas as seguradoras e as inactivas que ainda têm referências por pagar. Nunca recebe segredos, só os caminhos no Vault.
+2. Lê cada fonte continuamente: `poll-interval` (60 s; `WORKER_POLL_INTERVAL`, mínimo 10 s) depois do fim da leitura anterior. Duas instâncias nunca leem a mesma fonte ao mesmo tempo (ShedLock, `payment_worker.shedlock`).
+3. Em cada leitura: palavra-passe ou chave SFTP do Vault, ligação ao SFTP (chave do servidor pela `hostKeyFingerprint`; em `local` aceita chaves desconhecidas), ficheiros de `inboundDir` (sem `.part` nem os que começam por `.`), validação, um `ReferencePaymentReceived` por registo com *publisher confirms*, mudança para `processedDir` (ou `errorDir`), `PaymentFileProcessed` / `PaymentFileRejected` e, no fim, `PaymentSourcePolled`.
+4. Um ficheiro **nunca é processado duas vezes**: nem com o mesmo nome, nem com outro, nem deixado em `inbound` (SFTP só de leitura): pelo SHA-256 do conteúdo e pelo identificador do ficheiro no formato (`DUPLICATE_FILE_ID`, alerta `PAYMENT_FILE_DUPLICATE_ID`).
+
+O papel `moseguros_worker_user` só é criado com o volume `pgdata` vazio: quem já tinha a stack de antes do S5-09 corre uma vez `docker compose down -v && docker compose up -d --build` (senão o worker falha com `password authentication failed for user "moseguros_worker_user"`).
+
+Os leitores reais `MEPS` e `BMEPS` entram no S5-08: até lá as fontes de demonstração dão `UNSUPPORTED_FORMAT` em cada leitura (é o esperado). Ver o estado:
+
+```bash
+docker compose ps payment-file-worker                      # (healthy)
+curl -s localhost:8081/actuator/health                     # db, rabbit e sources (fontes agendadas)
+docker compose logs payment-file-worker | grep "Source "   # fontes agendadas no arranque
+curl -s localhost:8081/actuator/metrics/worker.polls
+```
+
+**Staging e produção:** `/internal/**` **não** pode ser encaminhado pelo *proxy* de entrada (o nginx da web só encaminha `/api/`; S6-08): o worker chama o backend pela rede interna. O worker recebe `WORKER_CLIENT_SECRET` (igual a `MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET` do backend, pelo menos 32 caracteres, do cofre de segredos), `VAULT_URI`/`VAULT_TOKEN` (só leitura de `secret/insurers/*`), `DB_*` (`moseguros_worker_user`, criado como em `postgres/init/02-worker-role.sql` com a palavra-passe do cofre) e o utilizador RabbitMQ `moseguros_worker`. Sem `WORKER_CLIENT_SECRET` ou `VAULT_TOKEN`, ou com `allow-unknown-host-keys`, não arranca.
 
 ## Ficheiros
 
