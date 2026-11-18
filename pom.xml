@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Reactor Maven do monorepo (S5-06, decisão D18). Só agrega: não é parent de nenhum módulo
+  (o backend mantém o spring-boot-starter-parent).
+
+  Na raiz:
+    ./mvnw -B verify                        tudo (contratos e backend)
+    ./mvnw -B -pl backend -am verify        só o backend e o que ele usa
+    ./mvnw -B -pl payment-contracts install instala os contratos no repositório Maven local,
+                                            para "cd backend && ./mvnw -B verify" funcionar
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>mz.co.moseguros</groupId>
+  <artifactId>moseguros</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>MoSeguros</name>
+  <description>Agregador do monorepo MoSeguros</description>
+
+  <modules>
+    <module>payment-contracts</module>
+    <module>backend</module>
+    <!-- payment-file-worker: S5-09 -->
+  </modules>
+</project>
