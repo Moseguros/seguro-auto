@@ -170,10 +170,12 @@ class IdentityPersistenceIT {
             assertThat(roles.findByCode("INSURER_ADMIN").orElseThrow().isAssignableIn("BROKER")).isFalse();
             assertThat(roles.findPermissionsByRoleCodes(List.of("PLATFORM_ADMIN"))).containsExactlyInAnyOrder(
                     "otp-settings:read", "otp-settings:manage", "organization:read", "organization:manage",
-                    "org-user:read", "org-user:manage", "reference:manage"); // reference:manage: S2-01
+                    "org-user:read", "org-user:manage", "reference:manage", // reference:manage: S2-01
+                    "platform:operations"); // S5-01
             assertThat(roles.findPermissionsByRoleCodes(List.of("CUSTOMER")))
                     .containsExactlyInAnyOrder("self:profile", "self:vehicles", "self:quotes", // self:quotes: S3-01
-                            "self:proposals"); // S4-01
+                            "self:proposals", // S4-01
+                            "self:payments"); // S5-01
             assertThat(roles.findPermissionsByRoleCodes(List.of("UNDERWRITER"))).containsExactlyInAnyOrder(
                     "product:read", "proposal:read", "proposal:decide", "kyc:review", "inspection:review"); // S4-01
             return null;

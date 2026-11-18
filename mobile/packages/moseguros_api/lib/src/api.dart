@@ -15,6 +15,7 @@ import 'package:moseguros_api/src/api/identity_api.dart';
 import 'package:moseguros_api/src/api/meta_api.dart';
 import 'package:moseguros_api/src/api/notification_api.dart';
 import 'package:moseguros_api/src/api/organization_api.dart';
+import 'package:moseguros_api/src/api/payment_api.dart';
 import 'package:moseguros_api/src/api/proposal_api.dart';
 import 'package:moseguros_api/src/api/rating_api.dart';
 import 'package:moseguros_api/src/api/vehicle_api.dart';
@@ -107,6 +108,12 @@ class MosegurosApi {
   /// by doing that all interceptors will not be executed
   OrganizationApi getOrganizationApi() {
     return OrganizationApi(dio, serializers);
+  }
+
+  /// Get PaymentApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  PaymentApi getPaymentApi() {
+    return PaymentApi(dio, serializers);
   }
 
   /// Get ProposalApi instance, base route and serializer can be overridden by a given but be careful,

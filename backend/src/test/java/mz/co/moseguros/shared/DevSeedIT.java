@@ -65,15 +65,18 @@ class DevSeedIT {
         assertSevenRecordsOnce();
         assertDemoProductsOnce();
         assertRatingDemoOnce();
+        assertPaymentDemoOnce();
 
         // os scripts repetíveis voltam a correr (como quando mudam) sem erro nem duplicados
         owner().execute(devSeedSql("R__dev_seed_s2.sql"));
         owner().execute(devSeedSql("R__dev_seed_s3.sql"));
+        owner().execute(devSeedSql("R__dev_seed_s5.sql"));
         assertSevenRecordsOnce();
         assertDemoProductsOnce();
         assertRatingDemoOnce();
+        assertPaymentDemoOnce();
 
-        for (String script : new String[] {"R__dev_seed_s2.sql", "R__dev_seed_s3.sql"}) {
+        for (String script : new String[] {"R__dev_seed_s2.sql", "R__dev_seed_s3.sql", "R__dev_seed_s5.sql"}) {
             assertThat(owner().queryForObject("select count(*) from public.flyway_schema_history where script = ?",
                     Integer.class, script)).as(script).isEqualTo(1);
         }
@@ -223,6 +226,52 @@ class DevSeedIT {
         } catch (java.security.NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * S5-01: as formas de pagamento das seguradoras de demonstração, activas, com os dados completos
+     * (schema do método) e só os caminhos dos segredos.
+     */
+    private void assertPaymentDemoOnce() throws IOException {
+        JdbcTemplate owner = owner();
+        String demoB = "01930000-0000-7000-8000-000000000320";
+        List<Map<String, Object>> rows = owner.queryForList("""
+                select insurer_id::text as insurer, method, enabled, enabled_at is not null as enabled_at,
+                       settings::text as settings, secret_refs::text as refs, created_by
+                  from payment.insurer_payment_method where insurer_id in (?::uuid, ?::uuid)
+                 order by insurer_id, method desc""", id(1), demoB);
+        assertThat(rows).extracting(r -> r.get("insurer") + " " + r.get("method") + " " + r.get("enabled") + " "
+                + r.get("enabled_at") + " " + r.get("created_by")).containsExactly(
+                id(1) + " MPESA true true dev-seed",
+                id(1) + " BANK_REFERENCE true true dev-seed",
+                demoB + " BANK_REFERENCE true true dev-seed");
+        ObjectMapper mapper = new ObjectMapper();
+        for (Map<String, Object> r : rows) {
+            JsonNode settings = mapper.readTree((String) r.get("settings"));
+            String method = (String) r.get("method");
+            String schema = "payment-method-" + method.toLowerCase(java.util.Locale.ROOT) + ".json";
+            assertThat(mz.co.moseguros.shared.json.JsonSchemas.validate(schema, settings)).as(method).isEmpty();
+            JsonNode refs = mapper.readTree((String) r.get("refs"));
+            List<String> fields = new java.util.ArrayList<>();
+            refs.fieldNames().forEachRemaining(fields::add);
+            assertThat(fields).as(method).containsExactlyInAnyOrderElementsOf(
+                    method.equals("MPESA") ? List.of("apiKey", "publicKey") : List.of("sftp.password"));
+            refs.fields().forEachRemaining(e -> {
+                assertThat(e.getValue().get("path").asText())
+                        .isEqualTo("secret/insurers/" + r.get("insurer") + "/payments/" + method + "/" + e.getKey());
+                assertThat(java.time.Instant.parse(e.getValue().get("updatedAt").asText())).isNotNull();
+            });
+        }
+        assertThat(owner.queryForList("""
+                select settings ->> 'entity' || '/' || (settings ->> 'fileFormat') || '/'
+                       || coalesce(settings ->> 'bmepsCompanyId', '-') || '/' || coalesce(settings ->> 'bmepsProfileId', '-')
+                       || '/' || (settings -> 'sftp' ->> 'username')
+                  from payment.insurer_payment_method where method = 'BANK_REFERENCE' order by settings ->> 'entity'""",
+                String.class)).containsExactly("90002/MEPS/-/-/demo", "90090/BMEPS/800/02/demob");
+        assertThat(owner.queryForObject("""
+                select settings ->> 'serviceProviderCode' || '/' || (settings ->> 'host')
+                  from payment.insurer_payment_method where method = 'MPESA' and insurer_id = ?::uuid""",
+                String.class, id(1))).isEqualTo("171717/http://mpesa-mock");
     }
 
     private static String id(int n) {

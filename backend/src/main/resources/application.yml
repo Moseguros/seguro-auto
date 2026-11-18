@@ -193,6 +193,16 @@ moseguros:
       bulkhead:
         max-concurrent-calls: 20
     secrets: {}
+  # Cofre de segredos (S5-01 §2; modelo transversal §7): chaves M-Pesa e credenciais SFTP das
+  # seguradoras; a BD guarda só o caminho (secret/insurers/<id>/payments/<MÉTODO>/<campo>). vault (KV v2
+  # no mount "secret") ou in-memory (só nos perfis local e test). Fora de local/test, in-memory ou
+  # token vazio impedem o arranque. AppRole em staging/produção decide-se com o alojamento (S6-08).
+  secrets:
+    store: ${MOSEGUROS_SECRETS_STORE:vault}     # vault | in-memory
+    vault:
+      uri: ${VAULT_URI:http://localhost:8200}
+      token: ${VAULT_TOKEN:}
+      mount: secret
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada

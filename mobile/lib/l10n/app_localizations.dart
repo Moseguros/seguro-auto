@@ -3480,6 +3480,270 @@ abstract class AppLocalizations {
   /// **'Regra inválida.'**
   String get validationInvalidRules;
 
+  /// No description provided for @errorPaymentMethodNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Forma de pagamento não encontrada.'**
+  String get errorPaymentMethodNotFound;
+
+  /// No description provided for @errorPaymentMethodIncomplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.'**
+  String get errorPaymentMethodIncomplete;
+
+  /// No description provided for @errorSecretStoreUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.'**
+  String get errorSecretStoreUnavailable;
+
+  /// No description provided for @validationInvalidFormat.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato inválido.'**
+  String get validationInvalidFormat;
+
+  /// No description provided for @validationDirectoryConflict.
+  ///
+  /// In pt, this message translates to:
+  /// **'As pastas de entrada, de processados e de erros têm de ser diferentes.'**
+  String get validationDirectoryConflict;
+
+  /// No description provided for @validationInvalidPublicKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Chave pública inválida (RSA em PEM ou Base64).'**
+  String get validationInvalidPublicKey;
+
+  /// No description provided for @validationMinGreaterThanMax.
+  ///
+  /// In pt, this message translates to:
+  /// **'O valor mínimo não pode ser maior que o máximo.'**
+  String get validationMinGreaterThanMax;
+
+  /// No description provided for @validationEntityInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta entidade já está a ser usada por outra seguradora.'**
+  String get validationEntityInUse;
+
+  /// No description provided for @errorIdempotencyKeyRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pedido não pôde ser identificado. Tente de novo.'**
+  String get errorIdempotencyKeyRequired;
+
+  /// No description provided for @errorIdempotencyKeyReused.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido já foi enviado com outros dados. Volte atrás e tente de novo.'**
+  String get errorIdempotencyKeyReused;
+
+  /// No description provided for @errorPaymentTargetNotPayable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já não pode ser paga.'**
+  String get errorPaymentTargetNotPayable;
+
+  /// No description provided for @errorPaymentTargetAlreadyPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já está paga.'**
+  String get errorPaymentTargetAlreadyPaid;
+
+  /// No description provided for @errorPaymentMethodNotAvailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta forma de pagamento não está disponível para esta seguradora ou este montante.'**
+  String get errorPaymentMethodNotAvailable;
+
+  /// No description provided for @errorPaymentInProgress.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já há um pagamento M-Pesa em curso. Confirme-o no telemóvel ou aguarde.'**
+  String get errorPaymentInProgress;
+
+  /// No description provided for @errorPaymentIntentNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento não encontrado.'**
+  String get errorPaymentIntentNotFound;
+
+  /// No description provided for @errorNotAReferencePayment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pagamento não é por entidade e referência.'**
+  String get errorNotAReferencePayment;
+
+  /// No description provided for @errorReferenceNotActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta referência já não está activa.'**
+  String get errorReferenceNotActive;
+
+  /// No description provided for @errorReferenceSmsRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou esta referência por SMS 3 vezes.'**
+  String get errorReferenceSmsRateLimited;
+
+  /// No description provided for @errorReferenceGenerationFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível gerar a referência. Tente de novo dentro de momentos.'**
+  String get errorReferenceGenerationFailed;
+
+  /// No description provided for @errorCustomerHasNoMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'O cliente não tem telemóvel registado para receber o link.'**
+  String get errorCustomerHasNoMsisdn;
+
+  /// No description provided for @errorPaymentLinkRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou o link de pagamento 3 vezes nas últimas 24 horas.'**
+  String get errorPaymentLinkRateLimited;
+
+  /// No description provided for @errorExportTooLarge.
+  ///
+  /// In pt, this message translates to:
+  /// **'A exportação tem demasiadas linhas. Use filtros mais estreitos.'**
+  String get errorExportTooLarge;
+
+  /// No description provided for @validationMsisdnNotMpesa.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este número não é M-Pesa (tem de começar por 84 ou 85).'**
+  String get validationMsisdnNotMpesa;
+
+  /// No description provided for @validationInvalidUuid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Identificador inválido.'**
+  String get validationInvalidUuid;
+
+  /// No description provided for @paymentStatusCreated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criado'**
+  String get paymentStatusCreated;
+
+  /// No description provided for @paymentStatusPending.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pendente'**
+  String get paymentStatusPending;
+
+  /// No description provided for @paymentStatusUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'A confirmar'**
+  String get paymentStatusUnknown;
+
+  /// No description provided for @paymentStatusSucceeded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pago'**
+  String get paymentStatusSucceeded;
+
+  /// No description provided for @paymentStatusFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falhado'**
+  String get paymentStatusFailed;
+
+  /// No description provided for @paymentStatusExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expirado'**
+  String get paymentStatusExpired;
+
+  /// No description provided for @paymentStatusCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelado'**
+  String get paymentStatusCancelled;
+
+  /// No description provided for @paymentStatusRefunded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reembolsado'**
+  String get paymentStatusRefunded;
+
+  /// No description provided for @paymentMethodMpesa.
+  ///
+  /// In pt, this message translates to:
+  /// **'M-Pesa'**
+  String get paymentMethodMpesa;
+
+  /// No description provided for @paymentMethodBankReference.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entidade e referência'**
+  String get paymentMethodBankReference;
+
+  /// No description provided for @paymentFailureCustomerCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelado no telemóvel.'**
+  String get paymentFailureCustomerCancelled;
+
+  /// No description provided for @paymentFailureInsufficientBalance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saldo insuficiente.'**
+  String get paymentFailureInsufficientBalance;
+
+  /// No description provided for @paymentFailureInvalidMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número M-Pesa inválido.'**
+  String get paymentFailureInvalidMsisdn;
+
+  /// No description provided for @paymentFailureProviderRejected.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pagamento foi recusado.'**
+  String get paymentFailureProviderRejected;
+
+  /// No description provided for @paymentFailureProviderConfigError.
+  ///
+  /// In pt, this message translates to:
+  /// **'A forma de pagamento da seguradora tem um problema de configuração.'**
+  String get paymentFailureProviderConfigError;
+
+  /// No description provided for @paymentFailureProviderUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'O serviço de pagamento não está disponível.'**
+  String get paymentFailureProviderUnavailable;
+
+  /// No description provided for @paymentFailureTimeoutExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pagamento não foi confirmado a tempo.'**
+  String get paymentFailureTimeoutExpired;
+
+  /// No description provided for @paymentFailureExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O prazo para pagar terminou.'**
+  String get paymentFailureExpired;
+
+  /// No description provided for @paymentFailureSuperseded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituído por outro pagamento.'**
+  String get paymentFailureSuperseded;
+
+  /// No description provided for @paymentFailureManual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resolvido pela seguradora.'**
+  String get paymentFailureManual;
+
   /// No description provided for @proposalUnderwritingFailureAutoAcceptDisabled.
   ///
   /// In pt, this message translates to:

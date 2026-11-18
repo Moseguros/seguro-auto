@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moseguros.co.mz/schemas/payment-method-mpesa.json",
+  "title": "MoSeguros - dados M-Pesa da seguradora (não secretos)",
+  "description": "API oficial da Vodacom Moçambique (developer.mpesa.vm.co.mz). Os segredos (apiKey, publicKey, securityCredential) não estão aqui: vão para o cofre de segredos.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["serviceProviderCode", "host", "ports", "origin", "c2bTimeoutSeconds"],
+  "properties": {
+    "serviceProviderCode": {
+      "type": "string",
+      "pattern": "^[0-9]{5,10}$",
+      "description": "Service Provider Code da seguradora"
+    },
+    "host": {
+      "type": "string",
+      "pattern": "^https?://[A-Za-z0-9.-]+$",
+      "maxLength": 200,
+      "description": "Sem porta nem caminho (ex.: https://api.sandbox.vm.co.mz, https://api.vm.co.mz, http://mpesa-mock)"
+    },
+    "ports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["c2b", "query", "reversal"],
+      "properties": {
+        "c2b": { "type": "integer", "minimum": 1, "maximum": 65535, "default": 18352 },
+        "query": { "type": "integer", "minimum": 1, "maximum": 65535, "default": 18353 },
+        "reversal": { "type": "integer", "minimum": 1, "maximum": 65535, "default": 18354 }
+      }
+    },
+    "origin": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Cabeçalho Origin (ex.: developer.mpesa.vm.co.mz)"
+    },
+    "initiatorIdentifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "description": "Só reversões (S7)"
+    },
+    "c2bTimeoutSeconds": { "type": "integer", "minimum": 30, "maximum": 180, "default": 90 }
+  }
+}

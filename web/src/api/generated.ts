@@ -691,6 +691,21 @@ export interface CreateProductRequest {
   type: CreateProductRequestType;
 }
 
+export type CreateProposalPaymentIntentRequestMethod =
+  (typeof CreateProposalPaymentIntentRequestMethod)[keyof typeof CreateProposalPaymentIntentRequestMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateProposalPaymentIntentRequestMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+export interface CreateProposalPaymentIntentRequest {
+  channel: ProposalPaymentChannel;
+  method: CreateProposalPaymentIntentRequestMethod;
+  payerMsisdn?: Msisdn;
+}
+
 export interface CreateProposalRequest {
   channel: ProposalChannel;
   /** Cotação OFFERED do próprio cliente */
@@ -901,6 +916,22 @@ export interface DriverResponse {
   version: number;
 }
 
+export type FailureCode = (typeof FailureCode)[keyof typeof FailureCode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const FailureCode = {
+  CUSTOMER_CANCELLED: 'CUSTOMER_CANCELLED',
+  INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
+  INVALID_MSISDN: 'INVALID_MSISDN',
+  PROVIDER_REJECTED: 'PROVIDER_REJECTED',
+  PROVIDER_CONFIG_ERROR: 'PROVIDER_CONFIG_ERROR',
+  PROVIDER_UNAVAILABLE: 'PROVIDER_UNAVAILABLE',
+  TIMEOUT_EXPIRED: 'TIMEOUT_EXPIRED',
+  EXPIRED: 'EXPIRED',
+  SUPERSEDED: 'SUPERSEDED',
+  MANUAL: 'MANUAL',
+} as const;
+
 /**
  * Erro de um campo do pedido
  */
@@ -1028,6 +1059,73 @@ export interface InsurerKycCheckResponse {
   submittedAt: string;
   /** Enviar em verify/reject */
   version: number;
+}
+
+export interface InsurerPaymentBankReference {
+  bankTransactionId?: string;
+  entity: string;
+  paidAt?: string;
+  reference: string;
+  status: ReferenceStatus;
+}
+
+export type InsurerPaymentDetailMethod =
+  (typeof InsurerPaymentDetailMethod)[keyof typeof InsurerPaymentDetailMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerPaymentDetailMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+export interface InsurerPaymentDetail {
+  amount: Money;
+  bankReference?: InsurerPaymentBankReference;
+  confirmedBy?: PaymentConfirmedBy;
+  createdAt: string;
+  events: InsurerPaymentEvent[];
+  exceptionIds: string[];
+  expiresAt: string;
+  failureCode?: FailureCode;
+  id: string;
+  method: InsurerPaymentDetailMethod;
+  payerMsisdnMasked?: string;
+  providerTxId?: string;
+  purpose: PaymentPurpose;
+  reference: string;
+  status: PaymentStatus;
+  succeededAt?: string;
+  target: PaymentTargetRef;
+  targetLabel: string;
+}
+
+export interface InsurerPaymentEvent {
+  fromStatus?: PaymentStatus;
+  receivedAt: string;
+  toStatus?: PaymentStatus;
+  type: PaymentEventType;
+}
+
+export type InsurerPaymentSummaryMethod =
+  (typeof InsurerPaymentSummaryMethod)[keyof typeof InsurerPaymentSummaryMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InsurerPaymentSummaryMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+export interface InsurerPaymentSummary {
+  amount: Money;
+  createdAt: string;
+  failureCode?: FailureCode;
+  id: string;
+  method: InsurerPaymentSummaryMethod;
+  providerTxId?: string;
+  reference: string;
+  status: PaymentStatus;
+  succeededAt?: string;
+  targetLabel: string;
 }
 
 export interface InsurerProfileRequest {
@@ -1228,6 +1326,32 @@ export interface InsurerRatingSettingsResponse {
   charges: Charge[];
   ratingMode: InsurerRatingSettingsResponseRatingMode;
   version: number;
+}
+
+export type IntentViewMethod = (typeof IntentViewMethod)[keyof typeof IntentViewMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const IntentViewMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+export interface IntentView {
+  amount: Money;
+  createdAt: string;
+  expiresAt: string;
+  failureCode?: FailureCode;
+  id: string;
+  insurer: PaymentInsurerRef;
+  method: IntentViewMethod;
+  nextAction: PaymentNextAction;
+  payerMsisdnMasked?: string;
+  payerUserId: string;
+  purpose: PaymentPurpose;
+  reference: string;
+  status: PaymentStatus;
+  succeededAt?: string;
+  target: PaymentTargetRef;
 }
 
 export interface InvitationDetailsResponse {
@@ -1432,6 +1556,35 @@ export const KycState = {
   REJECTED: 'REJECTED',
   OUTDATED: 'OUTDATED',
 } as const;
+
+/**
+ * @nullable
+ */
+export type LastErrorResponse = {
+  /** @nullable */
+  at?: string | null;
+  code: string;
+} | null;
+
+export type LastTestResponseResult =
+  (typeof LastTestResponseResult)[keyof typeof LastTestResponseResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const LastTestResponseResult = {
+  OK: 'OK',
+  FAILED: 'FAILED',
+  NOT_SUPPORTED: 'NOT_SUPPORTED',
+} as const;
+
+/**
+ * @nullable
+ */
+export type LastTestResponse = {
+  at: string;
+  /** @nullable */
+  message?: string | null;
+  result: LastTestResponseResult;
+} | null;
 
 export interface LogoutRequest {
   /** Refresh token da sessão a terminar */
@@ -1866,8 +2019,22 @@ export interface PageResponseInsurerInspectionSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseInsurerPaymentSummary {
+  content: InsurerPaymentSummary[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseInsurerProposalSummaryResponse {
   content: InsurerProposalSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseIntentView {
+  content: IntentView[];
   page: number;
   size: number;
   totalElements: number;
@@ -1935,6 +2102,205 @@ export interface PageResponseVehicleResponse {
   size: number;
   totalElements: number;
 }
+
+export type PaymentConfirmedBy = (typeof PaymentConfirmedBy)[keyof typeof PaymentConfirmedBy];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentConfirmedBy = {
+  PROVIDER: 'PROVIDER',
+  STATUS_QUERY: 'STATUS_QUERY',
+  REFERENCE_FILE: 'REFERENCE_FILE',
+  MANUAL: 'MANUAL',
+} as const;
+
+export type PaymentEventType = (typeof PaymentEventType)[keyof typeof PaymentEventType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentEventType = {
+  CREATED: 'CREATED',
+  DISPATCHED: 'DISPATCHED',
+  PROVIDER_RESPONSE: 'PROVIDER_RESPONSE',
+  STATUS_QUERY: 'STATUS_QUERY',
+  STATUS_CHANGED: 'STATUS_CHANGED',
+  REFERENCE_PAID: 'REFERENCE_PAID',
+  MANUAL_RESOLUTION: 'MANUAL_RESOLUTION',
+} as const;
+
+export interface PaymentInsurerRef {
+  displayName?: string;
+  id: string;
+}
+
+export interface PaymentLinkResponse {
+  sentAt: string;
+  sentTo: string;
+}
+
+export type PaymentMethodOptionMethod =
+  (typeof PaymentMethodOptionMethod)[keyof typeof PaymentMethodOptionMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodOptionMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+export interface PaymentMethodOption {
+  displayName?: string;
+  method: PaymentMethodOptionMethod;
+  sortOrder: number;
+}
+
+export type PaymentMethodResponseEnvironment =
+  (typeof PaymentMethodResponseEnvironment)[keyof typeof PaymentMethodResponseEnvironment];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodResponseEnvironment = {
+  SANDBOX: 'SANDBOX',
+  PRODUCTION: 'PRODUCTION',
+} as const;
+
+export type PaymentMethodResponseMethod =
+  (typeof PaymentMethodResponseMethod)[keyof typeof PaymentMethodResponseMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodResponseMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+/**
+ * Campo do segredo (apiKey, publicKey, securityCredential, sftp.password, sftp.privateKey, sftp.passphrase) → estado
+ */
+export type PaymentMethodResponseSecrets = { [key: string]: SecretStatusResponse };
+
+export interface PaymentMethodResponse {
+  configured: boolean;
+  /**
+   * @maxLength 60
+   * @nullable
+   */
+  displayName?: string | null;
+  enabled: boolean;
+  environment: PaymentMethodResponseEnvironment;
+  intentValidityMinutes: number;
+  lastError?: LastErrorResponse;
+  lastTest?: LastTestResponse;
+  maxAmount?: Money;
+  method: PaymentMethodResponseMethod;
+  minAmount?: Money;
+  /** Campo do segredo (apiKey, publicKey, securityCredential, sftp.password, sftp.privateKey, sftp.passphrase) → estado */
+  secrets: PaymentMethodResponseSecrets;
+  settings: PaymentMethodSettings;
+  settingsSchema: PaymentMethodSettingsSchema;
+  sortOrder: number;
+  /** @nullable */
+  updatedAt?: string | null;
+  /** @nullable */
+  version?: number | null;
+}
+
+/**
+ * Dados não secretos da forma de pagamento, no formato do JSON Schema do método (backend/src/main/resources/schemas/payment-method-mpesa.json ou payment-method-bank_reference.json; devolvido em settingsSchema). Os segredos nunca estão aqui.
+ */
+export interface PaymentMethodSettings {
+  [key: string]: unknown;
+}
+
+/**
+ * JSON Schema (draft 2020-12) dos settings do método; a web gera o formulário a partir dele.
+ */
+export interface PaymentMethodSettingsSchema {
+  [key: string]: unknown;
+}
+
+export type PaymentMethodTestResponseResult =
+  (typeof PaymentMethodTestResponseResult)[keyof typeof PaymentMethodTestResponseResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodTestResponseResult = {
+  OK: 'OK',
+  FAILED: 'FAILED',
+  NOT_SUPPORTED: 'NOT_SUPPORTED',
+} as const;
+
+export interface PaymentMethodTestResponse {
+  /** @nullable */
+  message?: string | null;
+  result: PaymentMethodTestResponseResult;
+  testedAt: string;
+}
+
+export interface PaymentMethodVersionRequest {
+  version: number;
+}
+
+export interface PaymentMethodsResponse {
+  methods?: PaymentMethodResponse[];
+}
+
+export interface PaymentNextAction {
+  amount?: Money;
+  entity?: string;
+  nextCheckAt?: string;
+  reference?: string;
+  timeoutAt?: string;
+  type: PaymentNextActionType;
+  validUntil?: string;
+}
+
+export type PaymentNextActionType =
+  (typeof PaymentNextActionType)[keyof typeof PaymentNextActionType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentNextActionType = {
+  AWAIT_CUSTOMER_CONFIRMATION: 'AWAIT_CUSTOMER_CONFIRMATION',
+  CHECKING_STATUS: 'CHECKING_STATUS',
+  PAY_BY_REFERENCE: 'PAY_BY_REFERENCE',
+  NONE: 'NONE',
+} as const;
+
+export type PaymentPurpose = (typeof PaymentPurpose)[keyof typeof PaymentPurpose];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentPurpose = {
+  NEW_POLICY: 'NEW_POLICY',
+  INSTALMENT: 'INSTALMENT',
+  RENEWAL: 'RENEWAL',
+  ENDORSEMENT: 'ENDORSEMENT',
+  FLEET_INCLUSION: 'FLEET_INCLUSION',
+} as const;
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentStatus = {
+  CREATED: 'CREATED',
+  PENDING: 'PENDING',
+  UNKNOWN: 'UNKNOWN',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+} as const;
+
+export interface PaymentTargetRef {
+  id: string;
+  label: string;
+  type: PaymentTargetType;
+}
+
+export type PaymentTargetType = (typeof PaymentTargetType)[keyof typeof PaymentTargetType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentTargetType = {
+  PROPOSAL: 'PROPOSAL',
+  INSTALMENT: 'INSTALMENT',
+  RENEWAL: 'RENEWAL',
+  ENDORSEMENT: 'ENDORSEMENT',
+  FLEET_INCLUSION: 'FLEET_INCLUSION',
+} as const;
 
 export type PhotoSlot = (typeof PhotoSlot)[keyof typeof PhotoSlot];
 
@@ -2372,6 +2738,27 @@ export type ProposalOrganization = {
   displayName: string;
   id: string;
 } | null;
+
+export type ProposalPaymentChannel =
+  (typeof ProposalPaymentChannel)[keyof typeof ProposalPaymentChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ProposalPaymentChannel = {
+  WEB: 'WEB',
+  APP: 'APP',
+  BROKER_LINK: 'BROKER_LINK',
+} as const;
+
+export interface ProposalPaymentMethodsResponse {
+  activeIntent?: IntentView;
+  amount: Money;
+  expiresAt?: string;
+  insurer: PaymentInsurerRef;
+  methods: PaymentMethodOption[];
+  paid: boolean;
+  proposalId: string;
+  proposalNumber: string;
+}
 
 export interface ProposalPolicyholder {
   address?: string;
@@ -2974,6 +3361,28 @@ export interface RatingSimulationResponse {
   unavailableReason?: UnavailableReason;
 }
 
+export interface ReferenceDocumentResponse {
+  fileId: string;
+}
+
+export interface ReferenceSmsRequest {
+  msisdn: Msisdn;
+}
+
+export interface ReferenceSmsResponse {
+  sentTo: string;
+}
+
+export type ReferenceStatus = (typeof ReferenceStatus)[keyof typeof ReferenceStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ReferenceStatus = {
+  ACTIVE: 'ACTIVE',
+  PAID: 'PAID',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED',
+} as const;
+
 export type ReferenceValueResponseDomain =
   (typeof ReferenceValueResponseDomain)[keyof typeof ReferenceValueResponseDomain];
 
@@ -3255,6 +3664,16 @@ export interface SaveSuitabilityRequest {
   answers?: SuitabilityAnswerRequest[];
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
+}
+
+/**
+ * Campo do segredo (apiKey, publicKey, securityCredential, sftp.password, sftp.privateKey, sftp.passphrase) → estado
+ */
+export interface SecretStatusResponse {
+  configured: boolean;
+  required: boolean;
+  /** @nullable */
+  updatedAt?: string | null;
 }
 
 /**
@@ -3834,6 +4253,51 @@ export interface UpdateOtpSettingsRequest {
   version: number;
 }
 
+export type UpdatePaymentMethodRequestEnvironment =
+  (typeof UpdatePaymentMethodRequestEnvironment)[keyof typeof UpdatePaymentMethodRequestEnvironment];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdatePaymentMethodRequestEnvironment = {
+  SANDBOX: 'SANDBOX',
+  PRODUCTION: 'PRODUCTION',
+} as const;
+
+/**
+ * Campo → valor do segredo (até 8000 caracteres); escrito só no cofre de segredos
+ * @nullable
+ */
+export type UpdatePaymentMethodRequestSecrets = { [key: string]: string | null } | null;
+
+export interface UpdatePaymentMethodRequest {
+  /**
+   * @maxLength 60
+   * @nullable
+   */
+  displayName?: string | null;
+  environment: UpdatePaymentMethodRequestEnvironment;
+  /**
+   * Validade das intenções M-Pesa ainda não enviadas (ignorado em BANK_REFERENCE)
+   * @minimum 5
+   * @maximum 1440
+   */
+  intentValidityMinutes: number;
+  maxAmount?: Money;
+  minAmount?: Money;
+  /**
+   * Campo → valor do segredo (até 8000 caracteres); escrito só no cofre de segredos
+   * @nullable
+   */
+  secrets?: UpdatePaymentMethodRequestSecrets;
+  settings: PaymentMethodSettings;
+  /**
+   * @minimum 0
+   * @maximum 99
+   */
+  sortOrder: number;
+  /** @nullable */
+  version?: number | null;
+}
+
 export interface UpdatePlateFormatRequest {
   /**
    * @minLength 0
@@ -4251,6 +4715,46 @@ export type ListInsurerKycChecksParams = {
   sort?: string;
 };
 
+export type ListInsurerPaymentsParams = {
+  status?: PaymentStatus[];
+  method?: ListInsurerPaymentsMethod;
+  from?: string;
+  to?: string;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * createdAt ou amount, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListInsurerPaymentsMethod =
+  (typeof ListInsurerPaymentsMethod)[keyof typeof ListInsurerPaymentsMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListInsurerPaymentsMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+export type ExportInsurerPaymentsParams = {
+  status?: PaymentStatus[];
+  method?: ExportInsurerPaymentsMethod;
+  from?: string;
+  to?: string;
+  q?: string;
+};
+
+export type ExportInsurerPaymentsMethod =
+  (typeof ExportInsurerPaymentsMethod)[keyof typeof ExportInsurerPaymentsMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ExportInsurerPaymentsMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
 export type UploadProductVersionDocumentBodyDocType =
   (typeof UploadProductVersionDocumentBodyDocType)[keyof typeof UploadProductVersionDocumentBodyDocType];
 
@@ -4356,6 +4860,16 @@ export type SubmitMyKycBody = {
   /** Seguradora a quem a verificação é enviada */
   insurerId?: string;
   selfie?: Blob;
+};
+
+export type ListMyPaymentsParams = {
+  status?: PaymentStatus[];
+  page?: number;
+  size?: number;
+  /**
+   * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
 };
 
 export type ListMyProposalsParams = {
@@ -7979,6 +8493,88 @@ export const useUpdateBrokerProposal = <TError = ErrorType<ProblemDetail>, TCont
 };
 
 /**
+ * Permissão payment:link-for-client. SMS ao telemóvel do cliente com o link {web}/cliente/propostas/{id}/pagar?origem=mediador. Só propostas deste mediador (senão 404 PROPOSAL_NOT_FOUND) em ACCEPTED (409 PAYMENT_TARGET_NOT_PAYABLE); cliente sem telemóvel → 409 CUSTOMER_HAS_NO_MSISDN; no máximo 3 envios por proposta em 24 h (429 PAYMENT_LINK_RATE_LIMITED, retryAfterSeconds).
+ * @summary Envia ao cliente o link de pagamento
+ */
+export const sendProposalPaymentLink = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentLinkResponse>(
+    { url: `/api/v1/broker/proposals/${id}/payment-link`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getSendProposalPaymentLinkMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendProposalPaymentLink>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof sendProposalPaymentLink>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['sendProposalPaymentLink'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sendProposalPaymentLink>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return sendProposalPaymentLink(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SendProposalPaymentLinkMutationResult = NonNullable<
+  Awaited<ReturnType<typeof sendProposalPaymentLink>>
+>;
+
+export type SendProposalPaymentLinkMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia ao cliente o link de pagamento
+ */
+export const useSendProposalPaymentLink = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof sendProposalPaymentLink>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof sendProposalPaymentLink>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getSendProposalPaymentLinkMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão quote:create-for-client. Pedidos de todos os utilizadores da organização do mediador; clientMsisdn (opcional) filtra pelo telemóvel do cliente (INVALID_MSISDN). Ordenação por createdAt (defeito createdAt,desc).
  * @summary Lista os pedidos de cotações da organização
  */
@@ -9737,6 +10333,877 @@ export const useVerifyKycCheck = <TError = ErrorType<ProblemDetail>, TContext = 
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Permissão payment:configure, staff de uma seguradora (outro âmbito → 403 FORBIDDEN). Sempre os dois métodos, pela ordem MPESA, BANK_REFERENCE; os que ainda não foram gravados aparecem com configured = false e os valores por defeito. Nunca devolve valores secretos.
+ * @summary Lista as formas de pagamento da seguradora
+ */
+export const listInsurerPaymentMethods = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodsResponse>(
+    { url: `/api/v1/insurer/payment-methods`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListInsurerPaymentMethodsQueryKey = () => {
+  return [`/api/v1/insurer/payment-methods`] as const;
+};
+
+export const getListInsurerPaymentMethodsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerPaymentMethodsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerPaymentMethods>>> = ({
+    signal,
+  }) => listInsurerPaymentMethods(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerPaymentMethodsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerPaymentMethods>>
+>;
+export type ListInsurerPaymentMethodsQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as formas de pagamento da seguradora
+ */
+
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerPaymentMethodsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:configure. Cria a linha se não existir (desactivada). settings é validado pelo JSON Schema do método sem exigir os obrigatórios (só ao activar) e pelas regras da ficha S5-01 §4 (400 VALIDATION_ERROR com errors[].field = settings.<caminho>, secrets.<campo>, maxAmount…). Os segredos vão só para o cofre (cofre indisponível → 503 SECRET_STORE_UNAVAILABLE, nada gravado); campo ausente mantém o segredo. version diferente da gravada (ou presente na criação) → 409 CONCURRENT_MODIFICATION.
+ * @summary Grava os dados de uma forma de pagamento
+ */
+export const updateInsurerPaymentMethod = (
+  method: string,
+  updatePaymentMethodRequest: BodyType<UpdatePaymentMethodRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<PaymentMethodResponse>(
+    {
+      url: `/api/v1/insurer/payment-methods/${method}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updatePaymentMethodRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+    TError,
+    { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+    { method: string; data: BodyType<UpdatePaymentMethodRequest> }
+  > = (props) => {
+    const { method, data } = props ?? {};
+
+    return updateInsurerPaymentMethod(method, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateInsurerPaymentMethod>>
+>;
+export type UpdateInsurerPaymentMethodMutationBody = BodyType<UpdatePaymentMethodRequest>;
+export type UpdateInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Grava os dados de uma forma de pagamento
+ */
+export const useUpdateInsurerPaymentMethod = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+      TError,
+      { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure. Já inactiva → 409 INVALID_STATE_TRANSITION. As intenções já criadas seguem o seu curso e as referências emitidas continuam a poder ser pagas.
+ * @summary Desactiva uma forma de pagamento
+ */
+export const disableInsurerPaymentMethod = (
+  method: string,
+  paymentMethodVersionRequest: BodyType<PaymentMethodVersionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodResponse>(
+    {
+      url: `/api/v1/insurer/payment-methods/${method}/disable`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: paymentMethodVersionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getDisableInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+    TError,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationKey = ['disableInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> }
+  > = (props) => {
+    const { method, data } = props ?? {};
+
+    return disableInsurerPaymentMethod(method, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DisableInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof disableInsurerPaymentMethod>>
+>;
+export type DisableInsurerPaymentMethodMutationBody = BodyType<PaymentMethodVersionRequest>;
+export type DisableInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Desactiva uma forma de pagamento
+ */
+export const useDisableInsurerPaymentMethod = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+      TError,
+      { method: string; data: BodyType<PaymentMethodVersionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationOptions = getDisableInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure. Sem linha → 404 PAYMENT_METHOD_NOT_FOUND; já activa → 409 INVALID_STATE_TRANSITION; dados incompletos (obrigatórios do schema, regras da secção 4 ou segredo obrigatório em falta) → 409 PAYMENT_METHOD_INCOMPLETE com errors[]; version diferente → 409 CONCURRENT_MODIFICATION.
+ * @summary Activa uma forma de pagamento
+ */
+export const enableInsurerPaymentMethod = (
+  method: string,
+  paymentMethodVersionRequest: BodyType<PaymentMethodVersionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodResponse>(
+    {
+      url: `/api/v1/insurer/payment-methods/${method}/enable`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: paymentMethodVersionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getEnableInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+    TError,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationKey = ['enableInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> }
+  > = (props) => {
+    const { method, data } = props ?? {};
+
+    return enableInsurerPaymentMethod(method, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EnableInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof enableInsurerPaymentMethod>>
+>;
+export type EnableInsurerPaymentMethodMutationBody = BodyType<PaymentMethodVersionRequest>;
+export type EnableInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Activa uma forma de pagamento
+ */
+export const useEnableInsurerPaymentMethod = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+      TError,
+      { method: string; data: BodyType<PaymentMethodVersionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationOptions = getEnableInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure. Usa os dados gravados (grave antes de testar); sem linha → 404 PAYMENT_METHOD_NOT_FOUND. BANK_REFERENCE valida a configuração e a existência dos segredos SFTP no cofre, sem ligar ao SFTP (CONFIG_VALID, SETTINGS_INVALID, SECRET_MISSING); sem tester para o método → NOT_SUPPORTED. Até 15 s (TIMEOUT).
+ * @summary Testa uma forma de pagamento
+ */
+export const testInsurerPaymentMethod = (
+  method: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodTestResponse>(
+    { url: `/api/v1/insurer/payment-methods/${method}/test`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getTestInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+    TError,
+    { method: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+  TError,
+  { method: string },
+  TContext
+> => {
+  const mutationKey = ['testInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+    { method: string }
+  > = (props) => {
+    const { method } = props ?? {};
+
+    return testInsurerPaymentMethod(method, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TestInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof testInsurerPaymentMethod>>
+>;
+
+export type TestInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Testa uma forma de pagamento
+ */
+export const useTestInsurerPaymentMethod = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+      TError,
+      { method: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+  TError,
+  { method: string },
+  TContext
+> => {
+  const mutationOptions = getTestInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:read. Filtros: status repetível; method; from e to em datas de Africa/Maputo (inclusivas, sobre createdAt); q igual à referência PG-…, ao número do alvo ou ao id do fornecedor. Ordenação createdAt (defeito, desc) ou amount.
+ * @summary Lista os pagamentos da seguradora
+ */
+export const listInsurerPayments = (
+  params?: ListInsurerPaymentsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInsurerPaymentSummary>(
+    { url: `/api/v1/insurer/payments`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListInsurerPaymentsQueryKey = (params?: ListInsurerPaymentsParams) => {
+  return [`/api/v1/insurer/payments`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInsurerPaymentsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPayments>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerPaymentsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerPayments>>> = ({ signal }) =>
+    listInsurerPayments(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerPayments>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerPaymentsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerPayments>>
+>;
+export type ListInsurerPaymentsQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerPayments<
+  TData = Awaited<ReturnType<typeof listInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListInsurerPaymentsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPayments>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPayments>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPayments>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPayments<
+  TData = Awaited<ReturnType<typeof listInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPayments>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPayments>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPayments>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPayments<
+  TData = Awaited<ReturnType<typeof listInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPayments>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os pagamentos da seguradora
+ */
+
+export function useListInsurerPayments<
+  TData = Awaited<ReturnType<typeof listInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPayments>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerPaymentsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:read. Os mesmos filtros da lista. Filtros: status repetível; method; from e to em datas de Africa/Maputo (inclusivas, sobre createdAt); q igual à referência PG-…, ao número do alvo ou ao id do fornecedor. CSV UTF-8 com BOM, separador ;, datas em Africa/Maputo (yyyy-MM-dd HH:mm:ss), amount em meticais com vírgula decimal. Mais de 10 000 linhas → 400 EXPORT_TOO_LARGE.
+ * @summary Exporta os pagamentos da seguradora em CSV
+ */
+export const exportInsurerPayments = (
+  params?: ExportInsurerPaymentsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<Blob>(
+    { url: `/api/v1/insurer/payments/export`, method: 'GET', params, responseType: 'blob', signal },
+    options,
+  );
+};
+
+export const getExportInsurerPaymentsQueryKey = (params?: ExportInsurerPaymentsParams) => {
+  return [`/api/v1/insurer/payments/export`, ...(params ? [params] : [])] as const;
+};
+
+export const getExportInsurerPaymentsQueryOptions = <
+  TData = Awaited<ReturnType<typeof exportInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ExportInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof exportInsurerPayments>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getExportInsurerPaymentsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof exportInsurerPayments>>> = ({ signal }) =>
+    exportInsurerPayments(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof exportInsurerPayments>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ExportInsurerPaymentsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof exportInsurerPayments>>
+>;
+export type ExportInsurerPaymentsQueryError = ErrorType<ProblemDetail>;
+
+export function useExportInsurerPayments<
+  TData = Awaited<ReturnType<typeof exportInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ExportInsurerPaymentsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof exportInsurerPayments>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportInsurerPayments>>,
+          TError,
+          Awaited<ReturnType<typeof exportInsurerPayments>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useExportInsurerPayments<
+  TData = Awaited<ReturnType<typeof exportInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ExportInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof exportInsurerPayments>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof exportInsurerPayments>>,
+          TError,
+          Awaited<ReturnType<typeof exportInsurerPayments>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useExportInsurerPayments<
+  TData = Awaited<ReturnType<typeof exportInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ExportInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof exportInsurerPayments>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Exporta os pagamentos da seguradora em CSV
+ */
+
+export function useExportInsurerPayments<
+  TData = Awaited<ReturnType<typeof exportInsurerPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ExportInsurerPaymentsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof exportInsurerPayments>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getExportInsurerPaymentsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:read. O pagamento com o alvo, o telemóvel mascarado, a referência bancária, o histórico e as excepções. De outra seguradora → 404 PAYMENT_INTENT_NOT_FOUND.
+ * @summary Consulta um pagamento da seguradora
+ */
+export const getInsurerPayment = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<InsurerPaymentDetail>(
+    { url: `/api/v1/insurer/payments/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerPaymentQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/payments/${id}`] as const;
+};
+
+export const getGetInsurerPaymentQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerPayment>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPayment>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerPaymentQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerPayment>>> = ({ signal }) =>
+    getInsurerPayment(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerPayment>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerPaymentQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInsurerPayment>>
+>;
+export type GetInsurerPaymentQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerPayment<
+  TData = Awaited<ReturnType<typeof getInsurerPayment>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPayment>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerPayment>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerPayment>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerPayment<
+  TData = Awaited<ReturnType<typeof getInsurerPayment>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPayment>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerPayment>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerPayment>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerPayment<
+  TData = Awaited<ReturnType<typeof getInsurerPayment>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPayment>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta um pagamento da seguradora
+ */
+
+export function useGetInsurerPayment<
+  TData = Awaited<ReturnType<typeof getInsurerPayment>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPayment>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerPaymentQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão product:read. Inclui as coberturas e os documentos.
@@ -13818,6 +15285,127 @@ export const useSubmitMyKyc = <TError = ErrorType<ProblemDetail>, TContext = unk
 };
 
 /**
+ * Permissão self:payments. As intenções do próprio cliente, as mais recentes primeiro; status repetível (vazio = todos).
+ * @summary Lista os pagamentos do cliente
+ */
+export const listMyPayments = (
+  params?: ListMyPaymentsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseIntentView>(
+    { url: `/api/v1/me/payments`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyPaymentsQueryKey = (params?: ListMyPaymentsParams) => {
+  return [`/api/v1/me/payments`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyPaymentsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPaymentsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayments>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyPaymentsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPayments>>> = ({ signal }) =>
+    listMyPayments(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyPayments>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyPaymentsQueryResult = NonNullable<Awaited<ReturnType<typeof listMyPayments>>>;
+export type ListMyPaymentsQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyPayments<
+  TData = Awaited<ReturnType<typeof listMyPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyPaymentsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayments>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPayments>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPayments>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPayments<
+  TData = Awaited<ReturnType<typeof listMyPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPaymentsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayments>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPayments>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPayments>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPayments<
+  TData = Awaited<ReturnType<typeof listMyPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPaymentsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayments>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os pagamentos do cliente
+ */
+
+export function useListMyPayments<
+  TData = Awaited<ReturnType<typeof listMyPayments>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPaymentsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayments>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyPaymentsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * O documento e o NUIT vêm mascarados; os campos por preencher são omitidos.
  * @summary Perfil do cliente
  */
@@ -16365,6 +17953,295 @@ export const useInviteOrganizationUser = <TError = ErrorType<ProblemDetail>, TCo
 };
 
 /**
+ * Permissão self:payments. A intenção do próprio cliente, com o estado e a próxima acção (nextAction: confirmar no telemóvel, a consultar o estado, pagar por entidade e referência, ou nada). De outro cliente → 404 PAYMENT_INTENT_NOT_FOUND.
+ * @summary Consulta uma intenção de pagamento
+ */
+export const getPaymentIntent = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<IntentView>({ url: `/api/v1/payment-intents/${id}`, method: 'GET', signal }, options);
+};
+
+export const getGetPaymentIntentQueryKey = (id?: string) => {
+  return [`/api/v1/payment-intents/${id}`] as const;
+};
+
+export const getGetPaymentIntentQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPaymentIntent>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPaymentIntent>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPaymentIntentQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPaymentIntent>>> = ({ signal }) =>
+    getPaymentIntent(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPaymentIntent>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetPaymentIntentQueryResult = NonNullable<Awaited<ReturnType<typeof getPaymentIntent>>>;
+export type GetPaymentIntentQueryError = ErrorType<ProblemDetail>;
+
+export function useGetPaymentIntent<
+  TData = Awaited<ReturnType<typeof getPaymentIntent>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPaymentIntent>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentIntent>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentIntent>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentIntent<
+  TData = Awaited<ReturnType<typeof getPaymentIntent>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPaymentIntent>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentIntent>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentIntent>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentIntent<
+  TData = Awaited<ReturnType<typeof getPaymentIntent>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPaymentIntent>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma intenção de pagamento
+ */
+
+export function useGetPaymentIntent<
+  TData = Awaited<ReturnType<typeof getPaymentIntent>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPaymentIntent>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPaymentIntentQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:payments. Devolve o fileId do PDF (gerado uma vez), que se descarrega em GET /api/v1/files/{fileId}. Intenção que não é BANK_REFERENCE → 409 NOT_A_REFERENCE_PAYMENT. Língua da Accept-Language (pt ou en; outra → pt).
+ * @summary Gera o PDF da entidade e referência
+ */
+export const createReferenceDocument = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ReferenceDocumentResponse>(
+    { url: `/api/v1/payment-intents/${id}/reference-document`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getCreateReferenceDocumentMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createReferenceDocument>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createReferenceDocument>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['createReferenceDocument'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createReferenceDocument>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return createReferenceDocument(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateReferenceDocumentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createReferenceDocument>>
+>;
+
+export type CreateReferenceDocumentMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Gera o PDF da entidade e referência
+ */
+export const useCreateReferenceDocument = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createReferenceDocument>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createReferenceDocument>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getCreateReferenceDocumentMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:payments. msisdn obrigatório (qualquer operadora). Intenção que não é BANK_REFERENCE → 409 NOT_A_REFERENCE_PAYMENT; referência não activa → 409 REFERENCE_NOT_ACTIVE; no máximo 3 envios por referência (429 REFERENCE_SMS_RATE_LIMITED). Língua da Accept-Language (pt ou en; outra → pt).
+ * @summary Envia a entidade e referência por SMS
+ */
+export const sendReferenceSms = (
+  id: string,
+  referenceSmsRequest: BodyType<ReferenceSmsRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ReferenceSmsResponse>(
+    {
+      url: `/api/v1/payment-intents/${id}/reference-sms`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: referenceSmsRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSendReferenceSmsMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendReferenceSms>>,
+    TError,
+    { id: string; data: BodyType<ReferenceSmsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof sendReferenceSms>>,
+  TError,
+  { id: string; data: BodyType<ReferenceSmsRequest> },
+  TContext
+> => {
+  const mutationKey = ['sendReferenceSms'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sendReferenceSms>>,
+    { id: string; data: BodyType<ReferenceSmsRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return sendReferenceSms(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SendReferenceSmsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof sendReferenceSms>>
+>;
+export type SendReferenceSmsMutationBody = BodyType<ReferenceSmsRequest>;
+export type SendReferenceSmsMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia a entidade e referência por SMS
+ */
+export const useSendReferenceSms = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof sendReferenceSms>>,
+      TError,
+      { id: string; data: BodyType<ReferenceSmsRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof sendReferenceSms>>,
+  TError,
+  { id: string; data: BodyType<ReferenceSmsRequest> },
+  TContext
+> => {
+  const mutationOptions = getSendReferenceSmsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Público. Só os activos, pela ordem de teste, com rótulo e exemplo (sem o padrão).
  * @summary Lista os formatos de matrícula aceites
  */
@@ -17364,6 +19241,232 @@ export const useSubmitInspection = <TError = ErrorType<ProblemDetail>, TContext 
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Permissão self:payments. Cabeçalho Idempotency-Key obrigatório (UUID; a mesma chave devolve a mesma resposta durante 24 h; outro pedido com a mesma chave → 422 IDEMPOTENCY_KEY_REUSED). MPESA exige payerMsisdn a começar por 84 ou 85 (REQUIRED, MSISDN_NOT_MPESA); BANK_REFERENCE devolve já a entidade e a referência (nextAction PAY_BY_REFERENCE) e reutiliza a referência activa com o mesmo montante. Erros: 404 PROPOSAL_NOT_FOUND; 409 PAYMENT_TARGET_NOT_PAYABLE, PAYMENT_TARGET_ALREADY_PAID, PAYMENT_METHOD_NOT_AVAILABLE, PAYMENT_IN_PROGRESS (intentId).
+ * @summary Paga uma proposta aceite
+ */
+export const createProposalPaymentIntent = (
+  id: string,
+  createProposalPaymentIntentRequest: BodyType<CreateProposalPaymentIntentRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<IntentView>(
+    {
+      url: `/api/v1/proposals/${id}/payment-intents`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createProposalPaymentIntentRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateProposalPaymentIntentMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createProposalPaymentIntent>>,
+    TError,
+    { id: string; data: BodyType<CreateProposalPaymentIntentRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createProposalPaymentIntent>>,
+  TError,
+  { id: string; data: BodyType<CreateProposalPaymentIntentRequest> },
+  TContext
+> => {
+  const mutationKey = ['createProposalPaymentIntent'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createProposalPaymentIntent>>,
+    { id: string; data: BodyType<CreateProposalPaymentIntentRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return createProposalPaymentIntent(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateProposalPaymentIntentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createProposalPaymentIntent>>
+>;
+export type CreateProposalPaymentIntentMutationBody = BodyType<CreateProposalPaymentIntentRequest>;
+export type CreateProposalPaymentIntentMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Paga uma proposta aceite
+ */
+export const useCreateProposalPaymentIntent = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createProposalPaymentIntent>>,
+      TError,
+      { id: string; data: BodyType<CreateProposalPaymentIntentRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createProposalPaymentIntent>>,
+  TError,
+  { id: string; data: BodyType<CreateProposalPaymentIntentRequest> },
+  TContext
+> => {
+  const mutationOptions = getCreateProposalPaymentIntentMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:payments. As formas de pagamento activas da seguradora, dentro dos limites do montante, por sortOrder, e a intenção em curso (activeIntent) para retomar. Proposta paga → paid = true sem métodos; fora de ACCEPTED → 409 PAYMENT_TARGET_NOT_PAYABLE; de outro cliente → 404 PROPOSAL_NOT_FOUND.
+ * @summary Formas de pagamento de uma proposta aceite
+ */
+export const listProposalPaymentMethods = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<ProposalPaymentMethodsResponse>(
+    { url: `/api/v1/proposals/${id}/payment-methods`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListProposalPaymentMethodsQueryKey = (id?: string) => {
+  return [`/api/v1/proposals/${id}/payment-methods`] as const;
+};
+
+export const getListProposalPaymentMethodsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listProposalPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListProposalPaymentMethodsQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listProposalPaymentMethods>>> = ({
+    signal,
+  }) => listProposalPaymentMethods(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListProposalPaymentMethodsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listProposalPaymentMethods>>
+>;
+export type ListProposalPaymentMethodsQueryError = ErrorType<ProblemDetail>;
+
+export function useListProposalPaymentMethods<
+  TData = Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listProposalPaymentMethods>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+          TError,
+          Awaited<ReturnType<typeof listProposalPaymentMethods>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListProposalPaymentMethods<
+  TData = Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listProposalPaymentMethods>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+          TError,
+          Awaited<ReturnType<typeof listProposalPaymentMethods>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListProposalPaymentMethods<
+  TData = Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listProposalPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Formas de pagamento de uma proposta aceite
+ */
+
+export function useListProposalPaymentMethods<
+  TData = Awaited<ReturnType<typeof listProposalPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listProposalPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListProposalPaymentMethodsQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão self:proposals ou proposal:create-for-client. Proposta em DRAFT ou INFO_REQUESTED (senão 409 PROPOSAL_NOT_EDITABLE); sem pedido em curso ou com outro challengeId → 409 SIGN_REQUEST_NOT_FOUND; proposta alterada depois do pedido → 409 PROPOSAL_CHANGED_SINCE_SIGN_REQUEST (pedir de novo); erros do código como no login (OTP_INVALID com attemptsRemaining, OTP_EXPIRED, OTP_SUPERSEDED, OTP_ALREADY_USED, OTP_ATTEMPTS_EXCEEDED). Grava a assinatura ligada ao hash do PDF (bloco signature, checklist.signature = DONE) e renova expiresAt. Qualquer alteração posterior da proposta invalida a assinatura. Confirmada por um utilizador do mediador (S4-06) → signature.assisted = true; pelo próprio cliente → não assistida.

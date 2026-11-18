@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Entidade e referência para pagar uma intenção BANK_REFERENCE (S5-02 §7; rede Ponto24 da InterBancos,
+  ADR-007). Montado pelo ReferenceDocumentService (módulo payment); textos em
+  messages/pdf_{pt,en}.properties (chaves payment-reference.*). O pagamento vai directamente para a
+  conta da seguradora: a MoSeguros não recebe dinheiro. Classificado PERSONAL.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="${fmt.language()}">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title th:text="#{payment-reference.title} + ' ' + ${intentReference}">Pagamento por entidade e referência</title>
+  <style th:replace="~{_layout :: styles}"></style>
+  <style th:replace="~{_layout :: footer(${intentReference})}"></style>
+  <style type="text/css">
+    table.reference { width: 100%; border-collapse: collapse; margin: 8pt 0; }
+    table.reference td { padding: 6pt 8pt; border: 0.75pt solid #142D4E; }
+    table.reference td.label { width: 34%; color: #4A5D75; }
+    table.reference td.value { font-size: 14pt; font-weight: 600; color: #142D4E; }
+    .warning { font-weight: 600; color: #142D4E; margin: 6pt 0; }
+    ul { margin: 3pt 0 3pt 14pt; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <div th:replace="~{_layout :: header(${intentReference}, ${generatedAt}, 1)}"></div>
+  <h1 th:text="#{payment-reference.title}">Pagamento por entidade e referência</h1>
+  <p><span th:text="#{payment-reference.insurer}">Seguradora</span>: <span th:text="${insurerName}">Seguradora Demo</span></p>
+
+  <table class="reference">
+    <tr><td class="label" th:text="#{payment-reference.entity}">Entidade</td>
+        <td class="value" th:text="${entity}">90002</td></tr>
+    <tr><td class="label" th:text="#{payment-reference.reference}">Referência</td>
+        <td class="value" th:text="${reference}">005 487 811 08</td></tr>
+    <tr><td class="label" th:text="#{payment-reference.amount}">Montante</td>
+        <td class="value" th:text="${fmt.money(amount)}">2 999,00 MT</td></tr>
+  </table>
+  <p class="warning" th:text="#{payment-reference.exactAmount}">Pague exactamente este montante.</p>
+  <p><span th:text="#{payment-reference.validUntil}">Válida até</span>: <span th:text="${fmt.dateTime(validUntil)}">30/01/2027 12:00</span></p>
+
+  <h2 th:text="#{payment-reference.howToPay}">Como pagar</h2>
+  <ul>
+    <li th:text="#{payment-reference.channel.ebanking}">E-banking ou app do banco</li>
+    <li th:text="#{payment-reference.channel.atm}">ATM</li>
+    <li th:text="#{payment-reference.channel.ussd}">*124#</li>
+    <li th:text="#{payment-reference.channel.pos}">POS ou balcão</li>
+  </ul>
+
+  <h2 th:text="#{payment-reference.details}">Detalhes</h2>
+  <table class="fields">
+    <tr><td class="label" th:text="#{payment-reference.proposal}">Proposta</td><td th:text="${targetLabel}">PR-2027-000123</td></tr>
+    <tr><td class="label" th:text="#{payment-reference.payment}">Pagamento</td><td th:text="${intentReference}">PG-2027-0001234</td></tr>
+  </table>
+
+  <p class="note" th:text="#{payment-reference.directly(${insurerName})}">O pagamento é feito directamente à seguradora. A MoSeguros não recebe dinheiro.</p>
+</body>
+</html>

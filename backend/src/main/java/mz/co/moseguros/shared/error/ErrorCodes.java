@@ -280,6 +280,44 @@ public final class ErrorCodes {
     /** A conta do cliente da cotação do mediador está desactivada ({@code DISABLED}) (409). */
     public static final String CLIENT_ACCOUNT_DISABLED = "CLIENT_ACCOUNT_DISABLED";
 
+    // Formas de pagamento por seguradora (S5-01)
+    /** Método de pagamento desconhecido ({@code MPESA}, {@code BANK_REFERENCE}) ou ainda sem configuração (404). */
+    public static final String PAYMENT_METHOD_NOT_FOUND = "PAYMENT_METHOD_NOT_FOUND";
+    /** Activar um método com dados em falta ou inválidos; {@code errors[]} com os campos (409). */
+    public static final String PAYMENT_METHOD_INCOMPLETE = "PAYMENT_METHOD_INCOMPLETE";
+    /** O cofre de segredos não respondeu; nada foi gravado (503). */
+    public static final String SECRET_STORE_UNAVAILABLE = "SECRET_STORE_UNAVAILABLE";
+
+    // Núcleo de pagamentos (S5-02)
+    /** Falta o cabeçalho {@code Idempotency-Key} (400). */
+    public static final String IDEMPOTENCY_KEY_REQUIRED = "IDEMPOTENCY_KEY_REQUIRED";
+    /** A {@code Idempotency-Key} já foi usada com outro pedido nas últimas 24 h (422). */
+    public static final String IDEMPOTENCY_KEY_REUSED = "IDEMPOTENCY_KEY_REUSED";
+    /** O alvo do pagamento (ex.: proposta) não está num estado pagável ou o prazo está a acabar (409). */
+    public static final String PAYMENT_TARGET_NOT_PAYABLE = "PAYMENT_TARGET_NOT_PAYABLE";
+    /** O alvo do pagamento já foi pago (409). */
+    public static final String PAYMENT_TARGET_ALREADY_PAID = "PAYMENT_TARGET_ALREADY_PAID";
+    /** Forma de pagamento inactiva na seguradora, sem adaptador ou montante fora dos limites (409). */
+    public static final String PAYMENT_METHOD_NOT_AVAILABLE = "PAYMENT_METHOD_NOT_AVAILABLE";
+    /** Há um pagamento M-Pesa em curso para o alvo; propriedade {@code intentId} (409). */
+    public static final String PAYMENT_IN_PROGRESS = "PAYMENT_IN_PROGRESS";
+    /** Intenção de pagamento inexistente ou fora do âmbito de quem pede (404). */
+    public static final String PAYMENT_INTENT_NOT_FOUND = "PAYMENT_INTENT_NOT_FOUND";
+    /** A intenção não é de entidade e referência (409). */
+    public static final String NOT_A_REFERENCE_PAYMENT = "NOT_A_REFERENCE_PAYMENT";
+    /** A referência já não está activa (paga, expirada ou cancelada) (409). */
+    public static final String REFERENCE_NOT_ACTIVE = "REFERENCE_NOT_ACTIVE";
+    /** A referência já foi enviada por SMS o número máximo de vezes (429). */
+    public static final String REFERENCE_SMS_RATE_LIMITED = "REFERENCE_SMS_RATE_LIMITED";
+    /** A referência não pôde ser gerada (número repetido na entidade) (503). */
+    public static final String REFERENCE_GENERATION_FAILED = "REFERENCE_GENERATION_FAILED";
+    /** O cliente não tem telemóvel para receber o link de pagamento (409). */
+    public static final String CUSTOMER_HAS_NO_MSISDN = "CUSTOMER_HAS_NO_MSISDN";
+    /** Demasiados links de pagamento da proposta nas últimas 24 h; {@code retryAfterSeconds} (429). */
+    public static final String PAYMENT_LINK_RATE_LIMITED = "PAYMENT_LINK_RATE_LIMITED";
+    /** A exportação teria mais linhas do que o limite; filtros mais estreitos (400). */
+    public static final String EXPORT_TOO_LARGE = "EXPORT_TOO_LARGE";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -399,7 +437,24 @@ public final class ErrorCodes {
             Map.entry(PROPOSAL_NOT_UNDER_REVIEW, 409),
             Map.entry(KYC_NOT_VERIFIED, 409),
             Map.entry(INSPECTION_NOT_APPROVED, 409),
-            Map.entry(CLIENT_ACCOUNT_DISABLED, 409));
+            Map.entry(CLIENT_ACCOUNT_DISABLED, 409),
+            Map.entry(PAYMENT_METHOD_NOT_FOUND, 404),
+            Map.entry(PAYMENT_METHOD_INCOMPLETE, 409),
+            Map.entry(SECRET_STORE_UNAVAILABLE, 503),
+            Map.entry(IDEMPOTENCY_KEY_REQUIRED, 400),
+            Map.entry(IDEMPOTENCY_KEY_REUSED, 422),
+            Map.entry(PAYMENT_TARGET_NOT_PAYABLE, 409),
+            Map.entry(PAYMENT_TARGET_ALREADY_PAID, 409),
+            Map.entry(PAYMENT_METHOD_NOT_AVAILABLE, 409),
+            Map.entry(PAYMENT_IN_PROGRESS, 409),
+            Map.entry(PAYMENT_INTENT_NOT_FOUND, 404),
+            Map.entry(NOT_A_REFERENCE_PAYMENT, 409),
+            Map.entry(REFERENCE_NOT_ACTIVE, 409),
+            Map.entry(REFERENCE_SMS_RATE_LIMITED, 429),
+            Map.entry(REFERENCE_GENERATION_FAILED, 503),
+            Map.entry(CUSTOMER_HAS_NO_MSISDN, 409),
+            Map.entry(PAYMENT_LINK_RATE_LIMITED, 429),
+            Map.entry(EXPORT_TOO_LARGE, 400));
 
     private ErrorCodes() {
     }

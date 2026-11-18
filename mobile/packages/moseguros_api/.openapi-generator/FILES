@@ -10,6 +10,7 @@ lib/src/api/identity_api.dart
 lib/src/api/meta_api.dart
 lib/src/api/notification_api.dart
 lib/src/api/organization_api.dart
+lib/src/api/payment_api.dart
 lib/src/api/proposal_api.dart
 lib/src/api/rating_api.dart
 lib/src/api/vehicle_api.dart
@@ -47,6 +48,7 @@ lib/src/model/create_driver_request.dart
 lib/src/model/create_organization_request.dart
 lib/src/model/create_plate_format_request.dart
 lib/src/model/create_product_request.dart
+lib/src/model/create_proposal_payment_intent_request.dart
 lib/src/model/create_proposal_request.dart
 lib/src/model/create_quote_request.dart
 lib/src/model/create_reference_value_request.dart
@@ -58,6 +60,7 @@ lib/src/model/declaration_answer_response.dart
 lib/src/model/declaration_question.dart
 lib/src/model/delivery_receipt_request.dart
 lib/src/model/driver_response.dart
+lib/src/model/failure_code.dart
 lib/src/model/field_error.dart
 lib/src/model/forgot_password_request.dart
 lib/src/model/info_request_item.dart
@@ -69,6 +72,10 @@ lib/src/model/inspection_status.dart
 lib/src/model/insurer_branding_response.dart
 lib/src/model/insurer_inspection_summary_response.dart
 lib/src/model/insurer_kyc_check_response.dart
+lib/src/model/insurer_payment_bank_reference.dart
+lib/src/model/insurer_payment_detail.dart
+lib/src/model/insurer_payment_event.dart
+lib/src/model/insurer_payment_summary.dart
 lib/src/model/insurer_profile_request.dart
 lib/src/model/insurer_profile_response.dart
 lib/src/model/insurer_proposal_driver.dart
@@ -79,6 +86,7 @@ lib/src/model/insurer_proposal_sla.dart
 lib/src/model/insurer_proposal_summary_response.dart
 lib/src/model/insurer_proposal_vehicle.dart
 lib/src/model/insurer_rating_settings_response.dart
+lib/src/model/intent_view.dart
 lib/src/model/invitation_details_response.dart
 lib/src/model/invitation_organization.dart
 lib/src/model/invitation_response.dart
@@ -93,6 +101,8 @@ lib/src/model/kyc_files_response.dart
 lib/src/model/kyc_previous_check_response.dart
 lib/src/model/kyc_rejection_reason.dart
 lib/src/model/kyc_state.dart
+lib/src/model/last_error_response.dart
+lib/src/model/last_test_response.dart
 lib/src/model/logout_request.dart
 lib/src/model/me_organization.dart
 lib/src/model/me_response.dart
@@ -111,7 +121,9 @@ lib/src/model/page_response_broker_proposal_summary_response.dart
 lib/src/model/page_response_catalog_product_response.dart
 lib/src/model/page_response_driver_response.dart
 lib/src/model/page_response_insurer_inspection_summary_response.dart
+lib/src/model/page_response_insurer_payment_summary.dart
 lib/src/model/page_response_insurer_proposal_summary_response.dart
+lib/src/model/page_response_intent_view.dart
 lib/src/model/page_response_invitation_response.dart
 lib/src/model/page_response_kyc_check_summary_response.dart
 lib/src/model/page_response_organization_summary_response.dart
@@ -121,6 +133,21 @@ lib/src/model/page_response_quote_request_summary_response.dart
 lib/src/model/page_response_reference_value_response.dart
 lib/src/model/page_response_staff_user_response.dart
 lib/src/model/page_response_vehicle_response.dart
+lib/src/model/payment_confirmed_by.dart
+lib/src/model/payment_event_type.dart
+lib/src/model/payment_insurer_ref.dart
+lib/src/model/payment_link_response.dart
+lib/src/model/payment_method_option.dart
+lib/src/model/payment_method_response.dart
+lib/src/model/payment_method_test_response.dart
+lib/src/model/payment_method_version_request.dart
+lib/src/model/payment_methods_response.dart
+lib/src/model/payment_next_action.dart
+lib/src/model/payment_next_action_type.dart
+lib/src/model/payment_purpose.dart
+lib/src/model/payment_status.dart
+lib/src/model/payment_target_ref.dart
+lib/src/model/payment_target_type.dart
 lib/src/model/photo_slot.dart
 lib/src/model/photo_source.dart
 lib/src/model/plate_format_response.dart
@@ -146,6 +173,8 @@ lib/src/model/proposal_driver.dart
 lib/src/model/proposal_info_request.dart
 lib/src/model/proposal_kyc.dart
 lib/src/model/proposal_organization.dart
+lib/src/model/proposal_payment_channel.dart
+lib/src/model/proposal_payment_methods_response.dart
 lib/src/model/proposal_policyholder.dart
 lib/src/model/proposal_premium.dart
 lib/src/model/proposal_product.dart
@@ -180,6 +209,10 @@ lib/src/model/rating_rule_error.dart
 lib/src/model/rating_rules_response.dart
 lib/src/model/rating_rules_validation_response.dart
 lib/src/model/rating_simulation_response.dart
+lib/src/model/reference_document_response.dart
+lib/src/model/reference_sms_request.dart
+lib/src/model/reference_sms_response.dart
+lib/src/model/reference_status.dart
 lib/src/model/reference_value_response.dart
 lib/src/model/refresh_token_request.dart
 lib/src/model/registration_doc_response.dart
@@ -200,6 +233,7 @@ lib/src/model/risk_driver_request.dart
 lib/src/model/rule_error.dart
 lib/src/model/save_declarations_request.dart
 lib/src/model/save_suitability_request.dart
+lib/src/model/secret_status_response.dart
 lib/src/model/signature_request_response.dart
 lib/src/model/simulate_rating_request.dart
 lib/src/model/simulation_vehicle_request.dart
@@ -232,6 +266,7 @@ lib/src/model/update_me_request.dart
 lib/src/model/update_my_profile_request.dart
 lib/src/model/update_organization_request.dart
 lib/src/model/update_otp_settings_request.dart
+lib/src/model/update_payment_method_request.dart
 lib/src/model/update_plate_format_request.dart
 lib/src/model/update_platform_setting_request.dart
 lib/src/model/update_product_request.dart

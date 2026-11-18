@@ -1979,6 +1979,159 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationInvalidRules => 'Regra inválida.';
 
   @override
+  String get errorPaymentMethodNotFound => 'Forma de pagamento não encontrada.';
+
+  @override
+  String get errorPaymentMethodIncomplete =>
+      'Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.';
+
+  @override
+  String get errorSecretStoreUnavailable =>
+      'O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.';
+
+  @override
+  String get validationInvalidFormat => 'Formato inválido.';
+
+  @override
+  String get validationDirectoryConflict =>
+      'As pastas de entrada, de processados e de erros têm de ser diferentes.';
+
+  @override
+  String get validationInvalidPublicKey =>
+      'Chave pública inválida (RSA em PEM ou Base64).';
+
+  @override
+  String get validationMinGreaterThanMax =>
+      'O valor mínimo não pode ser maior que o máximo.';
+
+  @override
+  String get validationEntityInUse =>
+      'Esta entidade já está a ser usada por outra seguradora.';
+
+  @override
+  String get errorIdempotencyKeyRequired =>
+      'O pedido não pôde ser identificado. Tente de novo.';
+
+  @override
+  String get errorIdempotencyKeyReused =>
+      'Este pedido já foi enviado com outros dados. Volte atrás e tente de novo.';
+
+  @override
+  String get errorPaymentTargetNotPayable =>
+      'Esta proposta já não pode ser paga.';
+
+  @override
+  String get errorPaymentTargetAlreadyPaid => 'Esta proposta já está paga.';
+
+  @override
+  String get errorPaymentMethodNotAvailable =>
+      'Esta forma de pagamento não está disponível para esta seguradora ou este montante.';
+
+  @override
+  String get errorPaymentInProgress =>
+      'Já há um pagamento M-Pesa em curso. Confirme-o no telemóvel ou aguarde.';
+
+  @override
+  String get errorPaymentIntentNotFound => 'Pagamento não encontrado.';
+
+  @override
+  String get errorNotAReferencePayment =>
+      'Este pagamento não é por entidade e referência.';
+
+  @override
+  String get errorReferenceNotActive => 'Esta referência já não está activa.';
+
+  @override
+  String get errorReferenceSmsRateLimited =>
+      'Já enviou esta referência por SMS 3 vezes.';
+
+  @override
+  String get errorReferenceGenerationFailed =>
+      'Não foi possível gerar a referência. Tente de novo dentro de momentos.';
+
+  @override
+  String get errorCustomerHasNoMsisdn =>
+      'O cliente não tem telemóvel registado para receber o link.';
+
+  @override
+  String get errorPaymentLinkRateLimited =>
+      'Já enviou o link de pagamento 3 vezes nas últimas 24 horas.';
+
+  @override
+  String get errorExportTooLarge =>
+      'A exportação tem demasiadas linhas. Use filtros mais estreitos.';
+
+  @override
+  String get validationMsisdnNotMpesa =>
+      'Este número não é M-Pesa (tem de começar por 84 ou 85).';
+
+  @override
+  String get validationInvalidUuid => 'Identificador inválido.';
+
+  @override
+  String get paymentStatusCreated => 'Criado';
+
+  @override
+  String get paymentStatusPending => 'Pendente';
+
+  @override
+  String get paymentStatusUnknown => 'A confirmar';
+
+  @override
+  String get paymentStatusSucceeded => 'Pago';
+
+  @override
+  String get paymentStatusFailed => 'Falhado';
+
+  @override
+  String get paymentStatusExpired => 'Expirado';
+
+  @override
+  String get paymentStatusCancelled => 'Cancelado';
+
+  @override
+  String get paymentStatusRefunded => 'Reembolsado';
+
+  @override
+  String get paymentMethodMpesa => 'M-Pesa';
+
+  @override
+  String get paymentMethodBankReference => 'Entidade e referência';
+
+  @override
+  String get paymentFailureCustomerCancelled => 'Cancelado no telemóvel.';
+
+  @override
+  String get paymentFailureInsufficientBalance => 'Saldo insuficiente.';
+
+  @override
+  String get paymentFailureInvalidMsisdn => 'Número M-Pesa inválido.';
+
+  @override
+  String get paymentFailureProviderRejected => 'O pagamento foi recusado.';
+
+  @override
+  String get paymentFailureProviderConfigError =>
+      'A forma de pagamento da seguradora tem um problema de configuração.';
+
+  @override
+  String get paymentFailureProviderUnavailable =>
+      'O serviço de pagamento não está disponível.';
+
+  @override
+  String get paymentFailureTimeoutExpired =>
+      'O pagamento não foi confirmado a tempo.';
+
+  @override
+  String get paymentFailureExpired => 'O prazo para pagar terminou.';
+
+  @override
+  String get paymentFailureSuperseded => 'Substituído por outro pagamento.';
+
+  @override
+  String get paymentFailureManual => 'Resolvido pela seguradora.';
+
+  @override
   String get proposalUnderwritingFailureAutoAcceptDisabled =>
       'Aceitação automática desligada no produto';
 

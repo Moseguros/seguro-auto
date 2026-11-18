@@ -159,12 +159,25 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateInsurerRatingSettings**](doc/OrganizationApi.md#updateinsurerratingsettings) | **PUT** /api/v1/insurer/rating-settings | Altera os encargos da seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**createReferenceDocument**](doc/PaymentApi.md#createreferencedocument) | **POST** /api/v1/payment-intents/{id}/reference-document | Gera o PDF da entidade e referência
+[*PaymentApi*](doc/PaymentApi.md) | [**disableInsurerPaymentMethod**](doc/PaymentApi.md#disableinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/disable | Desactiva uma forma de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**enableInsurerPaymentMethod**](doc/PaymentApi.md#enableinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/enable | Activa uma forma de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**exportInsurerPayments**](doc/PaymentApi.md#exportinsurerpayments) | **GET** /api/v1/insurer/payments/export | Exporta os pagamentos da seguradora em CSV
+[*PaymentApi*](doc/PaymentApi.md) | [**getInsurerPayment**](doc/PaymentApi.md#getinsurerpayment) | **GET** /api/v1/insurer/payments/{id} | Consulta um pagamento da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**getPaymentIntent**](doc/PaymentApi.md#getpaymentintent) | **GET** /api/v1/payment-intents/{id} | Consulta uma intenção de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**listInsurerPaymentMethods**](doc/PaymentApi.md#listinsurerpaymentmethods) | **GET** /api/v1/insurer/payment-methods | Lista as formas de pagamento da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**listInsurerPayments**](doc/PaymentApi.md#listinsurerpayments) | **GET** /api/v1/insurer/payments | Lista os pagamentos da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**listMyPayments**](doc/PaymentApi.md#listmypayments) | **GET** /api/v1/me/payments | Lista os pagamentos do cliente
+[*PaymentApi*](doc/PaymentApi.md) | [**sendReferenceSms**](doc/PaymentApi.md#sendreferencesms) | **POST** /api/v1/payment-intents/{id}/reference-sms | Envia a entidade e referência por SMS
+[*PaymentApi*](doc/PaymentApi.md) | [**testInsurerPaymentMethod**](doc/PaymentApi.md#testinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/test | Testa uma forma de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**updateInsurerPaymentMethod**](doc/PaymentApi.md#updateinsurerpaymentmethod) | **PUT** /api/v1/insurer/payment-methods/{method} | Grava os dados de uma forma de pagamento
 [*ProposalApi*](doc/ProposalApi.md) | [**acceptProposal**](doc/ProposalApi.md#acceptproposal) | **POST** /api/v1/insurer/proposals/{id}/accept | Aceita uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**confirmProposalSignature**](doc/ProposalApi.md#confirmproposalsignature) | **POST** /api/v1/proposals/{id}/sign/confirm | Confirma a assinatura com o código recebido
 [*ProposalApi*](doc/ProposalApi.md) | [**createProposal**](doc/ProposalApi.md#createproposal) | **POST** /api/v1/proposals | Cria uma proposta a partir de uma cotação
 [*ProposalApi*](doc/ProposalApi.md) | [**createProposalForClient**](doc/ProposalApi.md#createproposalforclient) | **POST** /api/v1/broker/proposals | Cria uma proposta a partir da cotação do mediador
+[*ProposalApi*](doc/ProposalApi.md) | [**createProposalPaymentIntent**](doc/ProposalApi.md#createproposalpaymentintent) | **POST** /api/v1/proposals/{id}/payment-intents | Paga uma proposta aceite
 [*ProposalApi*](doc/ProposalApi.md) | [**getInsurerInspection**](doc/ProposalApi.md#getinsurerinspection) | **GET** /api/v1/insurer/inspections/{id} | Consulta uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**getInsurerProposal**](doc/ProposalApi.md#getinsurerproposal) | **GET** /api/v1/insurer/proposals/{id} | Consulta uma proposta submetida
 [*ProposalApi*](doc/ProposalApi.md) | [**getProposal**](doc/ProposalApi.md#getproposal) | **GET** /api/v1/proposals/{id} | Consulta uma proposta
@@ -172,6 +185,7 @@ Class | Method | HTTP request | Description
 [*ProposalApi*](doc/ProposalApi.md) | [**listInsurerInspections**](doc/ProposalApi.md#listinsurerinspections) | **GET** /api/v1/insurer/inspections | Lista as vistorias da seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**listInsurerProposals**](doc/ProposalApi.md#listinsurerproposals) | **GET** /api/v1/insurer/proposals | Lista as propostas submetidas à seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**listMyProposals**](doc/ProposalApi.md#listmyproposals) | **GET** /api/v1/me/proposals | Lista as propostas do cliente
+[*ProposalApi*](doc/ProposalApi.md) | [**listProposalPaymentMethods**](doc/ProposalApi.md#listproposalpaymentmethods) | **GET** /api/v1/proposals/{id}/payment-methods | Formas de pagamento de uma proposta aceite
 [*ProposalApi*](doc/ProposalApi.md) | [**rejectInspection**](doc/ProposalApi.md#rejectinspection) | **POST** /api/v1/insurer/inspections/{id}/reject | Recusa uma vistoria
 [*ProposalApi*](doc/ProposalApi.md) | [**rejectProposal**](doc/ProposalApi.md#rejectproposal) | **POST** /api/v1/insurer/proposals/{id}/reject | Recusa uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**removeInspectionPhoto**](doc/ProposalApi.md#removeinspectionphoto) | **DELETE** /api/v1/proposals/{id}/inspection/photos/{photoId} | Retira uma fotografia da vistoria
@@ -180,6 +194,7 @@ Class | Method | HTTP request | Description
 [*ProposalApi*](doc/ProposalApi.md) | [**requestProposalSignature**](doc/ProposalApi.md#requestproposalsignature) | **POST** /api/v1/proposals/{id}/sign/request | Gera o PDF da proposta e envia o código de assinatura
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalDeclarations**](doc/ProposalApi.md#saveproposaldeclarations) | **POST** /api/v1/proposals/{id}/declarations | Grava as declarações de risco
 [*ProposalApi*](doc/ProposalApi.md) | [**saveProposalSuitability**](doc/ProposalApi.md#saveproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability | Grava o questionário de adequação
+[*ProposalApi*](doc/ProposalApi.md) | [**sendProposalPaymentLink**](doc/ProposalApi.md#sendproposalpaymentlink) | **POST** /api/v1/broker/proposals/{id}/payment-link | Envia ao cliente o link de pagamento
 [*ProposalApi*](doc/ProposalApi.md) | [**submitInspection**](doc/ProposalApi.md#submitinspection) | **POST** /api/v1/proposals/{id}/inspection/submit | Submete a vistoria por fotografias
 [*ProposalApi*](doc/ProposalApi.md) | [**submitProposal**](doc/ProposalApi.md#submitproposal) | **POST** /api/v1/proposals/{id}/submit | Submete a proposta à seguradora
 [*ProposalApi*](doc/ProposalApi.md) | [**updateBrokerProposal**](doc/ProposalApi.md#updatebrokerproposal) | **PUT** /api/v1/broker/proposals/{id} | Altera a data de início ou o tomador
@@ -238,6 +253,7 @@ Class | Method | HTTP request | Description
  - [CreateOrganizationRequest](doc/CreateOrganizationRequest.md)
  - [CreatePlateFormatRequest](doc/CreatePlateFormatRequest.md)
  - [CreateProductRequest](doc/CreateProductRequest.md)
+ - [CreateProposalPaymentIntentRequest](doc/CreateProposalPaymentIntentRequest.md)
  - [CreateProposalRequest](doc/CreateProposalRequest.md)
  - [CreateQuoteRequest](doc/CreateQuoteRequest.md)
  - [CreateReferenceValueRequest](doc/CreateReferenceValueRequest.md)
@@ -248,6 +264,7 @@ Class | Method | HTTP request | Description
  - [DeclarationQuestion](doc/DeclarationQuestion.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
  - [DriverResponse](doc/DriverResponse.md)
+ - [FailureCode](doc/FailureCode.md)
  - [FieldError](doc/FieldError.md)
  - [ForgotPasswordRequest](doc/ForgotPasswordRequest.md)
  - [InfoRequestItem](doc/InfoRequestItem.md)
@@ -259,6 +276,10 @@ Class | Method | HTTP request | Description
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
  - [InsurerInspectionSummaryResponse](doc/InsurerInspectionSummaryResponse.md)
  - [InsurerKycCheckResponse](doc/InsurerKycCheckResponse.md)
+ - [InsurerPaymentBankReference](doc/InsurerPaymentBankReference.md)
+ - [InsurerPaymentDetail](doc/InsurerPaymentDetail.md)
+ - [InsurerPaymentEvent](doc/InsurerPaymentEvent.md)
+ - [InsurerPaymentSummary](doc/InsurerPaymentSummary.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
  - [InsurerProposalDriver](doc/InsurerProposalDriver.md)
@@ -269,6 +290,7 @@ Class | Method | HTTP request | Description
  - [InsurerProposalSummaryResponse](doc/InsurerProposalSummaryResponse.md)
  - [InsurerProposalVehicle](doc/InsurerProposalVehicle.md)
  - [InsurerRatingSettingsResponse](doc/InsurerRatingSettingsResponse.md)
+ - [IntentView](doc/IntentView.md)
  - [InvitationDetailsResponse](doc/InvitationDetailsResponse.md)
  - [InvitationOrganization](doc/InvitationOrganization.md)
  - [InvitationResponse](doc/InvitationResponse.md)
@@ -283,6 +305,8 @@ Class | Method | HTTP request | Description
  - [KycPreviousCheckResponse](doc/KycPreviousCheckResponse.md)
  - [KycRejectionReason](doc/KycRejectionReason.md)
  - [KycState](doc/KycState.md)
+ - [LastErrorResponse](doc/LastErrorResponse.md)
+ - [LastTestResponse](doc/LastTestResponse.md)
  - [LogoutRequest](doc/LogoutRequest.md)
  - [MeOrganization](doc/MeOrganization.md)
  - [MeResponse](doc/MeResponse.md)
@@ -301,7 +325,9 @@ Class | Method | HTTP request | Description
  - [PageResponseCatalogProductResponse](doc/PageResponseCatalogProductResponse.md)
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
  - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
+ - [PageResponseInsurerPaymentSummary](doc/PageResponseInsurerPaymentSummary.md)
  - [PageResponseInsurerProposalSummaryResponse](doc/PageResponseInsurerProposalSummaryResponse.md)
+ - [PageResponseIntentView](doc/PageResponseIntentView.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
@@ -311,6 +337,21 @@ Class | Method | HTTP request | Description
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
  - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
+ - [PaymentConfirmedBy](doc/PaymentConfirmedBy.md)
+ - [PaymentEventType](doc/PaymentEventType.md)
+ - [PaymentInsurerRef](doc/PaymentInsurerRef.md)
+ - [PaymentLinkResponse](doc/PaymentLinkResponse.md)
+ - [PaymentMethodOption](doc/PaymentMethodOption.md)
+ - [PaymentMethodResponse](doc/PaymentMethodResponse.md)
+ - [PaymentMethodTestResponse](doc/PaymentMethodTestResponse.md)
+ - [PaymentMethodVersionRequest](doc/PaymentMethodVersionRequest.md)
+ - [PaymentMethodsResponse](doc/PaymentMethodsResponse.md)
+ - [PaymentNextAction](doc/PaymentNextAction.md)
+ - [PaymentNextActionType](doc/PaymentNextActionType.md)
+ - [PaymentPurpose](doc/PaymentPurpose.md)
+ - [PaymentStatus](doc/PaymentStatus.md)
+ - [PaymentTargetRef](doc/PaymentTargetRef.md)
+ - [PaymentTargetType](doc/PaymentTargetType.md)
  - [PhotoSlot](doc/PhotoSlot.md)
  - [PhotoSource](doc/PhotoSource.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
@@ -336,6 +377,8 @@ Class | Method | HTTP request | Description
  - [ProposalInfoRequest](doc/ProposalInfoRequest.md)
  - [ProposalKyc](doc/ProposalKyc.md)
  - [ProposalOrganization](doc/ProposalOrganization.md)
+ - [ProposalPaymentChannel](doc/ProposalPaymentChannel.md)
+ - [ProposalPaymentMethodsResponse](doc/ProposalPaymentMethodsResponse.md)
  - [ProposalPolicyholder](doc/ProposalPolicyholder.md)
  - [ProposalPremium](doc/ProposalPremium.md)
  - [ProposalProduct](doc/ProposalProduct.md)
@@ -370,6 +413,10 @@ Class | Method | HTTP request | Description
  - [RatingRulesResponse](doc/RatingRulesResponse.md)
  - [RatingRulesValidationResponse](doc/RatingRulesValidationResponse.md)
  - [RatingSimulationResponse](doc/RatingSimulationResponse.md)
+ - [ReferenceDocumentResponse](doc/ReferenceDocumentResponse.md)
+ - [ReferenceSmsRequest](doc/ReferenceSmsRequest.md)
+ - [ReferenceSmsResponse](doc/ReferenceSmsResponse.md)
+ - [ReferenceStatus](doc/ReferenceStatus.md)
  - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
  - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
@@ -390,6 +437,7 @@ Class | Method | HTTP request | Description
  - [RuleError](doc/RuleError.md)
  - [SaveDeclarationsRequest](doc/SaveDeclarationsRequest.md)
  - [SaveSuitabilityRequest](doc/SaveSuitabilityRequest.md)
+ - [SecretStatusResponse](doc/SecretStatusResponse.md)
  - [SignatureRequestResponse](doc/SignatureRequestResponse.md)
  - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
  - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
@@ -422,6 +470,7 @@ Class | Method | HTTP request | Description
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
+ - [UpdatePaymentMethodRequest](doc/UpdatePaymentMethodRequest.md)
  - [UpdatePlateFormatRequest](doc/UpdatePlateFormatRequest.md)
  - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
  - [UpdateProductRequest](doc/UpdateProductRequest.md)

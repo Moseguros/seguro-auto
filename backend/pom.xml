@@ -46,6 +46,8 @@
          "cd backend && ./mvnw" resolve-o do repositório Maven local depois de
          "./mvnw -B -pl payment-contracts install" na raiz (decisão D18). -->
     <payment-contracts.version>1.0.0-SNAPSHOT</payment-contracts.version>
+    <!-- Cofre de segredos (S5-01): HashiCorp Vault KV v2 -->
+    <spring-vault.version>3.1.3</spring-vault.version>
   </properties>
 
   <dependencyManagement>
@@ -240,6 +242,12 @@
       <artifactId>payment-contracts</artifactId>
       <version>${payment-contracts.version}</version>
     </dependency>
+    <!-- Cofre de segredos (S5-01; modelo transversal §7): HashiCorp Vault KV v2 -->
+    <dependency>
+      <groupId>org.springframework.vault</groupId>
+      <artifactId>spring-vault-core</artifactId>
+      <version>${spring-vault.version}</version>
+    </dependency>
 
     <!-- Testes -->
     <dependency>
@@ -276,6 +284,11 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>rabbitmq</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>vault</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
