@@ -113,6 +113,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(KycPreviousCheckResponse.serializer)
       ..add(KycRejectionReason.serializer)
       ..add(KycState.serializer)
+      ..add(LastErrorResponse.serializer)
+      ..add(LastTestResponse.serializer)
+      ..add(LastTestResponseResultEnum.serializer)
       ..add(LogoutRequest.serializer)
       ..add(MeOrganization.serializer)
       ..add(MeOrganizationTypeEnum.serializer)
@@ -161,6 +164,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
       ..add(PageResponseVehicleResponse.serializer)
+      ..add(PaymentMethodResponse.serializer)
+      ..add(PaymentMethodResponseEnvironmentEnum.serializer)
+      ..add(PaymentMethodResponseMethodEnum.serializer)
+      ..add(PaymentMethodTestResponse.serializer)
+      ..add(PaymentMethodTestResponseResultEnum.serializer)
+      ..add(PaymentMethodVersionRequest.serializer)
+      ..add(PaymentMethodsResponse.serializer)
       ..add(PhotoSlot.serializer)
       ..add(PhotoSource.serializer)
       ..add(PlateFormatResponse.serializer)
@@ -282,6 +292,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RuleError.serializer)
       ..add(SaveDeclarationsRequest.serializer)
       ..add(SaveSuitabilityRequest.serializer)
+      ..add(SecretStatusResponse.serializer)
       ..add(SignatureRequestResponse.serializer)
       ..add(SignatureRequestResponseChannelEnum.serializer)
       ..add(SimulateRatingRequest.serializer)
@@ -327,6 +338,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateOtpSettingsRequestDefaultChannelEnum.serializer)
       ..add(UpdateOtpSettingsRequestEnabledChannelsEnum.serializer)
       ..add(UpdateOtpSettingsRequestFallbackOrderEnum.serializer)
+      ..add(UpdatePaymentMethodRequest.serializer)
+      ..add(UpdatePaymentMethodRequestEnvironmentEnum.serializer)
       ..add(UpdatePlateFormatRequest.serializer)
       ..add(UpdatePlatformSettingRequest.serializer)
       ..add(UpdateProductRequest.serializer)
@@ -484,6 +497,10 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PaymentMethodResponse)]),
+          () => ListBuilder<PaymentMethodResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(PhotoSlot)]),
           () => ListBuilder<PhotoSlot>())
@@ -710,6 +727,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltMap, const [
             const FullType(String),
+            const FullType(SecretStatusResponse)
+          ]),
+          () => MapBuilder<String, SecretStatusResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
             const FullType.nullable(JsonObject)
           ]),
           () => MapBuilder<String, JsonObject?>())
@@ -718,7 +741,11 @@ Serializers _$serializers = (Serializers().toBuilder()
             const FullType(String),
             const FullType.nullable(JsonObject)
           ]),
-          () => MapBuilder<String, JsonObject?>()))
+          () => MapBuilder<String, JsonObject?>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap,
+              const [const FullType(String), const FullType.nullable(String)]),
+          () => MapBuilder<String, String?>()))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

@@ -10,6 +10,7 @@ lib/src/api/identity_api.dart
 lib/src/api/meta_api.dart
 lib/src/api/notification_api.dart
 lib/src/api/organization_api.dart
+lib/src/api/payment_api.dart
 lib/src/api/proposal_api.dart
 lib/src/api/rating_api.dart
 lib/src/api/vehicle_api.dart
@@ -93,6 +94,8 @@ lib/src/model/kyc_files_response.dart
 lib/src/model/kyc_previous_check_response.dart
 lib/src/model/kyc_rejection_reason.dart
 lib/src/model/kyc_state.dart
+lib/src/model/last_error_response.dart
+lib/src/model/last_test_response.dart
 lib/src/model/logout_request.dart
 lib/src/model/me_organization.dart
 lib/src/model/me_response.dart
@@ -121,6 +124,10 @@ lib/src/model/page_response_quote_request_summary_response.dart
 lib/src/model/page_response_reference_value_response.dart
 lib/src/model/page_response_staff_user_response.dart
 lib/src/model/page_response_vehicle_response.dart
+lib/src/model/payment_method_response.dart
+lib/src/model/payment_method_test_response.dart
+lib/src/model/payment_method_version_request.dart
+lib/src/model/payment_methods_response.dart
 lib/src/model/photo_slot.dart
 lib/src/model/photo_source.dart
 lib/src/model/plate_format_response.dart
@@ -200,6 +207,7 @@ lib/src/model/risk_driver_request.dart
 lib/src/model/rule_error.dart
 lib/src/model/save_declarations_request.dart
 lib/src/model/save_suitability_request.dart
+lib/src/model/secret_status_response.dart
 lib/src/model/signature_request_response.dart
 lib/src/model/simulate_rating_request.dart
 lib/src/model/simulation_vehicle_request.dart
@@ -232,6 +240,7 @@ lib/src/model/update_me_request.dart
 lib/src/model/update_my_profile_request.dart
 lib/src/model/update_organization_request.dart
 lib/src/model/update_otp_settings_request.dart
+lib/src/model/update_payment_method_request.dart
 lib/src/model/update_plate_format_request.dart
 lib/src/model/update_platform_setting_request.dart
 lib/src/model/update_product_request.dart

@@ -159,6 +159,11 @@ Class | Method | HTTP request | Description
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateInsurerRatingSettings**](doc/OrganizationApi.md#updateinsurerratingsettings) | **PUT** /api/v1/insurer/rating-settings | Altera os encargos da seguradora
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateOrganization**](doc/OrganizationApi.md#updateorganization) | **PUT** /api/v1/organizations/{id} | Altera uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**updateRatingIntegration**](doc/OrganizationApi.md#updateratingintegration) | **PUT** /api/v1/organizations/{id}/rating-integration | Altera a ligação à tarifação de uma seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**disableInsurerPaymentMethod**](doc/PaymentApi.md#disableinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/disable | Desactiva uma forma de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**enableInsurerPaymentMethod**](doc/PaymentApi.md#enableinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/enable | Activa uma forma de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**listInsurerPaymentMethods**](doc/PaymentApi.md#listinsurerpaymentmethods) | **GET** /api/v1/insurer/payment-methods | Lista as formas de pagamento da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**testInsurerPaymentMethod**](doc/PaymentApi.md#testinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/test | Testa uma forma de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**updateInsurerPaymentMethod**](doc/PaymentApi.md#updateinsurerpaymentmethod) | **PUT** /api/v1/insurer/payment-methods/{method} | Grava os dados de uma forma de pagamento
 [*ProposalApi*](doc/ProposalApi.md) | [**acceptProposal**](doc/ProposalApi.md#acceptproposal) | **POST** /api/v1/insurer/proposals/{id}/accept | Aceita uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
@@ -283,6 +288,8 @@ Class | Method | HTTP request | Description
  - [KycPreviousCheckResponse](doc/KycPreviousCheckResponse.md)
  - [KycRejectionReason](doc/KycRejectionReason.md)
  - [KycState](doc/KycState.md)
+ - [LastErrorResponse](doc/LastErrorResponse.md)
+ - [LastTestResponse](doc/LastTestResponse.md)
  - [LogoutRequest](doc/LogoutRequest.md)
  - [MeOrganization](doc/MeOrganization.md)
  - [MeResponse](doc/MeResponse.md)
@@ -311,6 +318,10 @@ Class | Method | HTTP request | Description
  - [PageResponseReferenceValueResponse](doc/PageResponseReferenceValueResponse.md)
  - [PageResponseStaffUserResponse](doc/PageResponseStaffUserResponse.md)
  - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
+ - [PaymentMethodResponse](doc/PaymentMethodResponse.md)
+ - [PaymentMethodTestResponse](doc/PaymentMethodTestResponse.md)
+ - [PaymentMethodVersionRequest](doc/PaymentMethodVersionRequest.md)
+ - [PaymentMethodsResponse](doc/PaymentMethodsResponse.md)
  - [PhotoSlot](doc/PhotoSlot.md)
  - [PhotoSource](doc/PhotoSource.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
@@ -390,6 +401,7 @@ Class | Method | HTTP request | Description
  - [RuleError](doc/RuleError.md)
  - [SaveDeclarationsRequest](doc/SaveDeclarationsRequest.md)
  - [SaveSuitabilityRequest](doc/SaveSuitabilityRequest.md)
+ - [SecretStatusResponse](doc/SecretStatusResponse.md)
  - [SignatureRequestResponse](doc/SignatureRequestResponse.md)
  - [SimulateRatingRequest](doc/SimulateRatingRequest.md)
  - [SimulationVehicleRequest](doc/SimulationVehicleRequest.md)
@@ -422,6 +434,7 @@ Class | Method | HTTP request | Description
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
+ - [UpdatePaymentMethodRequest](doc/UpdatePaymentMethodRequest.md)
  - [UpdatePlateFormatRequest](doc/UpdatePlateFormatRequest.md)
  - [UpdatePlatformSettingRequest](doc/UpdatePlatformSettingRequest.md)
  - [UpdateProductRequest](doc/UpdateProductRequest.md)

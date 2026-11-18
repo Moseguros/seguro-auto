@@ -1433,6 +1433,35 @@ export const KycState = {
   OUTDATED: 'OUTDATED',
 } as const;
 
+/**
+ * @nullable
+ */
+export type LastErrorResponse = {
+  /** @nullable */
+  at?: string | null;
+  code: string;
+} | null;
+
+export type LastTestResponseResult =
+  (typeof LastTestResponseResult)[keyof typeof LastTestResponseResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const LastTestResponseResult = {
+  OK: 'OK',
+  FAILED: 'FAILED',
+  NOT_SUPPORTED: 'NOT_SUPPORTED',
+} as const;
+
+/**
+ * @nullable
+ */
+export type LastTestResponse = {
+  at: string;
+  /** @nullable */
+  message?: string | null;
+  result: LastTestResponseResult;
+} | null;
+
 export interface LogoutRequest {
   /** Refresh token da sessão a terminar */
   refreshToken?: string;
@@ -1934,6 +1963,94 @@ export interface PageResponseVehicleResponse {
   page: number;
   size: number;
   totalElements: number;
+}
+
+export type PaymentMethodResponseEnvironment =
+  (typeof PaymentMethodResponseEnvironment)[keyof typeof PaymentMethodResponseEnvironment];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodResponseEnvironment = {
+  SANDBOX: 'SANDBOX',
+  PRODUCTION: 'PRODUCTION',
+} as const;
+
+export type PaymentMethodResponseMethod =
+  (typeof PaymentMethodResponseMethod)[keyof typeof PaymentMethodResponseMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodResponseMethod = {
+  MPESA: 'MPESA',
+  BANK_REFERENCE: 'BANK_REFERENCE',
+} as const;
+
+/**
+ * Campo do segredo (apiKey, publicKey, securityCredential, sftp.password, sftp.privateKey, sftp.passphrase) → estado
+ */
+export type PaymentMethodResponseSecrets = { [key: string]: SecretStatusResponse };
+
+export interface PaymentMethodResponse {
+  configured: boolean;
+  /**
+   * @maxLength 60
+   * @nullable
+   */
+  displayName?: string | null;
+  enabled: boolean;
+  environment: PaymentMethodResponseEnvironment;
+  intentValidityMinutes: number;
+  lastError?: LastErrorResponse;
+  lastTest?: LastTestResponse;
+  maxAmount?: Money;
+  method: PaymentMethodResponseMethod;
+  minAmount?: Money;
+  /** Campo do segredo (apiKey, publicKey, securityCredential, sftp.password, sftp.privateKey, sftp.passphrase) → estado */
+  secrets: PaymentMethodResponseSecrets;
+  settings: PaymentMethodSettings;
+  settingsSchema: PaymentMethodSettingsSchema;
+  sortOrder: number;
+  /** @nullable */
+  updatedAt?: string | null;
+  /** @nullable */
+  version?: number | null;
+}
+
+/**
+ * Dados não secretos da forma de pagamento, no formato do JSON Schema do método (backend/src/main/resources/schemas/payment-method-mpesa.json ou payment-method-bank_reference.json; devolvido em settingsSchema). Os segredos nunca estão aqui.
+ */
+export interface PaymentMethodSettings {
+  [key: string]: unknown;
+}
+
+/**
+ * JSON Schema (draft 2020-12) dos settings do método; a web gera o formulário a partir dele.
+ */
+export interface PaymentMethodSettingsSchema {
+  [key: string]: unknown;
+}
+
+export type PaymentMethodTestResponseResult =
+  (typeof PaymentMethodTestResponseResult)[keyof typeof PaymentMethodTestResponseResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentMethodTestResponseResult = {
+  OK: 'OK',
+  FAILED: 'FAILED',
+  NOT_SUPPORTED: 'NOT_SUPPORTED',
+} as const;
+
+export interface PaymentMethodTestResponse {
+  /** @nullable */
+  message?: string | null;
+  result: PaymentMethodTestResponseResult;
+  testedAt: string;
+}
+
+export interface PaymentMethodVersionRequest {
+  version: number;
+}
+
+export interface PaymentMethodsResponse {
+  methods?: PaymentMethodResponse[];
 }
 
 export type PhotoSlot = (typeof PhotoSlot)[keyof typeof PhotoSlot];
@@ -3258,6 +3375,16 @@ export interface SaveSuitabilityRequest {
 }
 
 /**
+ * Campo do segredo (apiKey, publicKey, securityCredential, sftp.password, sftp.privateKey, sftp.passphrase) → estado
+ */
+export interface SecretStatusResponse {
+  configured: boolean;
+  required: boolean;
+  /** @nullable */
+  updatedAt?: string | null;
+}
+
+/**
  * Canal efectivamente usado
  */
 export type SignatureRequestResponseChannel =
@@ -3832,6 +3959,51 @@ export interface UpdateOtpSettingsRequest {
   validitySeconds: number;
   /** version lida no GET */
   version: number;
+}
+
+export type UpdatePaymentMethodRequestEnvironment =
+  (typeof UpdatePaymentMethodRequestEnvironment)[keyof typeof UpdatePaymentMethodRequestEnvironment];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdatePaymentMethodRequestEnvironment = {
+  SANDBOX: 'SANDBOX',
+  PRODUCTION: 'PRODUCTION',
+} as const;
+
+/**
+ * Campo → valor do segredo (até 8000 caracteres); escrito só no cofre de segredos
+ * @nullable
+ */
+export type UpdatePaymentMethodRequestSecrets = { [key: string]: string | null } | null;
+
+export interface UpdatePaymentMethodRequest {
+  /**
+   * @maxLength 60
+   * @nullable
+   */
+  displayName?: string | null;
+  environment: UpdatePaymentMethodRequestEnvironment;
+  /**
+   * Validade das intenções M-Pesa ainda não enviadas (ignorado em BANK_REFERENCE)
+   * @minimum 5
+   * @maximum 1440
+   */
+  intentValidityMinutes: number;
+  maxAmount?: Money;
+  minAmount?: Money;
+  /**
+   * Campo → valor do segredo (até 8000 caracteres); escrito só no cofre de segredos
+   * @nullable
+   */
+  secrets?: UpdatePaymentMethodRequestSecrets;
+  settings: PaymentMethodSettings;
+  /**
+   * @minimum 0
+   * @maximum 99
+   */
+  sortOrder: number;
+  /** @nullable */
+  version?: number | null;
 }
 
 export interface UpdatePlateFormatRequest {
@@ -9734,6 +9906,488 @@ export const useVerifyKycCheck = <TError = ErrorType<ProblemDetail>, TContext = 
   TContext
 > => {
   const mutationOptions = getVerifyKycCheckMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure, staff de uma seguradora (outro âmbito → 403 FORBIDDEN). Sempre os dois métodos, pela ordem MPESA, BANK_REFERENCE; os que ainda não foram gravados aparecem com configured = false e os valores por defeito. Nunca devolve valores secretos.
+ * @summary Lista as formas de pagamento da seguradora
+ */
+export const listInsurerPaymentMethods = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodsResponse>(
+    { url: `/api/v1/insurer/payment-methods`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListInsurerPaymentMethodsQueryKey = () => {
+  return [`/api/v1/insurer/payment-methods`] as const;
+};
+
+export const getListInsurerPaymentMethodsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerPaymentMethodsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerPaymentMethods>>> = ({
+    signal,
+  }) => listInsurerPaymentMethods(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerPaymentMethodsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerPaymentMethods>>
+>;
+export type ListInsurerPaymentMethodsQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPaymentMethods>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as formas de pagamento da seguradora
+ */
+
+export function useListInsurerPaymentMethods<
+  TData = Awaited<ReturnType<typeof listInsurerPaymentMethods>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPaymentMethods>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerPaymentMethodsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:configure. Cria a linha se não existir (desactivada). settings é validado pelo JSON Schema do método sem exigir os obrigatórios (só ao activar) e pelas regras da ficha S5-01 §4 (400 VALIDATION_ERROR com errors[].field = settings.<caminho>, secrets.<campo>, maxAmount…). Os segredos vão só para o cofre (cofre indisponível → 503 SECRET_STORE_UNAVAILABLE, nada gravado); campo ausente mantém o segredo. version diferente da gravada (ou presente na criação) → 409 CONCURRENT_MODIFICATION.
+ * @summary Grava os dados de uma forma de pagamento
+ */
+export const updateInsurerPaymentMethod = (
+  method: string,
+  updatePaymentMethodRequest: BodyType<UpdatePaymentMethodRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<PaymentMethodResponse>(
+    {
+      url: `/api/v1/insurer/payment-methods/${method}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updatePaymentMethodRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+    TError,
+    { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+    { method: string; data: BodyType<UpdatePaymentMethodRequest> }
+  > = (props) => {
+    const { method, data } = props ?? {};
+
+    return updateInsurerPaymentMethod(method, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateInsurerPaymentMethod>>
+>;
+export type UpdateInsurerPaymentMethodMutationBody = BodyType<UpdatePaymentMethodRequest>;
+export type UpdateInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Grava os dados de uma forma de pagamento
+ */
+export const useUpdateInsurerPaymentMethod = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+      TError,
+      { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<UpdatePaymentMethodRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure. Já inactiva → 409 INVALID_STATE_TRANSITION. As intenções já criadas seguem o seu curso e as referências emitidas continuam a poder ser pagas.
+ * @summary Desactiva uma forma de pagamento
+ */
+export const disableInsurerPaymentMethod = (
+  method: string,
+  paymentMethodVersionRequest: BodyType<PaymentMethodVersionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodResponse>(
+    {
+      url: `/api/v1/insurer/payment-methods/${method}/disable`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: paymentMethodVersionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getDisableInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+    TError,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationKey = ['disableInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> }
+  > = (props) => {
+    const { method, data } = props ?? {};
+
+    return disableInsurerPaymentMethod(method, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DisableInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof disableInsurerPaymentMethod>>
+>;
+export type DisableInsurerPaymentMethodMutationBody = BodyType<PaymentMethodVersionRequest>;
+export type DisableInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Desactiva uma forma de pagamento
+ */
+export const useDisableInsurerPaymentMethod = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+      TError,
+      { method: string; data: BodyType<PaymentMethodVersionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof disableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationOptions = getDisableInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure. Sem linha → 404 PAYMENT_METHOD_NOT_FOUND; já activa → 409 INVALID_STATE_TRANSITION; dados incompletos (obrigatórios do schema, regras da secção 4 ou segredo obrigatório em falta) → 409 PAYMENT_METHOD_INCOMPLETE com errors[]; version diferente → 409 CONCURRENT_MODIFICATION.
+ * @summary Activa uma forma de pagamento
+ */
+export const enableInsurerPaymentMethod = (
+  method: string,
+  paymentMethodVersionRequest: BodyType<PaymentMethodVersionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodResponse>(
+    {
+      url: `/api/v1/insurer/payment-methods/${method}/enable`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: paymentMethodVersionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getEnableInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+    TError,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationKey = ['enableInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+    { method: string; data: BodyType<PaymentMethodVersionRequest> }
+  > = (props) => {
+    const { method, data } = props ?? {};
+
+    return enableInsurerPaymentMethod(method, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EnableInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof enableInsurerPaymentMethod>>
+>;
+export type EnableInsurerPaymentMethodMutationBody = BodyType<PaymentMethodVersionRequest>;
+export type EnableInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Activa uma forma de pagamento
+ */
+export const useEnableInsurerPaymentMethod = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+      TError,
+      { method: string; data: BodyType<PaymentMethodVersionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof enableInsurerPaymentMethod>>,
+  TError,
+  { method: string; data: BodyType<PaymentMethodVersionRequest> },
+  TContext
+> => {
+  const mutationOptions = getEnableInsurerPaymentMethodMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:configure. Usa os dados gravados (grave antes de testar); sem linha → 404 PAYMENT_METHOD_NOT_FOUND. BANK_REFERENCE valida a configuração e a existência dos segredos SFTP no cofre, sem ligar ao SFTP (CONFIG_VALID, SETTINGS_INVALID, SECRET_MISSING); sem tester para o método → NOT_SUPPORTED. Até 15 s (TIMEOUT).
+ * @summary Testa uma forma de pagamento
+ */
+export const testInsurerPaymentMethod = (
+  method: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentMethodTestResponse>(
+    { url: `/api/v1/insurer/payment-methods/${method}/test`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getTestInsurerPaymentMethodMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+    TError,
+    { method: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+  TError,
+  { method: string },
+  TContext
+> => {
+  const mutationKey = ['testInsurerPaymentMethod'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+    { method: string }
+  > = (props) => {
+    const { method } = props ?? {};
+
+    return testInsurerPaymentMethod(method, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TestInsurerPaymentMethodMutationResult = NonNullable<
+  Awaited<ReturnType<typeof testInsurerPaymentMethod>>
+>;
+
+export type TestInsurerPaymentMethodMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Testa uma forma de pagamento
+ */
+export const useTestInsurerPaymentMethod = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+      TError,
+      { method: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof testInsurerPaymentMethod>>,
+  TError,
+  { method: string },
+  TContext
+> => {
+  const mutationOptions = getTestInsurerPaymentMethodMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

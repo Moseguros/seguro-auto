@@ -86,6 +86,8 @@ import 'package:moseguros_api/src/model/kyc_files_response.dart';
 import 'package:moseguros_api/src/model/kyc_previous_check_response.dart';
 import 'package:moseguros_api/src/model/kyc_rejection_reason.dart';
 import 'package:moseguros_api/src/model/kyc_state.dart';
+import 'package:moseguros_api/src/model/last_error_response.dart';
+import 'package:moseguros_api/src/model/last_test_response.dart';
 import 'package:moseguros_api/src/model/logout_request.dart';
 import 'package:moseguros_api/src/model/me_organization.dart';
 import 'package:moseguros_api/src/model/me_response.dart';
@@ -114,6 +116,10 @@ import 'package:moseguros_api/src/model/page_response_quote_request_summary_resp
 import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
 import 'package:moseguros_api/src/model/page_response_vehicle_response.dart';
+import 'package:moseguros_api/src/model/payment_method_response.dart';
+import 'package:moseguros_api/src/model/payment_method_test_response.dart';
+import 'package:moseguros_api/src/model/payment_method_version_request.dart';
+import 'package:moseguros_api/src/model/payment_methods_response.dart';
 import 'package:moseguros_api/src/model/photo_slot.dart';
 import 'package:moseguros_api/src/model/photo_source.dart';
 import 'package:moseguros_api/src/model/plate_format_response.dart';
@@ -193,6 +199,7 @@ import 'package:moseguros_api/src/model/risk_driver_request.dart';
 import 'package:moseguros_api/src/model/rule_error.dart';
 import 'package:moseguros_api/src/model/save_declarations_request.dart';
 import 'package:moseguros_api/src/model/save_suitability_request.dart';
+import 'package:moseguros_api/src/model/secret_status_response.dart';
 import 'package:moseguros_api/src/model/signature_request_response.dart';
 import 'package:moseguros_api/src/model/simulate_rating_request.dart';
 import 'package:moseguros_api/src/model/simulation_vehicle_request.dart';
@@ -225,6 +232,7 @@ import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
 import 'package:moseguros_api/src/model/update_otp_settings_request.dart';
+import 'package:moseguros_api/src/model/update_payment_method_request.dart';
 import 'package:moseguros_api/src/model/update_plate_format_request.dart';
 import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
 import 'package:moseguros_api/src/model/update_product_request.dart';
@@ -323,6 +331,8 @@ part 'serializers.g.dart';
   KycPreviousCheckResponse,
   KycRejectionReason,
   KycState,
+  LastErrorResponse,
+  LastTestResponse,
   LogoutRequest,
   MeOrganization,
   MeResponse,
@@ -351,6 +361,10 @@ part 'serializers.g.dart';
   PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
   PageResponseVehicleResponse,
+  PaymentMethodResponse,
+  PaymentMethodTestResponse,
+  PaymentMethodVersionRequest,
+  PaymentMethodsResponse,
   PhotoSlot,
   PhotoSource,
   PlateFormatResponse,
@@ -430,6 +444,7 @@ part 'serializers.g.dart';
   RuleError,
   SaveDeclarationsRequest,
   SaveSuitabilityRequest,
+  SecretStatusResponse,
   SignatureRequestResponse,
   SimulateRatingRequest,
   SimulationVehicleRequest,
@@ -462,6 +477,7 @@ part 'serializers.g.dart';
   UpdateMyProfileRequest,
   UpdateOrganizationRequest,
   UpdateOtpSettingsRequest,
+  UpdatePaymentMethodRequest,
   UpdatePlateFormatRequest,
   UpdatePlatformSettingRequest,
   UpdateProductRequest,
