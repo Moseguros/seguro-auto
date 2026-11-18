@@ -22,6 +22,11 @@ moseguros:
       pepper: ${MOSEGUROS_OTP_PEPPER:local-otp-pepper-only-for-development}
       # Só aqui: devolve o código no cabeçalho X-Debug-Otp (nunca com o perfil prod).
       debug-header: true
+    # Cliente de serviço do payment-file-worker (S5-09); no compose vem de
+    # SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET do infra/.env.
+    service-clients:
+      payment-file-worker:
+        secret: ${MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:local-worker-secret} # só desenvolvimento
   notification:
     webhook-secret: ${MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET:local-webhook-secret}
   # Cofre de segredos (S5-01): o Vault em modo dev do compose (S5-06). Sem ele o arranque regista um WARN

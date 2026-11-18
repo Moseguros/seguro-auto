@@ -1,5 +1,6 @@
 package mz.co.moseguros.payment.application;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,9 +17,14 @@ import mz.co.moseguros.payment.domain.InsurerPaymentMethod;
 import mz.co.moseguros.payment.domain.InsurerPaymentMethodRepository;
 import mz.co.moseguros.payment.domain.PaymentEnvironment;
 import mz.co.moseguros.payment.domain.SecretField;
+import mz.co.moseguros.paymentcontracts.FileSourceDescriptor;
+import mz.co.moseguros.paymentcontracts.FileSourceList;
 import mz.co.moseguros.shared.domain.Money;
+import mz.co.moseguros.shared.json.JsonSchemas;
 import mz.co.moseguros.shared.secrets.SecretRef;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 public class PaymentSystemLookups {
+
+    private static final Logger log = LoggerFactory.getLogger(PaymentSystemLookups.class);
 
     private final InsurerPaymentMethodRepository methods;
     private final OrganizationApi organizations;
@@ -131,6 +139,66 @@ public class PaymentSystemLookups {
         }
         organizations.findSummaries(insurerIds).forEach((id, summary) -> names.put(id, summary.displayName()));
         return names;
+    }
+
+    /**
+     * Fontes de ficheiros de movimentos para o {@code payment-file-worker} (S5-09 §1), de todas as
+     * seguradoras: os {@code BANK_REFERENCE} activos e os inactivos que ainda têm referências
+     * {@code ACTIVE} ({@code enabled} diz qual é o caso). Só caminhos do cofre, nunca valores. Uma
+     * linha cujos {@code settings} não cumpram o schema completo é omitida ({@code ERROR}).
+     */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public FileSourceList activeFileSources() {
+        List<FileSourceDescriptor> sources = new ArrayList<>();
+        for (InsurerPaymentMethod m : methods.findFileSources()) {
+            Optional<FileSourceDescriptor> descriptor = fileSource(m);
+            if (descriptor.isPresent()) {
+                sources.add(descriptor.get());
+            } else {
+                log.error("BANK_REFERENCE settings of insurer {} (method config {}) do not match the full schema: "
+                        + "file source omitted", m.getInsurerId(), m.getId());
+            }
+        }
+        return new FileSourceList(sources);
+    }
+
+    /** Descritor da fonte, ou vazio se os {@code settings} não cumprirem o schema completo. */
+    static Optional<FileSourceDescriptor> fileSource(InsurerPaymentMethod m) {
+        JsonNode s = m.getSettings();
+        if (s == null || !s.isObject()
+                || !JsonSchemas.issues(SettingsValidator.schemaName(PaymentMethod.BANK_REFERENCE), s).isEmpty()) {
+            return Optional.empty();
+        }
+        String format = s.path("fileFormat").asText();
+        boolean bmeps = FileSourceDescriptor.FORMAT_BMEPS.equals(format);
+        if (bmeps && (!s.hasNonNull("bmepsCompanyId") || !s.hasNonNull("bmepsProfileId"))) {
+            return Optional.empty();
+        }
+        JsonNode sftp = s.path("sftp");
+        boolean move = sftp.path("moveAfterProcessing").asBoolean();
+        if (move && (!sftp.hasNonNull("processedDir") || !sftp.hasNonNull("errorDir"))) {
+            return Optional.empty();
+        }
+        Map<String, String> refs = new LinkedHashMap<>();
+        m.secretPaths().forEach((field, path) -> refs.put(field.fieldName(), path));
+        return Optional.of(new FileSourceDescriptor(m.getId(), m.getInsurerId(), m.getVersion(), m.isEnabled(),
+                s.path("entity").asText(), format,
+                bmeps ? s.path("bmepsCompanyId").asText() : null,
+                bmeps ? s.path("bmepsProfileId").asText() : null,
+                new FileSourceDescriptor.Sftp(
+                        sftp.path("host").asText(),
+                        sftp.path("port").asInt(),
+                        sftp.path("username").asText(),
+                        sftp.path("authType").asText(),
+                        sftp.path("inboundDir").asText(),
+                        move,
+                        move ? sftp.path("processedDir").asText() : null,
+                        move ? sftp.path("errorDir").asText() : null,
+                        sftp.hasNonNull("filePattern") ? sftp.path("filePattern").asText()
+                                : FileSourceDescriptor.Sftp.DEFAULT_FILE_PATTERN,
+                        sftp.hasNonNull("hostKeyFingerprint") ? sftp.path("hostKeyFingerprint").asText() : null),
+                refs));
     }
 
     static MethodConfig config(InsurerPaymentMethod m) {

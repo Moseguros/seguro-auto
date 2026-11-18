@@ -135,7 +135,8 @@ class RunAsSystemUsageTest {
                         .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
                 .containsExactlyInAnyOrder("PaymentSystemLookups.enabledConfig", "PaymentSystemLookups.enabledConfigs",
                         "PaymentSystemLookups.entityInUse", "PaymentSystemLookups.configsOf",
-                        "PaymentSystemLookups.configById", "PaymentSystemLookups.insurerNames");
+                        "PaymentSystemLookups.configById", "PaymentSystemLookups.insurerNames",
+                        "PaymentSystemLookups.activeFileSources");
     }
 
     /**

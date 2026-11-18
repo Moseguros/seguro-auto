@@ -120,12 +120,14 @@ class ModularityTest {
      * S5-01 e S5-02: payment só depende de organization, notification e document (modelo transversal §1:
      * {@code payment → organization, notification, document}) e não conhece o proposal (usa o
      * {@code PaymentTargetResolver} que o proposal implementa). Só o proposal depende de payment
-     * ({@code PaymentApi}; o policy entra no S6).
+     * ({@code PaymentApi}; o policy entra no S6). O {@code paymentcontracts} não é um módulo: é a
+     * biblioteca das mensagens e do contrato interno partilhada com o worker (S5-06, S5-09), que o
+     * Spring Modulith vê como módulo por estar debaixo de {@code mz.co.moseguros}.
      */
     @Test
     void paymentDependsOnOrganizationNotificationAndDocumentOnlyAndOnlyProposalDependsOnPayment() {
         assertThat(dependenciesOf("payment")).contains("organization", "notification", "document")
-                .isSubsetOf("shared", "organization", "notification", "document");
+                .isSubsetOf("shared", "organization", "notification", "document", "paymentcontracts");
         assertThat(dependenciesOf("payment")).doesNotContain("proposal");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("payment"))
