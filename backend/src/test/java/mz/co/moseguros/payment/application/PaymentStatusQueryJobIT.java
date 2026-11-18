@@ -151,7 +151,7 @@ class PaymentStatusQueryJobIT {
                 .hasSize(planned.size());
         assertThat(support.owner().queryForList("select raw_payload::text from payment.payment_event "
                 + "where intent_id = ? and type = 'STATUS_QUERY'", String.class, intentId))
-                .allSatisfy(p -> assertThat(p).contains("\"input_QueryReference\":\"" + thirdPartyReference + "\"")
+                .allSatisfy(p -> assertThat(p).contains("\"input_QueryReference\": \"" + thirdPartyReference + "\"")
                         .contains("N/A"));
 
         // deixou de consultar
