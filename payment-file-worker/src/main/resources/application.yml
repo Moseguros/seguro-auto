@@ -1,0 +1,61 @@
+# payment-file-worker (S5-09). Sem endpoints de negócio: só o Actuator (health, metrics) na 8081.
+spring:
+  application:
+    name: payment-file-worker
+  # O worker liga-se como moseguros_worker_user (membro de moseguros_worker, só select/insert/update no
+  # schema payment_worker); o Flyway corre como dono, com histórico próprio em payment_worker.
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/moseguros}
+    username: ${DB_USERNAME:moseguros_worker_user}
+    password: ${DB_PASSWORD:moseguros_worker}
+  flyway:
+    user: ${DB_OWNER_USERNAME:moseguros}
+    password: ${DB_OWNER_PASSWORD:moseguros}
+    schemas: payment_worker
+    default-schema: payment_worker
+    locations: classpath:db/migration
+  # Publisher confirms (correlated) e mandatory: um registo só conta como publicado com ack e sem
+  # devolução (S5-09 §7). Em staging e produção o utilizador é moseguros_worker (infra/README.md).
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:moseguros}
+    password: ${RABBITMQ_PASSWORD:moseguros}
+    connection-timeout: 5s
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+
+server:
+  port: 8081
+  shutdown: graceful
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      show-details: always
+
+moseguros:
+  worker:
+    backend-base-url: ${WORKER_BACKEND_BASE_URL:http://localhost:8080}
+    client-id: payment-file-worker
+    client-secret: ${WORKER_CLIENT_SECRET:}
+    sources-refresh-interval: PT1M
+    poll-interval: ${WORKER_POLL_INTERVAL:PT60S}   # intervalo entre leituras de cada fonte; mínimo PT10S
+    work-dir: ${WORKER_WORK_DIR:${java.io.tmpdir}/payment-file-worker}
+    max-file-size: 20MB
+    max-files-per-run: 50
+    lock-at-most-for: PT30M
+    lock-at-least-for: PT10S
+    publish-confirm-timeout: PT10S
+    allow-unknown-host-keys: false      # true só em application-local.yml e application-test.yml
+  vault:
+    uri: ${VAULT_URI:http://localhost:8200}
+    token: ${VAULT_TOKEN:}

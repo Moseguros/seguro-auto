@@ -4,8 +4,9 @@
   (o backend mantém o spring-boot-starter-parent).
 
   Na raiz:
-    ./mvnw -B verify                        tudo (contratos e backend)
+    ./mvnw -B verify                        tudo (contratos, backend e worker)
     ./mvnw -B -pl backend -am verify        só o backend e o que ele usa
+    ./mvnw -B -pl payment-file-worker -am verify   só o worker de ficheiros (S5-09)
     ./mvnw -B -pl payment-contracts install instala os contratos no repositório Maven local,
                                             para "cd backend && ./mvnw -B verify" funcionar
 -->
@@ -24,6 +25,6 @@
   <modules>
     <module>payment-contracts</module>
     <module>backend</module>
-    <!-- payment-file-worker: S5-09 -->
+    <module>payment-file-worker</module>
   </modules>
 </project>
