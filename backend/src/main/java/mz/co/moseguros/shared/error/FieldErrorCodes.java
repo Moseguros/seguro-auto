@@ -205,6 +205,12 @@ public final class FieldErrorCodes {
     /** Entidade de referências já usada por outra seguradora. */
     public static final String ENTITY_IN_USE = "ENTITY_IN_USE";
 
+    // Núcleo de pagamentos (S5-02)
+    /** Telemóvel válido mas que não é M-Pesa (o número nacional tem de começar por 84 ou 85). */
+    public static final String MSISDN_NOT_MPESA = "MSISDN_NOT_MPESA";
+    /** Valor que não é um UUID (ex.: o cabeçalho {@code Idempotency-Key}; reutilizado no S9-04). */
+    public static final String INVALID_UUID = "INVALID_UUID";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

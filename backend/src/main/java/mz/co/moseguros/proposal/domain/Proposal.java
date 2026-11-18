@@ -258,6 +258,12 @@ public class Proposal extends BaseEntity {
     @Column(name = "info_requested_at")
     private Instant infoRequestedAt;
 
+    @Column(name = "paid_at")
+    private Instant paidAt;
+
+    @Column(name = "payment_intent_id")
+    private UUID paymentIntentId;
+
     protected Proposal() {
     }
 
@@ -651,6 +657,20 @@ public class Proposal extends BaseEntity {
         return from;
     }
 
+    /**
+     * Pagamento confirmado ({@code PaymentSucceeded}, S5-02 §9): {@code ACCEPTED → PAID} com a data e a
+     * intenção; uma proposta paga deixa de expirar ({@code expires_at = null}).
+     *
+     * @throws DomainException 409 {@code INVALID_STATE_TRANSITION} fora de {@code ACCEPTED}
+     */
+    public void markPaid(UUID intentId, Instant paidAt) {
+        Objects.requireNonNull(intentId, "intentId");
+        Objects.requireNonNull(paidAt, "paidAt");
+        transitionTo(ProposalStatus.PAID, paidAt, Duration.ZERO);
+        this.paidAt = paidAt;
+        this.paymentIntentId = intentId;
+    }
+
     private void setPolicyholder(JsonNode json, String idDocNumber, String nuit) {
         this.policyholder = canonical(Objects.requireNonNull(json, "policyholder"));
         this.policyholderIdDocNumber = Objects.requireNonNull(idDocNumber, "idDocNumber");
@@ -913,6 +933,14 @@ public class Proposal extends BaseEntity {
     public List<InfoRequestItem> getInfoRequestItems() {
         return infoRequestItems == null ? List.of()
                 : infoRequestItems.stream().map(InfoRequestItem::valueOf).toList();
+    }
+
+    public Instant getPaidAt() {
+        return paidAt;
+    }
+
+    public UUID getPaymentIntentId() {
+        return paymentIntentId;
     }
 
     public Instant getInfoRequestedAt() {

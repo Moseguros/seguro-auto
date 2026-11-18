@@ -16,8 +16,11 @@ public class PdfTemplates {
 
     /** PDF da proposta (S4-04 §3). */
     public static final String PROPOSAL = "proposal";
+    /** Entidade e referência para pagar (S5-02 §7). */
+    public static final String PAYMENT_REFERENCE = "payment-reference";
 
-    private static final Map<String, String> TEMPLATES = Map.of(PROPOSAL, "proposal");
+    private static final Map<String, String> TEMPLATES = Map.of(PROPOSAL, "proposal",
+            PAYMENT_REFERENCE, "payment-reference");
 
     /**
      * Nome do modelo (sem prefixo nem extensão) do código indicado.

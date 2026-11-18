@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import mz.co.moseguros.organization.OrganizationApi;
 import mz.co.moseguros.payment.PaymentMethod;
 import mz.co.moseguros.payment.domain.InsurerPaymentMethod;
 import mz.co.moseguros.payment.domain.InsurerPaymentMethodRepository;
@@ -31,9 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentSystemLookups {
 
     private final InsurerPaymentMethodRepository methods;
+    private final OrganizationApi organizations;
 
-    public PaymentSystemLookups(InsurerPaymentMethodRepository methods) {
+    public PaymentSystemLookups(InsurerPaymentMethodRepository methods, OrganizationApi organizations) {
         this.methods = methods;
+        this.organizations = organizations;
     }
 
     /**
@@ -101,6 +105,32 @@ public class PaymentSystemLookups {
         return methods.findByInsurerIdIn(List.copyOf(insurerIds)).stream()
                 .map(PaymentSystemLookups::config)
                 .toList();
+    }
+
+    /**
+     * Configuração (activa ou não) com este id: a de uma intenção ({@code method_config_id}, S5-02),
+     * para os prazos e a entidade de uma intenção já criada.
+     */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public Optional<MethodConfig> configById(UUID id) {
+        Objects.requireNonNull(id, "id");
+        return methods.findById(id).map(PaymentSystemLookups::config);
+    }
+
+    /**
+     * Nomes das seguradoras ({@code displayName}) indicadas que existem (S5-02: {@code IntentView.insurer}),
+     * lidos em {@code SYSTEM}: o cliente não vê as organizações pelo RLS.
+     */
+    @RunAsSystem
+    @Transactional(readOnly = true)
+    public Map<UUID, String> insurerNames(Set<UUID> insurerIds) {
+        Map<UUID, String> names = new LinkedHashMap<>();
+        if (insurerIds == null || insurerIds.isEmpty()) {
+            return names;
+        }
+        organizations.findSummaries(insurerIds).forEach((id, summary) -> names.put(id, summary.displayName()));
+        return names;
     }
 
     static MethodConfig config(InsurerPaymentMethod m) {

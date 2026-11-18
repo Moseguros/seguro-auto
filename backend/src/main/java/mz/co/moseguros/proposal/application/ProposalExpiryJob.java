@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import mz.co.moseguros.payment.PaymentApi;
+import mz.co.moseguros.payment.PaymentTargetType;
 import mz.co.moseguros.proposal.ProposalExpired;
 import mz.co.moseguros.proposal.ProposalStatus;
 import mz.co.moseguros.proposal.domain.Proposal;
@@ -34,7 +36,9 @@ import org.springframework.transaction.support.TransactionTemplate;
  * {@link ProposalExpired} e a auditoria {@code PROPOSAL.EXPIRE}).
  *
  * <p>É idempotente: uma proposta já expirada deixa de ter prazo e não volta a ser escolhida. Sem
- * ShedLock até ao S6: uma só instância. O S5-02 altera-o (não expira propostas com pagamento em curso).
+ * ShedLock até ao S6: uma só instância. Desde o S5-02 não expira propostas {@code ACCEPTED} com um
+ * pagamento M-Pesa em curso ({@code PaymentApi.hasBlockingIntent}): tenta de novo no ciclo seguinte, sem
+ * mudar {@code expires_at}. As referências bancárias não bloqueiam (a intenção expira com a proposta).
  */
 @Component
 public class ProposalExpiryJob {
@@ -49,14 +53,16 @@ public class ProposalExpiryJob {
     private final AuditService audit;
     private final ApplicationEventPublisher events;
     private final TransactionTemplate tx;
+    private final PaymentApi payments;
     private final Clock clock;
 
     public ProposalExpiryJob(ProposalRepository proposals, AuditService audit, ApplicationEventPublisher events,
-                             PlatformTransactionManager transactionManager, Clock clock) {
+                             PlatformTransactionManager transactionManager, PaymentApi payments, Clock clock) {
         this.proposals = proposals;
         this.audit = audit;
         this.events = events;
         this.tx = new TransactionTemplate(transactionManager);
+        this.payments = payments;
         this.clock = clock;
     }
 
@@ -102,6 +108,11 @@ public class ProposalExpiryJob {
         if (proposal == null || !EXPIRING.contains(proposal.getStatus()) || proposal.getExpiresAt() == null
                 || proposal.getExpiresAt().isAfter(cutoff)) {
             return false;
+        }
+        if (proposal.getStatus() == ProposalStatus.ACCEPTED
+                && payments.hasBlockingIntent(PaymentTargetType.PROPOSAL, proposal.getId())) {
+            log.info("Proposal expiry postponed: mobile payment in progress proposalId={}", proposal.getId());
+            return false; // o dinheiro pode estar a caminho: tenta no ciclo seguinte
         }
         Instant now = clock.instant();
         Instant expiresAt = proposal.getExpiresAt();
