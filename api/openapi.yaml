@@ -27,6 +27,9 @@ tags:
 - description: "Propostas: criação a partir de uma cotação, declarações de risco,\
     \ adequação, vistoria e assinatura"
   name: Proposal
+- description: "Pagamentos: formas de pagamento das seguradoras (M-Pesa e entidade\
+    \ e referência)"
+  name: Payment
 - description: Veículos e condutores do cliente
   name: Vehicle
 paths:
@@ -2063,6 +2066,200 @@ paths:
       summary: Verifica uma identidade
       tags:
       - Identity
+  /api/v1/insurer/payment-methods:
+    get:
+      description: "Permissão payment:configure, staff de uma seguradora (outro â\
+        mbito → 403 FORBIDDEN). Sempre os dois métodos, pela ordem MPESA, BANK_REFERENCE;\
+        \ os que ainda não foram gravados aparecem com configured = false e os valores\
+        \ por defeito. Nunca devolve valores secretos."
+      operationId: listInsurerPaymentMethods
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethodsResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as formas de pagamento da seguradora
+      tags:
+      - Payment
+  /api/v1/insurer/payment-methods/{method}:
+    put:
+      description: "Permissão payment:configure. Cria a linha se não existir (desactivada).\
+        \ settings é validado pelo JSON Schema do método sem exigir os obrigatórios\
+        \ (só ao activar) e pelas regras da ficha S5-01 §4 (400 VALIDATION_ERROR com\
+        \ errors[].field = settings.<caminho>, secrets.<campo>, maxAmount…). Os segredos\
+        \ vão só para o cofre (cofre indisponível → 503 SECRET_STORE_UNAVAILABLE,\
+        \ nada gravado); campo ausente mantém o segredo. version diferente da gravada\
+        \ (ou presente na criação) → 409 CONCURRENT_MODIFICATION."
+      operationId: updateInsurerPaymentMethod
+      parameters:
+      - description: MPESA ou BANK_REFERENCE (outro → 404 PAYMENT_METHOD_NOT_FOUND)
+        in: path
+        name: method
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePaymentMethodRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethodResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Grava os dados de uma forma de pagamento
+      tags:
+      - Payment
+  /api/v1/insurer/payment-methods/{method}/disable:
+    post:
+      description: Permissão payment:configure. Já inactiva → 409 INVALID_STATE_TRANSITION.
+        As intenções já criadas seguem o seu curso e as referências emitidas continuam
+        a poder ser pagas.
+      operationId: disableInsurerPaymentMethod
+      parameters:
+      - description: MPESA ou BANK_REFERENCE (outro → 404 PAYMENT_METHOD_NOT_FOUND)
+        in: path
+        name: method
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentMethodVersionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethodResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Desactiva uma forma de pagamento
+      tags:
+      - Payment
+  /api/v1/insurer/payment-methods/{method}/enable:
+    post:
+      description: "Permissão payment:configure. Sem linha → 404 PAYMENT_METHOD_NOT_FOUND;\
+        \ já activa → 409 INVALID_STATE_TRANSITION; dados incompletos (obrigatórios\
+        \ do schema, regras da secção 4 ou segredo obrigatório em falta) → 409 PAYMENT_METHOD_INCOMPLETE\
+        \ com errors[]; version diferente → 409 CONCURRENT_MODIFICATION."
+      operationId: enableInsurerPaymentMethod
+      parameters:
+      - description: MPESA ou BANK_REFERENCE (outro → 404 PAYMENT_METHOD_NOT_FOUND)
+        in: path
+        name: method
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentMethodVersionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethodResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Activa uma forma de pagamento
+      tags:
+      - Payment
+  /api/v1/insurer/payment-methods/{method}/test:
+    post:
+      description: "Permissão payment:configure. Usa os dados gravados (grave antes\
+        \ de testar); sem linha → 404 PAYMENT_METHOD_NOT_FOUND. BANK_REFERENCE valida\
+        \ a configuração e a existência dos segredos SFTP no cofre, sem ligar ao SFTP\
+        \ (CONFIG_VALID, SETTINGS_INVALID, SECRET_MISSING); sem tester para o método\
+        \ → NOT_SUPPORTED. Até 15 s (TIMEOUT)."
+      operationId: testInsurerPaymentMethod
+      parameters:
+      - description: MPESA ou BANK_REFERENCE (outro → 404 PAYMENT_METHOD_NOT_FOUND)
+        in: path
+        name: method
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentMethodTestResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Testa uma forma de pagamento
+      tags:
+      - Payment
   /api/v1/insurer/product-versions/{id}:
     get:
       description: Permissão product:read. Inclui as coberturas e os documentos.
@@ -7921,6 +8118,37 @@ components:
       - VERIFIED
       - REJECTED
       - OUTDATED
+    LastErrorResponse:
+      type: object
+      nullable: true
+      properties:
+        at:
+          type: string
+          format: date-time
+          nullable: true
+        code:
+          type: string
+      required:
+      - code
+    LastTestResponse:
+      type: object
+      nullable: true
+      properties:
+        at:
+          type: string
+          format: date-time
+        message:
+          type: string
+          nullable: true
+        result:
+          type: string
+          enum:
+          - OK
+          - FAILED
+          - NOT_SUPPORTED
+      required:
+      - at
+      - result
     LogoutRequest:
       type: object
       properties:
@@ -8724,6 +8952,112 @@ components:
       - page
       - size
       - totalElements
+    PaymentMethodResponse:
+      type: object
+      properties:
+        configured:
+          type: boolean
+        displayName:
+          type: string
+          maxLength: 60
+          nullable: true
+        enabled:
+          type: boolean
+        environment:
+          type: string
+          enum:
+          - SANDBOX
+          - PRODUCTION
+        intentValidityMinutes:
+          type: integer
+          format: int32
+        lastError:
+          $ref: "#/components/schemas/LastErrorResponse"
+        lastTest:
+          $ref: "#/components/schemas/LastTestResponse"
+        maxAmount:
+          $ref: "#/components/schemas/Money"
+        method:
+          type: string
+          enum:
+          - MPESA
+          - BANK_REFERENCE
+        minAmount:
+          $ref: "#/components/schemas/Money"
+        secrets:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/SecretStatusResponse"
+          description: "Campo do segredo (apiKey, publicKey, securityCredential, sftp.password,\
+            \ sftp.privateKey, sftp.passphrase) → estado"
+        settings:
+          $ref: "#/components/schemas/PaymentMethodSettings"
+        settingsSchema:
+          $ref: "#/components/schemas/PaymentMethodSettingsSchema"
+        sortOrder:
+          type: integer
+          format: int32
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        version:
+          type: integer
+          format: int64
+          nullable: true
+      required:
+      - configured
+      - enabled
+      - environment
+      - intentValidityMinutes
+      - method
+      - secrets
+      - settings
+      - settingsSchema
+      - sortOrder
+    PaymentMethodSettings:
+      type: object
+      description: "Dados não secretos da forma de pagamento, no formato do JSON Schema\
+        \ do método (backend/src/main/resources/schemas/payment-method-mpesa.json\
+        \ ou payment-method-bank_reference.json; devolvido em settingsSchema). Os\
+        \ segredos nunca estão aqui."
+    PaymentMethodSettingsSchema:
+      type: object
+      description: JSON Schema (draft 2020-12) dos settings do método; a web gera
+        o formulário a partir dele.
+    PaymentMethodTestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: true
+        result:
+          type: string
+          enum:
+          - OK
+          - FAILED
+          - NOT_SUPPORTED
+        testedAt:
+          type: string
+          format: date-time
+      required:
+      - result
+      - testedAt
+    PaymentMethodVersionRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+      required:
+      - version
+    PaymentMethodsResponse:
+      type: object
+      properties:
+        methods:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentMethodResponse"
     PhotoSlot:
       type: string
       enum:
@@ -10755,6 +11089,22 @@ components:
           description: Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION
       required:
       - version
+    SecretStatusResponse:
+      type: object
+      description: "Campo do segredo (apiKey, publicKey, securityCredential, sftp.password,\
+        \ sftp.privateKey, sftp.passphrase) → estado"
+      properties:
+        configured:
+          type: boolean
+        required:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - configured
+      - required
     SignatureRequestResponse:
       type: object
       properties:
@@ -11526,6 +11876,55 @@ components:
       - resendAfterSeconds
       - validitySeconds
       - version
+    UpdatePaymentMethodRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          maxLength: 60
+          nullable: true
+        environment:
+          type: string
+          enum:
+          - SANDBOX
+          - PRODUCTION
+        intentValidityMinutes:
+          type: integer
+          format: int32
+          description: Validade das intenções M-Pesa ainda não enviadas (ignorado
+            em BANK_REFERENCE)
+          maximum: 1440
+          minimum: 5
+        maxAmount:
+          $ref: "#/components/schemas/Money"
+        minAmount:
+          $ref: "#/components/schemas/Money"
+        secrets:
+          type: object
+          additionalProperties:
+            type: string
+            description: Campo → valor do segredo (até 8000 caracteres); escrito só
+              no cofre de segredos
+            nullable: true
+          description: Campo → valor do segredo (até 8000 caracteres); escrito só
+            no cofre de segredos
+          nullable: true
+        settings:
+          $ref: "#/components/schemas/PaymentMethodSettings"
+        sortOrder:
+          type: integer
+          format: int32
+          maximum: 99
+          minimum: 0
+        version:
+          type: integer
+          format: int64
+          nullable: true
+      required:
+      - environment
+      - intentValidityMinutes
+      - settings
+      - sortOrder
     UpdatePlateFormatRequest:
       type: object
       properties:
