@@ -194,6 +194,22 @@ moseguros:
       uri: ${VAULT_URI:http://localhost:8200}
       token: ${VAULT_TOKEN:}
       mount: secret
+  # Pagamentos (S5-02, S5-04). M-Pesa: API oficial da Vodacom (o mpesa-mock em desenvolvimento e testes);
+  # as credenciais e o anfitrião de cada seguradora estão na configuração dela (S5-01). O C2B só responde
+  # quando o cliente confirma: corre no mpesaC2bExecutor. Uma intenção UNKNOWN é consultada aos delays
+  # (desde unknown_since), depois a cada repeat-interval; passado give-up-after → UNRESOLVED_STATUS.
+  payment:
+    mpesa:
+      adapter: vodacom          # vodacom | test-stub (só nos testes do S5-02)
+      connect-timeout: PT5S
+      read-timeout: PT15S       # consulta e reversão; o C2B usa c2bTimeoutSeconds da seguradora
+      circuit-breaker-window: 20
+      circuit-breaker-failure-rate: 50
+      circuit-breaker-open-for: PT60S
+    status-query:
+      delays: PT30S,PT60S,PT120S,PT300S
+      repeat-interval: PT15M
+      give-up-after: PT24H
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada

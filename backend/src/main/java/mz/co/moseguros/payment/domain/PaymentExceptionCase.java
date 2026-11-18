@@ -76,6 +76,20 @@ public class PaymentExceptionCase extends BaseEntity {
         return c;
     }
 
+    /**
+     * {@code UNRESOLVED_STATUS} (S5-04 §4): intenção M-Pesa {@code UNKNOWN} sem resposta final passado o
+     * prazo das consultas; o financeiro resolve (S5-10).
+     */
+    public static PaymentExceptionCase unresolvedStatus(PaymentIntent intent) {
+        PaymentExceptionCase c = new PaymentExceptionCase();
+        c.insurerId = intent.getInsurerId();
+        c.type = PaymentExceptionType.UNRESOLVED_STATUS;
+        c.intentId = intent.getId();
+        c.amount = intent.getAmount();
+        c.detail = intent.getMethod().name() + " status unknown";
+        return c;
+    }
+
     public UUID getInsurerId() {
         return insurerId;
     }

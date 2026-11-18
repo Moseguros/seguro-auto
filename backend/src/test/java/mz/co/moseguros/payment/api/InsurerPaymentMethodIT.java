@@ -378,14 +378,15 @@ class InsurerPaymentMethodIT {
                 .body("result", equalTo("FAILED"))
                 .body("message", equalTo("SETTINGS_INVALID"));
 
-        // o tester do M-Pesa entra no S5-04
+        // o tester do M-Pesa (S5-04) começa por confirmar os segredos
         put(admin, "MPESA", body(mpesaSettings(), null, null)).then().statusCode(200);
-        test(admin, "MPESA").then().statusCode(200).body("result", equalTo("NOT_SUPPORTED"));
+        test(admin, "MPESA").then().statusCode(200).body("result", equalTo("FAILED"))
+                .body("message", equalTo("SECRET_MISSING"));
 
         assertThat(support.owner().queryForList("""
                 select after_state ->> 'result' from audit.audit_event
                  where insurer_id = ? and action = 'PAYMENT_METHOD.TEST' order by occurred_at""", String.class,
-                insurer.id())).containsExactly("FAILED", "OK", "FAILED", "NOT_SUPPORTED");
+                insurer.id())).containsExactly("FAILED", "OK", "FAILED", "FAILED");
     }
 
     @Test

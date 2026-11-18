@@ -36,3 +36,12 @@ moseguros:
   # Sem @Scheduled nos testes: chamam o job directamente.
   jobs:
     enabled: false
+  # Pagamentos (S5-04 §9): o mpesa-mock dos testes (MpesaGatewayIT) responde depressa; o calendário das
+  # consultas é curto para o PaymentStatusQueryJobIT.
+  payment:
+    mpesa:
+      timeout-cap: PT3S          # só em testes: limita o read timeout do C2B (o schema exige ≥ 30 s)
+    status-query:
+      delays: PT1S,PT2S,PT3S,PT4S
+      repeat-interval: PT5S
+      give-up-after: PT20S
