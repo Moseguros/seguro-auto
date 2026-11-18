@@ -26,6 +26,9 @@ moseguros:
       provider: fake
     email:
       provider: fake
+  # Cofre em memória (InMemorySecretStore); o VaultSecretStoreIT usa um Vault real (Testcontainers).
+  secrets:
+    store: in-memory
   files:
     storage: filesystem
     filesystem:

@@ -24,6 +24,12 @@ moseguros:
       debug-header: true
   notification:
     webhook-secret: ${MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET:local-webhook-secret}
+  # Cofre de segredos (S5-01): o Vault em modo dev do compose (S5-06). Sem ele o arranque regista um WARN
+  # (DevPaymentSecretsSeeder) e gravar segredos dá 503; para trabalhar sem Vault: MOSEGUROS_SECRETS_STORE=in-memory.
+  secrets:
+    store: ${MOSEGUROS_SECRETS_STORE:vault}
+    vault:
+      token: ${VAULT_TOKEN:dev-root-token} # token só para o Vault em modo dev
   # Ficheiros em disco; no compose MOSEGUROS_FILES_DIR=/var/lib/moseguros/files (volume files).
   files:
     storage: filesystem
