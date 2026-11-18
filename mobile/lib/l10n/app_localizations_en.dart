@@ -1979,6 +1979,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationInvalidRules => 'Invalid rule.';
 
   @override
+  String get errorPaymentMethodNotFound => 'Payment method not found.';
+
+  @override
+  String get errorPaymentMethodIncomplete =>
+      'Some details are missing to enable this payment method. Fix the highlighted fields.';
+
+  @override
+  String get errorSecretStoreUnavailable =>
+      'The secret store is unavailable. Nothing was saved; try again in a moment.';
+
+  @override
+  String get validationInvalidFormat => 'Invalid format.';
+
+  @override
+  String get validationDirectoryConflict =>
+      'The inbound, processed and error folders must be different.';
+
+  @override
+  String get validationInvalidPublicKey =>
+      'Invalid public key (RSA in PEM or Base64).';
+
+  @override
+  String get validationMinGreaterThanMax =>
+      'The minimum cannot be greater than the maximum.';
+
+  @override
+  String get validationEntityInUse =>
+      'This entity is already used by another insurer.';
+
+  @override
   String get proposalUnderwritingFailureAutoAcceptDisabled =>
       'Automatic acceptance is turned off for the product';
 

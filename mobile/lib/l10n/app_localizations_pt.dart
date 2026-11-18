@@ -1979,6 +1979,36 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationInvalidRules => 'Regra inválida.';
 
   @override
+  String get errorPaymentMethodNotFound => 'Forma de pagamento não encontrada.';
+
+  @override
+  String get errorPaymentMethodIncomplete =>
+      'Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.';
+
+  @override
+  String get errorSecretStoreUnavailable =>
+      'O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.';
+
+  @override
+  String get validationInvalidFormat => 'Formato inválido.';
+
+  @override
+  String get validationDirectoryConflict =>
+      'As pastas de entrada, de processados e de erros têm de ser diferentes.';
+
+  @override
+  String get validationInvalidPublicKey =>
+      'Chave pública inválida (RSA em PEM ou Base64).';
+
+  @override
+  String get validationMinGreaterThanMax =>
+      'O valor mínimo não pode ser maior que o máximo.';
+
+  @override
+  String get validationEntityInUse =>
+      'Esta entidade já está a ser usada por outra seguradora.';
+
+  @override
   String get proposalUnderwritingFailureAutoAcceptDisabled =>
       'Aceitação automática desligada no produto';
 

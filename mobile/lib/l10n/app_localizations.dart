@@ -3480,6 +3480,54 @@ abstract class AppLocalizations {
   /// **'Regra inválida.'**
   String get validationInvalidRules;
 
+  /// No description provided for @errorPaymentMethodNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Forma de pagamento não encontrada.'**
+  String get errorPaymentMethodNotFound;
+
+  /// No description provided for @errorPaymentMethodIncomplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.'**
+  String get errorPaymentMethodIncomplete;
+
+  /// No description provided for @errorSecretStoreUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.'**
+  String get errorSecretStoreUnavailable;
+
+  /// No description provided for @validationInvalidFormat.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato inválido.'**
+  String get validationInvalidFormat;
+
+  /// No description provided for @validationDirectoryConflict.
+  ///
+  /// In pt, this message translates to:
+  /// **'As pastas de entrada, de processados e de erros têm de ser diferentes.'**
+  String get validationDirectoryConflict;
+
+  /// No description provided for @validationInvalidPublicKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Chave pública inválida (RSA em PEM ou Base64).'**
+  String get validationInvalidPublicKey;
+
+  /// No description provided for @validationMinGreaterThanMax.
+  ///
+  /// In pt, this message translates to:
+  /// **'O valor mínimo não pode ser maior que o máximo.'**
+  String get validationMinGreaterThanMax;
+
+  /// No description provided for @validationEntityInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta entidade já está a ser usada por outra seguradora.'**
+  String get validationEntityInUse;
+
   /// No description provided for @proposalUnderwritingFailureAutoAcceptDisabled.
   ///
   /// In pt, this message translates to:
