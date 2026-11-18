@@ -85,6 +85,10 @@ O resultado do C2B depende dos três últimos dígitos do telemóvel (`258…`):
 
 Os atrasos mudam em execução com `PUT localhost:18352/__mock/config`. Como gerar um token à mão, os códigos de erro e as variáveis: `mocks/mpesa-mock/README.md`. As transacções ficam só em memória. Nunca usar o par de chaves do simulador fora do desenvolvimento.
 
+**Adaptador do backend (S5-04).** O backend chama a API M-Pesa com as credenciais e o código de serviço de cada seguradora (o dinheiro vai para a conta dela). Teste manual: com `docker compose up`, pagar uma proposta aceite da Seguradora Demo com `841000003` e ver a intenção passar de `PENDING` a `UNKNOWN` (o C2B esgota o prazo da seguradora, `c2bTimeoutSeconds`, 90 s por defeito) e depois a `SUCCEEDED` pela consulta de estado (`PaymentStatusQueryJob`, aos 30 s, 60 s, 120 s, 300 s e depois de 15 em 15 min); a página do `mpesa-mock` mostra um único C2B. O teste de ligação do ecrã de configuração faz uma consulta com `input_QueryReference = MOSEGUROSTEST`.
+
+**IP de origem no registo da Vodacom.** Todas as seguradoras chamam a Vodacom a partir da plataforma, por isso usam o mesmo IP público de saída. O alojamento de staging e produção tem de ter um IP de saída fixo (S6-08), e **cada seguradora regista esse IP no portal da Vodacom** (`developer.mpesa.vm.co.mz`) quando pede as credenciais de produção.
+
 ## Base de dados — papéis
 
 A partir do S1-01 a aplicação **não** se liga à base de dados como dona das tabelas (ADR-002 e a adenda de 01/11/2026):
