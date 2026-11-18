@@ -51,6 +51,28 @@ services:
       <<: *healthcheck-timing
     restart: unless-stopped
 
+  mpesa-mock:
+    build: mocks/mpesa-mock
+    image: moseguros/mpesa-mock:local
+    environment:
+      # Valores de desenvolvimento (iguais aos da Seguradora Demo, S5-01). Nunca credenciais reais.
+      MOCK_API_KEY: dev-mpesa-api-key
+      MOCK_ALLOWED_ORIGIN: developer.mpesa.vm.co.mz
+      MOCK_SERVICE_PROVIDER_CODE: "171717"
+      MOCK_INITIATOR_IDENTIFIER: dev-initiator
+      MOCK_SECURITY_CREDENTIAL: dev-security-credential
+      MOCK_DEFAULT_DELAY_SECONDS: "2"
+      MOCK_DELAY_000_SECONDS: "5"
+      MOCK_SLOW_DELAY_SECONDS: "120"
+    ports:
+      - "18352:18352" # C2B e página http://localhost:18352/
+      - "18353:18353" # consulta de estado
+      - "18354:18354" # reversão
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:18350/actuator/health || exit 1"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
   backend:
     build: ../backend
     image: moseguros/backend:local
