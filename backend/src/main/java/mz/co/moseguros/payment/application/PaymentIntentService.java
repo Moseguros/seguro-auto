@@ -131,16 +131,17 @@ public class PaymentIntentService {
     }
 
     private IntentView doCreate(CreateIntentCommand cmd) {
-        // 2–4. Alvo, no âmbito de quem chama; só o próprio pagador paga (S5).
         PaymentTargetResolver resolver = resolvers.stream().filter(r -> r.supports(cmd.targetType())).findFirst()
                 .orElseThrow(() -> new IllegalStateException("No PaymentTargetResolver for " + cmd.targetType()));
+        // 5. Já pago. Vem antes do resolver: um alvo pago já não é pagável e a resposta tem de ser
+        // ALREADY_PAID (o RLS só mostra as intenções do próprio pagador).
+        if (intents.existsByTargetAndStatus(cmd.targetType(), cmd.targetId(), PaymentStatus.SUCCEEDED)) {
+            throw DomainException.of(ErrorCodes.PAYMENT_TARGET_ALREADY_PAID, "The payment target is already paid");
+        }
+        // 2–4. Alvo, no âmbito de quem chama; só o próprio pagador paga (S5).
         PayableTarget target = resolver.resolve(cmd.targetType(), cmd.targetId());
         if (!target.payerUserId().equals(cmd.initiatedByUserId())) {
             throw DomainException.of(resolver.notFoundCode(), "Payment target not found");
-        }
-        // 5. Já pago.
-        if (intents.existsByTargetAndStatus(cmd.targetType(), cmd.targetId(), PaymentStatus.SUCCEEDED)) {
-            throw DomainException.of(ErrorCodes.PAYMENT_TARGET_ALREADY_PAID, "The payment target is already paid");
         }
         // 6. Configuração e adaptador.
         MethodConfig config = lookups.enabledConfig(target.insurerId(), cmd.method())

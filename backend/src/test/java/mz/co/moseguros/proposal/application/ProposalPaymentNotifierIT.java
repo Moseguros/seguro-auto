@@ -157,6 +157,7 @@ class ProposalPaymentNotifierIT {
             assertThat(channels.sentTo(otherBroker.getEmail())).hasSize(1);
             assertThat(channels.sentTo(adminEmail)).hasSize(1);
             assertThat(channels.sentTo(financeEmail)).hasSize(1);
+            assertThat(messagesFor(intentId)).isEqualTo(7);
         });
         FakeOtpDeliveryChannels.Sent toCustomer = channels.lastTo(customerEmail);
         assertThat(subject(toCustomer)).isEqualTo("Pagamento recebido — proposta " + number);
@@ -224,7 +225,13 @@ class ProposalPaymentNotifierIT {
             TenantContext.set(previous);
         }
         assertThat(channels.sentTo(email)).isEmpty();
-        assertThat(channels.sentTo(adminEmail)).isEmpty();
+        assertThat(messagesFor(event.intentId())).isZero();
+    }
+
+    /** Mensagens registadas com esta intenção como {@code correlationId}. */
+    int messagesFor(UUID intentId) {
+        return support.owner().queryForObject("select count(*) from notification.outbound_message "
+                + "where correlation_id = ?", Integer.class, intentId);
     }
 
     @Test
@@ -241,7 +248,7 @@ class ProposalPaymentNotifierIT {
                 .isEqualTo(1));
         await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(3)).untilAsserted(() -> {
             assertThat(channels.sentTo(email)).isEmpty();
-            assertThat(channels.sentTo(adminEmail)).isEmpty();
+            assertThat(messagesFor(intentId)).isZero();
         });
     }
 }

@@ -191,7 +191,7 @@ class InsurerPaymentIT {
         assertThat(support.owner().queryForObject("""
                 select after_state::text from audit.audit_event
                  where action = 'PAYMENT.EXPORT' and insurer_id = ? order by occurred_at desc limit 1""",
-                String.class, a.id())).contains("\"rows\":3").contains("2026-01-01");
+                String.class, a.id())).contains("\"rows\": 3").contains("2026-01-01");
     }
 
     @Test
