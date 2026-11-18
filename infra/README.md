@@ -31,6 +31,9 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | `postgres` | `localhost:5432` | BD, utilizador e palavra-passe `moseguros` (dono; ver `.env.example`); a aplicação usa `moseguros_app_user` (ver "Base de dados — papéis"); dados no volume `pgdata` |
 | `mailpit` | <http://localhost:8025> (web), `localhost:1025` (SMTP) | caixa de correio de teste: todo o e-mail enviado fica aqui |
 | `sms-mock` | <http://localhost:8090> | SMS e WhatsApp recebidos (coluna "canal"), actualizados a cada 3 s; botões para pôr cada canal em `OK`, `FAIL` ou `FAIL_RECEIPT` |
+| `rabbitmq` | <http://localhost:15672> (consola), `localhost:5672` (AMQP) | RabbitMQ 4.1 (ADR-004); utilizador e palavra-passe `moseguros` (`RABBITMQ_DEFAULT_USER`/`PASS` do `.env`); o backend declara a topologia dos pagamentos no arranque (ver "RabbitMQ — topologia"); dados no volume `rabbitdata` |
+| `sftp` | `localhost:2222` | SFTP onde o "banco" deposita os ficheiros MEPS/BMEPS (S5-09 lê-os); utilizadores `demo` e `demob` (ver [`mocks/sftp/README.md`](mocks/sftp/README.md)) |
+| `vault` | <http://localhost:8200> | cofre de segredos em modo dev (em memória); entrar na interface com o token `dev-root-token` (`VAULT_DEV_ROOT_TOKEN` do `.env`) |
 
 API do `sms-mock` (alvo do `MockSmsSender` e do `MockWhatsAppSender` do backend, S1-03):
 
@@ -59,6 +62,50 @@ curl -s -D - -X POST localhost:8080/api/v1/auth/otp/request -H 'content-type: ap
 ```
 
 O SMS aparece em <http://localhost:8090>. Com o SMS em `FAIL` (botão na página), o pedido seguinte (passados 60 s) chega por WhatsApp (`"channel":"WHATSAPP","fallbackUsed":true`); com `FAIL_RECEIPT`, o SMS é aceite e, 2 s depois, o recibo de falha faz o backend reenviar por WhatsApp (`GET /api/v1/auth/otp/challenges/{challengeId}` passa a mostrar `WHATSAPP`). Os e-mails chegam ao Mailpit (<http://localhost:8025>).
+
+## RabbitMQ — topologia
+
+O backend declara, no arranque, a topologia dos pagamentos por referência (`PaymentsTopology` no `payment-contracts`, S5-06; ADR-004 e adendas):
+
+| Elemento | Nome | Notas |
+| --- | --- | --- |
+| Exchange | `payments.events` | `topic`, durável; o `payment-file-worker` (S5-09) publica aqui |
+| Exchange | `payments.dlx` | `direct`, durável; mensagens mortas |
+| Fila | `core.reference-payments` | quorum; ligada a `reference.paid.*`; dead-letter para `payments.dlx` ao fim de 20 entregas |
+| Fila | `core.payment-file-events` | quorum; ligada a `reference.file-processed.*`, `reference.file-rejected.*` e `reference.source-polled.*` |
+| Fila | `core.reference-payments.dlq`, `core.payment-file-events.dlq` | quorum; mensagens rejeitadas ou entregues demasiadas vezes |
+
+Ver as filas:
+
+```bash
+curl -s -u moseguros:moseguros localhost:15672/api/queues | grep -o '"name":"core[^"]*"'
+```
+
+Os consumidores das filas são do S5-10. Sem RabbitMQ o backend arranca na mesma (aviso no registo e `/api/v1/health` em `DOWN`) e declara a topologia quando conseguir ligar.
+
+## RabbitMQ — utilizadores
+
+Em `local` há um só utilizador (`RABBITMQ_DEFAULT_USER`/`RABBITMQ_DEFAULT_PASS`), usado pelo backend (`RABBITMQ_USERNAME`/`RABBITMQ_PASSWORD`) e, a partir do S5-09, pelo worker.
+
+**Staging e produção** (criados pela equipa de operações; palavras-passe no cofre de segredos; o utilizador `guest` é apagado):
+
+| Utilizador | `configure` | `write` | `read` | Quem |
+| --- | --- | --- | --- | --- |
+| `moseguros_backend` | `^(payments\..*\|core\..*)$` | `^(payments\..*\|core\..*)$` | `^(payments\..*\|core\..*)$` | backend: declara a topologia e consome as filas `core.*` |
+| `moseguros_worker` | `^payments\.events$` | `^payments\.events$` | (vazio) | worker: declara o exchange e só publica |
+
+```bash
+rabbitmqctl add_user moseguros_backend '<do cofre>'
+rabbitmqctl set_permissions -p / moseguros_backend '^(payments\..*|core\..*)$' '^(payments\..*|core\..*)$' '^(payments\..*|core\..*)$'
+rabbitmqctl add_user moseguros_worker '<do cofre>'
+rabbitmqctl set_permissions -p / moseguros_worker '^payments\.events$' '^payments\.events$' ''
+```
+
+## Dados de pagamento de desenvolvimento
+
+- **Vault** (modo dev, <http://localhost:8200>, token `dev-root-token`): *mount* KV v2 `secret/`. Os segredos ficam em `secret/insurers/{insurerId}/payments/{METHOD}/{campo}` (S5-01); a BD guarda só a referência. Em modo dev o Vault perde tudo quando o contentor reinicia; no perfil `local` o backend volta a escrever os segredos de desenvolvimento das seguradoras de demonstração no arranque (`DevPaymentSecretsSeeder`, S5-01), por exemplo `BANK_REFERENCE/sftp.password` = `demo-sftp-pass` (Seguradora Demo) e `demob-sftp-pass` (Seguradora Demo B).
+- **SFTP**: utilizadores `demo` (MEPS, entidade `90002`) e `demob` (BMEPS, entidade `90090`, empresa `800`, perfil `02`), pastas `inbound`, `processed`, `error` ([`mocks/sftp/README.md`](mocks/sftp/README.md)). Os exemplos oficiais (`docs/specs/interbancos/exemplo-ficheiro-*.txt`) podem ser postos em `inbound` para o worker os ler (S5-09).
+- Ler um segredo à mão: `docker compose exec -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=dev-root-token vault vault kv get secret/insurers/01930000-0000-7000-8000-000000000001/payments/BANK_REFERENCE/sftp.password`.
 
 ## Base de dados — papéis
 
@@ -137,10 +184,21 @@ docker compose logs -f backend            # registos de um serviço
 docker compose up -d --build backend      # reconstruir só o backend depois de mudar código
 docker compose stop                       # parar sem apagar nada
 docker compose down                       # remover os contentores (os dados da BD ficam)
-docker compose down -v                    # remover também os volumes pgdata e files (BD e ficheiros vazios)
+docker compose down -v                    # remover também os volumes (BD, ficheiros, RabbitMQ e SFTP vazios)
 ```
 
-Para correr o backend ou a web fora do Docker (ex.: no IDE), suba só o que precisa, por exemplo `docker compose up -d postgres mailpit sms-mock`; o backend com o perfil `local` liga-se a `localhost:5432` e a web (`pnpm dev`) faz proxy de `/api` para `localhost:8080`.
+Para correr o backend ou a web fora do Docker (ex.: no IDE), suba só o que precisa, por exemplo `docker compose up -d postgres mailpit sms-mock rabbitmq vault`; o backend com o perfil `local` liga-se a `localhost:5432` e `localhost:5672` e a web (`pnpm dev`) faz proxy de `/api` para `localhost:8080`.
+
+O backend é um módulo do *reactor* Maven da raiz (S5-06, decisão D18). Na raiz do repositório:
+
+```bash
+./mvnw -B verify                          # tudo: payment-contracts e backend
+./mvnw -B -pl backend -am verify          # só o backend e o que ele usa (sem instalar nada)
+./mvnw -B -pl payment-contracts install   # instala os contratos no ~/.m2 (uma vez, e sempre que mudarem)
+cd backend && ./mvnw -B verify            # também funciona, depois do install acima
+```
+
+A imagem do backend constrói-se com o contexto na raiz: `docker build -f backend/Dockerfile .` (o compose já o faz).
 
 ## Notas
 
@@ -148,4 +206,5 @@ Para correr o backend ou a web fora do Docker (ex.: no IDE), suba só o que prec
 - Os contentores do backend e do `sms-mock` correm como `app` (uid 10001) e o da web como `nginx` (uid 101).
 - O nginx escuta em IPv4 e IPv6 dentro do contentor (o healthcheck usa `localhost`, que resolve para `::1`).
 - Se o Docker Hub responder 429 (limite de pedidos), ver as notas em `docs/STATUS.md`.
-- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP, cofre de segredos e `mpesa-mock` (Sprint 5) ainda não fazem parte do compose.
+- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP e o cofre de segredos (Vault em modo dev) entraram no S5-06; o `mpesa-mock` entra no S5-03 e o `payment-file-worker` no S5-09.
+- O `atmoz/sftp` só tem imagem `amd64`: em `arm64` corre por emulação.

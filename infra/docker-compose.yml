@@ -51,8 +51,57 @@ services:
       <<: *healthcheck-timing
     restart: unless-stopped
 
+  # Mensageria (S5-06, ADR-004): consola em http://localhost:15672 (RABBITMQ_DEFAULT_USER/PASS).
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-moseguros}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-moseguros}
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # consola de gestão
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  # SFTP onde o "banco" deposita os ficheiros MEPS/BMEPS (S5-06; lido pelo payment-file-worker, S5-09).
+  # Utilizadores da Seguradora Demo (demo, MEPS) e da Seguradora Demo B (demob, BMEPS), S5-01 §8.
+  # Só amd64 (em arm64 corre por emulação); a etiqueta "alpine" fixa-se pelo digest. Ver mocks/sftp/README.md.
+  sftp:
+    image: atmoz/sftp:alpine@sha256:43dd1c023cf1bae487127d4b54660b0aee6e94c188a6599be36fb89ba115f961
+    command: demo:demo-sftp-pass:1001::inbound,processed,error demob:demob-sftp-pass:1002::inbound,processed,error
+    ports:
+      - "2222:22"
+    volumes:
+      - sftpdata:/home/demo
+      - sftpdatab:/home/demob
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep sshd >/dev/null"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  # Cofre de segredos (S5-01, modelo transversal §7) em modo dev: em memória, perde tudo ao reiniciar
+  # (o DevPaymentSecretsSeeder do backend volta a escrever os segredos de desenvolvimento).
+  vault:
+    image: hashicorp/vault:1.20.4
+    command: server -dev -dev-root-token-id=${VAULT_DEV_ROOT_TOKEN:-dev-root-token} -dev-listen-address=0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "8200:8200"
+    healthcheck:
+      test: ["CMD", "vault", "status", "-address=http://127.0.0.1:8200"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
   backend:
-    build: ../backend
+    # Contexto na raiz do repositório (reactor Maven: payment-contracts + backend, S5-06).
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
     image: moseguros/backend:local
     environment:
       SPRING_PROFILES_ACTIVE: local
@@ -74,6 +123,14 @@ services:
       MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL: admin@moseguros.local
       # Ficheiros enviados (S2-01): disco, no volume "files" (apagado com "docker compose down -v").
       MOSEGUROS_FILES_DIR: /var/lib/moseguros/files
+      # RabbitMQ (S5-06): o backend declara a topologia dos pagamentos no arranque.
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-moseguros}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-moseguros}
+      # Cofre de segredos (S5-01): Vault do compose em modo dev, com o token de raiz.
+      MOSEGUROS_SECRETS_STORE: vault
+      VAULT_URI: http://vault:8200
+      VAULT_TOKEN: ${VAULT_DEV_ROOT_TOKEN:-dev-root-token}
       JAVA_OPTS: -XX:MaxRAMPercentage=75
     ports:
       - "8080:8080"
@@ -81,6 +138,10 @@ services:
       - files:/var/lib/moseguros/files
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      vault:
         condition: service_healthy
     # Healthcheck: o HEALTHCHECK do backend/Dockerfile (GET /api/v1/health).
     restart: unless-stopped
@@ -101,3 +162,6 @@ services:
 volumes:
   pgdata:
   files:
+  rabbitdata:
+  sftpdata:
+  sftpdatab:
