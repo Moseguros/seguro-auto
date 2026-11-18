@@ -21,3 +21,6 @@
 *.ttf binary
 *.woff binary
 *.woff2 binary
+
+# Exemplos oficiais da InterBancos (MEPS/BMEPS): ficam byte a byte, com CRLF.
+docs/specs/interbancos/*.txt -text

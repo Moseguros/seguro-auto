@@ -60,7 +60,7 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 ## 5. Base de dados
 
 - Um schema PostgreSQL por módulo; snake_case em inglês.
-- Colunas obrigatórias: `id uuid pk`, `created_at`, `created_by`, `updated_at`, `updated_by`, `version`. Excepções: `audit.audit_event`, que só recebe inserções; tabelas de associação (só chaves estrangeiras, ex.: `identity.user_role`), que têm chave primária composta e apenas `created_at` e `created_by`; tabelas de infra-estrutura do schema `shared` (`shedlock`, `business_sequence`, `idempotency_record`) e do worker.
+- Colunas obrigatórias: `id uuid pk`, `created_at`, `created_by`, `updated_at`, `updated_by`, `version`. Excepções: `audit.audit_event`, que só recebe inserções; tabelas de associação (só chaves estrangeiras, ex.: `identity.user_role`), que têm chave primária composta e apenas `created_at` e `created_by`; tabelas de infra-estrutura do schema `shared` (`shedlock`, `business_sequence`, `idempotency_record`), a sequência das facturas das referências `payment.reference_invoice_sequence` (S5-07) e as do worker.
 - A aplicação liga-se à BD com um utilizador que não é dono das tabelas; o Flyway usa o dono. Isolamento por âmbito (`TenantContext`: sistema, plataforma, organização, cliente) com RLS — ver ADR-002 e a adenda.
 - Dados de seguradora têm `insurer_id`; isolamento por `TenantContext` no serviço **e** Row Level Security.
 - Migrações Flyway `V{AAAAMMDDHHmm}__{modulo}_{descricao}.sql`; nunca editar uma migração aplicada.
@@ -71,7 +71,7 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 
 - Autorização por permissão (`policy:issue`, `claim:decide`…) com `@PreAuthorize` no serviço, nunca só no frontend.
 - Documentos de identificação e NUIT de pessoas singulares cifrados na coluna (AES-GCM, chave fora da BD, `CryptoService`). O NUIT de uma organização (pessoa colectiva) é público e fica em claro.
-- Segredos (chaves M-Pesa, SFTP, cartão) só no cofre de segredos; a BD guarda a referência; a API nunca os devolve.
+- Segredos (chaves M-Pesa, credenciais SFTP) só no cofre de segredos; a BD guarda a referência; a API nunca os devolve.
 - Logs sem telefone completo, documentos, tokens, códigos OTP ou segredos.
 - Escritas sobre apólice, pagamento, sinistro ou reclamação geram evento em `audit.audit_event`.
 
@@ -100,6 +100,6 @@ Dentro de cada módulo: `api/` (controladores e DTOs records), `application/` (c
 5. Abra um pull request por tarefa com: o que foi feito, como testar, critérios de aceitação marcados, e o que ficou de fora.
 6. Nunca faça push para o `main`, nunca reescreva histórico partilhado, nunca altere migrações aplicadas nem contratos de outro módulo sem ficha explícita.
 7. Dúvida ou contradição → escreva na secção "Questões" da ficha e pare essa parte; não invente.
-8. **SIMO (entidade e referência):** até haver o algoritmo e o layout oficiais, usa-se o mock `MOCK_SIMO_V1` (S5-07, S5-08), declaradamente inventado, permitido em `local`, `test` e `staging` e proibido em `prod`. **Tarefas bloqueadas:** S5-13 (algoritmo real) e S5-14 (layout real). Quem lá chegar pára e pede ao proprietário do produto o algoritmo, o layout e exemplos. Não se inventa o algoritmo nem o layout reais, e o mock nunca é apresentado como real.
+8. **Formas de pagamento:** só M-Pesa e entidade e referência (rede Ponto24 da InterBancos); e-Mola e cartão estão fora do âmbito (ADR-007). O algoritmo da referência e os layouts dos ficheiros MEPS e BMEPS seguem **exactamente** `docs/specs/interbancos/` (S5-07, S5-08); o que a especificação não esclarecer vai para a secção "Questões" da ficha, nunca se inventa. O simulador `infra/mocks/ponto24-mock` só gera ficheiros nesses formatos para `local`, testes e QA.
 9. A API M-Pesa segue a documentação oficial da Vodacom Moçambique (`developer.mpesa.vm.co.mz`); o simulador em `infra/mocks/mpesa-mock` tem de se comportar como ela.
 10. O dinheiro vai sempre directamente para a conta da seguradora. A plataforma e os mediadores nunca recebem fundos.

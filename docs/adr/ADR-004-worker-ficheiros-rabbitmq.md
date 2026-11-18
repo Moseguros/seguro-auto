@@ -33,6 +33,10 @@ Os pagamentos por entidade e referência (rede SIMO) são confirmados por fichei
 
 O algoritmo SIMO de geração de referências e o layout do ficheiro de pagamentos têm de ser fornecidos pelo proprietário do produto (tarefas S5-13 e S5-14, bloqueadas). Decisão de 02/11/2026: até lá, usa-se o mock `MOCK_SIMO_V1` (gerador com MOD 97, ficheiro de largura fixa) e o simulador `simo-mock`, que entrega os ficheiros por SFTP como faria o banco (tarefas S5-07 e S5-08). O mock é permitido em `local`, `test` e `staging` e proibido em `prod`.
 
+## Adenda de 18/11/2026 — formatos reais e leitura contínua
+
+O "Pendente" acima está resolvido e substituído pelo **ADR-007**: o algoritmo da referência e os layouts dos ficheiros (MEPS e BMEPS da InterBancos, rede Ponto24) estão em `docs/specs/interbancos/`; o mock `MOCK_SIMO_V1` e o `simo-mock` deixam de existir. O worker deixa de agendar cada fonte com um `pollCron` próprio: lê todas as fontes activas continuamente, com um intervalo curto global, e deduplica cada ficheiro pelo SHA-256 e pelo identificador do ficheiro no formato. O resto deste ADR mantém-se.
+
 ## Adenda de 02/11/2026 — versão do RabbitMQ
 
 A versão passa de 3.13 para **4.1** (imagem `rabbitmq:4.1-management`), porque a 3.13 deixou de ter suporte da comunidade. As filas continuam *quorum*, com dead-letter. As ligações do exchange `payments.events` são explícitas por routing key (a ficha S5-06 tem o detalhe).

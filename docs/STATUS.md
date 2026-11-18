@@ -84,16 +84,18 @@ As nove tarefas entraram juntas no `main` pelo PR de integração #47 (`task/S4-
 | S5-02 Núcleo de pagamentos: `payment_intent`, idempotência, estados, `PaymentSucceeded` → proposta `PAID` | S5-01 | pronta |
 | S5-03 Simulador `mpesa-mock` fiel à API Vodacom | S4 | pronta |
 | S5-04 Adaptador M-Pesa (C2B, consulta, reversão) contra o simulador | S5-02, S5-03 | pronta |
-| S5-05 Adaptadores e-Mola e cartão: interface + mock | S5-02 | pronta |
+| S5-05 ~~Adaptadores e-Mola e cartão: interface + mock~~ | — | cancelada — e-Mola e cartão fora do âmbito (ADR-007) |
 | S5-06 Infra: RabbitMQ, SFTP local, Vault, `payment-contracts` | S4 | pronta |
-| S5-07 Referências SIMO em mock: gerador `MOCK_SIMO_V1` e troca para o algoritmo real | S5-02 | pronta |
-| S5-08 Ficheiro de liquidação SIMO em mock: parser `MOCK_SIMO_V1` e simulador `simo-mock` | S5-07, S5-09 | pronta |
-| S5-09 `payment-file-worker` (SFTP, agendamento, publicação) | S5-06 | pronta |
+| S5-07 Referências Ponto24: gerador real (numeração de facturas por entidade, dígitos de controlo MOD 97) | S5-02 | pronta |
+| S5-08 Ficheiros de movimentos MEPS e BMEPS: leitores e simulador `ponto24-mock` | S5-07, S5-09 | pronta |
+| S5-09 `payment-file-worker` (SFTP, leitura contínua, deduplicação, publicação) | S5-06 | pronta |
 | S5-10 Consumidor, reconciliação e excepções | S5-02, S5-06, S5-07 | pronta |
 | S5-11 Ecrãs de pagamento do cliente (web e app) | S5-02, S5-04 | pronta |
 | S5-12 Web seguradora e admin: configuração, pagamentos, excepções, ficheiros, estado do worker | S5-01, S5-10 | pronta |
-| S5-13 Algoritmo SIMO real de referências | S5-07 | bloqueada — pedir ao proprietário do produto (algoritmo SIMO, via banco da seguradora) |
-| S5-14 Layout SIMO real do ficheiro de liquidação | S5-08 | bloqueada — pedir ao proprietário do produto (layout do ficheiro, via banco da seguradora) |
+| S5-13 ~~Algoritmo SIMO real de referências~~ | — | cancelada — absorvida pelo S5-07 (algoritmo em `docs/specs/interbancos/`) |
+| S5-14 ~~Layout SIMO real do ficheiro de liquidação~~ | — | cancelada — absorvida pelo S5-08 (layouts MEPS e BMEPS em `docs/specs/interbancos/`) |
+
+As fichas do Sprint 5 foram revistas em 18/11/2026 com as decisões do proprietário do produto (ADR-007, decisão D36): só M-Pesa (API oficial da Vodacom, credenciais por seguradora) e entidade e referência na rede Ponto24 da InterBancos; pagamento recebido → proposta `PAID` → apólice emitida automaticamente (S6-01) e e-mail ao cliente, ao mediador e à seguradora.
 
 ### Sprint 6 — Emissão, verificação, notificações, Release 1
 
@@ -245,7 +247,7 @@ Cada sprint só começa depois de o anterior estar todo no `main`. As fichas dos
 - **Web: propostas do cliente e do mediador (S4-08):** `/cliente/propostas` (lista, `nova?cotacao=`, `:id?passo=`), `/cliente/identidade` e `/mediador/propostas` (lista, `nova?pedido=&cotacao=`, `:id?passo=`, com `proposal:create-for-client`). Os passos são partilhados em `web/src/features/proposal-wizard/` (`wizardSteps.ts` decide os passos visíveis e o primeiro por concluir pelo `checklist`; `useProposalMutations.ts` trata os 409 `CONCURRENT_MODIFICATION`/`PROPOSAL_NOT_EDITABLE`); a proposta editável (`DRAFT`/`INFO_REQUESTED`) mostra os passos, as outras o `ProposalStatusView`. As perguntas estão em `proposalQuestions.ts` (o teste compara-as com `api/proposal-questions.json`). Fotografias da vistoria e do KYC passam por `imageCompression.ts` (JPEG/PNG acima de 4 MB → 2560 px, qualidade 0,85; HEIC igual; acima de 10 MB não se envia). O "Adquirir apólice" do detalhe da cotação abre a criação; `/cliente/perfil` aceita `?voltar=/cliente/…`. Os testes Playwright partilham a API simulada de `web/e2e/proposalMocks.ts`.
 - **Fornecedores reais de SMS e WhatsApp** ainda não foram escolhidos: no Sprint 1 só há mocks (questão no S1-03).
 - **Contrato OpenAPI** (S0-04): `api/openapi.yaml` é gerado, não se edita à mão. Regenerar com `cd backend && ./mvnw -B -Popenapi verify` (usa o `OpenApiExportIT`, precisa de Docker); `./scripts/check-openapi.sh` falha se estiver desactualizado.
-- **SIMO:** até haver o algoritmo e o layout oficiais, o pagamento por referência funciona com o mock `MOCK_SIMO_V1` e o simulador `simo-mock` (S5-07, S5-08), em `local`, `test` e `staging`; em `prod` é proibido. **Bloqueadas:** S5-13 e S5-14 (algoritmo e layout reais) — pedir ao proprietário do produto, que os obtém do banco da seguradora ao aderir ao serviço de cobrança.
+- **Pagamento por referência (Ponto24):** o algoritmo da referência e os layouts dos ficheiros MEPS e BMEPS da InterBancos estão em `docs/specs/interbancos/` (ADR-007); o S5-07 e o S5-08 seguem-nos exactamente e o que a especificação não esclarecer vai para "Questões". Os exemplos oficiais `.txt` têm `\r\n` e estão com `-text` no `.gitattributes`. O mock `MOCK_SIMO_V1` e o `simo-mock` deixaram de existir; em local e QA usa-se o `ponto24-mock` (S5-08). O e-Mola e o cartão estão fora do âmbito. O alojamento precisa de IP público de saída fixo para o registo M-Pesa (S6-08).
 
 ## Fonte de verdade
 
