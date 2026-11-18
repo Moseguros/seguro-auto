@@ -295,16 +295,20 @@ public class SettingsValidator {
         };
     }
 
-    /** Chave RSA pública em PEM ({@code BEGIN PUBLIC KEY}) ou em Base64 DER (X.509 SubjectPublicKeyInfo). */
+    /**
+     * Chave RSA pública em PEM ({@code BEGIN PUBLIC KEY}; o texto fora das linhas {@code BEGIN}/{@code END}
+     * é ignorado, RFC 7468 §2, como no {@code MpesaTokenFactory}) ou em Base64 DER (X.509 SubjectPublicKeyInfo).
+     */
     static boolean isRsaPublicKey(String value) {
         String body = value.strip();
-        if (body.startsWith("-----BEGIN PUBLIC KEY-----")) {
-            int end = body.indexOf("-----END PUBLIC KEY-----");
+        int begin = body.indexOf("-----BEGIN PUBLIC KEY-----");
+        if (begin >= 0) {
+            int end = body.indexOf("-----END PUBLIC KEY-----", begin);
             if (end < 0) {
                 return false;
             }
-            body = body.substring("-----BEGIN PUBLIC KEY-----".length(), end);
-        } else if (body.startsWith("-----")) {
+            body = body.substring(begin + "-----BEGIN PUBLIC KEY-----".length(), end);
+        } else if (body.contains("-----")) {
             return false;
         }
         try {

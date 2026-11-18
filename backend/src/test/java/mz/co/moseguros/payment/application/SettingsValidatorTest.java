@@ -233,6 +233,9 @@ class SettingsValidatorTest {
         String der = pem.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "")
                 .replaceAll("\\s", "");
         assertThat(codes(validator.validateSecrets(PaymentMethod.MPESA, Map.of("publicKey", der), mpesa()))).isEmpty();
+        // PEM com uma linha de comentário antes do BEGIN (a chave do mpesa-mock, S5-03)
+        assertThat(codes(validator.validateSecrets(PaymentMethod.MPESA,
+                Map.of("publicKey", "# Chave só para o simulador.\n" + pem), mpesa()))).isEmpty();
 
         Map<String, String> bad = new LinkedHashMap<>();
         bad.put("publicKey", "not-a-key");
