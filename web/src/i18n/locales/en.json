@@ -247,7 +247,21 @@
     "CLIENT_ACCOUNT_DISABLED": "This customer's account is disabled. Contact MoSeguros support.",
     "PAYMENT_METHOD_NOT_FOUND": "Payment method not found.",
     "PAYMENT_METHOD_INCOMPLETE": "Some details are missing to enable this payment method. Fix the highlighted fields.",
-    "SECRET_STORE_UNAVAILABLE": "The secret store is unavailable. Nothing was saved; try again in a moment."
+    "SECRET_STORE_UNAVAILABLE": "The secret store is unavailable. Nothing was saved; try again in a moment.",
+    "IDEMPOTENCY_KEY_REQUIRED": "The request could not be identified. Try again.",
+    "IDEMPOTENCY_KEY_REUSED": "This request was already sent with other data. Reload the page and try again.",
+    "PAYMENT_TARGET_NOT_PAYABLE": "This proposal can no longer be paid.",
+    "PAYMENT_TARGET_ALREADY_PAID": "This proposal is already paid.",
+    "PAYMENT_METHOD_NOT_AVAILABLE": "This payment method is not available for this insurer or this amount.",
+    "PAYMENT_IN_PROGRESS": "An M-Pesa payment is already in progress. Confirm it on your phone or wait.",
+    "PAYMENT_INTENT_NOT_FOUND": "Payment not found.",
+    "NOT_A_REFERENCE_PAYMENT": "This payment is not by entity and reference.",
+    "REFERENCE_NOT_ACTIVE": "This reference is no longer active.",
+    "REFERENCE_SMS_RATE_LIMITED": "You have already sent this reference by SMS 3 times.",
+    "REFERENCE_GENERATION_FAILED": "The reference could not be generated. Try again in a moment.",
+    "CUSTOMER_HAS_NO_MSISDN": "The customer has no mobile number to receive the link.",
+    "PAYMENT_LINK_RATE_LIMITED": "You have already sent the payment link 3 times in the last 24 hours.",
+    "EXPORT_TOO_LARGE": "The export has too many rows. Use narrower filters."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -348,7 +362,35 @@
     "DIRECTORY_CONFLICT": "The inbound, processed and error folders must be different.",
     "INVALID_PUBLIC_KEY": "Invalid public key (RSA in PEM or Base64).",
     "MIN_GREATER_THAN_MAX": "The minimum cannot be greater than the maximum.",
-    "ENTITY_IN_USE": "This entity is already used by another insurer."
+    "ENTITY_IN_USE": "This entity is already used by another insurer.",
+    "MSISDN_NOT_MPESA": "This is not an M-Pesa number (it must start with 84 or 85).",
+    "INVALID_UUID": "Invalid identifier."
+  },
+  "paymentStatus": {
+    "CREATED": "Created",
+    "PENDING": "Pending",
+    "UNKNOWN": "Being confirmed",
+    "SUCCEEDED": "Paid",
+    "FAILED": "Failed",
+    "EXPIRED": "Expired",
+    "CANCELLED": "Cancelled",
+    "REFUNDED": "Refunded"
+  },
+  "paymentMethod": {
+    "MPESA": "M-Pesa",
+    "BANK_REFERENCE": "Entity and reference"
+  },
+  "paymentFailure": {
+    "CUSTOMER_CANCELLED": "Cancelled on the phone.",
+    "INSUFFICIENT_BALANCE": "Insufficient balance.",
+    "INVALID_MSISDN": "Invalid M-Pesa number.",
+    "PROVIDER_REJECTED": "The payment was declined.",
+    "PROVIDER_CONFIG_ERROR": "The insurer's payment method has a configuration problem.",
+    "PROVIDER_UNAVAILABLE": "The payment service is unavailable.",
+    "TIMEOUT_EXPIRED": "The payment was not confirmed in time.",
+    "EXPIRED": "The payment deadline has passed.",
+    "SUPERSEDED": "Replaced by another payment.",
+    "MANUAL": "Resolved by the insurer."
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

@@ -2009,6 +2009,129 @@ class AppLocalizationsEn extends AppLocalizations {
       'This entity is already used by another insurer.';
 
   @override
+  String get errorIdempotencyKeyRequired =>
+      'The request could not be identified. Try again.';
+
+  @override
+  String get errorIdempotencyKeyReused =>
+      'This request was already sent with other data. Go back and try again.';
+
+  @override
+  String get errorPaymentTargetNotPayable =>
+      'This proposal can no longer be paid.';
+
+  @override
+  String get errorPaymentTargetAlreadyPaid => 'This proposal is already paid.';
+
+  @override
+  String get errorPaymentMethodNotAvailable =>
+      'This payment method is not available for this insurer or this amount.';
+
+  @override
+  String get errorPaymentInProgress =>
+      'An M-Pesa payment is already in progress. Confirm it on your phone or wait.';
+
+  @override
+  String get errorPaymentIntentNotFound => 'Payment not found.';
+
+  @override
+  String get errorNotAReferencePayment =>
+      'This payment is not by entity and reference.';
+
+  @override
+  String get errorReferenceNotActive => 'This reference is no longer active.';
+
+  @override
+  String get errorReferenceSmsRateLimited =>
+      'You have already sent this reference by SMS 3 times.';
+
+  @override
+  String get errorReferenceGenerationFailed =>
+      'The reference could not be generated. Try again in a moment.';
+
+  @override
+  String get errorCustomerHasNoMsisdn =>
+      'The customer has no mobile number to receive the link.';
+
+  @override
+  String get errorPaymentLinkRateLimited =>
+      'You have already sent the payment link 3 times in the last 24 hours.';
+
+  @override
+  String get errorExportTooLarge =>
+      'The export has too many rows. Use narrower filters.';
+
+  @override
+  String get validationMsisdnNotMpesa =>
+      'This is not an M-Pesa number (it must start with 84 or 85).';
+
+  @override
+  String get validationInvalidUuid => 'Invalid identifier.';
+
+  @override
+  String get paymentStatusCreated => 'Created';
+
+  @override
+  String get paymentStatusPending => 'Pending';
+
+  @override
+  String get paymentStatusUnknown => 'Being confirmed';
+
+  @override
+  String get paymentStatusSucceeded => 'Paid';
+
+  @override
+  String get paymentStatusFailed => 'Failed';
+
+  @override
+  String get paymentStatusExpired => 'Expired';
+
+  @override
+  String get paymentStatusCancelled => 'Cancelled';
+
+  @override
+  String get paymentStatusRefunded => 'Refunded';
+
+  @override
+  String get paymentMethodMpesa => 'M-Pesa';
+
+  @override
+  String get paymentMethodBankReference => 'Entity and reference';
+
+  @override
+  String get paymentFailureCustomerCancelled => 'Cancelled on the phone.';
+
+  @override
+  String get paymentFailureInsufficientBalance => 'Insufficient balance.';
+
+  @override
+  String get paymentFailureInvalidMsisdn => 'Invalid M-Pesa number.';
+
+  @override
+  String get paymentFailureProviderRejected => 'The payment was declined.';
+
+  @override
+  String get paymentFailureProviderConfigError =>
+      'The insurer\'s payment method has a configuration problem.';
+
+  @override
+  String get paymentFailureProviderUnavailable =>
+      'The payment service is unavailable.';
+
+  @override
+  String get paymentFailureTimeoutExpired =>
+      'The payment was not confirmed in time.';
+
+  @override
+  String get paymentFailureExpired => 'The payment deadline has passed.';
+
+  @override
+  String get paymentFailureSuperseded => 'Replaced by another payment.';
+
+  @override
+  String get paymentFailureManual => 'Resolved by the insurer.';
+
+  @override
   String get proposalUnderwritingFailureAutoAcceptDisabled =>
       'Automatic acceptance is turned off for the product';
 

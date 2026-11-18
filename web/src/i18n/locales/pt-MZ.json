@@ -247,7 +247,21 @@
     "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros.",
     "PAYMENT_METHOD_NOT_FOUND": "Forma de pagamento não encontrada.",
     "PAYMENT_METHOD_INCOMPLETE": "Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.",
-    "SECRET_STORE_UNAVAILABLE": "O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos."
+    "SECRET_STORE_UNAVAILABLE": "O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.",
+    "IDEMPOTENCY_KEY_REQUIRED": "O pedido não pôde ser identificado. Tente de novo.",
+    "IDEMPOTENCY_KEY_REUSED": "Este pedido já foi enviado com outros dados. Recarregue a página e tente de novo.",
+    "PAYMENT_TARGET_NOT_PAYABLE": "Esta proposta já não pode ser paga.",
+    "PAYMENT_TARGET_ALREADY_PAID": "Esta proposta já está paga.",
+    "PAYMENT_METHOD_NOT_AVAILABLE": "Esta forma de pagamento não está disponível para esta seguradora ou este montante.",
+    "PAYMENT_IN_PROGRESS": "Já há um pagamento M-Pesa em curso. Confirme-o no telemóvel ou aguarde.",
+    "PAYMENT_INTENT_NOT_FOUND": "Pagamento não encontrado.",
+    "NOT_A_REFERENCE_PAYMENT": "Este pagamento não é por entidade e referência.",
+    "REFERENCE_NOT_ACTIVE": "Esta referência já não está activa.",
+    "REFERENCE_SMS_RATE_LIMITED": "Já enviou esta referência por SMS 3 vezes.",
+    "REFERENCE_GENERATION_FAILED": "Não foi possível gerar a referência. Tente de novo dentro de momentos.",
+    "CUSTOMER_HAS_NO_MSISDN": "O cliente não tem telemóvel registado para receber o link.",
+    "PAYMENT_LINK_RATE_LIMITED": "Já enviou o link de pagamento 3 vezes nas últimas 24 horas.",
+    "EXPORT_TOO_LARGE": "A exportação tem demasiadas linhas. Use filtros mais estreitos."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -348,7 +362,35 @@
     "DIRECTORY_CONFLICT": "As pastas de entrada, de processados e de erros têm de ser diferentes.",
     "INVALID_PUBLIC_KEY": "Chave pública inválida (RSA em PEM ou Base64).",
     "MIN_GREATER_THAN_MAX": "O valor mínimo não pode ser maior que o máximo.",
-    "ENTITY_IN_USE": "Esta entidade já está a ser usada por outra seguradora."
+    "ENTITY_IN_USE": "Esta entidade já está a ser usada por outra seguradora.",
+    "MSISDN_NOT_MPESA": "Este número não é M-Pesa (tem de começar por 84 ou 85).",
+    "INVALID_UUID": "Identificador inválido."
+  },
+  "paymentStatus": {
+    "CREATED": "Criado",
+    "PENDING": "Pendente",
+    "UNKNOWN": "A confirmar",
+    "SUCCEEDED": "Pago",
+    "FAILED": "Falhado",
+    "EXPIRED": "Expirado",
+    "CANCELLED": "Cancelado",
+    "REFUNDED": "Reembolsado"
+  },
+  "paymentMethod": {
+    "MPESA": "M-Pesa",
+    "BANK_REFERENCE": "Entidade e referência"
+  },
+  "paymentFailure": {
+    "CUSTOMER_CANCELLED": "Cancelado no telemóvel.",
+    "INSUFFICIENT_BALANCE": "Saldo insuficiente.",
+    "INVALID_MSISDN": "Número M-Pesa inválido.",
+    "PROVIDER_REJECTED": "O pagamento foi recusado.",
+    "PROVIDER_CONFIG_ERROR": "A forma de pagamento da seguradora tem um problema de configuração.",
+    "PROVIDER_UNAVAILABLE": "O serviço de pagamento não está disponível.",
+    "TIMEOUT_EXPIRED": "O pagamento não foi confirmado a tempo.",
+    "EXPIRED": "O prazo para pagar terminou.",
+    "SUPERSEDED": "Substituído por outro pagamento.",
+    "MANUAL": "Resolvido pela seguradora."
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
