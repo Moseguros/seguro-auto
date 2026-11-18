@@ -37,5 +37,5 @@ Estados de um ficheiro: `RECEIVED → PARSED → PUBLISHED → DONE`, ou `ERROR`
 ## Testes
 
 - Unitários (`*Test`): `FileValidatorTest`, `SourceRegistryTest`, `ServiceTokenProviderTest`, `StartupChecksTest`.
-- Integração (`*IT`, Testcontainers): `FileProcessingIT`, `SourceLockIT` (Postgres com `src/test/resources/db/init-roles.sql`, `rabbitmq:4.1-management`, `atmoz/sftp` com o `src/test/resources/sftp/sshd_config` que regista as aberturas de ficheiros, backend simulado com WireMock) e `VaultSecretReaderIT` (`hashicorp/vault:1.20.4`).
+- Integração (`*IT`, Testcontainers): `FileProcessingIT`, `SourceLockIT` (Postgres com `src/test/resources/db/init-roles.sql`, `rabbitmq:4.1-management`, `atmoz/sftp` com o `src/test/resources/sftp/sshd_config` e o `sftp-logged.sh`, que registam as aberturas de ficheiros em `/tmp/sftp.log`, backend simulado com WireMock) e `VaultSecretReaderIT` (`hashicorp/vault:1.20.4`).
 - Até ao S5-08 usam o leitor `TestStubParser` (formato `TEST_STUB`, só em `src/test`).

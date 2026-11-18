@@ -1,5 +1,7 @@
-# sshd_config do atmoz/sftp com o registo das operações SFTP (internal-sftp -l INFO): os testes do worker
-# contam os downloads ("open ... flags READ") no log do contentor (sshd -D -e escreve no stderr).
+# sshd_config do atmoz/sftp para os testes do worker: o servidor SFTP regista as operações em /tmp/sftp.log
+# (sftp-logged.sh) e os testes contam os downloads ("open ... flags READ"). Sem ChrootDirectory (dentro do
+# chroot o sftp-server não chega ao script nem ao registo): a raiz das pastas é a do utilizador (/home/demo),
+# e os caminhos relativos são os mesmos do compose.
 Protocol 2
 HostKey /etc/ssh/ssh_host_ed25519_key
 HostKey /etc/ssh/ssh_host_rsa_key
@@ -7,7 +9,6 @@ UseDNS no
 PermitRootLogin no
 X11Forwarding no
 AllowTcpForwarding no
-Subsystem sftp internal-sftp -l INFO
-ForceCommand internal-sftp -l INFO
-ChrootDirectory %h
+Subsystem sftp /usr/local/bin/sftp-logged.sh
+ForceCommand /usr/local/bin/sftp-logged.sh
 LogLevel INFO

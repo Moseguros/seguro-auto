@@ -3,7 +3,6 @@ package mz.co.moseguros.paymentworker.sftp;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -16,9 +15,16 @@ import java.util.Objects;
 import mz.co.moseguros.paymentcontracts.FileSourceDescriptor;
 import mz.co.moseguros.paymentcontracts.PollErrorCode;
 import mz.co.moseguros.paymentworker.config.WorkerProperties;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.auth.password.PasswordIdentityProvider;
+import org.apache.sshd.common.NamedResource;
+import org.apache.sshd.common.config.keys.FilePasswordProvider;
+import org.apache.sshd.common.keyprovider.KeyIdentityProvider;
+import org.apache.sshd.common.util.security.SecurityUtils;
 import org.apache.sshd.sftp.client.SftpClient;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
 import org.springframework.integration.sftp.session.SftpSession;
 import org.springframework.stereotype.Component;
@@ -37,6 +43,7 @@ import org.springframework.stereotype.Component;
 public class SftpSessions {
 
     static final Duration TIMEOUT = Duration.ofSeconds(30);
+    static final Duration CLOSE_TIMEOUT = Duration.ofSeconds(5);
 
     private final boolean allowUnknownHostKeys;
 
@@ -85,13 +92,18 @@ public class SftpSessions {
         factory.setPort(sftp.port());
         factory.setUser(sftp.username());
         factory.setTimeout((int) TIMEOUT.toMillis());
-        if (FileSourceDescriptor.Sftp.AUTH_KEY.equals(sftp.authType())) {
-            factory.setPrivateKey(new ByteArrayResource(credentials.privateKey().getBytes(StandardCharsets.UTF_8)));
-            if (credentials.passphrase() != null) {
-                factory.setPrivateKeyPassphrase(credentials.passphrase());
+        // O cliente SSH é nosso (para a verificação da chave do servidor): as credenciais configuram-se nele.
+        try {
+            if (FileSourceDescriptor.Sftp.AUTH_KEY.equals(sftp.authType())) {
+                client.setKeyIdentityProvider(KeyIdentityProvider.wrapKeyPairs(keyPairs(credentials)));
+            } else {
+                client.setPasswordIdentityProvider(PasswordIdentityProvider.wrapPasswords(credentials.password()));
             }
-        } else {
-            factory.setPassword(credentials.password());
+            client.start();
+        } catch (RuntimeException e) {
+            stop(client, factory);
+            throw new SftpException(PollErrorCode.SFTP_AUTH_FAILED, "Invalid SFTP credentials: "
+                    + e.getClass().getSimpleName());
         }
         try {
             SftpSession session = factory.getSession();
@@ -99,6 +111,23 @@ public class SftpSessions {
         } catch (RuntimeException e) {
             stop(client, factory);
             throw classify(e, verifier);
+        }
+    }
+
+    /** Pares de chaves da chave privada (PEM/OpenSSH), com a passphrase se houver. */
+    private static Iterable<KeyPair> keyPairs(Credentials credentials) {
+        try {
+            Iterable<KeyPair> pairs = SecurityUtils.getKeyPairResourceParser().loadKeyPairs(null,
+                    NamedResource.ofName("sftp.privateKey"),
+                    credentials.passphrase() == null ? FilePasswordProvider.EMPTY
+                            : FilePasswordProvider.of(credentials.passphrase()),
+                    credentials.privateKey());
+            if (pairs == null) {
+                throw new IllegalArgumentException("No key pair in sftp.privateKey");
+            }
+            return pairs;
+        } catch (IOException | GeneralSecurityException e) {
+            throw new IllegalArgumentException("sftp.privateKey could not be read: " + e.getClass().getSimpleName());
         }
     }
 
@@ -136,8 +165,9 @@ public class SftpSessions {
             // a fechar: nada a fazer
         }
         try {
-            client.stop();
-        } catch (RuntimeException ignored) {
+            // fecho gracioso: as ligações acabam antes de os executores do cliente pararem
+            client.close(false).await(CLOSE_TIMEOUT);
+        } catch (IOException | RuntimeException ignored) {
             // a fechar: nada a fazer
         }
     }

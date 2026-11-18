@@ -50,7 +50,7 @@ import org.testcontainers.utility.MountableFile;
 /**
  * Base dos testes de integração do worker (S5-09): Postgres com o {@code init-roles.sql} (a aplicação liga-se
  * como {@code moseguros_worker_user}, o Flyway como dono), RabbitMQ {@code rabbitmq:4.1-management}
- * (decisão D19), {@code atmoz/sftp} com o registo das operações SFTP, e o backend simulado com WireMock
+ * (decisão D19), {@code atmoz/sftp} com o registo das operações SFTP em {@code /tmp/sftp.log}, e o backend simulado com WireMock
  * (token de serviço e uma lista de fontes vazia: os testes chamam o {@code SourcePoller} directamente).
  * Uma fila de teste ligada a {@code payments.events} por {@code reference.#} recebe todas as mensagens.
  *
@@ -80,6 +80,8 @@ public abstract class WorkerITSupport {
             .withCommand(SFTP_USER + ":" + SFTP_PASSWORD + ":1001")
             .withCopyFileToContainer(MountableFile.forClasspathResource("sftp/sshd_config", 0644),
                     "/etc/ssh/sshd_config")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("sftp/sftp-logged.sh", 0755),
+                    "/usr/local/bin/sftp-logged.sh")
             .withExposedPorts(22)
             .waitingFor(Wait.forLogMessage(".*Server listening on.*", 1).withStartupTimeout(Duration.ofMinutes(2)));
     public static final WireMockServer BACKEND = new WireMockServer(wireMockConfig().dynamicPort());
@@ -192,9 +194,10 @@ public abstract class WorkerITSupport {
         }
     }
 
-    /** Downloads (aberturas para leitura) do ficheiro registados pelo servidor SFTP. */
+    /** Downloads (aberturas para leitura) do ficheiro registados pelo servidor SFTP ({@code /tmp/sftp.log}). */
     protected static int serverDownloads(String path) {
-        Matcher m = Pattern.compile("open \"/" + Pattern.quote(path) + "\" flags READ").matcher(SFTP.getLogs());
+        String logs = exec("sh", "-c", "cat /tmp/sftp.log 2>/dev/null || true");
+        Matcher m = Pattern.compile("open \"[^\"]*/" + Pattern.quote(path) + "\" flags READ").matcher(logs);
         int count = 0;
         while (m.find()) {
             count++;

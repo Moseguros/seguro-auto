@@ -127,12 +127,13 @@ class FileProcessingIT extends WorkerITSupport {
         assertThat(ls(dir + "/inbound")).isEmpty();
         assertThat(ls(dir + "/processed")).containsExactly("a.txt");
         assertThat(fileStatus(source.sourceId(), sha)).isEqualTo("DONE");
-        Map<String, Object> row = jdbc.queryForMap("select * from payment_worker.processed_file where sha256 = ?", sha);
+        Map<String, Object> row = jdbc.queryForMap(
+                "select * from payment_worker.processed_file where sha256 = ? and source_id = ?", sha, source.sourceId());
         assertThat(row).containsEntry("record_count", 2).containsEntry("total_amount", 575_000L)
                 .containsEntry("format_file_id", "1").containsEntry("created_by", "payment-file-worker");
         assertThat(jdbc.queryForObject("select count(*) from payment_worker.file_record r join "
-                + "payment_worker.processed_file f on f.id = r.file_id where f.sha256 = ? and r.published_at is not null",
-                Integer.class, sha)).isEqualTo(2);
+                + "payment_worker.processed_file f on f.id = r.file_id where f.sha256 = ? and f.source_id = ? "
+                + "and r.published_at is not null", Integer.class, sha, source.sourceId())).isEqualTo(2);
     }
 
     @Test
@@ -240,12 +241,12 @@ class FileProcessingIT extends WorkerITSupport {
             String first = stubFile("1", null, 100_000);
             put(dir + "/inbound/a.txt", first);
             assertThat(registry.refresh()).isTrue();
-            await().atMost(Duration.ofSeconds(20)).until(() -> "DONE".equals(statusOrNull(source, sha(first))));
+            await().dontCatchUncaughtExceptions().atMost(Duration.ofSeconds(20)).until(() -> "DONE".equals(statusOrNull(source, sha(first))));
 
             String second = stubFile("2", "1", 200_000);
             Instant put = Instant.now();
             put(dir + "/inbound/b.txt", second);
-            await().atMost(Duration.ofSeconds(15)).until(() -> "DONE".equals(statusOrNull(source, sha(second))));
+            await().dontCatchUncaughtExceptions().atMost(Duration.ofSeconds(15)).until(() -> "DONE".equals(statusOrNull(source, sha(second))));
             assertThat(Duration.between(put, Instant.now())).isLessThan(Duration.ofSeconds(2 + 5));
         } finally {
             BACKEND.stubFor(get(urlEqualTo("/internal/v1/payment-file-sources")).willReturn(okJson("{\"sources\":[]}")));
@@ -298,8 +299,8 @@ class FileProcessingIT extends WorkerITSupport {
         assertThat(result.filesRejected()).isEqualTo(1);
         assertThat(ls(dir + "/error")).containsExactly("a.txt");
         assertThat(fileStatus(source.sourceId(), sha(content))).isEqualTo("ERROR");
-        assertThat(jdbc.queryForObject("select error_code from payment_worker.processed_file where sha256 = ?",
-                String.class, sha(content))).isEqualTo("TRAILER_TOTAL_MISMATCH");
+        assertThat(jdbc.queryForObject("select error_code from payment_worker.processed_file where sha256 = ? and source_id = ?",
+                String.class, sha(content), source.sourceId())).isEqualTo("TRAILER_TOTAL_MISMATCH");
     }
 
     @Test
@@ -369,7 +370,7 @@ class FileProcessingIT extends WorkerITSupport {
         List<Map<String, Object>> rows = jdbc.queryForList("""
                 select r.line_no, r.published_at from payment_worker.file_record r
                   join payment_worker.processed_file f on f.id = r.file_id
-                 where f.sha256 = ? order by r.line_no""", sha);
+                 where f.sha256 = ? and f.source_id = ? order by r.line_no""", sha, source.sourceId());
         assertThat(rows.get(0).get("published_at")).isNotNull();
         assertThat(rows.get(1).get("published_at")).isNull();
         List<Received> firstMessages = drain();
