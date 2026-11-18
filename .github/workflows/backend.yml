@@ -4,13 +4,13 @@ on:
   pull_request:
     paths:
       - "backend/**"
-      - "infra/mocks/mpesa-mock/src/main/resources/keys/**" # MpesaMockKeyConsistencyTest
+      - "infra/mocks/mpesa-mock/**" # MpesaMockKeyConsistencyTest e testes do adaptador M-Pesa (S5-04)
       - ".github/workflows/backend.yml"
   push:
     branches: [main]
     paths:
       - "backend/**"
-      - "infra/mocks/mpesa-mock/src/main/resources/keys/**" # MpesaMockKeyConsistencyTest
+      - "infra/mocks/mpesa-mock/**" # MpesaMockKeyConsistencyTest e testes do adaptador M-Pesa (S5-04)
       - ".github/workflows/backend.yml"
 
 concurrency:
