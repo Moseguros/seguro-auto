@@ -21,6 +21,9 @@ tags:
   name: Document
 - description: Envio de mensagens e recibos de entrega
   name: Notification
+- description: "Apólices: emitidas automaticamente quando o pagamento da proposta\
+    \ é confirmado, com as prestações e o certificado"
+  name: Policy
 - description: "Catálogo: tabelas de referência, parâmetros da plataforma, formatos\
     \ de matrícula, produtos das seguradoras e catálogo público"
   name: Catalog
@@ -2825,6 +2828,124 @@ paths:
       summary: Consulta um pagamento da seguradora
       tags:
       - Payment
+  /api/v1/insurer/policies:
+    get:
+      description: "Permissão policy:read. Filtros: status repetível; productType;\
+        \ issuedFrom e issuedTo em datas de Africa/Maputo (inclusivas, sobre issuedAt);\
+        \ q = número AP-… exacto, matrícula ou parte do nome do tomador. Ordenaçã\
+        o issuedAt (defeito, desc), startAt ou endAt."
+      operationId: listInsurerPolicies
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyStatus"
+      - in: query
+        name: productType
+        required: false
+        schema:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+      - in: query
+        name: issuedFrom
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: issuedTo
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "issuedAt, startAt ou endAt, com ,asc ou ,desc"
+        example: "issuedAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInsurerPolicySummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as apólices da seguradora
+      tags:
+      - Policy
+  /api/v1/insurer/policies/{id}:
+    get:
+      description: Permissão policy:read. O detalhe da apólice com a linha temporal
+        (events) e a proposta de origem. De outra seguradora → 404 POLICY_NOT_FOUND.
+      operationId: getInsurerPolicy
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyDetailResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma apólice da seguradora
+      tags:
+      - Policy
   /api/v1/insurer/product-versions/{id}:
     get:
       description: Permissão product:read. Inclui as coberturas e os documentos.
@@ -4522,6 +4643,96 @@ paths:
       summary: Lista os pagamentos do cliente
       tags:
       - Payment
+  /api/v1/me/policies:
+    get:
+      description: "Permissão self:policies. As apólices do próprio cliente; status\
+        \ repetível (vazio = todas). Ordenação issuedAt (defeito, desc), startAt ou\
+        \ endAt."
+      operationId: listMyPolicies
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyStatus"
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "issuedAt, startAt ou endAt, com ,asc ou ,desc"
+        example: "issuedAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseMyPolicySummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as apólices do cliente
+      tags:
+      - Policy
+  /api/v1/me/policies/{id}:
+    get:
+      description: "Permissão self:policies. A apólice com as coberturas, as prestaç\
+        ões e o certificado (o código de verificação só vai dentro de verificationUrl).\
+        \ De outro cliente → 404 POLICY_NOT_FOUND."
+      operationId: getMyPolicy
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyDetailResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma apólice do cliente
+      tags:
+      - Policy
   /api/v1/me/profile:
     get:
       description: O documento e o NUIT vêm mascarados; os campos por preencher são
@@ -7262,6 +7473,11 @@ components:
       - validFrom
       - vehicleCategories
       - versionNo
+    CertificateStatus:
+      type: string
+      enum:
+      - VALID
+      - REVOKED
     Charge:
       type: object
       description: Encargo (imposto ou taxa) que a seguradora acrescenta ao prémio
@@ -7344,6 +7560,15 @@ components:
             $ref: "#/components/schemas/ContactResponse"
       required:
       - contacts
+    CoverStatus:
+      type: string
+      enum:
+      - COVERED
+      - NOT_STARTED
+      - ENDED
+      - SUSPENDED
+      - CANCELLED
+      - LAPSED
     CoverageRequest:
       type: object
       properties:
@@ -7511,6 +7736,13 @@ components:
       - code
       - deductibleType
       - mandatory
+    CoverageType:
+      type: string
+      enum:
+      - MTPL_ONLY
+      - COMPREHENSIVE
+      - TEMPORARY
+      - BORDER
     CreateBrokerProposalRequest:
       type: object
       properties:
@@ -8249,6 +8481,13 @@ components:
       - SUBMITTED
       - APPROVED
       - REJECTED
+    InstalmentStatus:
+      type: string
+      enum:
+      - DUE
+      - PAID
+      - OVERDUE
+      - CANCELLED
     InsurerBrandingResponse:
       type: object
       properties:
@@ -8475,6 +8714,54 @@ components:
       - reference
       - status
       - targetLabel
+    InsurerPolicySummaryResponse:
+      type: object
+      properties:
+        coverStatus:
+          $ref: "#/components/schemas/CoverStatus"
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        endAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        issuedAt:
+          type: string
+          format: date-time
+        number:
+          type: string
+          example: AP-2027-000123
+        plate:
+          type: string
+          example: ABC-123-MC
+        policyholderName:
+          type: string
+          example: Ana Maria Mussa
+        productName:
+          type: string
+          example: RC Automóvel
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/PolicyStatus"
+        totalPremium:
+          $ref: "#/components/schemas/Money"
+      required:
+      - coverStatus
+      - coverageType
+      - endAt
+      - id
+      - issuedAt
+      - number
+      - plate
+      - policyholderName
+      - productName
+      - startAt
+      - status
+      - totalPremium
     InsurerProfileRequest:
       type: object
       properties:
@@ -9362,6 +9649,48 @@ components:
           $ref: "#/components/schemas/KycState"
       required:
       - state
+    MyPolicySummaryResponse:
+      type: object
+      properties:
+        certificateReady:
+          type: boolean
+        coverStatus:
+          $ref: "#/components/schemas/CoverStatus"
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        endAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        insurer:
+          $ref: "#/components/schemas/PolicyInsurerRef"
+        number:
+          type: string
+          example: AP-2027-000123
+        productName:
+          type: string
+          example: RC Automóvel
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/PolicyStatus"
+        vehicle:
+          $ref: "#/components/schemas/PolicyVehicleRef"
+      required:
+      - certificateReady
+      - coverStatus
+      - coverageType
+      - endAt
+      - id
+      - insurer
+      - number
+      - productName
+      - startAt
+      - status
+      - vehicle
     Nuit:
       type: string
       description: "NUIT: 9 dígitos"
@@ -9845,6 +10174,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseInsurerPolicySummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsurerPolicySummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInsurerProposalSummaryResponse:
       type: object
       properties:
@@ -9921,6 +10273,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/KycCheckSummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseMyPolicySummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/MyPolicySummaryResponse"
         page:
           type: integer
           format: int32
@@ -10635,6 +11010,13 @@ components:
       - CHECKING_STATUS
       - PAY_BY_REFERENCE
       - NONE
+    PaymentPlan:
+      type: string
+      enum:
+      - FULL
+      - SEMIANNUAL
+      - QUARTERLY
+      - MONTHLY
     PaymentPurpose:
       type: string
       enum:
@@ -10828,6 +11210,260 @@ components:
             $ref: "#/components/schemas/PlatformSettingResponse"
       required:
       - settings
+    PolicyCertificate:
+      type: object
+      properties:
+        fileId:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+          example: CT-2027-0001234
+        status:
+          $ref: "#/components/schemas/CertificateStatus"
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+        verificationUrl:
+          type: string
+          example: https://moseguros.co.mz/v/Qm9hIHRhcmRlIHNyLg
+      required:
+      - id
+      - number
+      - status
+      - validFrom
+      - validTo
+      - verificationUrl
+    PolicyCoverage:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        code:
+          type: string
+          example: MTPL
+        deductibleAmount:
+          $ref: "#/components/schemas/Money"
+        deductiblePercent:
+          type: number
+          example: 10
+        deductibleType:
+          type: string
+          enum:
+          - NONE
+          - FIXED
+          - PERCENT
+        mandatory:
+          type: boolean
+        premium:
+          $ref: "#/components/schemas/Money"
+      required:
+      - code
+      - deductibleType
+      - mandatory
+      - premium
+    PolicyDetailResponse:
+      type: object
+      properties:
+        certificate:
+          $ref: "#/components/schemas/PolicyCertificate"
+        coverStatus:
+          $ref: "#/components/schemas/CoverStatus"
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyCoverage"
+        endAt:
+          type: string
+          format: date-time
+        events:
+          type: array
+          description: Só no detalhe da seguradora
+          items:
+            $ref: "#/components/schemas/PolicyTimelineEvent"
+        id:
+          type: string
+          format: uuid
+        instalments:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyInstalment"
+        insurer:
+          $ref: "#/components/schemas/PolicyInsurerRef"
+        issuedAt:
+          type: string
+          format: date-time
+        number:
+          type: string
+          example: AP-2027-000123
+        paymentPlan:
+          $ref: "#/components/schemas/PaymentPlan"
+        policyholderName:
+          type: string
+          example: Ana Maria Mussa
+        product:
+          $ref: "#/components/schemas/PolicyProductRef"
+        proposal:
+          $ref: "#/components/schemas/PolicyProposalRef"
+        renewalType:
+          $ref: "#/components/schemas/RenewalType"
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/PolicyStatus"
+        totalPremium:
+          $ref: "#/components/schemas/Money"
+        vehicle:
+          $ref: "#/components/schemas/PolicyVehicleRef"
+      required:
+      - coverStatus
+      - coverageType
+      - coverages
+      - endAt
+      - id
+      - instalments
+      - insurer
+      - issuedAt
+      - number
+      - paymentPlan
+      - policyholderName
+      - product
+      - renewalType
+      - startAt
+      - status
+      - totalPremium
+      - vehicle
+    PolicyEventType:
+      type: string
+      enum:
+      - ISSUED
+      - CERTIFICATE_ISSUED
+      - DOCUMENTS_READY
+    PolicyInstalment:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        dueDate:
+          type: string
+          format: date
+        paidAt:
+          type: string
+          format: date-time
+        seq:
+          type: integer
+          format: int32
+          example: 1
+        status:
+          $ref: "#/components/schemas/InstalmentStatus"
+      required:
+      - amount
+      - dueDate
+      - seq
+      - status
+    PolicyInsurerRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Seguradora Demo
+      required:
+      - id
+    PolicyProductRef:
+      type: object
+      properties:
+        name:
+          type: string
+          example: RC Automóvel
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+          example: MTPL_ONLY
+        versionId:
+          type: string
+          format: uuid
+      required:
+      - name
+      - type
+      - versionId
+    PolicyProposalRef:
+      type: object
+      description: Só no detalhe da seguradora
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+          example: PR-2027-000123
+      required:
+      - id
+    PolicyStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - SUSPENDED
+      - CANCELLED
+      - EXPIRED
+      - LAPSED
+    PolicyTimelineEvent:
+      type: object
+      description: Só no detalhe da seguradora
+      properties:
+        actorType:
+          type: string
+          enum:
+          - CUSTOMER
+          - STAFF
+          - SYSTEM
+        occurredAt:
+          type: string
+          format: date-time
+        type:
+          $ref: "#/components/schemas/PolicyEventType"
+      required:
+      - actorType
+      - occurredAt
+      - type
+    PolicyVehicleRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        make:
+          type: string
+          example: Toyota
+        model:
+          type: string
+          example: Corolla
+        plate:
+          type: string
+          example: ABC-123-MC
+        year:
+          type: integer
+          format: int32
+          example: 2018
+      required:
+      - id
+      - plate
     PolicyholderSource:
       type: string
       description: "PROFILE: tomador copiado do perfil do cliente; BROKER: preenchido\
@@ -12596,6 +13232,11 @@ components:
       - DOCUMENTS_INVALID
       - OTHER
       nullable: true
+    RenewalType:
+      type: string
+      enum:
+      - ANNUAL_RENEWABLE
+      - FIXED_TERM
     ReplaceCoveragesRequest:
       type: object
       properties:
