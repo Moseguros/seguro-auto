@@ -253,6 +253,8 @@ export function FileImportsPage() {
       <Box sx={{ width: '100%', minWidth: 0 }}>
         <DataGrid
           aria-label={t('insurerPayments.tabs.files')}
+          // Poucas linhas e muitas colunas: todas desenhadas (a ligação das excepções fica à mão).
+          disableVirtualization
           rows={rows}
           rowCount={total}
           columns={columns}
