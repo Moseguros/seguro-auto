@@ -152,6 +152,22 @@ class ModularityTest {
         }
     }
 
+    /**
+     * S6-03: verification usa só policy ({@code PolicyApi}, {@code PolicyIssued}), organization (nome da
+     * seguradora) e shared (modelo transversal §1: {@code verification → policy, organization}). Nenhum
+     * módulo depende do verification.
+     */
+    @Test
+    void verificationDependsOnPolicyAndOrganizationOnly() {
+        assertThat(dependenciesOf("verification")).contains("policy", "organization")
+                .isSubsetOf("shared", "policy", "organization");
+        assertThat(modules.stream()
+                .filter(m -> !m.getName().equals("verification"))
+                .filter(m -> dependenciesOf(m.getName()).contains("verification"))
+                .map(ApplicationModule::getName))
+                .isEmpty();
+    }
+
     private Set<String> dependenciesOf(String name) {
         ApplicationModule module = modules.getModuleByName(name).orElseThrow();
         return module.getDependencies(modules).stream()

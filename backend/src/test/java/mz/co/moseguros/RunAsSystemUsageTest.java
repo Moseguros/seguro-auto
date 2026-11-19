@@ -48,6 +48,24 @@ class RunAsSystemUsageTest {
         RUN_AS_SYSTEM_OWNERS.check(MAIN_CLASSES);
     }
 
+    /**
+     * S6-03: o verification não usa {@code @RunAsSystem}; as leituras entre âmbitos correm nos módulos donos
+     * ({@code PolicySystemLookups}, {@code OrganizationSystemLookups}) e o RLS do {@code check_log} aceita
+     * inserções em qualquer âmbito.
+     */
+    @Test
+    void verificationHasNoRunAsSystem() {
+        org.assertj.core.api.Assertions.assertThat(MAIN_CLASSES.stream()
+                        .filter(c -> c.getPackageName().startsWith("mz.co.moseguros.verification"))
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .isEmpty();
+        org.assertj.core.api.Assertions.assertThat(MAIN_CLASSES.stream()
+                        .filter(c -> c.getPackageName().startsWith("mz.co.moseguros.verification")))
+                .isNotEmpty();
+    }
+
     /** S2-01: o download e a limpeza de órfãos do document correm em SYSTEM, em classes permitidas. */
     @Test
     void documentSystemLookupsAndOrphanCleanupJobAreAllowed() {
