@@ -179,6 +179,10 @@ Class | Method | HTTP request | Description
 [*PaymentApi*](doc/PaymentApi.md) | [**sendReferenceSms**](doc/PaymentApi.md#sendreferencesms) | **POST** /api/v1/payment-intents/{id}/reference-sms | Envia a entidade e referência por SMS
 [*PaymentApi*](doc/PaymentApi.md) | [**testInsurerPaymentMethod**](doc/PaymentApi.md#testinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/test | Testa uma forma de pagamento
 [*PaymentApi*](doc/PaymentApi.md) | [**updateInsurerPaymentMethod**](doc/PaymentApi.md#updateinsurerpaymentmethod) | **PUT** /api/v1/insurer/payment-methods/{method} | Grava os dados de uma forma de pagamento
+[*PolicyApi*](doc/PolicyApi.md) | [**getInsurerPolicy**](doc/PolicyApi.md#getinsurerpolicy) | **GET** /api/v1/insurer/policies/{id} | Consulta uma apólice da seguradora
+[*PolicyApi*](doc/PolicyApi.md) | [**getMyPolicy**](doc/PolicyApi.md#getmypolicy) | **GET** /api/v1/me/policies/{id} | Consulta uma apólice do cliente
+[*PolicyApi*](doc/PolicyApi.md) | [**listInsurerPolicies**](doc/PolicyApi.md#listinsurerpolicies) | **GET** /api/v1/insurer/policies | Lista as apólices da seguradora
+[*PolicyApi*](doc/PolicyApi.md) | [**listMyPolicies**](doc/PolicyApi.md#listmypolicies) | **GET** /api/v1/me/policies | Lista as apólices do cliente
 [*ProposalApi*](doc/ProposalApi.md) | [**acceptProposal**](doc/ProposalApi.md#acceptproposal) | **POST** /api/v1/insurer/proposals/{id}/accept | Aceita uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
@@ -250,13 +254,16 @@ Class | Method | HTTP request | Description
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
+ - [CertificateStatus](doc/CertificateStatus.md)
  - [Charge](doc/Charge.md)
  - [ChargeValue](doc/ChargeValue.md)
  - [ConfirmSignatureRequest](doc/ConfirmSignatureRequest.md)
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
+ - [CoverStatus](doc/CoverStatus.md)
  - [CoverageRequest](doc/CoverageRequest.md)
  - [CoverageResponse](doc/CoverageResponse.md)
+ - [CoverageType](doc/CoverageType.md)
  - [CreateBrokerProposalRequest](doc/CreateBrokerProposalRequest.md)
  - [CreateBrokerQuoteRequest](doc/CreateBrokerQuoteRequest.md)
  - [CreateDriverRequest](doc/CreateDriverRequest.md)
@@ -283,6 +290,7 @@ Class | Method | HTTP request | Description
  - [InspectionResponse](doc/InspectionResponse.md)
  - [InspectionReview](doc/InspectionReview.md)
  - [InspectionStatus](doc/InspectionStatus.md)
+ - [InstalmentStatus](doc/InstalmentStatus.md)
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
  - [InsurerInspectionSummaryResponse](doc/InsurerInspectionSummaryResponse.md)
  - [InsurerKycCheckResponse](doc/InsurerKycCheckResponse.md)
@@ -290,6 +298,7 @@ Class | Method | HTTP request | Description
  - [InsurerPaymentDetail](doc/InsurerPaymentDetail.md)
  - [InsurerPaymentEvent](doc/InsurerPaymentEvent.md)
  - [InsurerPaymentSummary](doc/InsurerPaymentSummary.md)
+ - [InsurerPolicySummaryResponse](doc/InsurerPolicySummaryResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
  - [InsurerProposalDriver](doc/InsurerProposalDriver.md)
@@ -322,6 +331,7 @@ Class | Method | HTTP request | Description
  - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
  - [MyKycResponse](doc/MyKycResponse.md)
+ - [MyPolicySummaryResponse](doc/MyPolicySummaryResponse.md)
  - [OrganizationResponse](doc/OrganizationResponse.md)
  - [OrganizationSummaryResponse](doc/OrganizationSummaryResponse.md)
  - [OtpChallengeResponse](doc/OtpChallengeResponse.md)
@@ -336,10 +346,12 @@ Class | Method | HTTP request | Description
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
  - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
  - [PageResponseInsurerPaymentSummary](doc/PageResponseInsurerPaymentSummary.md)
+ - [PageResponseInsurerPolicySummaryResponse](doc/PageResponseInsurerPolicySummaryResponse.md)
  - [PageResponseInsurerProposalSummaryResponse](doc/PageResponseInsurerProposalSummaryResponse.md)
  - [PageResponseIntentView](doc/PageResponseIntentView.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
+ - [PageResponseMyPolicySummaryResponse](doc/PageResponseMyPolicySummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponsePaymentExceptionSummary](doc/PageResponsePaymentExceptionSummary.md)
  - [PageResponsePaymentFileImport](doc/PageResponsePaymentFileImport.md)
@@ -369,6 +381,7 @@ Class | Method | HTTP request | Description
  - [PaymentMethodsResponse](doc/PaymentMethodsResponse.md)
  - [PaymentNextAction](doc/PaymentNextAction.md)
  - [PaymentNextActionType](doc/PaymentNextActionType.md)
+ - [PaymentPlan](doc/PaymentPlan.md)
  - [PaymentPurpose](doc/PaymentPurpose.md)
  - [PaymentQueueStatus](doc/PaymentQueueStatus.md)
  - [PaymentResolution](doc/PaymentResolution.md)
@@ -382,6 +395,17 @@ Class | Method | HTTP request | Description
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
  - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
+ - [PolicyCertificate](doc/PolicyCertificate.md)
+ - [PolicyCoverage](doc/PolicyCoverage.md)
+ - [PolicyDetailResponse](doc/PolicyDetailResponse.md)
+ - [PolicyEventType](doc/PolicyEventType.md)
+ - [PolicyInstalment](doc/PolicyInstalment.md)
+ - [PolicyInsurerRef](doc/PolicyInsurerRef.md)
+ - [PolicyProductRef](doc/PolicyProductRef.md)
+ - [PolicyProposalRef](doc/PolicyProposalRef.md)
+ - [PolicyStatus](doc/PolicyStatus.md)
+ - [PolicyTimelineEvent](doc/PolicyTimelineEvent.md)
+ - [PolicyVehicleRef](doc/PolicyVehicleRef.md)
  - [PolicyholderSource](doc/PolicyholderSource.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [ProductDocumentResponse](doc/ProductDocumentResponse.md)
@@ -449,6 +473,7 @@ Class | Method | HTTP request | Description
  - [RejectKycCheckRequest](doc/RejectKycCheckRequest.md)
  - [RejectProposalRequest](doc/RejectProposalRequest.md)
  - [RejectionReasonCode](doc/RejectionReasonCode.md)
+ - [RenewalType](doc/RenewalType.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOnSiteInspectionRequest](doc/RequestOnSiteInspectionRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)

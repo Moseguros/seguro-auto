@@ -11,6 +11,7 @@ lib/src/api/meta_api.dart
 lib/src/api/notification_api.dart
 lib/src/api/organization_api.dart
 lib/src/api/payment_api.dart
+lib/src/api/policy_api.dart
 lib/src/api/proposal_api.dart
 lib/src/api/rating_api.dart
 lib/src/api/vehicle_api.dart
@@ -37,13 +38,16 @@ lib/src/model/broker_proposal_vehicle_request.dart
 lib/src/model/broker_vehicle_request.dart
 lib/src/model/catalog_insurer_response.dart
 lib/src/model/catalog_product_response.dart
+lib/src/model/certificate_status.dart
 lib/src/model/charge.dart
 lib/src/model/charge_value.dart
 lib/src/model/confirm_signature_request.dart
 lib/src/model/contact_response.dart
 lib/src/model/contacts_response.dart
+lib/src/model/cover_status.dart
 lib/src/model/coverage_request.dart
 lib/src/model/coverage_response.dart
+lib/src/model/coverage_type.dart
 lib/src/model/create_broker_proposal_request.dart
 lib/src/model/create_broker_quote_request.dart
 lib/src/model/create_driver_request.dart
@@ -71,6 +75,7 @@ lib/src/model/inspection_photo_response.dart
 lib/src/model/inspection_response.dart
 lib/src/model/inspection_review.dart
 lib/src/model/inspection_status.dart
+lib/src/model/instalment_status.dart
 lib/src/model/insurer_branding_response.dart
 lib/src/model/insurer_inspection_summary_response.dart
 lib/src/model/insurer_kyc_check_response.dart
@@ -78,6 +83,7 @@ lib/src/model/insurer_payment_bank_reference.dart
 lib/src/model/insurer_payment_detail.dart
 lib/src/model/insurer_payment_event.dart
 lib/src/model/insurer_payment_summary.dart
+lib/src/model/insurer_policy_summary_response.dart
 lib/src/model/insurer_profile_request.dart
 lib/src/model/insurer_profile_response.dart
 lib/src/model/insurer_proposal_driver.dart
@@ -110,6 +116,7 @@ lib/src/model/me_organization.dart
 lib/src/model/me_response.dart
 lib/src/model/money.dart
 lib/src/model/my_kyc_response.dart
+lib/src/model/my_policy_summary_response.dart
 lib/src/model/organization_response.dart
 lib/src/model/organization_summary_response.dart
 lib/src/model/otp_challenge_response.dart
@@ -124,10 +131,12 @@ lib/src/model/page_response_catalog_product_response.dart
 lib/src/model/page_response_driver_response.dart
 lib/src/model/page_response_insurer_inspection_summary_response.dart
 lib/src/model/page_response_insurer_payment_summary.dart
+lib/src/model/page_response_insurer_policy_summary_response.dart
 lib/src/model/page_response_insurer_proposal_summary_response.dart
 lib/src/model/page_response_intent_view.dart
 lib/src/model/page_response_invitation_response.dart
 lib/src/model/page_response_kyc_check_summary_response.dart
+lib/src/model/page_response_my_policy_summary_response.dart
 lib/src/model/page_response_organization_summary_response.dart
 lib/src/model/page_response_payment_exception_summary.dart
 lib/src/model/page_response_payment_file_import.dart
@@ -157,6 +166,7 @@ lib/src/model/payment_method_version_request.dart
 lib/src/model/payment_methods_response.dart
 lib/src/model/payment_next_action.dart
 lib/src/model/payment_next_action_type.dart
+lib/src/model/payment_plan.dart
 lib/src/model/payment_purpose.dart
 lib/src/model/payment_queue_status.dart
 lib/src/model/payment_resolution.dart
@@ -170,6 +180,17 @@ lib/src/model/plate_format_response.dart
 lib/src/model/plate_formats_response.dart
 lib/src/model/platform_setting_response.dart
 lib/src/model/platform_settings_response.dart
+lib/src/model/policy_certificate.dart
+lib/src/model/policy_coverage.dart
+lib/src/model/policy_detail_response.dart
+lib/src/model/policy_event_type.dart
+lib/src/model/policy_instalment.dart
+lib/src/model/policy_insurer_ref.dart
+lib/src/model/policy_product_ref.dart
+lib/src/model/policy_proposal_ref.dart
+lib/src/model/policy_status.dart
+lib/src/model/policy_timeline_event.dart
+lib/src/model/policy_vehicle_ref.dart
 lib/src/model/policyholder_source.dart
 lib/src/model/problem_detail.dart
 lib/src/model/product_document_response.dart
@@ -237,6 +258,7 @@ lib/src/model/reject_inspection_request.dart
 lib/src/model/reject_kyc_check_request.dart
 lib/src/model/reject_proposal_request.dart
 lib/src/model/rejection_reason_code.dart
+lib/src/model/renewal_type.dart
 lib/src/model/replace_coverages_request.dart
 lib/src/model/request_on_site_inspection_request.dart
 lib/src/model/request_otp_request.dart

@@ -326,6 +326,14 @@ export interface CatalogProductResponse {
   versionNo: number;
 }
 
+export type CertificateStatus = (typeof CertificateStatus)[keyof typeof CertificateStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CertificateStatus = {
+  VALID: 'VALID',
+  REVOKED: 'REVOKED',
+} as const;
+
 export type ChargeType = (typeof ChargeType)[keyof typeof ChargeType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -383,6 +391,18 @@ export interface ContactResponse {
 export interface ContactsResponse {
   contacts: ContactResponse[];
 }
+
+export type CoverStatus = (typeof CoverStatus)[keyof typeof CoverStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CoverStatus = {
+  COVERED: 'COVERED',
+  NOT_STARTED: 'NOT_STARTED',
+  ENDED: 'ENDED',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED',
+  LAPSED: 'LAPSED',
+} as const;
 
 export type CoverageRequestCapitalType =
   (typeof CoverageRequestCapitalType)[keyof typeof CoverageRequestCapitalType];
@@ -548,6 +568,16 @@ export interface CoverageResponse {
   requiresCodes?: CoverageResponseRequiresCodesItem[];
   territorialScope?: string[];
 }
+
+export type CoverageType = (typeof CoverageType)[keyof typeof CoverageType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CoverageType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+} as const;
 
 export interface CreateBrokerProposalRequest {
   driver: BrokerProposalDriverRequest;
@@ -1066,6 +1096,16 @@ export const InspectionStatus = {
   REJECTED: 'REJECTED',
 } as const;
 
+export type InstalmentStatus = (typeof InstalmentStatus)[keyof typeof InstalmentStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InstalmentStatus = {
+  DUE: 'DUE',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  CANCELLED: 'CANCELLED',
+} as const;
+
 export interface InsurerBrandingResponse {
   /** @nullable */
   logoFileId: string | null;
@@ -1164,6 +1204,21 @@ export interface InsurerPaymentSummary {
   status: PaymentStatus;
   succeededAt?: string;
   targetLabel: string;
+}
+
+export interface InsurerPolicySummaryResponse {
+  coverStatus: CoverStatus;
+  coverageType: CoverageType;
+  endAt: string;
+  id: string;
+  issuedAt: string;
+  number: string;
+  plate: string;
+  policyholderName: string;
+  productName: string;
+  startAt: string;
+  status: PolicyStatus;
+  totalPremium: Money;
 }
 
 export interface InsurerProfileRequest {
@@ -1711,6 +1766,20 @@ export interface MyKycResponse {
   state: KycState;
 }
 
+export interface MyPolicySummaryResponse {
+  certificateReady: boolean;
+  coverStatus: CoverStatus;
+  coverageType: CoverageType;
+  endAt: string;
+  id: string;
+  insurer: PolicyInsurerRef;
+  number: string;
+  productName: string;
+  startAt: string;
+  status: PolicyStatus;
+  vehicle: PolicyVehicleRef;
+}
+
 /**
  * NUIT: 9 dígitos
  * @pattern ^\d{9}$
@@ -2064,6 +2133,13 @@ export interface PageResponseInsurerPaymentSummary {
   totalElements: number;
 }
 
+export interface PageResponseInsurerPolicySummaryResponse {
+  content: InsurerPolicySummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseInsurerProposalSummaryResponse {
   content: InsurerProposalSummaryResponse[];
   page: number;
@@ -2087,6 +2163,13 @@ export interface PageResponseInvitationResponse {
 
 export interface PageResponseKycCheckSummaryResponse {
   content: KycCheckSummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseMyPolicySummaryResponse {
+  content: MyPolicySummaryResponse[];
   page: number;
   size: number;
   totalElements: number;
@@ -2497,6 +2580,16 @@ export const PaymentNextActionType = {
   NONE: 'NONE',
 } as const;
 
+export type PaymentPlan = (typeof PaymentPlan)[keyof typeof PaymentPlan];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentPlan = {
+  FULL: 'FULL',
+  SEMIANNUAL: 'SEMIANNUAL',
+  QUARTERLY: 'QUARTERLY',
+  MONTHLY: 'MONTHLY',
+} as const;
+
 export type PaymentPurpose = (typeof PaymentPurpose)[keyof typeof PaymentPurpose];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -2634,6 +2727,145 @@ export interface PlatformSettingResponse {
 
 export interface PlatformSettingsResponse {
   settings: PlatformSettingResponse[];
+}
+
+export interface PolicyCertificate {
+  fileId?: string;
+  id: string;
+  number: string;
+  status: CertificateStatus;
+  validFrom: string;
+  validTo: string;
+  verificationUrl: string;
+}
+
+export type PolicyCoverageDeductibleType =
+  (typeof PolicyCoverageDeductibleType)[keyof typeof PolicyCoverageDeductibleType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyCoverageDeductibleType = {
+  NONE: 'NONE',
+  FIXED: 'FIXED',
+  PERCENT: 'PERCENT',
+} as const;
+
+export interface PolicyCoverage {
+  capital?: Money;
+  code: string;
+  deductibleAmount?: Money;
+  deductiblePercent?: number;
+  deductibleType: PolicyCoverageDeductibleType;
+  mandatory: boolean;
+  premium: Money;
+}
+
+export interface PolicyDetailResponse {
+  certificate?: PolicyCertificate;
+  coverStatus: CoverStatus;
+  coverageType: CoverageType;
+  coverages: PolicyCoverage[];
+  endAt: string;
+  /** Só no detalhe da seguradora */
+  events?: PolicyTimelineEvent[];
+  id: string;
+  instalments: PolicyInstalment[];
+  insurer: PolicyInsurerRef;
+  issuedAt: string;
+  number: string;
+  paymentPlan: PaymentPlan;
+  policyholderName: string;
+  product: PolicyProductRef;
+  proposal?: PolicyProposalRef;
+  renewalType: RenewalType;
+  startAt: string;
+  status: PolicyStatus;
+  totalPremium: Money;
+  vehicle: PolicyVehicleRef;
+}
+
+export type PolicyEventType = (typeof PolicyEventType)[keyof typeof PolicyEventType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyEventType = {
+  ISSUED: 'ISSUED',
+  CERTIFICATE_ISSUED: 'CERTIFICATE_ISSUED',
+  DOCUMENTS_READY: 'DOCUMENTS_READY',
+} as const;
+
+export interface PolicyInstalment {
+  amount: Money;
+  dueDate: string;
+  paidAt?: string;
+  seq: number;
+  status: InstalmentStatus;
+}
+
+export interface PolicyInsurerRef {
+  id: string;
+  name?: string;
+}
+
+export type PolicyProductRefType = (typeof PolicyProductRefType)[keyof typeof PolicyProductRefType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyProductRefType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface PolicyProductRef {
+  name: string;
+  type: PolicyProductRefType;
+  versionId: string;
+}
+
+/**
+ * Só no detalhe da seguradora
+ */
+export interface PolicyProposalRef {
+  id: string;
+  number?: string;
+}
+
+export type PolicyStatus = (typeof PolicyStatus)[keyof typeof PolicyStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  LAPSED: 'LAPSED',
+} as const;
+
+export type PolicyTimelineEventActorType =
+  (typeof PolicyTimelineEventActorType)[keyof typeof PolicyTimelineEventActorType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyTimelineEventActorType = {
+  CUSTOMER: 'CUSTOMER',
+  STAFF: 'STAFF',
+  SYSTEM: 'SYSTEM',
+} as const;
+
+/**
+ * Só no detalhe da seguradora
+ */
+export interface PolicyTimelineEvent {
+  actorType: PolicyTimelineEventActorType;
+  occurredAt: string;
+  type: PolicyEventType;
+}
+
+export interface PolicyVehicleRef {
+  id: string;
+  make?: string;
+  model?: string;
+  plate: string;
+  year?: number;
 }
 
 /**
@@ -3763,6 +3995,14 @@ export const RejectionReasonCode = {
   FALSE_DECLARATION: 'FALSE_DECLARATION',
   DOCUMENTS_INVALID: 'DOCUMENTS_INVALID',
   OTHER: 'OTHER',
+} as const;
+
+export type RenewalType = (typeof RenewalType)[keyof typeof RenewalType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RenewalType = {
+  ANNUAL_RENEWABLE: 'ANNUAL_RENEWABLE',
+  FIXED_TERM: 'FIXED_TERM',
 } as const;
 
 export interface ReplaceCoveragesRequest {
@@ -5090,6 +5330,32 @@ export const ExportInsurerPaymentsMethod = {
   BANK_REFERENCE: 'BANK_REFERENCE',
 } as const;
 
+export type ListInsurerPoliciesParams = {
+  status?: PolicyStatus[];
+  productType?: ListInsurerPoliciesProductType;
+  issuedFrom?: string;
+  issuedTo?: string;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * issuedAt, startAt ou endAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListInsurerPoliciesProductType =
+  (typeof ListInsurerPoliciesProductType)[keyof typeof ListInsurerPoliciesProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListInsurerPoliciesProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
 export type UploadProductVersionDocumentBodyDocType =
   (typeof UploadProductVersionDocumentBodyDocType)[keyof typeof UploadProductVersionDocumentBodyDocType];
 
@@ -5203,6 +5469,16 @@ export type ListMyPaymentsParams = {
   size?: number;
   /**
    * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListMyPoliciesParams = {
+  status?: PolicyStatus[];
+  page?: number;
+  size?: number;
+  /**
+   * issuedAt, startAt ou endAt, com ,asc ou ,desc
    */
   sort?: string;
 };
@@ -12539,6 +12815,260 @@ export function useGetInsurerPayment<
 }
 
 /**
+ * Permissão policy:read. Filtros: status repetível; productType; issuedFrom e issuedTo em datas de Africa/Maputo (inclusivas, sobre issuedAt); q = número AP-… exacto, matrícula ou parte do nome do tomador. Ordenação issuedAt (defeito, desc), startAt ou endAt.
+ * @summary Lista as apólices da seguradora
+ */
+export const listInsurerPolicies = (
+  params?: ListInsurerPoliciesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInsurerPolicySummaryResponse>(
+    { url: `/api/v1/insurer/policies`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListInsurerPoliciesQueryKey = (params?: ListInsurerPoliciesParams) => {
+  return [`/api/v1/insurer/policies`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInsurerPoliciesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerPoliciesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerPolicies>>> = ({ signal }) =>
+    listInsurerPolicies(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerPolicies>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerPoliciesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerPolicies>>
+>;
+export type ListInsurerPoliciesQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListInsurerPoliciesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as apólices da seguradora
+ */
+
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerPoliciesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão policy:read. O detalhe da apólice com a linha temporal (events) e a proposta de origem. De outra seguradora → 404 POLICY_NOT_FOUND.
+ * @summary Consulta uma apólice da seguradora
+ */
+export const getInsurerPolicy = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PolicyDetailResponse>(
+    { url: `/api/v1/insurer/policies/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerPolicyQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/policies/${id}`] as const;
+};
+
+export const getGetInsurerPolicyQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerPolicyQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerPolicy>>> = ({ signal }) =>
+    getInsurerPolicy(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerPolicy>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerPolicyQueryResult = NonNullable<Awaited<ReturnType<typeof getInsurerPolicy>>>;
+export type GetInsurerPolicyQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma apólice da seguradora
+ */
+
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerPolicyQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão product:read. Inclui as coberturas e os documentos.
  * @summary Consulta uma versão de um produto
  */
@@ -16728,6 +17258,248 @@ export function useListMyPayments<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getListMyPaymentsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:policies. As apólices do próprio cliente; status repetível (vazio = todas). Ordenação issuedAt (defeito, desc), startAt ou endAt.
+ * @summary Lista as apólices do cliente
+ */
+export const listMyPolicies = (
+  params?: ListMyPoliciesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseMyPolicySummaryResponse>(
+    { url: `/api/v1/me/policies`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyPoliciesQueryKey = (params?: ListMyPoliciesParams) => {
+  return [`/api/v1/me/policies`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyPoliciesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyPoliciesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPolicies>>> = ({ signal }) =>
+    listMyPolicies(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyPolicies>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyPoliciesQueryResult = NonNullable<Awaited<ReturnType<typeof listMyPolicies>>>;
+export type ListMyPoliciesQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyPoliciesParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as apólices do cliente
+ */
+
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyPoliciesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:policies. A apólice com as coberturas, as prestações e o certificado (o código de verificação só vai dentro de verificationUrl). De outro cliente → 404 POLICY_NOT_FOUND.
+ * @summary Consulta uma apólice do cliente
+ */
+export const getMyPolicy = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PolicyDetailResponse>(
+    { url: `/api/v1/me/policies/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetMyPolicyQueryKey = (id?: string) => {
+  return [`/api/v1/me/policies/${id}`] as const;
+};
+
+export const getGetMyPolicyQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyPolicyQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPolicy>>> = ({ signal }) =>
+    getMyPolicy(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyPolicy>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyPolicyQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPolicy>>>;
+export type GetMyPolicyQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getMyPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getMyPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma apólice do cliente
+ */
+
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyPolicyQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
