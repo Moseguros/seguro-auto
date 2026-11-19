@@ -2062,6 +2062,22 @@ class AppLocalizationsPt extends AppLocalizations {
       'A exportação tem demasiadas linhas. Use filtros mais estreitos.';
 
   @override
+  String get errorPaymentExceptionNotFound =>
+      'Excepção de pagamento não encontrada.';
+
+  @override
+  String get errorResolutionNotAllowed =>
+      'Esta resolução não é permitida para este tipo de excepção.';
+
+  @override
+  String get errorLinkIntentInvalid =>
+      'Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.';
+
+  @override
+  String get errorLinkAmountInsufficient =>
+      'O montante recebido é menor do que o do pagamento a associar.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Este número não é M-Pesa (tem de começar por 84 ou 85).';
 

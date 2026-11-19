@@ -3612,6 +3612,30 @@ abstract class AppLocalizations {
   /// **'A exportação tem demasiadas linhas. Use filtros mais estreitos.'**
   String get errorExportTooLarge;
 
+  /// No description provided for @errorPaymentExceptionNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Excepção de pagamento não encontrada.'**
+  String get errorPaymentExceptionNotFound;
+
+  /// No description provided for @errorResolutionNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta resolução não é permitida para este tipo de excepção.'**
+  String get errorResolutionNotAllowed;
+
+  /// No description provided for @errorLinkIntentInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.'**
+  String get errorLinkIntentInvalid;
+
+  /// No description provided for @errorLinkAmountInsufficient.
+  ///
+  /// In pt, this message translates to:
+  /// **'O montante recebido é menor do que o do pagamento a associar.'**
+  String get errorLinkAmountInsufficient;
+
   /// No description provided for @validationMsisdnNotMpesa.
   ///
   /// In pt, this message translates to:

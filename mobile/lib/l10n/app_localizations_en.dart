@@ -2062,6 +2062,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'The export has too many rows. Use narrower filters.';
 
   @override
+  String get errorPaymentExceptionNotFound => 'Payment exception not found.';
+
+  @override
+  String get errorResolutionNotAllowed =>
+      'This resolution is not allowed for this type of exception.';
+
+  @override
+  String get errorLinkIntentInvalid =>
+      'This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.';
+
+  @override
+  String get errorLinkAmountInsufficient =>
+      'The amount received is lower than the amount of the payment to link.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'This is not an M-Pesa number (it must start with 84 or 85).';
 

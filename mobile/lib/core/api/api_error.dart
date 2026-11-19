@@ -150,6 +150,10 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'CUSTOMER_HAS_NO_MSISDN' => l10n.errorCustomerHasNoMsisdn,
   'PAYMENT_LINK_RATE_LIMITED' => l10n.errorPaymentLinkRateLimited,
   'EXPORT_TOO_LARGE' => l10n.errorExportTooLarge,
+  'PAYMENT_EXCEPTION_NOT_FOUND' => l10n.errorPaymentExceptionNotFound,
+  'RESOLUTION_NOT_ALLOWED' => l10n.errorResolutionNotAllowed,
+  'LINK_INTENT_INVALID' => l10n.errorLinkIntentInvalid,
+  'LINK_AMOUNT_INSUFFICIENT' => l10n.errorLinkAmountInsufficient,
   _ => l10n.errorUnknown,
 };
 
