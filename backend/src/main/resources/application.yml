@@ -214,6 +214,12 @@ moseguros:
       uri: ${VAULT_URI:http://localhost:8200}
       token: ${VAULT_TOKEN:}
       mount: secret
+  # Pagamentos (S5-10 §5): uma fonte de ficheiros (BANK_REFERENCE activo) sem leitura com sucesso do
+  # SFTP há mais do que stale-after fica "parada" (stale_since, alerta PAYMENT_SOURCE_STALE). Mede a
+  # ligação, não a chegada de ficheiros (a frequência é combinada entre a seguradora e o banco).
+  payment:
+    file-source:
+      stale-after: PT15M
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada
