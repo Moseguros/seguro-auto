@@ -183,8 +183,10 @@ class PaymentExceptionIT {
     }
 
     void awaitProposal(UUID proposalId, String status) {
+        // desde o S6-01 a proposta paga passa logo a CONVERTED (apólice emitida automaticamente)
+        Object[] expected = "PAID".equals(status) ? new Object[] {"PAID", "CONVERTED"} : new Object[] {status};
         await().atMost(Duration.ofSeconds(15)).untilAsserted(() ->
-                assertThat(support.proposalRow(proposalId).get("status")).isEqualTo(status));
+                assertThat(support.proposalRow(proposalId).get("status")).isIn(expected));
     }
 
     // --- Tabela de resoluções ---

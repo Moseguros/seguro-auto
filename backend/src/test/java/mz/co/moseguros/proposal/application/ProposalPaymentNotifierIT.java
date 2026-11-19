@@ -128,7 +128,7 @@ class ProposalPaymentNotifierIT {
         UUID intentId = id(payReference(c.token(), proposal));
         inSystem(tx, () -> states.markSucceeded(intentId, null, ConfirmedBy.REFERENCE_FILE, null, "test"));
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
-                assertThat(support.proposalRow(proposal).get("status")).isEqualTo("PAID"));
+                assertThat(support.proposalRow(proposal).get("status")).isIn("PAID", "CONVERTED")); // S6-01
         return intentId;
     }
 

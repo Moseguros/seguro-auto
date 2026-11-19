@@ -47,6 +47,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  * Emissão automática da apólice (S6-01 §5), chamada pelo {@link ProposalPaidListener} em {@code SYSTEM}:
@@ -228,6 +229,9 @@ public class PolicyIssuanceService {
     }
 
     private Result rejected(FailureReason reason) {
+        // Nada a gravar. Uma leitura que falhou (ex.: PAYMENT_INTENT_NOT_FOUND) já marcou a transacção para
+        // rollback: marcá-la também aqui faz um rollback silencioso, sem UnexpectedRollbackException.
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         metrics.failure(reason);
         return new Result(Outcome.REJECTED, null, null);
     }
