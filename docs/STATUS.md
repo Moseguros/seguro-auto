@@ -1,6 +1,6 @@
 # Estado do projecto
 
-Actualizado em 18/11/2026.
+Actualizado em 19/11/2026.
 
 ## Onde estamos
 
@@ -80,24 +80,24 @@ As nove tarefas entraram juntas no `main` pelo PR de integração #47 (`task/S4-
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S5-01 Formas de pagamento por seguradora (BD, API, cofre de segredos) | S4 | em revisão (branch `task/S5-01-formas-pagamento`) |
-| S5-02 Núcleo de pagamentos: `payment_intent`, idempotência, estados, `PaymentSucceeded` → proposta `PAID` | S5-01 | em revisão (branch `task/S5-02-nucleo-pagamentos`) |
-| S5-03 Simulador `mpesa-mock` fiel à API Vodacom | S4 | em revisão (branch `task/S5-03-mpesa-mock`) |
-| S5-04 Adaptador M-Pesa (C2B, consulta, reversão) contra o simulador | S5-02, S5-03 | em revisão (branch `task/S5-04-adaptador-mpesa`) |
+| S5-01 Formas de pagamento por seguradora (BD, API, cofre de segredos) | S4 | concluída (no `main` pelo PR de integração #62) |
+| S5-02 Núcleo de pagamentos: `payment_intent`, idempotência, estados, `PaymentSucceeded` → proposta `PAID` | S5-01 | concluída (no `main` pelo PR de integração #62) |
+| S5-03 Simulador `mpesa-mock` fiel à API Vodacom | S4 | concluída (no `main` pelo PR de integração #62) |
+| S5-04 Adaptador M-Pesa (C2B, consulta, reversão) contra o simulador | S5-02, S5-03 | concluída (no `main` pelo PR de integração #62) |
 | S5-05 ~~Adaptadores e-Mola e cartão: interface + mock~~ | — | cancelada — e-Mola e cartão fora do âmbito (ADR-007) |
-| S5-06 Infra: RabbitMQ, SFTP local, Vault, `payment-contracts` | S4 | em revisão (branch `task/S5-06-infra-pagamentos`) |
-| S5-07 Referências Ponto24: gerador real (numeração de facturas por entidade, dígitos de controlo MOD 97) | S5-02 | em revisão (branch `task/S5-07-referencias-ponto24`) |
-| S5-08 Ficheiros de movimentos MEPS e BMEPS: leitores e simulador `ponto24-mock` | S5-07, S5-09 | em revisão (branch `task/S5-08-ficheiros-meps-bmeps`, empilhado no S5-07 com o S5-09 junto) |
-| S5-09 `payment-file-worker` (SFTP, leitura contínua, deduplicação, publicação) | S5-06 | em revisão (branch `task/S5-09-payment-file-worker`, empilhado no S5-06 com o S5-02 junto) |
-| S5-10 Consumidor, reconciliação e excepções | S5-02, S5-06, S5-07 | em revisão (branch `task/S5-10-reconciliacao`, empilhado no S5-07 com o S5-09 junto) |
-| S5-11 Ecrãs de pagamento do cliente (web e app) | S5-02, S5-04 | em revisão (branch `task/S5-11-correcoes-revisao`, empilhado no S5-04) |
-| S5-12 Web seguradora e admin: configuração, pagamentos, excepções, ficheiros, estado do worker | S5-01, S5-10 | em revisão (branch `task/S5-12-web-pagamentos-seguradora`, empilhado no `task/S5-10-reconciliacao-fix`) |
+| S5-06 Infra: RabbitMQ, SFTP local, Vault, `payment-contracts` | S4 | concluída (no `main` pelo PR de integração #62) |
+| S5-07 Referências Ponto24: gerador real (numeração de facturas por entidade, dígitos de controlo MOD 97) | S5-02 | concluída (no `main` pelo PR de integração #62) |
+| S5-08 Ficheiros de movimentos MEPS e BMEPS: leitores e simulador `ponto24-mock` | S5-07, S5-09 | concluída (no `main` pelo PR de integração #62) |
+| S5-09 `payment-file-worker` (SFTP, leitura contínua, deduplicação, publicação) | S5-06 | concluída (no `main` pelo PR de integração #62) |
+| S5-10 Consumidor, reconciliação e excepções | S5-02, S5-06, S5-07 | concluída (no `main` pelo PR de integração #62) |
+| S5-11 Ecrãs de pagamento do cliente (web e app) | S5-02, S5-04 | concluída (no `main` pelo PR de integração #62) |
+| S5-12 Web seguradora e admin: configuração, pagamentos, excepções, ficheiros, estado do worker | S5-01, S5-10 | concluída (no `main` pelo PR de integração #62) |
 | S5-13 ~~Algoritmo SIMO real de referências~~ | — | cancelada — absorvida pelo S5-07 (algoritmo em `docs/specs/interbancos/`) |
 | S5-14 ~~Layout SIMO real do ficheiro de liquidação~~ | — | cancelada — absorvida pelo S5-08 (layouts MEPS e BMEPS em `docs/specs/interbancos/`) |
 
 As fichas do Sprint 5 foram revistas em 18/11/2026 com as decisões do proprietário do produto (ADR-007, decisão D36): só M-Pesa (API oficial da Vodacom, credenciais por seguradora) e entidade e referência na rede Ponto24 da InterBancos; pagamento recebido → proposta `PAID` → apólice emitida automaticamente (S6-01) e e-mail ao cliente, ao mediador e à seguradora.
 
-As onze tarefas do Sprint 5 juntas, com os conflitos resolvidos e os ficheiros gerados verificados, estão no branch local de verificação `task/S5-integracao` (S5-12, que já contém S5-01, S5-02, S5-06, S5-07, S5-09 e S5-10, + S5-08 + S5-11, que já contém S5-03 e S5-04).
+As onze tarefas entraram juntas no `main` pelo PR de integração #62 (`task/S5-integracao`: S5-12, que já contém S5-01, S5-02, S5-06, S5-07, S5-09 e S5-10, + S5-08 + S5-11, que já contém S5-03 e S5-04).
 
 ### Sprint 6 — Emissão, verificação, notificações, Release 1
 
