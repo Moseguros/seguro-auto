@@ -363,7 +363,7 @@
     "INVALID_PUBLIC_KEY": "Chave pública inválida (RSA em PEM ou Base64).",
     "MIN_GREATER_THAN_MAX": "O valor mínimo não pode ser maior que o máximo.",
     "ENTITY_IN_USE": "Esta entidade já está a ser usada por outra seguradora.",
-    "MSISDN_NOT_MPESA": "Este número não é M-Pesa (tem de começar por 84 ou 85).",
+    "MSISDN_NOT_MPESA": "Use um número Vodacom (começado por 84 ou 85).",
     "INVALID_UUID": "Identificador inválido."
   },
   "paymentStatus": {
@@ -371,7 +371,7 @@
     "PENDING": "Pendente",
     "UNKNOWN": "A confirmar",
     "SUCCEEDED": "Pago",
-    "FAILED": "Falhado",
+    "FAILED": "Falhou",
     "EXPIRED": "Expirado",
     "CANCELLED": "Cancelado",
     "REFUNDED": "Reembolsado"
@@ -381,13 +381,13 @@
     "BANK_REFERENCE": "Entidade e referência"
   },
   "paymentFailure": {
-    "CUSTOMER_CANCELLED": "Cancelado no telemóvel.",
+    "CUSTOMER_CANCELLED": "Cancelou o pagamento no telemóvel.",
     "INSUFFICIENT_BALANCE": "Saldo insuficiente.",
-    "INVALID_MSISDN": "Número M-Pesa inválido.",
-    "PROVIDER_REJECTED": "O pagamento foi recusado.",
-    "PROVIDER_CONFIG_ERROR": "A forma de pagamento da seguradora tem um problema de configuração.",
-    "PROVIDER_UNAVAILABLE": "O serviço de pagamento não está disponível.",
-    "TIMEOUT_EXPIRED": "O pagamento não foi confirmado a tempo.",
+    "INVALID_MSISDN": "Este número não está registado no serviço de pagamento.",
+    "PROVIDER_REJECTED": "O pagamento foi recusado pelo operador.",
+    "PROVIDER_CONFIG_ERROR": "Esta forma de pagamento tem um problema do lado da seguradora. Escolha outra ou tente mais tarde.",
+    "PROVIDER_UNAVAILABLE": "O serviço de pagamento não está disponível. Tente mais tarde.",
+    "TIMEOUT_EXPIRED": "O pedido expirou sem confirmação.",
     "EXPIRED": "O prazo para pagar terminou.",
     "SUPERSEDED": "Substituído por outro pagamento.",
     "MANUAL": "Resolvido pela seguradora."
@@ -1950,7 +1950,6 @@
       "underReview": "A {{insurer}} está a analisar a sua proposta. Tem até {{date}} para responder.",
       "underReviewNoDate": "A {{insurer}} está a analisar a sua proposta.",
       "accepted": "Proposta aceite.",
-      "paymentSoon": "O pagamento fica disponível em breve.",
       "expiresAt": "Expira em {{date}}",
       "rejected": "A proposta não foi aceite.",
       "expired": "Esta proposta expirou.",
@@ -2548,5 +2547,103 @@
       "profileIncomplete": "O perfil deste cliente está incompleto. Preencha os dados do tomador.",
       "vehicleAlreadyRegistered": "Este cliente já tem um veículo com esta matrícula e outro chassis. Confirme o chassis."
     }
+  },
+  "payments": {
+    "title": "Pagar a proposta",
+    "summary": {
+      "proposal": "Proposta {{number}}",
+      "total": "Total a pagar",
+      "payBy": "Pagar até {{date}}",
+      "direct": "O pagamento é feito directamente à {{insurer}}. A MoSeguros não recebe dinheiro."
+    },
+    "method": {
+      "label": "Forma de pagamento",
+      "mpesaNumber": "Número M-Pesa",
+      "referenceHelp": "Recebe uma entidade e uma referência para pagar por e-banking ou app do banco, ATM, *124#, POS ou balcão."
+    },
+    "pay": {
+      "submit": "Adquirir apólice",
+      "notFound": "Proposta não encontrada.",
+      "backToProposals": "Ver as propostas",
+      "notPayable": "Esta proposta já não pode ser paga.",
+      "alreadyPaid": "Esta proposta já está paga.",
+      "backToProposal": "Ver a proposta",
+      "activeIntent": "Tem um pagamento em curso",
+      "viewPayment": "Ver pagamento",
+      "noMethods": "A seguradora ainda não tem formas de pagamento disponíveis. Contacte a seguradora.",
+      "methodUnavailable": "Esta forma de pagamento não está disponível agora. Escolha outra."
+    },
+    "intent": {
+      "notFound": "Pagamento não encontrado.",
+      "backToPayments": "Ver os meus pagamentos",
+      "preparing": "A preparar o pagamento…",
+      "reference": "Pagamento {{reference}}"
+    },
+    "await": {
+      "title": "Confirme o pagamento no seu telemóvel",
+      "step1": "1. Desbloqueie o telemóvel com o número {{msisdn}}.",
+      "step2": "2. Introduza o seu PIN M-Pesa no pedido que aparece.",
+      "step3": "3. Aguarde aqui a confirmação.",
+      "remaining": "Tempo para confirmar",
+      "stillWaiting": "Ainda não recebemos a resposta. Estamos a confirmar.",
+      "backToProposal": "Voltar à proposta"
+    },
+    "checking": {
+      "lead": "Ainda não temos a confirmação do operador.",
+      "dontPay": "Não volte a pagar",
+      "rest": ": estamos a confirmar e actualizamos esta página sozinhos.",
+      "nextCheck": "Próxima verificação às {{time}}"
+    },
+    "reference": {
+      "entity": "Entidade",
+      "reference": "Referência",
+      "amount": "Montante",
+      "copy": "Copiar {{label}}",
+      "copied": "Copiado",
+      "copyFailed": "Não foi possível copiar.",
+      "exactAmount": "Pague exactamente este montante. A rede recusa outro valor.",
+      "validUntil": "Válida até {{date}}",
+      "howTo": "Como pagar: no e-banking ou na app do seu banco, no ATM, pelo telemóvel (*124#), num POS ou ao balcão, escolha pagamento de serviços por entidade e referência e introduza os três dados acima.",
+      "confirmationInfo": "A confirmação chega quando o banco enviar o ficheiro de pagamentos à seguradora; lemos o ficheiro logo que chega. Pode demorar algumas horas. Não precisa de ficar nesta página. Vai receber um e-mail quando o pagamento for confirmado.",
+      "downloadPdf": "Descarregar PDF",
+      "sendSms": "Enviar por SMS"
+    },
+    "sms": {
+      "title": "Enviar a referência por SMS",
+      "msisdn": "Número de telemóvel",
+      "send": "Enviar",
+      "sent": "SMS enviado para {{sentTo}}",
+      "rateLimited": "Já enviou esta referência 3 vezes."
+    },
+    "outcome": {
+      "succeeded": "Pagamento confirmado",
+      "succeededText": "A sua apólice vai ser emitida em breve.",
+      "expired": "O prazo para este pagamento terminou.",
+      "cancelled": "Este pagamento foi substituído por outro.",
+      "refunded": "Este pagamento foi reembolsado.",
+      "viewProposal": "Ver proposta",
+      "chooseAnother": "Escolher outra forma de pagamento"
+    },
+    "list": {
+      "title": "Pagamentos",
+      "empty": "Ainda não tem pagamentos.",
+      "loadMore": "Carregar mais",
+      "date": "Data",
+      "target": "Proposta",
+      "insurer": "Seguradora",
+      "method": "Forma de pagamento",
+      "amount": "Montante",
+      "status": "Estado"
+    },
+    "link": {
+      "button": "Enviar link de pagamento ao cliente",
+      "confirmTitle": "Enviar link de pagamento",
+      "confirmText": "Vamos enviar um SMS ao cliente com o link para pagar. O cliente paga directamente à seguradora.",
+      "send": "Enviar",
+      "sent": "Link enviado para {{sentTo}}",
+      "rateLimited": "Já enviou o link 3 vezes nas últimas 24 horas. Tente dentro de {{minutes}} minutos.",
+      "noMsisdn": "O cliente não tem telemóvel registado."
+    },
+    "proposalPaid": "Pagamento recebido. A sua apólice vai ser emitida em breve."
   }
 }
