@@ -12,6 +12,9 @@ import '../features/inspection/inspection_screen.dart';
 import '../features/kyc/kyc_screen.dart';
 import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/payments/payment_intent_screen.dart';
+import '../features/payments/payment_screen.dart';
+import '../features/payments/payments_list_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/proposals/new_proposal_screen.dart';
 import '../features/proposals/proposal_screen.dart';
@@ -169,6 +172,8 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// | `/proposals/:id/inspection` | vistoria (barra: Início) |
 /// | `/proposals/:id/inspection/camera/:slot` (`?then=`) | câmara guiada, sem a barra |
 /// | `/identity` | verificação de identidade (barra: Início) |
+/// | `/proposals/:id/pay` | pagar uma proposta aceite (barra: Início) |
+/// | `/payments`, `/payments/:id` | os meus pagamentos e o acompanhamento (barra: Início; entrada no perfil) |
 /// | `/profile` (`?complete=1&from=`) | perfil (barra: Perfil) |
 final routerProvider = Provider<GoRouter>((ref) {
   // Volta a avaliar a redirecção quando a sessão ou a apresentação mudam.
@@ -311,6 +316,11 @@ final _proposalRoutes = <RouteBase>[
         ),
         routes: [
           GoRoute(
+            path: 'pay',
+            builder: (context, state) =>
+                PaymentScreen(proposalId: state.pathParameters['id']!),
+          ),
+          GoRoute(
             path: 'inspection',
             builder: (context, state) =>
                 InspectionScreen(proposalId: state.pathParameters['id']!),
@@ -335,6 +345,18 @@ final _proposalRoutes = <RouteBase>[
     ],
   ),
   GoRoute(path: '/identity', builder: (context, state) => const KycScreen()),
+  // Pagamentos (S5-11).
+  GoRoute(
+    path: '/payments',
+    builder: (context, state) => const PaymentsListScreen(),
+    routes: [
+      GoRoute(
+        path: ':id',
+        builder: (context, state) =>
+            PaymentIntentScreen(intentId: state.pathParameters['id']!),
+      ),
+    ],
+  ),
 ];
 
 /// "Fazer seguro" (S3-05 §1), no ramo do início: os passos do assistente são
