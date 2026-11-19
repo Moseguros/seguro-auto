@@ -50,6 +50,9 @@
     <spring-vault.version>3.1.3</spring-vault.version>
     <!-- Jobs agendados (S6-01 §2; modelo transversal §7): uma só execução entre instâncias -->
     <shedlock.version>5.16.0</shedlock.version>
+    <!-- Limites de pedidos da verificação pública (S6-03): buckets em memória. O bucket4j_jdk17-core só
+         existe a partir da 8.11.0; a 8.10.x publica-se como bucket4j-core (Java 8+, corre no 17) -->
+    <bucket4j.version>8.10.1</bucket4j.version>
   </properties>
 
   <dependencyManagement>
@@ -232,6 +235,22 @@
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-bulkhead</artifactId>
       <version>${resilience4j.version}</version>
+    </dependency>
+
+    <!-- Verificação pública (S6-03): cache das consultas (Caffeine, versão do Boot) e limites de
+         pedidos por IP e por agente (Bucket4j) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.bucket4j</groupId>
+      <artifactId>bucket4j-core</artifactId>
+      <version>${bucket4j.version}</version>
     </dependency>
 
     <!-- Mensageria (S5-06, ADR-004): RabbitMQ e os contratos das mensagens do worker -->
