@@ -28,8 +28,10 @@ import 'package:moseguros_api/src/model/broker_proposal_driver_request.dart';
 import 'package:moseguros_api/src/model/broker_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/broker_proposal_vehicle_request.dart';
 import 'package:moseguros_api/src/model/broker_vehicle_request.dart';
+import 'package:moseguros_api/src/model/captcha_provider.dart';
 import 'package:moseguros_api/src/model/catalog_insurer_response.dart';
 import 'package:moseguros_api/src/model/catalog_product_response.dart';
+import 'package:moseguros_api/src/model/certificate_check_status.dart';
 import 'package:moseguros_api/src/model/certificate_status.dart';
 import 'package:moseguros_api/src/model/charge.dart';
 import 'package:moseguros_api/src/model/charge_value.dart';
@@ -131,6 +133,7 @@ import 'package:moseguros_api/src/model/page_response_my_policy_summary_response
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_payment_exception_summary.dart';
 import 'package:moseguros_api/src/model/page_response_payment_file_import.dart';
+import 'package:moseguros_api/src/model/page_response_police_check_response.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_quote_request_summary_response.dart';
@@ -171,6 +174,8 @@ import 'package:moseguros_api/src/model/plate_format_response.dart';
 import 'package:moseguros_api/src/model/plate_formats_response.dart';
 import 'package:moseguros_api/src/model/platform_setting_response.dart';
 import 'package:moseguros_api/src/model/platform_settings_response.dart';
+import 'package:moseguros_api/src/model/police_check_response.dart';
+import 'package:moseguros_api/src/model/police_verification_response.dart';
 import 'package:moseguros_api/src/model/policy_certificate.dart';
 import 'package:moseguros_api/src/model/policy_coverage.dart';
 import 'package:moseguros_api/src/model/policy_detail_response.dart';
@@ -219,6 +224,7 @@ import 'package:moseguros_api/src/model/public_platform_setting_response.dart';
 import 'package:moseguros_api/src/model/public_platform_settings_response.dart';
 import 'package:moseguros_api/src/model/public_reference_value_response.dart';
 import 'package:moseguros_api/src/model/public_reference_values_response.dart';
+import 'package:moseguros_api/src/model/public_verification_response.dart';
 import 'package:moseguros_api/src/model/publish_product_version_request.dart';
 import 'package:moseguros_api/src/model/quote_charge_response.dart';
 import 'package:moseguros_api/src/model/quote_coverage_response.dart';
@@ -271,6 +277,7 @@ import 'package:moseguros_api/src/model/sla_status.dart';
 import 'package:moseguros_api/src/model/staff_login_request.dart';
 import 'package:moseguros_api/src/model/staff_user_response.dart';
 import 'package:moseguros_api/src/model/start_contact_verification_request.dart';
+import 'package:moseguros_api/src/model/subject_type.dart';
 import 'package:moseguros_api/src/model/submit_inspection_request.dart';
 import 'package:moseguros_api/src/model/submit_proposal_request.dart';
 import 'package:moseguros_api/src/model/suitability_answer_request.dart';
@@ -315,6 +322,8 @@ import 'package:moseguros_api/src/model/vehicle_driver_assignment.dart';
 import 'package:moseguros_api/src/model/vehicle_driver_response.dart';
 import 'package:moseguros_api/src/model/vehicle_response.dart';
 import 'package:moseguros_api/src/model/vehicle_usage.dart';
+import 'package:moseguros_api/src/model/verification_config_response.dart';
+import 'package:moseguros_api/src/model/verification_result.dart';
 import 'package:moseguros_api/src/model/verify_contact_request.dart';
 import 'package:moseguros_api/src/model/verify_kyc_check_request.dart';
 import 'package:moseguros_api/src/model/verify_otp_request.dart';
@@ -337,8 +346,10 @@ part 'serializers.g.dart';
   BrokerProposalSummaryResponse,
   BrokerProposalVehicleRequest,
   BrokerVehicleRequest,
+  CaptchaProvider,
   CatalogInsurerResponse,
   CatalogProductResponse,
+  CertificateCheckStatus,
   CertificateStatus,
   Charge,
   ChargeValue,
@@ -440,6 +451,7 @@ part 'serializers.g.dart';
   PageResponseOrganizationSummaryResponse,
   PageResponsePaymentExceptionSummary,
   PageResponsePaymentFileImport,
+  PageResponsePoliceCheckResponse,
   PageResponseProductSummaryResponse,
   PageResponseProposalSummaryResponse,
   PageResponseQuoteRequestSummaryResponse,
@@ -480,6 +492,8 @@ part 'serializers.g.dart';
   PlateFormatsResponse,
   PlatformSettingResponse,
   PlatformSettingsResponse,
+  PoliceCheckResponse,
+  PoliceVerificationResponse,
   PolicyCertificate,
   PolicyCoverage,
   PolicyDetailResponse,
@@ -528,6 +542,7 @@ part 'serializers.g.dart';
   PublicPlatformSettingsResponse,
   PublicReferenceValueResponse,
   PublicReferenceValuesResponse,
+  PublicVerificationResponse,
   PublishProductVersionRequest,
   QuoteChargeResponse,
   QuoteCoverageResponse,
@@ -580,6 +595,7 @@ part 'serializers.g.dart';
   StaffLoginRequest,
   StaffUserResponse,
   StartContactVerificationRequest,
+  SubjectType,
   SubmitInspectionRequest,
   SubmitProposalRequest,
   SuitabilityAnswerRequest,
@@ -624,6 +640,8 @@ part 'serializers.g.dart';
   VehicleDriverResponse,
   VehicleResponse,
   VehicleUsage,
+  VerificationConfigResponse,
+  VerificationResult,
   VerifyContactRequest,
   VerifyKycCheckRequest,
   VerifyOtpRequest,
