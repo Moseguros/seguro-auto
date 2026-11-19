@@ -164,10 +164,18 @@ Class | Method | HTTP request | Description
 [*PaymentApi*](doc/PaymentApi.md) | [**enableInsurerPaymentMethod**](doc/PaymentApi.md#enableinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/enable | Activa uma forma de pagamento
 [*PaymentApi*](doc/PaymentApi.md) | [**exportInsurerPayments**](doc/PaymentApi.md#exportinsurerpayments) | **GET** /api/v1/insurer/payments/export | Exporta os pagamentos da seguradora em CSV
 [*PaymentApi*](doc/PaymentApi.md) | [**getInsurerPayment**](doc/PaymentApi.md#getinsurerpayment) | **GET** /api/v1/insurer/payments/{id} | Consulta um pagamento da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**getPaymentException**](doc/PaymentApi.md#getpaymentexception) | **GET** /api/v1/insurer/payment-exceptions/{id} | Consulta uma excepção de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**getPaymentFileSourceStatus**](doc/PaymentApi.md#getpaymentfilesourcestatus) | **GET** /api/v1/insurer/payment-file-source | Estado da fonte de ficheiros da seguradora
 [*PaymentApi*](doc/PaymentApi.md) | [**getPaymentIntent**](doc/PaymentApi.md#getpaymentintent) | **GET** /api/v1/payment-intents/{id} | Consulta uma intenção de pagamento
+[*PaymentApi*](doc/PaymentApi.md) | [**getPaymentWorkerStatus**](doc/PaymentApi.md#getpaymentworkerstatus) | **GET** /api/v1/admin/payment-worker-status | Estado das filas e do worker de ficheiros
 [*PaymentApi*](doc/PaymentApi.md) | [**listInsurerPaymentMethods**](doc/PaymentApi.md#listinsurerpaymentmethods) | **GET** /api/v1/insurer/payment-methods | Lista as formas de pagamento da seguradora
 [*PaymentApi*](doc/PaymentApi.md) | [**listInsurerPayments**](doc/PaymentApi.md#listinsurerpayments) | **GET** /api/v1/insurer/payments | Lista os pagamentos da seguradora
 [*PaymentApi*](doc/PaymentApi.md) | [**listMyPayments**](doc/PaymentApi.md#listmypayments) | **GET** /api/v1/me/payments | Lista os pagamentos do cliente
+[*PaymentApi*](doc/PaymentApi.md) | [**listPaymentExceptionCandidates**](doc/PaymentApi.md#listpaymentexceptioncandidates) | **GET** /api/v1/insurer/payment-exceptions/{id}/candidates | Lista as intenções a que a excepção pode ser associada
+[*PaymentApi*](doc/PaymentApi.md) | [**listPaymentExceptions**](doc/PaymentApi.md#listpaymentexceptions) | **GET** /api/v1/insurer/payment-exceptions | Lista as excepções de pagamento da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**listPaymentFileImports**](doc/PaymentApi.md#listpaymentfileimports) | **GET** /api/v1/insurer/payment-files | Lista os ficheiros de movimentos da seguradora
+[*PaymentApi*](doc/PaymentApi.md) | [**listPaymentFileSources**](doc/PaymentApi.md#listpaymentfilesources) | **GET** /api/v1/admin/payment-file-sources | Lista as fontes de ficheiros de todas as seguradoras
+[*PaymentApi*](doc/PaymentApi.md) | [**resolvePaymentException**](doc/PaymentApi.md#resolvepaymentexception) | **POST** /api/v1/insurer/payment-exceptions/{id}/resolve | Resolve uma excepção de pagamento
 [*PaymentApi*](doc/PaymentApi.md) | [**sendReferenceSms**](doc/PaymentApi.md#sendreferencesms) | **POST** /api/v1/payment-intents/{id}/reference-sms | Envia a entidade e referência por SMS
 [*PaymentApi*](doc/PaymentApi.md) | [**testInsurerPaymentMethod**](doc/PaymentApi.md#testinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/test | Testa uma forma de pagamento
 [*PaymentApi*](doc/PaymentApi.md) | [**updateInsurerPaymentMethod**](doc/PaymentApi.md#updateinsurerpaymentmethod) | **PUT** /api/v1/insurer/payment-methods/{method} | Grava os dados de uma forma de pagamento
@@ -231,6 +239,8 @@ Class | Method | HTTP request | Description
  - [AcceptanceMode](doc/AcceptanceMode.md)
  - [AcknowledgeSuitabilityRequest](doc/AcknowledgeSuitabilityRequest.md)
  - [ActivateInvitationRequest](doc/ActivateInvitationRequest.md)
+ - [AdminPaymentFileSource](doc/AdminPaymentFileSource.md)
+ - [AdminPaymentFileSources](doc/AdminPaymentFileSources.md)
  - [ApproveInspectionRequest](doc/ApproveInspectionRequest.md)
  - [AssignableRolesResponse](doc/AssignableRolesResponse.md)
  - [BrokerPolicyholderRequest](doc/BrokerPolicyholderRequest.md)
@@ -331,6 +341,8 @@ Class | Method | HTTP request | Description
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
+ - [PageResponsePaymentExceptionSummary](doc/PageResponsePaymentExceptionSummary.md)
+ - [PageResponsePaymentFileImport](doc/PageResponsePaymentFileImport.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
  - [PageResponseProposalSummaryResponse](doc/PageResponseProposalSummaryResponse.md)
  - [PageResponseQuoteRequestSummaryResponse](doc/PageResponseQuoteRequestSummaryResponse.md)
@@ -339,6 +351,15 @@ Class | Method | HTTP request | Description
  - [PageResponseVehicleResponse](doc/PageResponseVehicleResponse.md)
  - [PaymentConfirmedBy](doc/PaymentConfirmedBy.md)
  - [PaymentEventType](doc/PaymentEventType.md)
+ - [PaymentExceptionCandidate](doc/PaymentExceptionCandidate.md)
+ - [PaymentExceptionCandidates](doc/PaymentExceptionCandidates.md)
+ - [PaymentExceptionDetail](doc/PaymentExceptionDetail.md)
+ - [PaymentExceptionIntent](doc/PaymentExceptionIntent.md)
+ - [PaymentExceptionSummary](doc/PaymentExceptionSummary.md)
+ - [PaymentExceptionType](doc/PaymentExceptionType.md)
+ - [PaymentFileImport](doc/PaymentFileImport.md)
+ - [PaymentFileSourceInsurer](doc/PaymentFileSourceInsurer.md)
+ - [PaymentFileSourceStatus](doc/PaymentFileSourceStatus.md)
  - [PaymentInsurerRef](doc/PaymentInsurerRef.md)
  - [PaymentLinkResponse](doc/PaymentLinkResponse.md)
  - [PaymentMethodOption](doc/PaymentMethodOption.md)
@@ -349,9 +370,12 @@ Class | Method | HTTP request | Description
  - [PaymentNextAction](doc/PaymentNextAction.md)
  - [PaymentNextActionType](doc/PaymentNextActionType.md)
  - [PaymentPurpose](doc/PaymentPurpose.md)
+ - [PaymentQueueStatus](doc/PaymentQueueStatus.md)
+ - [PaymentResolution](doc/PaymentResolution.md)
  - [PaymentStatus](doc/PaymentStatus.md)
  - [PaymentTargetRef](doc/PaymentTargetRef.md)
  - [PaymentTargetType](doc/PaymentTargetType.md)
+ - [PaymentWorkerStatus](doc/PaymentWorkerStatus.md)
  - [PhotoSlot](doc/PhotoSlot.md)
  - [PhotoSource](doc/PhotoSource.md)
  - [PlateFormatResponse](doc/PlateFormatResponse.md)
@@ -433,6 +457,7 @@ Class | Method | HTTP request | Description
  - [RequestedCoverageRequest](doc/RequestedCoverageRequest.md)
  - [RequestedCoverageResponse](doc/RequestedCoverageResponse.md)
  - [ResetPasswordRequest](doc/ResetPasswordRequest.md)
+ - [ResolvePaymentExceptionRequest](doc/ResolvePaymentExceptionRequest.md)
  - [RiskDriverRequest](doc/RiskDriverRequest.md)
  - [RuleError](doc/RuleError.md)
  - [SaveDeclarationsRequest](doc/SaveDeclarationsRequest.md)

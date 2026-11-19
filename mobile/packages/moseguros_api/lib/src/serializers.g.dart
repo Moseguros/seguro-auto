@@ -12,6 +12,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AcceptanceMode.serializer)
       ..add(AcknowledgeSuitabilityRequest.serializer)
       ..add(ActivateInvitationRequest.serializer)
+      ..add(AdminPaymentFileSource.serializer)
+      ..add(AdminPaymentFileSourceFileFormatEnum.serializer)
+      ..add(AdminPaymentFileSourceLastPollOutcomeEnum.serializer)
+      ..add(AdminPaymentFileSources.serializer)
       ..add(ApproveInspectionRequest.serializer)
       ..add(AssignableRolesResponse.serializer)
       ..add(BrokerPolicyholderRequest.serializer)
@@ -171,6 +175,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseKycCheckSummaryResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
+      ..add(PageResponsePaymentExceptionSummary.serializer)
+      ..add(PageResponsePaymentFileImport.serializer)
       ..add(PageResponseProductSummaryResponse.serializer)
       ..add(PageResponseProposalSummaryResponse.serializer)
       ..add(PageResponseQuoteRequestSummaryResponse.serializer)
@@ -179,6 +185,21 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseVehicleResponse.serializer)
       ..add(PaymentConfirmedBy.serializer)
       ..add(PaymentEventType.serializer)
+      ..add(PaymentExceptionCandidate.serializer)
+      ..add(PaymentExceptionCandidates.serializer)
+      ..add(PaymentExceptionDetail.serializer)
+      ..add(PaymentExceptionDetailStatusEnum.serializer)
+      ..add(PaymentExceptionIntent.serializer)
+      ..add(PaymentExceptionSummary.serializer)
+      ..add(PaymentExceptionSummaryStatusEnum.serializer)
+      ..add(PaymentExceptionType.serializer)
+      ..add(PaymentFileImport.serializer)
+      ..add(PaymentFileImportFileFormatEnum.serializer)
+      ..add(PaymentFileImportStatusEnum.serializer)
+      ..add(PaymentFileSourceInsurer.serializer)
+      ..add(PaymentFileSourceStatus.serializer)
+      ..add(PaymentFileSourceStatusFileFormatEnum.serializer)
+      ..add(PaymentFileSourceStatusLastPollOutcomeEnum.serializer)
       ..add(PaymentInsurerRef.serializer)
       ..add(PaymentLinkResponse.serializer)
       ..add(PaymentMethodOption.serializer)
@@ -193,9 +214,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PaymentNextAction.serializer)
       ..add(PaymentNextActionType.serializer)
       ..add(PaymentPurpose.serializer)
+      ..add(PaymentQueueStatus.serializer)
+      ..add(PaymentResolution.serializer)
       ..add(PaymentStatus.serializer)
       ..add(PaymentTargetRef.serializer)
       ..add(PaymentTargetType.serializer)
+      ..add(PaymentWorkerStatus.serializer)
       ..add(PhotoSlot.serializer)
       ..add(PhotoSource.serializer)
       ..add(PlateFormatResponse.serializer)
@@ -319,6 +343,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RequestedCoverageResponse.serializer)
       ..add(RequestedCoverageResponseCodeEnum.serializer)
       ..add(ResetPasswordRequest.serializer)
+      ..add(ResolvePaymentExceptionRequest.serializer)
+      ..add(ResolvePaymentExceptionRequestResolutionEnum.serializer)
       ..add(RiskDriverRequest.serializer)
       ..add(RuleError.serializer)
       ..add(SaveDeclarationsRequest.serializer)
@@ -397,6 +423,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(VerifyKycCheckRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
       ..add(VersionResponse.serializer)
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(AdminPaymentFileSource)]),
+          () => ListBuilder<AdminPaymentFileSource>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(BrokerProposalSummaryResponse)]),
@@ -544,12 +574,29 @@ Serializers _$serializers = (Serializers().toBuilder()
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
       ..addBuilderFactory(
           const FullType(
+              BuiltList, const [const FullType(PaymentExceptionCandidate)]),
+          () => ListBuilder<PaymentExceptionCandidate>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PaymentExceptionSummary)]),
+          () => ListBuilder<PaymentExceptionSummary>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentFileImport)]),
+          () => ListBuilder<PaymentFileImport>())
+      ..addBuilderFactory(
+          const FullType(
               BuiltList, const [const FullType(PaymentMethodOption)]),
           () => ListBuilder<PaymentMethodOption>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PaymentMethodResponse)]),
           () => ListBuilder<PaymentMethodResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentQueueStatus)]),
+          () => ListBuilder<PaymentQueueStatus>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentResolution)]),
+          () => ListBuilder<PaymentResolution>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(PhotoSlot)]),
           () => ListBuilder<PhotoSlot>())

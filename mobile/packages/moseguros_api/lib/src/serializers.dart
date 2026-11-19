@@ -19,6 +19,8 @@ import 'package:moseguros_api/src/model/accept_proposal_request.dart';
 import 'package:moseguros_api/src/model/acceptance_mode.dart';
 import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/activate_invitation_request.dart';
+import 'package:moseguros_api/src/model/admin_payment_file_source.dart';
+import 'package:moseguros_api/src/model/admin_payment_file_sources.dart';
 import 'package:moseguros_api/src/model/approve_inspection_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
 import 'package:moseguros_api/src/model/broker_policyholder_request.dart';
@@ -119,6 +121,8 @@ import 'package:moseguros_api/src/model/page_response_intent_view.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_kyc_check_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_payment_exception_summary.dart';
+import 'package:moseguros_api/src/model/page_response_payment_file_import.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_quote_request_summary_response.dart';
@@ -127,6 +131,15 @@ import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
 import 'package:moseguros_api/src/model/page_response_vehicle_response.dart';
 import 'package:moseguros_api/src/model/payment_confirmed_by.dart';
 import 'package:moseguros_api/src/model/payment_event_type.dart';
+import 'package:moseguros_api/src/model/payment_exception_candidate.dart';
+import 'package:moseguros_api/src/model/payment_exception_candidates.dart';
+import 'package:moseguros_api/src/model/payment_exception_detail.dart';
+import 'package:moseguros_api/src/model/payment_exception_intent.dart';
+import 'package:moseguros_api/src/model/payment_exception_summary.dart';
+import 'package:moseguros_api/src/model/payment_exception_type.dart';
+import 'package:moseguros_api/src/model/payment_file_import.dart';
+import 'package:moseguros_api/src/model/payment_file_source_insurer.dart';
+import 'package:moseguros_api/src/model/payment_file_source_status.dart';
 import 'package:moseguros_api/src/model/payment_insurer_ref.dart';
 import 'package:moseguros_api/src/model/payment_link_response.dart';
 import 'package:moseguros_api/src/model/payment_method_option.dart';
@@ -137,9 +150,12 @@ import 'package:moseguros_api/src/model/payment_methods_response.dart';
 import 'package:moseguros_api/src/model/payment_next_action.dart';
 import 'package:moseguros_api/src/model/payment_next_action_type.dart';
 import 'package:moseguros_api/src/model/payment_purpose.dart';
+import 'package:moseguros_api/src/model/payment_queue_status.dart';
+import 'package:moseguros_api/src/model/payment_resolution.dart';
 import 'package:moseguros_api/src/model/payment_status.dart';
 import 'package:moseguros_api/src/model/payment_target_ref.dart';
 import 'package:moseguros_api/src/model/payment_target_type.dart';
+import 'package:moseguros_api/src/model/payment_worker_status.dart';
 import 'package:moseguros_api/src/model/photo_slot.dart';
 import 'package:moseguros_api/src/model/photo_source.dart';
 import 'package:moseguros_api/src/model/plate_format_response.dart';
@@ -221,6 +237,7 @@ import 'package:moseguros_api/src/model/request_signature_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_response.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
+import 'package:moseguros_api/src/model/resolve_payment_exception_request.dart';
 import 'package:moseguros_api/src/model/risk_driver_request.dart';
 import 'package:moseguros_api/src/model/rule_error.dart';
 import 'package:moseguros_api/src/model/save_declarations_request.dart';
@@ -290,6 +307,8 @@ part 'serializers.g.dart';
   AcceptanceMode,
   AcknowledgeSuitabilityRequest,
   ActivateInvitationRequest,
+  AdminPaymentFileSource,
+  AdminPaymentFileSources,
   ApproveInspectionRequest,
   AssignableRolesResponse,
   BrokerPolicyholderRequest,
@@ -390,6 +409,8 @@ part 'serializers.g.dart';
   PageResponseInvitationResponse,
   PageResponseKycCheckSummaryResponse,
   PageResponseOrganizationSummaryResponse,
+  PageResponsePaymentExceptionSummary,
+  PageResponsePaymentFileImport,
   PageResponseProductSummaryResponse,
   PageResponseProposalSummaryResponse,
   PageResponseQuoteRequestSummaryResponse,
@@ -398,6 +419,15 @@ part 'serializers.g.dart';
   PageResponseVehicleResponse,
   PaymentConfirmedBy,
   PaymentEventType,
+  PaymentExceptionCandidate,
+  PaymentExceptionCandidates,
+  PaymentExceptionDetail,
+  PaymentExceptionIntent,
+  PaymentExceptionSummary,
+  PaymentExceptionType,
+  PaymentFileImport,
+  PaymentFileSourceInsurer,
+  PaymentFileSourceStatus,
   PaymentInsurerRef,
   PaymentLinkResponse,
   PaymentMethodOption,
@@ -408,9 +438,12 @@ part 'serializers.g.dart';
   PaymentNextAction,
   PaymentNextActionType,
   PaymentPurpose,
+  PaymentQueueStatus,
+  PaymentResolution,
   PaymentStatus,
   PaymentTargetRef,
   PaymentTargetType,
+  PaymentWorkerStatus,
   PhotoSlot,
   PhotoSource,
   PlateFormatResponse,
@@ -492,6 +525,7 @@ part 'serializers.g.dart';
   RequestedCoverageRequest,
   RequestedCoverageResponse,
   ResetPasswordRequest,
+  ResolvePaymentExceptionRequest,
   RiskDriverRequest,
   RuleError,
   SaveDeclarationsRequest,
@@ -561,6 +595,10 @@ Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(ProposalStatus)]),
         () => ListBuilder<ProposalStatus>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(PaymentExceptionType)]),
+        () => ListBuilder<PaymentExceptionType>(),
       )
       ..add(const OneOfSerializer())
       ..add(const AnyOfSerializer())
