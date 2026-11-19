@@ -332,6 +332,19 @@ public final class ErrorCodes {
     /** Apólice inexistente ou fora do âmbito de quem pede (404). */
     public static final String POLICY_NOT_FOUND = "POLICY_NOT_FOUND";
 
+    // Verificação pública e CAPTCHA (S6-03)
+    /** Falta o cabeçalho {@code X-Captcha-Token} (400). */
+    public static final String CAPTCHA_REQUIRED = "CAPTCHA_REQUIRED";
+    /** O fornecedor recusou o token do CAPTCHA (expirado, repetido ou de outro anfitrião) (400). */
+    public static final String CAPTCHA_INVALID = "CAPTCHA_INVALID";
+    /** O fornecedor do CAPTCHA não respondeu; a consulta não foi feita (503). */
+    public static final String CAPTCHA_UNAVAILABLE = "CAPTCHA_UNAVAILABLE";
+    /**
+     * Limite genérico de pedidos (429, com {@code retryAfterSeconds} e {@code Retry-After}); o S12-06
+     * reutiliza-o. Os limites anteriores mantêm os seus códigos ({@code OTP_RATE_LIMITED}…).
+     */
+    public static final String RATE_LIMITED = "RATE_LIMITED";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -473,7 +486,11 @@ public final class ErrorCodes {
             Map.entry(RESOLUTION_NOT_ALLOWED, 400),
             Map.entry(LINK_INTENT_INVALID, 400),
             Map.entry(LINK_AMOUNT_INSUFFICIENT, 400),
-            Map.entry(POLICY_NOT_FOUND, 404));
+            Map.entry(POLICY_NOT_FOUND, 404),
+            Map.entry(CAPTCHA_REQUIRED, 400),
+            Map.entry(CAPTCHA_INVALID, 400),
+            Map.entry(CAPTCHA_UNAVAILABLE, 503),
+            Map.entry(RATE_LIMITED, 429));
 
     private ErrorCodes() {
     }

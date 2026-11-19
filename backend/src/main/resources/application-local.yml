@@ -35,6 +35,14 @@ moseguros:
     store: ${MOSEGUROS_SECRETS_STORE:vault}
     vault:
       token: ${VAULT_TOKEN:dev-root-token} # token só para o Vault em modo dev
+  # Verificação (S6-03): sem CAPTCHA em local; chave fixa do subject_hash.
+  captcha:
+    provider: ${MOSEGUROS_CAPTCHA_PROVIDER:none}
+  verification:
+    hash-key: JiuLN5j9gMeb/1s8kw017+EAiOBpOe4bKVTwdZSC468= # chave só para desenvolvimento
+  # Proxies de confiança (ClientIpResolver, D15): o nginx da web (S0-07) e as redes do Docker.
+  web:
+    trusted-proxies: ${MOSEGUROS_WEB_TRUSTED_PROXIES:127.0.0.1/32,::1/128,172.16.0.0/12,10.0.0.0/8,192.168.0.0/16}
   # Ficheiros em disco; no compose MOSEGUROS_FILES_DIR=/var/lib/moseguros/files (volume files).
   files:
     storage: filesystem

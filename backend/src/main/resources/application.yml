@@ -238,6 +238,25 @@ moseguros:
       delays: PT30S,PT60S,PT120S,PT300S
       repeat-interval: PT15M
       give-up-after: PT24H
+  # CAPTCHA (S6-03 §7; modelo transversal §7) da verificação por matrícula: none | turnstile. Por defeito
+  # turnstile (esquecer a configuração nunca o desliga); none só em local e test (com prod não arranca, com
+  # staging regista WARN). O segredo do Turnstile está no cofre (secret/platform/captcha/turnstile), nunca aqui.
+  captcha:
+    provider: ${MOSEGUROS_CAPTCHA_PROVIDER:turnstile}
+    turnstile:
+      site-key: ${MOSEGUROS_CAPTCHA_SITE_KEY:}
+      allowed-hostnames: ${MOSEGUROS_CAPTCHA_ALLOWED_HOSTNAMES:}
+      secret-path: secret/platform/captcha/turnstile
+      timeout: PT3S
+  # Verificação pública e da polícia (S6-03). hash-key: HMAC-SHA256 do subject_hash do check_log (32 bytes
+  # em Base64, MOSEGUROS_VERIFICATION_HASH_KEY); sem ela a aplicação não arranca (local/test têm uma fixa).
+  # Limites por instância (com N instâncias o efectivo é N × o limite; revisão no S12).
+  verification:
+    hash-key: ${MOSEGUROS_VERIFICATION_HASH_KEY:}
+    cache-ttl: PT60S
+    rate-limit:
+      public-per-minute: 60
+      police-per-minute: 300
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada

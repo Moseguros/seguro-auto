@@ -40,6 +40,12 @@ moseguros:
   # Sem @Scheduled nos testes: chamam o job directamente (o LockProvider do ShedLock existe na mesma).
   jobs:
     enabled: false
+  # Verificação (S6-03): o CaptchaVerifier falso do perfil test (FakeCaptchaVerifier, @Primary) responde
+  # INVALID a "invalid", UNAVAILABLE a "down" e VALID aos outros.
+  captcha:
+    provider: none
+  verification:
+    hash-key: JiuLN5j9gMeb/1s8kw017+EAiOBpOe4bKVTwdZSC468= # chave só para desenvolvimento
   # URL de verificação dos certificados nos testes (S6-01 regra 6).
   web:
     public-base-url: https://verificar.moseguros.test
