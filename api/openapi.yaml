@@ -17,6 +17,10 @@ tags:
   name: Payment
 - description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
   name: Rating
+- description: "Verificação de seguro pela matrícula ou pelo QR do certificado: pú\
+    blica (com CAPTCHA na matrícula) e para os agentes da polícia; nunca devolve dados\
+    \ pessoais do tomador"
+  name: Verification
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
 - description: Envio de mensagens e recibos de entrega
@@ -5898,6 +5902,139 @@ paths:
       summary: Lista os parâmetros da plataforma
       tags:
       - Catalog
+  /api/v1/police/check-history:
+    get:
+      description: "Permissão verification:police. Só as consultas do agente; from\
+        \ e to em datas de Africa/Maputo, inclusivas (por defeito os últimos 30 dias;\
+        \ from depois de to → 400 VALIDATION_ERROR from OUT_OF_RANGE). Ordenação checkedAt\
+        \ (desc)."
+      operationId: listMyPoliceChecks
+      parameters:
+      - in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "checkedAt, com ,asc ou ,desc"
+        example: "checkedAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponsePoliceCheckResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as consultas do próprio agente
+      tags:
+      - Verification
+  /api/v1/police/verifications:
+    get:
+      description: "Permissão verification:police; sem CAPTCHA. A resposta pública\
+        \ mais policyNumber, certificateNumber, vehicleMake e vehicleModel; sem dados\
+        \ pessoais do tomador. Matrícula inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE).\
+        \ 300 pedidos por minuto → 429 RATE_LIMITED (Retry-After)."
+      operationId: verifyPlateAsPolice
+      parameters:
+      - description: Matrícula
+        example: ABC-123-MC
+        in: query
+        name: plate
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PoliceVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Verifica o seguro pela matrícula (polícia)
+      tags:
+      - Verification
+  /api/v1/police/verifications/{token}:
+    get:
+      description: "Permissão verification:police. Como verifyCertificateToken, mais\
+        \ policyNumber, certificateNumber, vehicleMake e vehicleModel. 300 pedidos\
+        \ por minuto → 429 RATE_LIMITED."
+      operationId: verifyCertificateTokenAsPolice
+      parameters:
+      - description: Código do QR do certificado (22 caracteres)
+        in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PoliceVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Verifica o seguro pelo código do QR (polícia)
+      tags:
+      - Verification
   /api/v1/proposals:
     post:
       description: "Permissão self:proposals. Proposta DRAFT numerada (PR-AAAA-NNNNNN)\
@@ -6590,6 +6727,119 @@ paths:
       summary: Confirma os avisos de adequação
       tags:
       - Proposal
+  /api/v1/public/verifications:
+    get:
+      description: "Público, com CAPTCHA: cabeçalho X-Captcha-Token obrigatório quando\
+        \ o fornecedor não é NONE (sem ele → 400 CAPTCHA_REQUIRED; recusado → 400\
+        \ CAPTCHA_INVALID; fornecedor indisponível → 503 CAPTCHA_UNAVAILABLE). Matrí\
+        cula em falta ou inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE); aceita\
+        \ espaços, hífenes e minúsculas. 60 pedidos por minuto e por IP → 429 RATE_LIMITED\
+        \ (Retry-After)."
+      operationId: verifyPlate
+      parameters:
+      - description: Matrícula
+        example: ABC-123-MC
+        in: query
+        name: plate
+        required: false
+        schema:
+          type: string
+      - description: Token do widget do CAPTCHA
+        in: header
+        name: X-Captcha-Token
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Verifica o seguro pela matrícula
+      tags:
+      - Verification
+  /api/v1/public/verifications/config:
+    get:
+      description: "Público, sem limite de pedidos. captchaProvider TURNSTILE (com\
+        \ captchaSiteKey) ou NONE (sem CAPTCHA; o cabeçalho X-Captcha-Token deixa\
+        \ de ser exigido)."
+      operationId: getVerificationConfig
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationConfigResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: CAPTCHA da verificação por matrícula
+      tags:
+      - Verification
+  /api/v1/public/verifications/{token}:
+    get:
+      description: "Público, sem CAPTCHA. O status é o da apólice agora; certificateStatus\
+        \ diz se o certificado do código ainda é o actual. Código desconhecido ou\
+        \ com formato errado → 200 NOT_FOUND. Nunca devolve dados do tomador nem os\
+        \ números da apólice e do certificado. 60 pedidos por minuto e por IP → 429\
+        \ RATE_LIMITED (Retry-After)."
+      operationId: verifyCertificateToken
+      parameters:
+      - description: Código do QR do certificado (22 caracteres)
+        in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Verifica o seguro pelo código do QR
+      tags:
+      - Verification
   /api/v1/quotes:
     post:
       description: "Permissão self:quotes. Uma cotação por produto publicado compatí\
@@ -7388,6 +7638,11 @@ components:
       - seats
       - usage
       - year
+    CaptchaProvider:
+      type: string
+      enum:
+      - TURNSTILE
+      - NONE
     CatalogInsurerResponse:
       type: object
       properties:
@@ -7473,6 +7728,13 @@ components:
       - validFrom
       - vehicleCategories
       - versionNo
+    CertificateCheckStatus:
+      type: string
+      description: "Só nas consultas por código: se o certificado mostrado ainda é\
+        \ o actual"
+      enum:
+      - CURRENT
+      - REVOKED
     CertificateStatus:
       type: string
       enum:
@@ -10381,6 +10643,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponsePoliceCheckResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PoliceCheckResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseProductSummaryResponse:
       type: object
       properties:
@@ -11210,6 +11495,70 @@ components:
             $ref: "#/components/schemas/PlatformSettingResponse"
       required:
       - settings
+    PoliceCheckResponse:
+      type: object
+      properties:
+        checkedAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        plateMasked:
+          type: string
+          description: Vazio quando um código não correspondeu a nenhuma apólice
+          example: ABC-***-MC
+        result:
+          $ref: "#/components/schemas/VerificationResult"
+        subjectType:
+          $ref: "#/components/schemas/SubjectType"
+      required:
+      - checkedAt
+      - id
+      - result
+      - subjectType
+    PoliceVerificationResponse:
+      type: object
+      description: Resultado da verificação para um agente da polícia; sem dados pessoais
+        do tomador
+      properties:
+        certificateNumber:
+          type: string
+          description: "Certificado do código ou, por matrícula, o certificado em\
+            \ vigor"
+        certificateStatus:
+          $ref: "#/components/schemas/CertificateCheckStatus"
+        checkedAt:
+          type: string
+          format: date-time
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        insurerName:
+          type: string
+        plateMasked:
+          type: string
+          example: ABC-***-MC
+        policyNumber:
+          type: string
+          example: AP-2027-000123
+        status:
+          $ref: "#/components/schemas/VerificationResult"
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+          description: Fim da cobertura (exclusivo)
+        vehicleMake:
+          type: string
+          example: Toyota
+        vehicleModel:
+          type: string
+          example: Corolla
+      required:
+      - checkedAt
+      - status
     PolicyCertificate:
       type: object
       properties:
@@ -12479,6 +12828,36 @@ components:
             $ref: "#/components/schemas/PublicReferenceValueResponse"
       required:
       - values
+    PublicVerificationResponse:
+      type: object
+      description: Resultado da verificação pública; sem dados pessoais do tomador
+      properties:
+        certificateStatus:
+          $ref: "#/components/schemas/CertificateCheckStatus"
+        checkedAt:
+          type: string
+          format: date-time
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        insurerName:
+          type: string
+          example: Seguradora Demo
+        plateMasked:
+          type: string
+          description: Matrícula com os dígitos trocados por *
+          example: ABC-***-MC
+        status:
+          $ref: "#/components/schemas/VerificationResult"
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+          description: Fim da cobertura (exclusivo)
+      required:
+      - checkedAt
+      - status
     PublishProductVersionRequest:
       type: object
       properties:
@@ -13736,6 +14115,11 @@ components:
       required:
       - type
       - value
+    SubjectType:
+      type: string
+      enum:
+      - PLATE
+      - TOKEN
     SubmitInspectionRequest:
       type: object
       properties:
@@ -14759,6 +15143,26 @@ components:
       - GOODS
       - TAXI
       - DRIVING_SCHOOL
+    VerificationConfigResponse:
+      type: object
+      properties:
+        captchaProvider:
+          $ref: "#/components/schemas/CaptchaProvider"
+        captchaSiteKey:
+          type: string
+          description: Chave pública do widget; omitida com NONE
+          example: 0x4AAAAAAA
+      required:
+      - captchaProvider
+    VerificationResult:
+      type: string
+      enum:
+      - VALID
+      - NOT_YET_VALID
+      - EXPIRED
+      - SUSPENDED
+      - CANCELLED
+      - NOT_FOUND
     VerifyContactRequest:
       type: object
       properties:
