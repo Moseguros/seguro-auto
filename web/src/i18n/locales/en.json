@@ -266,7 +266,8 @@
     "PAYMENT_EXCEPTION_NOT_FOUND": "Payment exception not found.",
     "RESOLUTION_NOT_ALLOWED": "This resolution is not allowed for this type of exception.",
     "LINK_INTENT_INVALID": "This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.",
-    "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link."
+    "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link.",
+    "POLICY_NOT_FOUND": "Policy not found."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",

@@ -644,6 +644,7 @@
   "errorResolutionNotAllowed": "This resolution is not allowed for this type of exception.",
   "errorLinkIntentInvalid": "This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.",
   "errorLinkAmountInsufficient": "The amount received is lower than the amount of the payment to link.",
+  "errorPolicyNotFound": "Policy not found.",
   "validationMsisdnNotMpesa": "Use a Vodacom number (starting with 84 or 85).",
   "validationInvalidUuid": "Invalid identifier.",
   "paymentStatusCreated": "Created",

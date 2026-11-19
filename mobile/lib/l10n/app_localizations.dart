@@ -3636,6 +3636,12 @@ abstract class AppLocalizations {
   /// **'O montante recebido é menor do que o do pagamento a associar.'**
   String get errorLinkAmountInsufficient;
 
+  /// No description provided for @errorPolicyNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólice não encontrada.'**
+  String get errorPolicyNotFound;
+
   /// No description provided for @validationMsisdnNotMpesa.
   ///
   /// In pt, this message translates to:

@@ -266,7 +266,8 @@
     "PAYMENT_EXCEPTION_NOT_FOUND": "Excepção de pagamento não encontrada.",
     "RESOLUTION_NOT_ALLOWED": "Esta resolução não é permitida para este tipo de excepção.",
     "LINK_INTENT_INVALID": "Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.",
-    "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar."
+    "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar.",
+    "POLICY_NOT_FOUND": "Apólice não encontrada."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",

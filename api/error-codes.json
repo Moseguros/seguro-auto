@@ -345,6 +345,10 @@
       "status" : 404
     },
     {
+      "code" : "POLICY_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "PRODUCT_CODE_ALREADY_EXISTS",
       "status" : 409
     },

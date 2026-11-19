@@ -961,6 +961,7 @@
   "errorResolutionNotAllowed": "Esta resolução não é permitida para este tipo de excepção.",
   "errorLinkIntentInvalid": "Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.",
   "errorLinkAmountInsufficient": "O montante recebido é menor do que o do pagamento a associar.",
+  "errorPolicyNotFound": "Apólice não encontrada.",
   "validationMsisdnNotMpesa": "Use um número Vodacom (começado por 84 ou 85).",
   "validationInvalidUuid": "Identificador inválido.",
   "paymentStatusCreated": "Criado",

@@ -2078,6 +2078,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'O montante recebido é menor do que o do pagamento a associar.';
 
   @override
+  String get errorPolicyNotFound => 'Apólice não encontrada.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Use um número Vodacom (começado por 84 ou 85).';
 

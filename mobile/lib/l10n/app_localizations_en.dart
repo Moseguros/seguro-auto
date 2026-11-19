@@ -2077,6 +2077,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'The amount received is lower than the amount of the payment to link.';
 
   @override
+  String get errorPolicyNotFound => 'Policy not found.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Use a Vodacom number (starting with 84 or 85).';
 

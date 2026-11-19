@@ -154,6 +154,7 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'RESOLUTION_NOT_ALLOWED' => l10n.errorResolutionNotAllowed,
   'LINK_INTENT_INVALID' => l10n.errorLinkIntentInvalid,
   'LINK_AMOUNT_INSUFFICIENT' => l10n.errorLinkAmountInsufficient,
+  'POLICY_NOT_FOUND' => l10n.errorPolicyNotFound,
   _ => l10n.errorUnknown,
 };
 
