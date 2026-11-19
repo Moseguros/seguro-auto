@@ -42,6 +42,18 @@ class SmsStoreTest {
     }
 
     @Test
+    void pushMessagesShowTitleAndBody() {
+        SmsStore store = new SmsStore();
+        SmsMessage message = store.addPush("…abcd1234", "Pagamento recebido", "Recebemos o pagamento.",
+                java.util.Map.of("notificationId", "n-1"));
+
+        assertThat(message.channel()).isEqualTo("PUSH");
+        assertThat(message.text()).isEqualTo("Pagamento recebido: Recebemos o pagamento.");
+        assertThat(message.params()).containsEntry("notificationId", "n-1");
+        assertThat(message.template()).isNull();
+    }
+
+    @Test
     void clearRemovesEverything() {
         SmsStore store = new SmsStore();
         store.add("+258841234567", "teste");

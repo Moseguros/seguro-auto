@@ -18,9 +18,11 @@ public class DeliveryModes {
 
     private volatile Mode sms = Mode.OK;
     private volatile Mode whatsapp = Mode.OK;
+    /** Push (S6-04): sem recibos, FAIL_RECEIPT é como OK. */
+    private volatile Mode push = Mode.OK;
 
     public Config get() {
-        return new Config(sms, whatsapp);
+        return new Config(sms, whatsapp, push);
     }
 
     /** Muda os modos indicados (os {@code null} ficam como estavam). */
@@ -30,6 +32,9 @@ public class DeliveryModes {
         }
         if (config.whatsapp() != null) {
             whatsapp = config.whatsapp();
+        }
+        if (config.push() != null) {
+            push = config.push();
         }
         return get();
     }
@@ -42,7 +47,11 @@ public class DeliveryModes {
         return whatsapp;
     }
 
-    /** {@code { "sms": "OK", "whatsapp": "FAIL" }}. */
-    public record Config(Mode sms, Mode whatsapp) {
+    public Mode push() {
+        return push;
+    }
+
+    /** {@code { "sms": "OK", "whatsapp": "FAIL", "push": "OK" }}. */
+    public record Config(Mode sms, Mode whatsapp, Mode push) {
     }
 }

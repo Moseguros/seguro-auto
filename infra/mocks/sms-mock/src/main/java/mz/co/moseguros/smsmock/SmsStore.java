@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-/** Guarda em memória as últimas {@value #CAPACITY} mensagens (SMS e WhatsApp), a mais recente primeiro. */
+/** Guarda em memória as últimas {@value #CAPACITY} mensagens (SMS, WhatsApp e push), a mais recente primeiro. */
 @Component
 public class SmsStore {
 
@@ -40,6 +40,13 @@ public class SmsStore {
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(Collectors.joining(", ", "{", "}"));
         return store(new SmsMessage(UUID.randomUUID().toString(), "WHATSAPP", to, text, template, copy,
+                clock.instant()));
+    }
+
+    /** Push (S6-04): o texto é o título e o corpo; os parâmetros são os dados. */
+    public SmsMessage addPush(String token, String title, String body, Map<String, String> data) {
+        Map<String, String> copy = data == null ? Map.of() : Map.copyOf(data);
+        return store(new SmsMessage(UUID.randomUUID().toString(), "PUSH", token, title + ": " + body, null, copy,
                 clock.instant()));
     }
 

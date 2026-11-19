@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SMS e WhatsApp mock - MoSeguros</title>
+  <title>SMS, WhatsApp e push mock - MoSeguros</title>
   <style>
     body { margin: 0; font-family: system-ui, sans-serif; background: #E8EFF6; color: #142D4E; }
     header { background: #142D4E; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -33,12 +33,13 @@
     <section class="modes" aria-label="Modos dos canais">
       <div class="mode-row" data-channel="sms"><strong>SMS</strong></div>
       <div class="mode-row" data-channel="whatsapp"><strong>WhatsApp</strong></div>
-      <p class="hint">OK: aceita e envia recibo DELIVERED 2 s depois. FAIL: responde 503. FAIL_RECEIPT: aceita e envia recibo FAILED 2 s depois.</p>
+      <div class="mode-row" data-channel="push"><strong>Push</strong></div>
+      <p class="hint">OK: aceita e envia recibo DELIVERED 2 s depois. FAIL: responde 503. FAIL_RECEIPT: aceita e envia recibo FAILED 2 s depois. O push não tem recibos (FAIL_RECEIPT = OK).</p>
     </section>
     <div id="list"><p class="empty">A carregar...</p></div>
   </main>
   <script>
-    // Lista actualizada a cada 3 s a partir de GET /sms (SMS e WhatsApp, mais recente primeiro).
+    // Lista actualizada a cada 3 s a partir de GET /sms (SMS, WhatsApp e push, mais recente primeiro).
     const list = document.getElementById('list');
     const count = document.getElementById('count');
     const MODES = ['OK', 'FAIL', 'FAIL_RECEIPT'];
@@ -59,7 +60,7 @@
         meta.className = 'meta';
         const channel = document.createElement('span');
         channel.className = 'channel';
-        channel.textContent = m.channel === 'WHATSAPP' ? 'WhatsApp' : 'SMS';
+        channel.textContent = m.channel === 'WHATSAPP' ? 'WhatsApp' : m.channel === 'PUSH' ? 'Push' : 'SMS';
         const to = document.createElement('span');
         to.className = 'to';
         to.textContent = m.to;
