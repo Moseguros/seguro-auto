@@ -59,6 +59,44 @@ export interface ActivateInvitationRequest {
   totpCode: string;
 }
 
+export type AdminPaymentFileSourceFileFormat =
+  (typeof AdminPaymentFileSourceFileFormat)[keyof typeof AdminPaymentFileSourceFileFormat];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AdminPaymentFileSourceFileFormat = {
+  MEPS: 'MEPS',
+  BMEPS: 'BMEPS',
+} as const;
+
+export type AdminPaymentFileSourceLastPollOutcome =
+  (typeof AdminPaymentFileSourceLastPollOutcome)[keyof typeof AdminPaymentFileSourceLastPollOutcome];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AdminPaymentFileSourceLastPollOutcome = {
+  OK: 'OK',
+  ERROR: 'ERROR',
+} as const;
+
+export interface AdminPaymentFileSource {
+  enabled: boolean;
+  entity?: string;
+  fileFormat?: AdminPaymentFileSourceFileFormat;
+  filesLast24h: number;
+  insurer: PaymentFileSourceInsurer;
+  lastPollAt?: string;
+  /** PollErrorCode (i18n pollErrorCode.*) */
+  lastPollError?: string;
+  lastPollOutcome?: AdminPaymentFileSourceLastPollOutcome;
+  lastSuccessAt?: string;
+  rejectedLast24h: number;
+  sourceId: string;
+  staleSince?: string;
+}
+
+export interface AdminPaymentFileSources {
+  sources: AdminPaymentFileSource[];
+}
+
 export interface ApproveInspectionRequest {
   mode?: InspectionMode;
   /** @maxLength 1000 */
@@ -2061,6 +2099,20 @@ export interface PageResponseOrganizationSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponsePaymentExceptionSummary {
+  content: PaymentExceptionSummary[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponsePaymentFileImport {
+  content: PaymentFileImport[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseProductSummaryResponse {
   content: ProductSummaryResponse[];
   page: number;
@@ -2125,6 +2177,191 @@ export const PaymentEventType = {
   REFERENCE_PAID: 'REFERENCE_PAID',
   MANUAL_RESOLUTION: 'MANUAL_RESOLUTION',
 } as const;
+
+export interface PaymentExceptionCandidate {
+  amount: Money;
+  /** Referência bancária (11 dígitos) da intenção */
+  bankReference?: string;
+  createdAt: string;
+  id: string;
+  matchesAmount: boolean;
+  matchesReference: boolean;
+  reference: string;
+  status: PaymentStatus;
+  targetLabel: string;
+}
+
+export interface PaymentExceptionCandidates {
+  candidates: PaymentExceptionCandidate[];
+}
+
+export type PaymentExceptionDetailStatus =
+  (typeof PaymentExceptionDetailStatus)[keyof typeof PaymentExceptionDetailStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentExceptionDetailStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED',
+} as const;
+
+export interface PaymentExceptionDetail {
+  /** Resoluções permitidas para o tipo; vazio depois de resolvida */
+  allowedResolutions: PaymentResolution[];
+  amount?: Money;
+  /** Identificador da transacção no banco, se o ficheiro o trouxer */
+  bankTransactionId?: string;
+  createdAt: string;
+  detail?: string;
+  entity?: string;
+  fileName?: string;
+  id: string;
+  intent?: PaymentExceptionIntent;
+  lineNo?: number;
+  linkedIntent?: PaymentExceptionIntent;
+  note?: string;
+  paidAt?: string;
+  reference?: string;
+  resolution?: PaymentResolution;
+  resolvedAt?: string;
+  /** Id do utilizador que resolveu */
+  resolvedBy?: string;
+  status: PaymentExceptionDetailStatus;
+  type: PaymentExceptionType;
+  /** Versão; enviada na resolução (diferente → 409 CONCURRENT_MODIFICATION) */
+  version: number;
+}
+
+/**
+ * Intenção associada (LINKED)
+ */
+export interface PaymentExceptionIntent {
+  amount: Money;
+  id: string;
+  reference: string;
+  status: PaymentStatus;
+  targetLabel: string;
+}
+
+export type PaymentExceptionSummaryStatus =
+  (typeof PaymentExceptionSummaryStatus)[keyof typeof PaymentExceptionSummaryStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentExceptionSummaryStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED',
+} as const;
+
+export interface PaymentExceptionSummary {
+  amount?: Money;
+  createdAt: string;
+  /** Ex.: INVALID_CHECK_DIGITS, NOT_ISSUED (UNKNOWN_REFERENCE) */
+  detail?: string;
+  /** Entidade (5 dígitos) */
+  entity?: string;
+  fileName?: string;
+  id: string;
+  intent?: PaymentExceptionIntent;
+  lineNo?: number;
+  paidAt?: string;
+  /** Referência (11 dígitos) */
+  reference?: string;
+  resolution?: PaymentResolution;
+  status: PaymentExceptionSummaryStatus;
+  type: PaymentExceptionType;
+}
+
+export type PaymentExceptionType = (typeof PaymentExceptionType)[keyof typeof PaymentExceptionType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentExceptionType = {
+  AMOUNT_MISMATCH: 'AMOUNT_MISMATCH',
+  EXPIRED_REFERENCE: 'EXPIRED_REFERENCE',
+  ALREADY_PAID: 'ALREADY_PAID',
+  UNKNOWN_REFERENCE: 'UNKNOWN_REFERENCE',
+  CANCELLED_REFERENCE: 'CANCELLED_REFERENCE',
+  TARGET_NOT_PAYABLE: 'TARGET_NOT_PAYABLE',
+  UNRESOLVED_STATUS: 'UNRESOLVED_STATUS',
+} as const;
+
+export type PaymentFileImportFileFormat =
+  (typeof PaymentFileImportFileFormat)[keyof typeof PaymentFileImportFileFormat];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentFileImportFileFormat = {
+  MEPS: 'MEPS',
+  BMEPS: 'BMEPS',
+} as const;
+
+export type PaymentFileImportStatus =
+  (typeof PaymentFileImportStatus)[keyof typeof PaymentFileImportStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentFileImportStatus = {
+  PROCESSED: 'PROCESSED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export interface PaymentFileImport {
+  /** Pagamentos confirmados */
+  confirmedCount: number;
+  detail?: string;
+  /** Pagamentos que geraram excepções */
+  exceptionCount: number;
+  fileFormat: PaymentFileImportFileFormat;
+  fileName: string;
+  /** Identificador do ficheiro no formato (MEPS AAAAMMDDS; BMEPS empresa-perfil-ID) */
+  formatFileId?: string;
+  id: string;
+  lineNo?: number;
+  occurredAt: string;
+  /** Só REJECTED: FileRejectionReason (i18n fileRejectionReason.*) */
+  reason?: string;
+  /** Só PROCESSED */
+  recordCount?: number;
+  sha256: string;
+  status: PaymentFileImportStatus;
+  totalAmount?: Money;
+  totalFees?: Money;
+}
+
+export interface PaymentFileSourceInsurer {
+  displayName: string;
+  id: string;
+}
+
+export type PaymentFileSourceStatusFileFormat =
+  (typeof PaymentFileSourceStatusFileFormat)[keyof typeof PaymentFileSourceStatusFileFormat];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentFileSourceStatusFileFormat = {
+  MEPS: 'MEPS',
+  BMEPS: 'BMEPS',
+} as const;
+
+export type PaymentFileSourceStatusLastPollOutcome =
+  (typeof PaymentFileSourceStatusLastPollOutcome)[keyof typeof PaymentFileSourceStatusLastPollOutcome];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentFileSourceStatusLastPollOutcome = {
+  OK: 'OK',
+  ERROR: 'ERROR',
+} as const;
+
+export interface PaymentFileSourceStatus {
+  /** false sem forma de pagamento BANK_REFERENCE (os outros campos não vêm) */
+  configured: boolean;
+  enabled?: boolean;
+  entity?: string;
+  fileFormat?: PaymentFileSourceStatusFileFormat;
+  lastPollAt?: string;
+  /** PollErrorCode (i18n pollErrorCode.*) */
+  lastPollError?: string;
+  lastPollOutcome?: PaymentFileSourceStatusLastPollOutcome;
+  lastSuccessAt?: string;
+  /** Minutos sem leitura com sucesso a partir dos quais a fonte está parada */
+  staleAfterMinutes?: number;
+  staleSince?: string;
+}
 
 export interface PaymentInsurerRef {
   displayName?: string;
@@ -2271,6 +2508,31 @@ export const PaymentPurpose = {
   FLEET_INCLUSION: 'FLEET_INCLUSION',
 } as const;
 
+/**
+ * Vazio se o broker não responder
+ */
+export interface PaymentQueueStatus {
+  /** -1 se a fila não existir */
+  consumers: number;
+  /** -1 se a fila não existir */
+  messages: number;
+  name: string;
+}
+
+/**
+ * Resoluções permitidas para o tipo; vazio depois de resolvida
+ */
+export type PaymentResolution = (typeof PaymentResolution)[keyof typeof PaymentResolution];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentResolution = {
+  LINKED: 'LINKED',
+  REFUND: 'REFUND',
+  IGNORED: 'IGNORED',
+  MARK_SUCCEEDED: 'MARK_SUCCEEDED',
+  MARK_FAILED: 'MARK_FAILED',
+} as const;
+
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -2301,6 +2563,14 @@ export const PaymentTargetType = {
   ENDORSEMENT: 'ENDORSEMENT',
   FLEET_INCLUSION: 'FLEET_INCLUSION',
 } as const;
+
+export interface PaymentWorkerStatus {
+  brokerReachable: boolean;
+  /** Última mensagem recebida do worker */
+  lastMessageAt?: string;
+  /** Vazio se o broker não responder */
+  queues: PaymentQueueStatus[];
+}
 
 export type PhotoSlot = (typeof PhotoSlot)[keyof typeof PhotoSlot];
 
@@ -3633,6 +3903,39 @@ export interface ResetPasswordRequest {
   token: string;
 }
 
+/**
+ * REFUND só regista a decisão: a seguradora devolve o dinheiro fora da plataforma
+ */
+export type ResolvePaymentExceptionRequestResolution =
+  (typeof ResolvePaymentExceptionRequestResolution)[keyof typeof ResolvePaymentExceptionRequestResolution];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ResolvePaymentExceptionRequestResolution = {
+  LINKED: 'LINKED',
+  REFUND: 'REFUND',
+  IGNORED: 'IGNORED',
+  MARK_SUCCEEDED: 'MARK_SUCCEEDED',
+  MARK_FAILED: 'MARK_FAILED',
+} as const;
+
+export interface ResolvePaymentExceptionRequest {
+  /** Só LINKED (obrigatório): intenção BANK_REFERENCE desta seguradora em PENDING, EXPIRED ou CANCELLED */
+  intentId?: string;
+  /**
+   * @minLength 5
+   * @maxLength 500
+   */
+  note: string;
+  /**
+   * Só MARK_SUCCEEDED: id da transacção no portal do fornecedor
+   * @maxLength 100
+   */
+  providerTxId?: string;
+  /** REFUND só regista a decisão: a seguradora devolve o dinheiro fora da plataforma */
+  resolution: ResolvePaymentExceptionRequestResolution;
+  version: number;
+}
+
 export interface RiskDriverRequest {
   /** No passado; idade até 100 anos */
   birthDate: string;
@@ -4715,6 +5018,38 @@ export type ListInsurerKycChecksParams = {
   sort?: string;
 };
 
+export type ListPaymentExceptionsParams = {
+  /**
+   * OPEN (defeito), RESOLVED, ou vazio para todos
+   */
+  status?: string;
+  type?: PaymentExceptionType[];
+  from?: string;
+  to?: string;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListPaymentFileImportsParams = {
+  /**
+   * PROCESSED ou REJECTED
+   */
+  status?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  size?: number;
+  /**
+   * occurredAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
 export type ListInsurerPaymentsParams = {
   status?: PaymentStatus[];
   method?: ListInsurerPaymentsMethod;
@@ -5552,6 +5887,256 @@ export const useTestOtpDelivery = <TError = ErrorType<ProblemDetail>, TContext =
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Permissão platform:operations. Todas as formas de pagamento BANK_REFERENCE (activas e inactivas), por nome da seguradora, com a última leitura e os ficheiros das últimas 24 h.
+ * @summary Lista as fontes de ficheiros de todas as seguradoras
+ */
+export const listPaymentFileSources = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<AdminPaymentFileSources>(
+    { url: `/api/v1/admin/payment-file-sources`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListPaymentFileSourcesQueryKey = () => {
+  return [`/api/v1/admin/payment-file-sources`] as const;
+};
+
+export const getListPaymentFileSourcesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPaymentFileSources>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileSources>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPaymentFileSourcesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPaymentFileSources>>> = ({ signal }) =>
+    listPaymentFileSources(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPaymentFileSources>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPaymentFileSourcesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPaymentFileSources>>
+>;
+export type ListPaymentFileSourcesQueryError = ErrorType<ProblemDetail>;
+
+export function useListPaymentFileSources<
+  TData = Awaited<ReturnType<typeof listPaymentFileSources>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileSources>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentFileSources>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentFileSources>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentFileSources<
+  TData = Awaited<ReturnType<typeof listPaymentFileSources>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileSources>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentFileSources>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentFileSources>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentFileSources<
+  TData = Awaited<ReturnType<typeof listPaymentFileSources>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileSources>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as fontes de ficheiros de todas as seguradoras
+ */
+
+export function useListPaymentFileSources<
+  TData = Awaited<ReturnType<typeof listPaymentFileSources>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileSources>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPaymentFileSourcesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão platform:operations. Mensagens e consumidores das quatro filas dos pagamentos e a última mensagem recebida. Broker inacessível → brokerReachable false e queues vazio.
+ * @summary Estado das filas e do worker de ficheiros
+ */
+export const getPaymentWorkerStatus = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentWorkerStatus>(
+    { url: `/api/v1/admin/payment-worker-status`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetPaymentWorkerStatusQueryKey = () => {
+  return [`/api/v1/admin/payment-worker-status`] as const;
+};
+
+export const getGetPaymentWorkerStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getPaymentWorkerStatus>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPaymentWorkerStatusQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPaymentWorkerStatus>>> = ({ signal }) =>
+    getPaymentWorkerStatus(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetPaymentWorkerStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPaymentWorkerStatus>>
+>;
+export type GetPaymentWorkerStatusQueryError = ErrorType<ProblemDetail>;
+
+export function useGetPaymentWorkerStatus<
+  TData = Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentWorkerStatus>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentWorkerStatus>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentWorkerStatus<
+  TData = Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentWorkerStatus>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentWorkerStatus>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentWorkerStatus<
+  TData = Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentWorkerStatus>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Estado das filas e do worker de ficheiros
+ */
+
+export function useGetPaymentWorkerStatus<
+  TData = Awaited<ReturnType<typeof getPaymentWorkerStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentWorkerStatus>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPaymentWorkerStatusQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão reference:manage. Todos, incluindo os inactivos, por sortOrder.
@@ -10333,6 +10918,754 @@ export const useVerifyKycCheck = <TError = ErrorType<ProblemDetail>, TContext = 
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Permissão payment:read. Filtros: status (OPEN por defeito; vazio = todos), type repetível, from e to em datas de Africa/Maputo (inclusivas, sobre createdAt), q igual à referência ou ao nome do ficheiro. Ordenação createdAt (defeito desc).
+ * @summary Lista as excepções de pagamento da seguradora
+ */
+export const listPaymentExceptions = (
+  params?: ListPaymentExceptionsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponsePaymentExceptionSummary>(
+    { url: `/api/v1/insurer/payment-exceptions`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListPaymentExceptionsQueryKey = (params?: ListPaymentExceptionsParams) => {
+  return [`/api/v1/insurer/payment-exceptions`, ...(params ? [params] : [])] as const;
+};
+
+export const getListPaymentExceptionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPaymentExceptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentExceptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptions>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPaymentExceptionsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPaymentExceptions>>> = ({ signal }) =>
+    listPaymentExceptions(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPaymentExceptions>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPaymentExceptionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPaymentExceptions>>
+>;
+export type ListPaymentExceptionsQueryError = ErrorType<ProblemDetail>;
+
+export function useListPaymentExceptions<
+  TData = Awaited<ReturnType<typeof listPaymentExceptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListPaymentExceptionsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptions>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentExceptions>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentExceptions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentExceptions<
+  TData = Awaited<ReturnType<typeof listPaymentExceptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentExceptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptions>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentExceptions>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentExceptions>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentExceptions<
+  TData = Awaited<ReturnType<typeof listPaymentExceptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentExceptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptions>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as excepções de pagamento da seguradora
+ */
+
+export function useListPaymentExceptions<
+  TData = Awaited<ReturnType<typeof listPaymentExceptions>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentExceptionsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptions>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPaymentExceptionsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:read. Com as resoluções permitidas e a versão. De outra seguradora → 404 PAYMENT_EXCEPTION_NOT_FOUND.
+ * @summary Consulta uma excepção de pagamento
+ */
+export const getPaymentException = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentExceptionDetail>(
+    { url: `/api/v1/insurer/payment-exceptions/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetPaymentExceptionQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/payment-exceptions/${id}`] as const;
+};
+
+export const getGetPaymentExceptionQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPaymentException>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentException>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPaymentExceptionQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPaymentException>>> = ({ signal }) =>
+    getPaymentException(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPaymentException>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetPaymentExceptionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPaymentException>>
+>;
+export type GetPaymentExceptionQueryError = ErrorType<ProblemDetail>;
+
+export function useGetPaymentException<
+  TData = Awaited<ReturnType<typeof getPaymentException>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentException>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentException>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentException>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentException<
+  TData = Awaited<ReturnType<typeof getPaymentException>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentException>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentException>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentException>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentException<
+  TData = Awaited<ReturnType<typeof getPaymentException>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentException>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma excepção de pagamento
+ */
+
+export function useGetPaymentException<
+  TData = Awaited<ReturnType<typeof getPaymentException>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentException>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPaymentExceptionQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:resolve-exception. Intenções BANK_REFERENCE da seguradora em PENDING, EXPIRED ou CANCELLED dos últimos 60 dias: mesma referência primeiro, depois o mesmo montante, depois as mais recentes; até 20. Tipo que não permite LINKED → lista vazia.
+ * @summary Lista as intenções a que a excepção pode ser associada
+ */
+export const listPaymentExceptionCandidates = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentExceptionCandidates>(
+    { url: `/api/v1/insurer/payment-exceptions/${id}/candidates`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListPaymentExceptionCandidatesQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/payment-exceptions/${id}/candidates`] as const;
+};
+
+export const getListPaymentExceptionCandidatesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptionCandidates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPaymentExceptionCandidatesQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPaymentExceptionCandidates>>> = ({
+    signal,
+  }) => listPaymentExceptionCandidates(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPaymentExceptionCandidatesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPaymentExceptionCandidates>>
+>;
+export type ListPaymentExceptionCandidatesQueryError = ErrorType<ProblemDetail>;
+
+export function useListPaymentExceptionCandidates<
+  TData = Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptionCandidates>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentExceptionCandidates>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentExceptionCandidates<
+  TData = Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptionCandidates>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentExceptionCandidates>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentExceptionCandidates<
+  TData = Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptionCandidates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as intenções a que a excepção pode ser associada
+ */
+
+export function useListPaymentExceptionCandidates<
+  TData = Awaited<ReturnType<typeof listPaymentExceptionCandidates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentExceptionCandidates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPaymentExceptionCandidatesQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:resolve-exception. AMOUNT_MISMATCH, UNKNOWN_REFERENCE, EXPIRED_REFERENCE, CANCELLED_REFERENCE: LINKED, REFUND, IGNORED; ALREADY_PAID e TARGET_NOT_PAYABLE: REFUND, IGNORED; UNRESOLVED_STATUS: MARK_SUCCEEDED, MARK_FAILED. Outra → 400 RESOLUTION_NOT_ALLOWED. LINKED: intenção de outra seguradora, de outro método ou noutro estado → 400 LINK_INTENT_INVALID; montante recebido menor → 400 LINK_AMOUNT_INSUFFICIENT; alvo já pago → 409 PAYMENT_TARGET_ALREADY_PAID. Já resolvida → 409 INVALID_STATE_TRANSITION; versão diferente → 409 CONCURRENT_MODIFICATION. REFUND só regista a decisão: a devolução faz-se fora da plataforma.
+ * @summary Resolve uma excepção de pagamento
+ */
+export const resolvePaymentException = (
+  id: string,
+  resolvePaymentExceptionRequest: BodyType<ResolvePaymentExceptionRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentExceptionDetail>(
+    {
+      url: `/api/v1/insurer/payment-exceptions/${id}/resolve`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: resolvePaymentExceptionRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getResolvePaymentExceptionMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof resolvePaymentException>>,
+    TError,
+    { id: string; data: BodyType<ResolvePaymentExceptionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof resolvePaymentException>>,
+  TError,
+  { id: string; data: BodyType<ResolvePaymentExceptionRequest> },
+  TContext
+> => {
+  const mutationKey = ['resolvePaymentException'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof resolvePaymentException>>,
+    { id: string; data: BodyType<ResolvePaymentExceptionRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return resolvePaymentException(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ResolvePaymentExceptionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof resolvePaymentException>>
+>;
+export type ResolvePaymentExceptionMutationBody = BodyType<ResolvePaymentExceptionRequest>;
+export type ResolvePaymentExceptionMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Resolve uma excepção de pagamento
+ */
+export const useResolvePaymentException = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof resolvePaymentException>>,
+      TError,
+      { id: string; data: BodyType<ResolvePaymentExceptionRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof resolvePaymentException>>,
+  TError,
+  { id: string; data: BodyType<ResolvePaymentExceptionRequest> },
+  TContext
+> => {
+  const mutationOptions = getResolvePaymentExceptionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão payment:read. Última leitura do SFTP, último sucesso e se a fonte está parada (sem leitura com sucesso há mais de staleAfterMinutes). Sem BANK_REFERENCE → configured false.
+ * @summary Estado da fonte de ficheiros da seguradora
+ */
+export const getPaymentFileSourceStatus = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PaymentFileSourceStatus>(
+    { url: `/api/v1/insurer/payment-file-source`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetPaymentFileSourceStatusQueryKey = () => {
+  return [`/api/v1/insurer/payment-file-source`] as const;
+};
+
+export const getGetPaymentFileSourceStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getPaymentFileSourceStatus>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPaymentFileSourceStatusQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPaymentFileSourceStatus>>> = ({
+    signal,
+  }) => getPaymentFileSourceStatus(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetPaymentFileSourceStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPaymentFileSourceStatus>>
+>;
+export type GetPaymentFileSourceStatusQueryError = ErrorType<ProblemDetail>;
+
+export function useGetPaymentFileSourceStatus<
+  TData = Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentFileSourceStatus>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentFileSourceStatus>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentFileSourceStatus<
+  TData = Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentFileSourceStatus>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getPaymentFileSourceStatus>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPaymentFileSourceStatus<
+  TData = Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentFileSourceStatus>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Estado da fonte de ficheiros da seguradora
+ */
+
+export function useGetPaymentFileSourceStatus<
+  TData = Awaited<ReturnType<typeof getPaymentFileSourceStatus>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPaymentFileSourceStatus>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetPaymentFileSourceStatusQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão payment:read. Ficheiros MEPS ou BMEPS processados ou rejeitados pelo worker, com os pagamentos confirmados e as excepções de cada um. Filtros: status (PROCESSED, REJECTED), from e to em datas de Africa/Maputo (inclusivas, sobre occurredAt). Ordenação occurredAt (defeito desc).
+ * @summary Lista os ficheiros de movimentos da seguradora
+ */
+export const listPaymentFileImports = (
+  params?: ListPaymentFileImportsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponsePaymentFileImport>(
+    { url: `/api/v1/insurer/payment-files`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListPaymentFileImportsQueryKey = (params?: ListPaymentFileImportsParams) => {
+  return [`/api/v1/insurer/payment-files`, ...(params ? [params] : [])] as const;
+};
+
+export const getListPaymentFileImportsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPaymentFileImports>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentFileImportsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileImports>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPaymentFileImportsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPaymentFileImports>>> = ({ signal }) =>
+    listPaymentFileImports(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPaymentFileImports>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListPaymentFileImportsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPaymentFileImports>>
+>;
+export type ListPaymentFileImportsQueryError = ErrorType<ProblemDetail>;
+
+export function useListPaymentFileImports<
+  TData = Awaited<ReturnType<typeof listPaymentFileImports>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListPaymentFileImportsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileImports>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentFileImports>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentFileImports>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentFileImports<
+  TData = Awaited<ReturnType<typeof listPaymentFileImports>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentFileImportsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileImports>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listPaymentFileImports>>,
+          TError,
+          Awaited<ReturnType<typeof listPaymentFileImports>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListPaymentFileImports<
+  TData = Awaited<ReturnType<typeof listPaymentFileImports>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentFileImportsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileImports>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os ficheiros de movimentos da seguradora
+ */
+
+export function useListPaymentFileImports<
+  TData = Awaited<ReturnType<typeof listPaymentFileImports>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListPaymentFileImportsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listPaymentFileImports>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListPaymentFileImportsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão payment:configure, staff de uma seguradora (outro âmbito → 403 FORBIDDEN). Sempre os dois métodos, pela ordem MPESA, BANK_REFERENCE; os que ainda não foram gravados aparecem com configured = false e os valores por defeito. Nunca devolve valores secretos.

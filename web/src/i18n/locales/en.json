@@ -261,7 +261,11 @@
     "REFERENCE_GENERATION_FAILED": "The reference could not be generated. Try again in a moment.",
     "CUSTOMER_HAS_NO_MSISDN": "The customer has no mobile number to receive the link.",
     "PAYMENT_LINK_RATE_LIMITED": "You have already sent the payment link 3 times in the last 24 hours.",
-    "EXPORT_TOO_LARGE": "The export has too many rows. Use narrower filters."
+    "EXPORT_TOO_LARGE": "The export has too many rows. Use narrower filters.",
+    "PAYMENT_EXCEPTION_NOT_FOUND": "Payment exception not found.",
+    "RESOLUTION_NOT_ALLOWED": "This resolution is not allowed for this type of exception.",
+    "LINK_INTENT_INVALID": "This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.",
+    "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -391,6 +395,49 @@
     "EXPIRED": "The payment deadline has passed.",
     "SUPERSEDED": "Replaced by another payment.",
     "MANUAL": "Resolved by the insurer."
+  },
+  "paymentExceptionType": {
+    "AMOUNT_MISMATCH": "Different amount",
+    "EXPIRED_REFERENCE": "Expired reference",
+    "ALREADY_PAID": "Reference already paid",
+    "UNKNOWN_REFERENCE": "Unknown reference",
+    "CANCELLED_REFERENCE": "Cancelled reference",
+    "TARGET_NOT_PAYABLE": "Proposal that can no longer be paid",
+    "UNRESOLVED_STATUS": "M-Pesa payment to be confirmed"
+  },
+  "paymentResolution": {
+    "LINKED": "Linked to a payment",
+    "REFUND": "Refund outside the platform",
+    "IGNORED": "Ignored",
+    "MARK_SUCCEEDED": "Marked as paid",
+    "MARK_FAILED": "Marked as failed"
+  },
+  "fileImportStatus": {
+    "PROCESSED": "Processed",
+    "REJECTED": "Rejected"
+  },
+  "fileRejectionReason": {
+    "ENTITY_MISMATCH": "The entity of the file is not this insurer's",
+    "TRAILER_COUNT_MISMATCH": "The record count of the trailer does not match",
+    "TRAILER_TOTAL_MISMATCH": "The total of the trailer does not match",
+    "INVALID_AMOUNT": "Invalid amount",
+    "PARSE_ERROR": "Line with an invalid format",
+    "ENCODING_ERROR": "Invalid character encoding",
+    "MISSING_HEADER": "Missing header",
+    "MISSING_TRAILER": "Missing trailer",
+    "UNSUPPORTED_RECORD": "Unknown record type",
+    "FILE_TOO_LARGE": "File too large",
+    "DUPLICATE_FILE_ID": "File with the same identifier already processed with other content"
+  },
+  "pollErrorCode": {
+    "SFTP_UNREACHABLE": "SFTP server unreachable",
+    "SFTP_AUTH_FAILED": "SFTP credentials refused",
+    "SFTP_HOST_KEY_MISMATCH": "The SFTP server key does not match the configured one",
+    "SFTP_DIRECTORY_NOT_FOUND": "SFTP folder not found",
+    "SECRET_NOT_FOUND": "Credentials missing from the secret store",
+    "UNSUPPORTED_FORMAT": "Unsupported file format",
+    "PUBLISH_FAILED": "Failed to send the payments to the platform",
+    "INTERNAL_ERROR": "Internal error of the file reader"
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",

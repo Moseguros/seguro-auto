@@ -261,7 +261,11 @@
     "REFERENCE_GENERATION_FAILED": "Não foi possível gerar a referência. Tente de novo dentro de momentos.",
     "CUSTOMER_HAS_NO_MSISDN": "O cliente não tem telemóvel registado para receber o link.",
     "PAYMENT_LINK_RATE_LIMITED": "Já enviou o link de pagamento 3 vezes nas últimas 24 horas.",
-    "EXPORT_TOO_LARGE": "A exportação tem demasiadas linhas. Use filtros mais estreitos."
+    "EXPORT_TOO_LARGE": "A exportação tem demasiadas linhas. Use filtros mais estreitos.",
+    "PAYMENT_EXCEPTION_NOT_FOUND": "Excepção de pagamento não encontrada.",
+    "RESOLUTION_NOT_ALLOWED": "Esta resolução não é permitida para este tipo de excepção.",
+    "LINK_INTENT_INVALID": "Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.",
+    "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -391,6 +395,49 @@
     "EXPIRED": "O prazo para pagar terminou.",
     "SUPERSEDED": "Substituído por outro pagamento.",
     "MANUAL": "Resolvido pela seguradora."
+  },
+  "paymentExceptionType": {
+    "AMOUNT_MISMATCH": "Montante diferente",
+    "EXPIRED_REFERENCE": "Referência expirada",
+    "ALREADY_PAID": "Referência já paga",
+    "UNKNOWN_REFERENCE": "Referência desconhecida",
+    "CANCELLED_REFERENCE": "Referência cancelada",
+    "TARGET_NOT_PAYABLE": "Proposta que já não pode ser paga",
+    "UNRESOLVED_STATUS": "Pagamento M-Pesa por confirmar"
+  },
+  "paymentResolution": {
+    "LINKED": "Associado a um pagamento",
+    "REFUND": "Devolução fora da plataforma",
+    "IGNORED": "Ignorado",
+    "MARK_SUCCEEDED": "Marcado como pago",
+    "MARK_FAILED": "Marcado como falhado"
+  },
+  "fileImportStatus": {
+    "PROCESSED": "Processado",
+    "REJECTED": "Rejeitado"
+  },
+  "fileRejectionReason": {
+    "ENTITY_MISMATCH": "A entidade do ficheiro não é a desta seguradora",
+    "TRAILER_COUNT_MISMATCH": "O número de registos do rodapé não bate certo",
+    "TRAILER_TOTAL_MISMATCH": "O total do rodapé não bate certo",
+    "INVALID_AMOUNT": "Montante inválido",
+    "PARSE_ERROR": "Linha com formato inválido",
+    "ENCODING_ERROR": "Codificação de caracteres inválida",
+    "MISSING_HEADER": "Falta o cabeçalho",
+    "MISSING_TRAILER": "Falta o rodapé",
+    "UNSUPPORTED_RECORD": "Tipo de registo desconhecido",
+    "FILE_TOO_LARGE": "Ficheiro demasiado grande",
+    "DUPLICATE_FILE_ID": "Ficheiro com o mesmo identificador já processado com outro conteúdo"
+  },
+  "pollErrorCode": {
+    "SFTP_UNREACHABLE": "Servidor SFTP inacessível",
+    "SFTP_AUTH_FAILED": "Credenciais SFTP recusadas",
+    "SFTP_HOST_KEY_MISMATCH": "A chave do servidor SFTP não corresponde à configurada",
+    "SFTP_DIRECTORY_NOT_FOUND": "Pasta do SFTP não encontrada",
+    "SECRET_NOT_FOUND": "Credenciais em falta no cofre de segredos",
+    "UNSUPPORTED_FORMAT": "Formato de ficheiro não suportado",
+    "PUBLISH_FAILED": "Falha ao enviar os pagamentos para a plataforma",
+    "INTERNAL_ERROR": "Erro interno do leitor de ficheiros"
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
