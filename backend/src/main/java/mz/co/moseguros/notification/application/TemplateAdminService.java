@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,8 +83,23 @@ public class TemplateAdminService {
     @Transactional(readOnly = true)
     public Page<NotificationTemplate> list(String codePrefix, MessageChannel channel, String locale,
                                            Boolean customized, Pageable pageable) {
-        return templates.search(codePrefix == null || codePrefix.isBlank() ? null : codePrefix.strip(), channel,
-                locale == null || locale.isBlank() ? null : locale, customized, pageable);
+        Specification<NotificationTemplate> spec = (root, query, cb) -> cb.conjunction();
+        if (codePrefix != null && !codePrefix.isBlank()) {
+            // os códigos só têm [A-Z0-9_]; o "_" é literal (escape "!")
+            String prefix = codePrefix.strip().toUpperCase(java.util.Locale.ROOT).replaceAll("[^A-Z0-9_]", "")
+                    .replace("_", "!_") + "%";
+            spec = spec.and((root, query, cb) -> cb.like(root.get("code"), prefix, '!'));
+        }
+        if (channel != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("channel"), channel));
+        }
+        if (locale != null && !locale.isBlank()) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("locale"), locale));
+        }
+        if (customized != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("customized"), customized));
+        }
+        return templates.findAll(spec, pageable);
     }
 
     @PreAuthorize(PERMISSION)

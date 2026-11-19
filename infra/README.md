@@ -30,7 +30,7 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | `backend` | <http://localhost:8080/api/v1/meta/version> | perfil `local`; Swagger UI em <http://localhost:8080/swagger-ui.html>; health em `/api/v1/health` |
 | `postgres` | `localhost:5432` | BD, utilizador e palavra-passe `moseguros` (dono; ver `.env.example`); a aplicação usa `moseguros_app_user` (ver "Base de dados — papéis"); dados no volume `pgdata` |
 | `mailpit` | <http://localhost:8025> (web), `localhost:1025` (SMTP) | caixa de correio de teste: todo o e-mail enviado fica aqui |
-| `sms-mock` | <http://localhost:8090> | SMS e WhatsApp recebidos (coluna "canal"), actualizados a cada 3 s; botões para pôr cada canal em `OK`, `FAIL` ou `FAIL_RECEIPT` |
+| `sms-mock` | <http://localhost:8090> | SMS, WhatsApp e push recebidos (coluna "canal"), actualizados a cada 3 s; botões para pôr cada canal em `OK`, `FAIL` ou `FAIL_RECEIPT` |
 | `mpesa-mock` | <http://localhost:18352> | simulador da API M-Pesa (C2B 18352, consulta 18353, reversão 18354); página com as transacções, actualizada a cada 3 s; ver "Simulador M-Pesa" |
 | `rabbitmq` | <http://localhost:15672> (consola), `localhost:5672` (AMQP) | RabbitMQ 4.1 (ADR-004); utilizador e palavra-passe `moseguros` (`RABBITMQ_DEFAULT_USER`/`PASS` do `.env`); o backend declara a topologia dos pagamentos no arranque (ver "RabbitMQ — topologia"); dados no volume `rabbitdata` |
 | `sftp` | `localhost:2222` | SFTP onde o "banco" deposita os ficheiros MEPS/BMEPS (S5-09 lê-os); utilizadores `demo` e `demob` (ver [`mocks/sftp/README.md`](mocks/sftp/README.md)) |
@@ -38,20 +38,26 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | `payment-file-worker` | <http://localhost:8081/actuator/health> | lê os ficheiros de movimentos do SFTP de cada seguradora e publica os pagamentos no RabbitMQ (ver "Worker de ficheiros de pagamento") |
 | `ponto24-mock` | <http://localhost:8092> | simulador da rede Ponto24 e do banco (S5-08): paga referências e deposita ficheiros MEPS/BMEPS no `sftp` de minuto a minuto (ver "Pagar uma referência em local" e [`mocks/ponto24-mock/README.md`](mocks/ponto24-mock/README.md)) |
 
-API do `sms-mock` (alvo do `MockSmsSender` e do `MockWhatsAppSender` do backend, S1-03):
+API do `sms-mock` (alvo do `MockSmsSender` e do `MockWhatsAppSender` do backend, S1-03, e do `MockPushSender`, S6-04):
 
 ```bash
 curl -X POST localhost:8090/sms -H 'content-type: application/json' \
   -d '{"to":"+258841234567","text":"teste"}'   # 202 {"id": "..."}
 curl -X POST localhost:8090/whatsapp -H 'content-type: application/json' \
   -d '{"to":"+258841234567","template":"moseguros_otp","params":{"code":"123456"}}'   # 202 {"id": "..."}
-curl localhost:8090/sms                        # lista (SMS e WhatsApp), mais recente primeiro (últimas 500)
+curl -X POST localhost:8090/whatsapp -H 'content-type: application/json' \
+  -d '{"to":"+258841234567","template":"moseguros_policy_issued","params":{"p1":"AP-2027-000123","p2":"ABC-123-MC","p3":"10/02/2028 10:31"}}'
+curl -X POST localhost:8090/push -H 'content-type: application/json' \
+  -d '{"token":"…abcd1234","title":"Apólice emitida","body":"…","data":{"notificationId":"…","deepLink":"moseguros://policy/…"}}'   # 202 {"id": "..."}
+curl localhost:8090/sms                        # lista (SMS, WhatsApp e push), mais recente primeiro (últimas 500)
 curl -X DELETE localhost:8090/sms              # limpa
-curl localhost:8090/config                     # modos: {"sms":"OK","whatsapp":"OK"}
+curl localhost:8090/config                     # modos: {"sms":"OK","whatsapp":"OK","push":"OK"}
 curl -X PUT localhost:8090/config -H 'content-type: application/json' -d '{"sms":"FAIL"}'
 ```
 
-Modos de cada canal: `OK` (202 e, 2 s depois, recibo `DELIVERED`), `FAIL` (503, nada é guardado) e `FAIL_RECEIPT` (202 e, 2 s depois, recibo `FAILED`). Os recibos vão para `RECEIPT_CALLBACK_URL/mock-sms` ou `/mock-whatsapp` (no compose, o backend) com o cabeçalho `X-Webhook-Secret` (`WEBHOOK_SECRET` do `.env`); sem `RECEIPT_CALLBACK_URL` não há recibos.
+Modelos WhatsApp aceites: `moseguros_otp` (`code`), `moseguros_sign_otp` (`code`, `ref`, `insurer`, `total`) e os nove das notificações do S6-04 §10 com os parâmetros por ordem (`p1`…`pn`: `moseguros_proposal_accepted` 3, `moseguros_proposal_rejected` 2, `moseguros_proposal_info_requested` 2, `moseguros_proposal_expired` 1, `moseguros_payment_succeeded` 3, `moseguros_payment_failed` 2, `moseguros_payment_reference` 4, `moseguros_policy_issued` 3, `moseguros_quote_expiring` 2); outro modelo ou um parâmetro em falta → 400 (o backend trata-o como falha definitiva). O push guarda só o fim do token (`…` e os últimos 8 caracteres).
+
+Modos de cada canal: `OK` (202 e, 2 s depois, recibo `DELIVERED`), `FAIL` (503, nada é guardado) e `FAIL_RECEIPT` (202 e, 2 s depois, recibo `FAILED`); o push não tem recibos (`FAIL_RECEIPT` = `OK`). Os recibos vão para `RECEIPT_CALLBACK_URL/mock-sms` ou `/mock-whatsapp` (no compose, o backend) com o cabeçalho `X-Webhook-Secret` (`WEBHOOK_SECRET` do `.env`); sem `RECEIPT_CALLBACK_URL` não há recibos.
 
 As mensagens e os modos ficam só em memória: perdem-se quando o contentor reinicia.
 

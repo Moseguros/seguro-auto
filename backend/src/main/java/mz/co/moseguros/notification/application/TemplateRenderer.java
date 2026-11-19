@@ -47,6 +47,9 @@ public class TemplateRenderer {
         if (template == null) {
             return null;
         }
+        if (!bracesBalanced(template)) {
+            throw new TemplateException(FieldErrorCodes.TEMPLATE_SYNTAX, "Unbalanced braces");
+        }
         com.samskivert.mustache.Template compiled;
         try {
             compiled = COMPILER.compile(template);
@@ -110,6 +113,34 @@ public class TemplateRenderer {
                     "The WhatsApp template name is required"));
         }
         return errors;
+    }
+
+    /**
+     * Cada {@code {{} fecha com {@code }}} antes do {@code {{} seguinte e não há {@code }}} solto (o jmustache
+     * trata um {@code {{x} sem fecho como texto).
+     */
+    static boolean bracesBalanced(String template) {
+        int i = 0;
+        while (i < template.length()) {
+            int open = template.indexOf("{{", i);
+            int close = template.indexOf("}}", i);
+            if (close >= 0 && (open < 0 || close < open)) {
+                return false;
+            }
+            if (open < 0) {
+                return true;
+            }
+            int end = template.indexOf("}}", open + 2);
+            int nextOpen = template.indexOf("{{", open + 2);
+            if (end < 0 || (nextOpen >= 0 && nextOpen < end)) {
+                return false;
+            }
+            i = end + 2;
+            if (i < template.length() && template.charAt(i) == '}' && template.charAt(open + 2) == '{') {
+                i++;
+            }
+        }
+        return true;
     }
 
     private String check(String field, String template, Map<String, String> allowed, List<FieldError> errors) {

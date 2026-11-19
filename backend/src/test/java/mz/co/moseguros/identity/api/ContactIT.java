@@ -109,7 +109,7 @@ class ContactIT {
     private Response addContact(String token, String type, String value, String destination) {
         Response started = start(token, type, value);
         started.then().statusCode(202);
-        return verify(token, started.path("challengeId"), channels.lastTo(destination).code());
+        return verify(token, started.path("challengeId"), channels.lastCodeTo(destination).code());
     }
 
     @Test
@@ -135,7 +135,7 @@ class ContactIT {
         assertThat(owner.queryForObject("select purpose || ':' || user_id from identity.otp_challenge where id = ?::uuid",
                 String.class, challengeId)).isEqualTo("VERIFY_CONTACT:" + customer.getId());
 
-        String code = channels.lastTo(email).code();
+        String code = channels.lastCodeTo(email).code();
         verify(token, challengeId, wrong(code)).then().statusCode(400)
                 .body("code", equalTo("OTP_INVALID"))
                 .body("attemptsRemaining", equalTo(2));
@@ -180,7 +180,7 @@ class ContactIT {
         clock.advance(Duration.ofSeconds(61));
         Response login = requestOtp(newPhone, "MSISDN");
         login.then().statusCode(202);
-        String accessToken = verifyOtp(login.path("challengeId"), channels.lastTo(e164(newPhone)).code())
+        String accessToken = verifyOtp(login.path("challengeId"), channels.lastCodeTo(e164(newPhone)).code())
                 .then().statusCode(200)
                 .body("isNewUser", equalTo(false))
                 .extract().path("accessToken");
@@ -211,7 +211,7 @@ class ContactIT {
         owner.update("update identity.user_account set email = ?, email_verified = true where id = ?", email,
                 other.getId());
 
-        verify(token, started.path("challengeId"), channels.lastTo(email).code()).then().statusCode(409)
+        verify(token, started.path("challengeId"), channels.lastCodeTo(email).code()).then().statusCode(409)
                 .body("code", equalTo("CONTACT_ALREADY_IN_USE"));
         contacts(token).then().body("contacts.size()", equalTo(1));
     }
@@ -223,7 +223,7 @@ class ContactIT {
         Response login = requestOtp(phone, "MSISDN");
         login.then().statusCode(202);
 
-        verify(token, login.path("challengeId"), channels.lastTo(e164(phone)).code()).then().statusCode(404)
+        verify(token, login.path("challengeId"), channels.lastCodeTo(e164(phone)).code()).then().statusCode(404)
                 .body("code", equalTo("OTP_CHALLENGE_NOT_FOUND"));
     }
 
@@ -235,7 +235,7 @@ class ContactIT {
         Response started = start(tokenA, "EMAIL", email);
         started.then().statusCode(202);
 
-        verify(tokenB, started.path("challengeId"), channels.lastTo(email).code()).then().statusCode(404)
+        verify(tokenB, started.path("challengeId"), channels.lastCodeTo(email).code()).then().statusCode(404)
                 .body("code", equalTo("OTP_CHALLENGE_NOT_FOUND"));
     }
 
@@ -246,7 +246,7 @@ class ContactIT {
         Response started = start(token, "EMAIL", email);
         started.then().statusCode(202);
 
-        verifyOtp(started.path("challengeId"), channels.lastTo(email).code()).then().statusCode(404)
+        verifyOtp(started.path("challengeId"), channels.lastCodeTo(email).code()).then().statusCode(404)
                 .body("code", equalTo("OTP_CHALLENGE_NOT_FOUND"));
     }
 

@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /** Modelos (só âmbitos SYSTEM e PLATFORM). */
-public interface NotificationTemplateRepository extends JpaRepository<NotificationTemplate, UUID> {
+public interface NotificationTemplateRepository extends JpaRepository<NotificationTemplate, UUID>,
+        JpaSpecificationExecutor<NotificationTemplate> {
 
     Optional<NotificationTemplate> findByCodeAndChannelAndLocale(String code, MessageChannel channel, String locale);
 
@@ -19,13 +17,4 @@ public interface NotificationTemplateRepository extends JpaRepository<Notificati
 
     boolean existsByCode(String code);
 
-    @Query("""
-            select t from NotificationTemplate t
-             where (:code is null or t.code like concat(:code, '%'))
-               and (:channel is null or t.channel = :channel)
-               and (:locale is null or t.locale = :locale)
-               and (:customized is null or t.customized = :customized)""")
-    Page<NotificationTemplate> search(@Param("code") String codePrefix, @Param("channel") MessageChannel channel,
-                                      @Param("locale") String locale, @Param("customized") Boolean customized,
-                                      Pageable pageable);
 }

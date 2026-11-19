@@ -138,6 +138,9 @@ services:
       # Canais de envio do OTP (S1-03): simuladores de SMS e WhatsApp; e-mail no Mailpit.
       MOSEGUROS_NOTIFICATION_SMS_MOCK_URL: http://sms-mock:8090
       MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL: http://sms-mock:8090
+      # Push simulado (S6-04 §7): POST /push no sms-mock (aparece na mesma lista, canal PUSH)
+      MOSEGUROS_NOTIFICATION_PUSH_PROVIDER: mock
+      MOSEGUROS_NOTIFICATION_PUSH_MOCK_URL: http://sms-mock:8090
       MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET: ${WEBHOOK_SECRET:-local-webhook-secret}
       # Convites de staff (S1-04): links para a web do compose e convite do primeiro
       # administrador da plataforma (o e-mail aparece no Mailpit, http://localhost:8025).

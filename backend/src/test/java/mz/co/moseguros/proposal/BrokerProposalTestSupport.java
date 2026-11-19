@@ -248,7 +248,7 @@ public final class BrokerProposalTestSupport {
         clock.advance(Duration.ofSeconds(61)); // 60 s entre códigos do mesmo telemóvel
         Response request = requestSignature(brokerToken, id);
         request.then().statusCode(202);
-        String code = channels.lastTo(e164).code();
+        String code = channels.lastCodeTo(e164).code();
         confirmSignature(brokerToken, id, request.path("challengeId"), code).then().statusCode(200);
     }
 
@@ -258,7 +258,7 @@ public final class BrokerProposalTestSupport {
         String challengeId = given().contentType(ContentType.JSON)
                 .body(Map.of("identifier", national, "identifierType", "MSISDN"))
                 .post("/api/v1/auth/otp/request").then().statusCode(202).extract().path("challengeId");
-        String code = channels.lastTo("+258" + national).code();
+        String code = channels.lastCodeTo("+258" + national).code();
         return given().contentType(ContentType.JSON).body(Map.of("challengeId", challengeId, "code", code))
                 .post("/api/v1/auth/otp/verify").then().statusCode(200).extract().path("accessToken");
     }
