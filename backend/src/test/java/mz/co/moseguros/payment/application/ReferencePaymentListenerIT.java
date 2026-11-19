@@ -50,6 +50,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,6 +59,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
@@ -103,6 +106,9 @@ class ReferencePaymentListenerIT {
 
     @Autowired
     ReferenceReconciliationService reconciliation;
+
+    @Autowired
+    RabbitListenerEndpointRegistry listenerRegistry;
 
     PaymentFlowSupport support;
     PaymentMessagesSupport messages;
@@ -234,6 +240,12 @@ class ReferencePaymentListenerIT {
     @Test
     @Order(3)
     void twoRecordsOfTheSameReferenceInOneFileConfirmThenAlreadyPaid() {
+        // A ordem de lineNo (§3) só é garantida com um consumidor: a fábrica tem 2 a 4.
+        SimpleMessageListenerContainer container =
+                (SimpleMessageListenerContainer) listenerRegistry.getListenerContainer("referencePayments");
+        assertThat(ReflectionTestUtils.getField(container, "concurrentConsumers")).isEqualTo(1);
+        assertThat(ReflectionTestUtils.getField(container, "maxConcurrentConsumers")).isIn(null, 1);
+
         Issued i = issue();
         String sha = newFileSha();
         // Como no exemplo oficial MEPS (00620400869 às 09:26 e às 09:29): duas linhas, messageId diferentes.
