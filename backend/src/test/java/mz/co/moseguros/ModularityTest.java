@@ -76,14 +76,15 @@ class ModularityTest {
     }
 
     /**
-     * S3-01 e S3-02: rating só usa catalog, vehicle, organization e identity (modelo transversal §1:
-     * {@code rating → catalog, vehicle, organization, identity, notification}; o notification entra
-     * no S6). Desde o S4-02 só o proposal depende de rating ({@code RatingApi.quote}/{@code markUsed}).
+     * S3-01 e S3-02: rating usa catalog, vehicle, organization e identity e, desde o S6-04, notification (o
+     * {@code QuoteExpiryNotifierJob}, decisão D16; modelo transversal §1: {@code rating → catalog, vehicle,
+     * organization, identity, notification}). Desde o S4-02 só o proposal depende de rating
+     * ({@code RatingApi.quote}/{@code markUsed}).
      */
     @Test
-    void ratingDependsOnCatalogVehicleOrganizationAndIdentityAndOnlyProposalDependsOnRating() {
-        assertThat(dependenciesOf("rating")).contains("catalog", "vehicle", "organization", "identity")
-                .isSubsetOf("shared", "catalog", "vehicle", "organization", "identity");
+    void ratingDependsOnCatalogVehicleOrganizationIdentityAndNotificationAndOnlyProposalDependsOnRating() {
+        assertThat(dependenciesOf("rating")).contains("catalog", "vehicle", "organization", "identity", "notification")
+                .isSubsetOf("shared", "catalog", "vehicle", "organization", "identity", "notification");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("rating"))
                 .filter(m -> dependenciesOf(m.getName()).contains("rating"))

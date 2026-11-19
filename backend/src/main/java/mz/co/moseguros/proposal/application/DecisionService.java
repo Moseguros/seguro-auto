@@ -76,7 +76,6 @@ public class DecisionService {
     private final ProposalQueryService queries;
     private final ProposalSystemLookups lookups;
     private final IdentityApi identity;
-    private final ProposalNotifier notifier;
     private final ApplicationEventPublisher events;
     private final AuditService audit;
     private final CurrentUser currentUser;
@@ -85,7 +84,7 @@ public class DecisionService {
 
     public DecisionService(ProposalRepository proposals, InspectionRepository inspections,
                            SignatureRepository signatures, ProposalQueryService queries, ProposalSystemLookups lookups,
-                           IdentityApi identity, ProposalNotifier notifier, ApplicationEventPublisher events,
+                           IdentityApi identity, ApplicationEventPublisher events,
                            AuditService audit, CurrentUser currentUser, ProposalProperties properties, Clock clock) {
         this.proposals = proposals;
         this.inspections = inspections;
@@ -93,7 +92,6 @@ public class DecisionService {
         this.queries = queries;
         this.lookups = lookups;
         this.identity = identity;
-        this.notifier = notifier;
         this.events = events;
         this.audit = audit;
         this.currentUser = currentUser;
@@ -195,7 +193,6 @@ public class DecisionService {
         events.publishEvent(new ProposalAccepted(Ids.newId(), now, proposal.getId(), proposal.getInsurerId(),
                 proposal.getCustomerUserId(), proposal.getBrokerOrgId(), AcceptanceMode.MANUAL));
         record(proposal, "PROPOSAL.ACCEPT", before);
-        notifier.accepted(proposal);
         log.info("Proposal {} accepted by {}", proposal.getNumber(), currentUser.id());
         return insurerDetails(proposal);
     }
@@ -227,7 +224,6 @@ public class DecisionService {
         events.publishEvent(new ProposalRejected(Ids.newId(), now, proposal.getId(), proposal.getInsurerId(),
                 proposal.getCustomerUserId(), proposal.getBrokerOrgId(), code.name()));
         record(proposal, "PROPOSAL.REJECT", before);
-        notifier.rejected(proposal);
         log.info("Proposal {} rejected by {} ({})", proposal.getNumber(), currentUser.id(), code);
         return insurerDetails(proposal);
     }
@@ -283,7 +279,6 @@ public class DecisionService {
             extra.put("inspectionReopenedFrom", inspectionBefore);
         }
         record(proposal, "PROPOSAL.REQUEST_INFO", before, extra);
-        notifier.infoRequested(proposal);
         log.info("Proposal {}: information requested by {} {}", proposal.getNumber(), currentUser.id(), parsed);
         return insurerDetails(proposal);
     }

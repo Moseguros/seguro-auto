@@ -46,19 +46,17 @@ public class UnderwritingService {
     private final IdentityApi identity;
     private final ApplicationEventPublisher events;
     private final AuditService audit;
-    private final ProposalNotifier notifier;
     private final ProposalProperties properties;
 
     public UnderwritingService(ProposalSystemLookups lookups, DeclarationRepository declarations,
                                InspectionRepository inspections, IdentityApi identity, ApplicationEventPublisher events,
-                               AuditService audit, ProposalNotifier notifier, ProposalProperties properties) {
+                               AuditService audit, ProposalProperties properties) {
         this.lookups = lookups;
         this.declarations = declarations;
         this.inspections = inspections;
         this.identity = identity;
         this.events = events;
         this.audit = audit;
-        this.notifier = notifier;
         this.properties = properties;
     }
 
@@ -100,7 +98,6 @@ public class UnderwritingService {
         after.put("expiresAt", proposal.getExpiresAt().toString());
         audit.record(new AuditRecord(ActorType.SYSTEM, SYSTEM_ACTOR, proposal.getInsurerId(), "PROPOSAL.ACCEPT",
                 "Proposal", proposal.getId().toString(), Map.of("status", before), after));
-        notifier.accepted(proposal);
         return true;
     }
 

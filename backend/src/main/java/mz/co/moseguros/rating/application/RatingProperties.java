@@ -21,6 +21,8 @@ public class RatingProperties {
     private int maxStartDaysAhead = 60;
     /** Pedidos de cotação por utilizador por hora (provisório, ver Questões). */
     private int maxRequestsPerHour = 30;
+    /** Dias antes do fim da validade em que o cliente é avisado (S6-04 §9.1, decisão D16). */
+    private int quoteExpiryNoticeDays = 2;
     private final Executor executor = new Executor();
     private final External external = new External();
     /** Chave → segredo do HMAC das seguradoras externas (referência {@code config:<chave>}). */
@@ -187,6 +189,14 @@ public class RatingProperties {
 
     public void setMaxStartDaysAhead(int maxStartDaysAhead) {
         this.maxStartDaysAhead = maxStartDaysAhead;
+    }
+
+    public int getQuoteExpiryNoticeDays() {
+        return quoteExpiryNoticeDays;
+    }
+
+    public void setQuoteExpiryNoticeDays(int quoteExpiryNoticeDays) {
+        this.quoteExpiryNoticeDays = quoteExpiryNoticeDays;
     }
 
     public int getMaxRequestsPerHour() {
