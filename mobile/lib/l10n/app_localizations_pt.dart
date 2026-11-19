@@ -2081,6 +2081,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get errorPolicyNotFound => 'Apólice não encontrada.';
 
   @override
+  String get errorCaptchaRequired => 'Confirme que não é um robô.';
+
+  @override
+  String get errorCaptchaInvalid =>
+      'A confirmação expirou ou falhou. Tente de novo.';
+
+  @override
+  String get errorCaptchaUnavailable =>
+      'A verificação está temporariamente indisponível. Tente dentro de momentos.';
+
+  @override
+  String get errorRateLimited =>
+      'Demasiados pedidos. Tente de novo dentro de momentos.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Use um número Vodacom (começado por 84 ou 85).';
 

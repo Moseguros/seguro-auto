@@ -267,7 +267,11 @@
     "RESOLUTION_NOT_ALLOWED": "This resolution is not allowed for this type of exception.",
     "LINK_INTENT_INVALID": "This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.",
     "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link.",
-    "POLICY_NOT_FOUND": "Policy not found."
+    "POLICY_NOT_FOUND": "Policy not found.",
+    "CAPTCHA_REQUIRED": "Please confirm you are not a robot.",
+    "CAPTCHA_INVALID": "The check expired or failed. Please try again.",
+    "CAPTCHA_UNAVAILABLE": "Verification is temporarily unavailable. Please try again shortly.",
+    "RATE_LIMITED": "Too many requests. Please try again shortly."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",

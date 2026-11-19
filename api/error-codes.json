@@ -13,6 +13,18 @@
       "status" : 400
     },
     {
+      "code" : "CAPTCHA_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "CAPTCHA_REQUIRED",
+      "status" : 400
+    },
+    {
+      "code" : "CAPTCHA_UNAVAILABLE",
+      "status" : 503
+    },
+    {
       "code" : "CLIENT_ACCOUNT_DISABLED",
       "status" : 409
     },
@@ -443,6 +455,10 @@
     {
       "code" : "QUOTE_REQUEST_NOT_FOUND",
       "status" : 404
+    },
+    {
+      "code" : "RATE_LIMITED",
+      "status" : 429
     },
     {
       "code" : "RATING_RULES_TOO_LARGE",
