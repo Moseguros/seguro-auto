@@ -82,7 +82,17 @@ Ver as filas:
 curl -s -u moseguros:moseguros localhost:15672/api/queues | grep -o '"name":"core[^"]*"'
 ```
 
-Os consumidores das filas são do S5-10. Sem RabbitMQ o backend arranca na mesma (aviso no registo e `/api/v1/health` em `DOWN`) e declara a topologia quando conseguir ligar.
+Os consumidores das filas são do S5-10 (`ReferencePaymentListener` e `PaymentFileEventsListener`). Sem RabbitMQ o backend arranca na mesma (aviso no registo e `/api/v1/health` em `DOWN`) e declara a topologia quando conseguir ligar.
+
+### Mensagens nas `.dlq` (S5-10)
+
+Uma mensagem vai para a `.dlq` quando é inválida (JSON, `type`, `schemaVersion`, schema ou `insurerId` diferente da chave: logo, sem repetições) ou quando o backend falhou 6 vezes seguidas por um erro técnico (BD em baixo, *deadlock*). O registo do backend tem uma linha `ERROR` com o `messageId`; o `PaymentQueueMonitorJob` regista `alert=PAYMENT_DLQ_NOT_EMPTY` quando uma `.dlq` cresce. Não há reprocessamento por ecrã: corrigida a causa, as mensagens movem-se na consola do RabbitMQ (<http://localhost:15672>, fila `core.reference-payments.dlq` ou `core.payment-file-events.dlq`, "Move messages" para `core.reference-payments`/`core.payment-file-events`; precisa do *plugin* `rabbitmq_shovel_management`) ou com uma *shovel* dinâmica:
+
+```bash
+rabbitmqctl set_parameter shovel dlq-replay '{"src-protocol":"amqp091","src-uri":"amqp://","src-queue":"core.reference-payments.dlq","src-delete-after":"queue-length","dest-protocol":"amqp091","dest-uri":"amqp://","dest-queue":"core.reference-payments"}'
+```
+
+Reprocessar é seguro: o backend deduplica pelo `messageId` (`payment.inbound_message`), e uma mensagem inválida volta à `.dlq`.
 
 ## RabbitMQ — utilizadores
 

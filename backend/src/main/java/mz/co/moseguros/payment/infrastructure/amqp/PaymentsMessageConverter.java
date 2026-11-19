@@ -105,13 +105,38 @@ public class PaymentsMessageConverter extends Jackson2JsonMessageConverter {
         } catch (IOException | IllegalArgumentException e) {
             throw reject(messageId, "unreadable payload");
         }
-        String routingKey = props.getReceivedRoutingKey();
+        String routingKey = originalRoutingKey(props);
         String insurerId = String.valueOf(json.path("insurerId").asText());
         String keyInsurer = routingKey == null ? null : routingKey.substring(routingKey.lastIndexOf('.') + 1);
         if (!insurerId.equals(keyInsurer)) {
             throw reject(messageId, "insurerId does not match the routing key " + routingKey);
         }
         return payload;
+    }
+
+    /**
+     * Chave com que o worker publicou. Uma mensagem reposta a partir da {@code .dlq} (consola do RabbitMQ ou
+     * <i>shovel</i>, {@code infra/README.md}) chega com a chave da fila; a original está no cabeçalho
+     * {@code x-death}.
+     */
+    static String originalRoutingKey(MessageProperties props) {
+        String received = props.getReceivedRoutingKey();
+        if (received != null && received.startsWith("reference.")) {
+            return received;
+        }
+        List<Map<String, ?>> deaths = props.getXDeathHeader();
+        if (deaths != null) {
+            for (Map<String, ?> death : deaths) {
+                if (death.get("routing-keys") instanceof List<?> keys) {
+                    for (Object key : keys) {
+                        if (key != null && key.toString().startsWith("reference.")) {
+                            return key.toString();
+                        }
+                    }
+                }
+            }
+        }
+        return received;
     }
 
     private static MessageConversionException reject(String messageId, String reason) {

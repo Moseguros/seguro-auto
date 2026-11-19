@@ -16,6 +16,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Declarable;
 import org.springframework.amqp.core.Declarables;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.core.Queue;
@@ -26,6 +27,7 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
+import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
@@ -118,8 +120,28 @@ class PaymentsAmqpConfig {
         return RetryInterceptorBuilder.stateless()
                 .retryPolicy(policy)
                 .backOffPolicy(backOff)
-                .recoverer(new RejectAndDontRequeueRecoverer())
+                .recoverer(new DeadLetterRecoverer())
                 .build();
+    }
+
+    /**
+     * {@link RejectAndDontRequeueRecoverer} que regista só o {@code messageId}, a fila e a causa (o original
+     * escreve a mensagem inteira no log).
+     */
+    static final class DeadLetterRecoverer extends RejectAndDontRequeueRecoverer {
+
+        @Override
+        public void recover(Message message, Throwable cause) {
+            Throwable root = cause;
+            while (root.getCause() != null && root.getCause() != root) {
+                root = root.getCause();
+            }
+            log.error("Payment message sent to the dead-letter queue messageId={} queue={} cause={}",
+                    message.getMessageProperties().getMessageId(), message.getMessageProperties().getConsumerQueue(),
+                    root.getClass().getSimpleName());
+            throw new ListenerExecutionFailedException("Retry Policy Exhausted",
+                    new AmqpRejectAndDontRequeueException(cause), message);
+        }
     }
 
     @EventListener(ApplicationReadyEvent.class)

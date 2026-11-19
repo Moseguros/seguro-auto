@@ -19,12 +19,16 @@ import com.rabbitmq.client.GetResponse;
 import mz.co.moseguros.TestcontainersConfiguration;
 import mz.co.moseguros.paymentcontracts.MessageHeaders;
 import mz.co.moseguros.paymentcontracts.PaymentsTopology;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -34,10 +38,13 @@ import org.testcontainers.containers.RabbitMQContainer;
 /**
  * A topologia dos pagamentos existe logo depois do arranque (S5-06 §3): exchanges, filas com os
  * argumentos, ligações explícitas e dead-letter. Lê a API de gestão do RabbitMQ do contentor.
+ *
+ * <p>Os consumidores do S5-10 ficam parados durante esta classe: as mensagens de teste têm de ficar nas filas.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfiguration.class)
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaymentsTopologyIT {
 
     private static final long RECEIVE_TIMEOUT_MS = 5_000;
@@ -57,7 +64,20 @@ class PaymentsTopologyIT {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    RabbitListenerEndpointRegistry listeners;
+
     private final HttpClient http = HttpClient.newHttpClient();
+
+    @BeforeAll
+    void stopConsumers() {
+        listeners.stop();
+    }
+
+    @AfterAll
+    void startConsumers() {
+        listeners.start();
+    }
 
     private void purgeQueues() {
         QUEUES.forEach(q -> amqpAdmin.purgeQueue(q, false));
