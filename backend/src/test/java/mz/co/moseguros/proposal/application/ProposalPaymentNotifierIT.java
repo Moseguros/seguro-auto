@@ -20,7 +20,6 @@ import mz.co.moseguros.TestcontainersConfiguration;
 import mz.co.moseguros.identity.IdentityApi;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.notification.FakeOtpDeliveryChannels;
-import mz.co.moseguros.notification.infrastructure.OtpDeliveryChannel;
 import mz.co.moseguros.payment.PaymentEventsRecorder;
 import mz.co.moseguros.payment.PaymentFlowSupport;
 import mz.co.moseguros.payment.PaymentFlowSupport.Broker;
@@ -133,7 +132,7 @@ class ProposalPaymentNotifierIT {
     }
 
     String subject(FakeOtpDeliveryChannels.Sent sent) {
-        return sent.params().get(OtpDeliveryChannel.PARAM_SUBJECT);
+        return sent.subject();
     }
 
     @Test

@@ -1,7 +1,5 @@
 package mz.co.moseguros.notification.infrastructure;
 
-import java.util.Map;
-
 import mz.co.moseguros.shared.domain.Channel;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,12 +8,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 /**
- * E-mail em texto simples por SMTP ({@code spring.mail.*}; localmente o Mailpit). Sem servidor
- * SMTP configurado, o envio falha ({@code FAILED}) mas a aplicação arranca.
+ * E-mail em texto simples por SMTP ({@code spring.mail.*}; localmente o Mailpit), com o {@code subject} e o
+ * {@code text} do conteúdo. Sem servidor SMTP configurado, o envio falha ({@code TEMPORARY}) mas a
+ * aplicação arranca.
  */
 @Component
 @ConditionalOnProperty(name = "moseguros.notification.email.provider", havingValue = "smtp", matchIfMissing = true)
-public class EmailSender implements OtpDeliveryChannel {
+public class EmailSender implements ChannelSender {
 
     public static final String PROVIDER = "smtp";
 
@@ -38,17 +37,17 @@ public class EmailSender implements OtpDeliveryChannel {
     }
 
     @Override
-    public ProviderResult send(String destination, String text, Map<String, String> templateParams) {
+    public ProviderResult send(OutboundContent content) {
         JavaMailSender sender = mailSender.getIfAvailable();
         if (sender == null) {
-            return ProviderResult.failed("smtp not configured");
+            return ProviderResult.temporary(PROVIDER, "smtp not configured");
         }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
-        message.setTo(destination);
-        message.setSubject(templateParams.get(PARAM_SUBJECT));
-        message.setText(text);
+        message.setTo(content.destination());
+        message.setSubject(content.subject());
+        message.setText(content.text());
         sender.send(message);
-        return ProviderResult.accepted(null);
+        return ProviderResult.accepted(PROVIDER, null);
     }
 }

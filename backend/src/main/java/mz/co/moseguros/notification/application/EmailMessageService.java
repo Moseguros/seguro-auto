@@ -3,7 +3,6 @@ package mz.co.moseguros.notification.application;
 import java.time.Clock;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 import mz.co.moseguros.notification.DeliveryResult;
@@ -12,7 +11,9 @@ import mz.co.moseguros.notification.domain.Destinations;
 import mz.co.moseguros.notification.domain.OutboundMessage;
 import mz.co.moseguros.notification.domain.OutboundMessageRepository;
 import mz.co.moseguros.notification.infrastructure.NotificationConfig;
-import mz.co.moseguros.notification.infrastructure.OtpDeliveryChannel;
+import mz.co.moseguros.notification.infrastructure.ChannelSender;
+import mz.co.moseguros.notification.infrastructure.OutboundContent;
+import mz.co.moseguros.notification.infrastructure.ProviderErrors;
 import mz.co.moseguros.notification.infrastructure.ProviderResult;
 import mz.co.moseguros.shared.domain.Channel;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
@@ -20,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -38,13 +38,13 @@ public class EmailMessageService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailMessageService.class);
 
-    private final OtpDeliveryChannel email;
+    private final ChannelSender email;
     private final OutboundMessageRepository messages;
     private final MessageSource texts;
     private final TransactionTemplate tx;
     private final Clock clock;
 
-    public EmailMessageService(List<OtpDeliveryChannel> channels, OutboundMessageRepository messages,
+    public EmailMessageService(List<ChannelSender> channels, OutboundMessageRepository messages,
                                @Qualifier("notificationMessageSource") MessageSource texts, TransactionTemplate tx,
                                Clock clock) {
         this.email = channels.stream().filter(c -> c.channel() == Channel.EMAIL).findFirst().orElse(null);
@@ -68,31 +68,28 @@ public class EmailMessageService {
 
         tx.executeWithoutResult(status -> {
             OutboundMessage message = messages.findById(messageId).orElseThrow();
-            if (result.accepted()) {
+            if (result.success()) {
                 message.markSent(result.providerMessageId(), clock.instant());
             } else {
-                message.markFailed(result.failureReason());
+                message.markFailed(result.reason());
             }
         });
-        DeliveryStatus status = result.accepted() ? DeliveryStatus.SENT : DeliveryStatus.FAILED;
+        DeliveryStatus status = result.success() ? DeliveryStatus.SENT : DeliveryStatus.FAILED;
         log.info("E-mail {} ({}, {}) via {} to {} for {}: {}{}", messageId, messagePurpose, templateKey, provider,
-                masked, correlationId, status, result.accepted() ? "" : " (" + result.failureReason() + ")");
-        return new DeliveryResult(messageId, status, result.accepted() ? null : result.failureReason());
+                masked, correlationId, status, result.success() ? "" : " (" + result.reason() + ")");
+        return new DeliveryResult(messageId, status, result.success() ? null : result.reason());
     }
 
     private ProviderResult deliver(String to, String templateKey, Object[] args, Locale locale) {
         if (email == null) {
-            return ProviderResult.failed("channel not configured");
+            return ProviderResult.temporary("none", "channel not configured");
         }
         try {
             String subject = texts.getMessage(templateKey + ".subject", args, locale);
             String body = texts.getMessage(templateKey + ".body", args, locale);
-            return email.send(to, body, Map.of(OtpDeliveryChannel.PARAM_SUBJECT, subject));
-        } catch (MailException e) {
-            return ProviderResult.failed("smtp error: " + e.getClass().getSimpleName());
+            return email.send(new OutboundContent(to, subject, body, null, null));
         } catch (RuntimeException e) {
-            log.warn("Unexpected error from provider {} ({})", email.provider(), e.getClass().getName());
-            return ProviderResult.failed("provider error: " + e.getClass().getSimpleName());
+            return ProviderErrors.classify(email.provider(), e);
         }
     }
 

@@ -50,6 +50,9 @@
     <spring-vault.version>3.1.3</spring-vault.version>
     <!-- Jobs agendados (S6-01 §2; modelo transversal §7): uma só execução entre instâncias -->
     <shedlock.version>5.16.0</shedlock.version>
+    <!-- Notificações (S6-04): modelos Mustache e push pelo Firebase Cloud Messaging -->
+    <jmustache.version>1.16</jmustache.version>
+    <firebase-admin.version>9.3.0</firebase-admin.version>
   </properties>
 
   <dependencyManagement>
@@ -260,6 +263,28 @@
       <groupId>net.javacrumbs.shedlock</groupId>
       <artifactId>shedlock-provider-jdbc-template</artifactId>
       <version>${shedlock.version}</version>
+    </dependency>
+    <!-- Notificações (S6-04): modelos Mustache (texto simples) -->
+    <dependency>
+      <groupId>com.samskivert</groupId>
+      <artifactId>jmustache</artifactId>
+      <version>${jmustache.version}</version>
+    </dependency>
+    <!-- Push (S6-04 §6; modelo transversal §7): só o FCM; sem Firestore nem Cloud Storage -->
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <version>${firebase-admin.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>google-cloud-firestore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>google-cloud-storage</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Testes -->
