@@ -5,7 +5,9 @@
 #   powershell -ExecutionPolicy Bypass -File scripts\doctor.ps1 -Fix     # e descarregar as imagens em falta
 #   powershell -ExecutionPolicy Bypass -File scripts\doctor.ps1 -Full    # e correr os testes do backend
 #
-# Toda a lógica está no doctor.sh; este ficheiro só encontra o bash do Git for Windows.
+# Toda a lógica está no doctor.sh; este ficheiro só encontra o bash do Git for Windows. Por isso as
+# verificações do Maven Wrapper da raiz e do backend, do payment-contracts instalado e o -Full com o
+# comando da raiz (./mvnw -B -pl backend -am verify, S5-06) vêm do doctor.sh, sem nada a repetir aqui.
 # Não usa o bash.exe do System32, que é o do WSL (outro sistema, com outro Docker e outro Java).
 
 param(

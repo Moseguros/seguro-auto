@@ -1,0 +1,17 @@
+# Contexto de build na raiz do repositório (backend/Dockerfile; o payment-file-worker no S5-09).
+# A web constrói-se com o contexto web/ e usa o web/.dockerignore.
+.git
+.github
+.claude
+mobile/
+web/node_modules
+web/dist
+**/target
+**/node_modules
+backend/var/
+**/.idea
+**/*.iml
+**/.vscode
+**/hs_err_pid*
+.env
+**/.env

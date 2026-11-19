@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moseguros.co.mz/schemas/reference-payment-received.v1.json",
+  "title": "ReferencePaymentReceived",
+  "description": "Um pagamento por entidade e referência lido de um registo de detalhe de um ficheiro MEPS ou BMEPS (S5-06).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "messageId", "schemaVersion", "insurerId", "sourceId", "fileFormat", "entity", "reference",
+    "amount", "paidAt", "fileName", "fileSha256", "formatFileId", "lineNo"
+  ],
+  "properties": {
+    "messageId": { "$ref": "#/$defs/sha256" },
+    "schemaVersion": { "const": 1 },
+    "insurerId": { "$ref": "#/$defs/uuid" },
+    "sourceId": { "$ref": "#/$defs/uuid" },
+    "fileFormat": { "enum": ["MEPS", "BMEPS"] },
+    "entity": { "type": "string", "pattern": "^[0-9]{5}$" },
+    "reference": { "type": "string", "pattern": "^[0-9]{11}$" },
+    "amount": { "$ref": "#/$defs/positiveMoney" },
+    "fee": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/money" }] },
+    "paidAt": { "$ref": "#/$defs/instant" },
+    "channel": { "type": ["string", "null"], "minLength": 1, "maxLength": 2 },
+    "bankTransactionId": { "type": ["string", "null"], "minLength": 1, "maxLength": 64 },
+    "fileName": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "fileSha256": { "$ref": "#/$defs/sha256" },
+    "formatFileId": { "$ref": "#/$defs/formatFileId" },
+    "lineNo": { "type": "integer", "minimum": 1 }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "instant": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+    },
+    "formatFileId": {
+      "description": "MEPS: A005 (AAAAMMDDS). BMEPS: <empresa>-<perfil>-<ID do ficheiro>.",
+      "type": "string",
+      "pattern": "^([0-9]{9}|[0-9]{3}-[0-9]{2}-[0-9]{5})$"
+    },
+    "money": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "integer", "minimum": 0 },
+        "currency": { "const": "MZN" }
+      }
+    },
+    "positiveMoney": {
+      "allOf": [{ "$ref": "#/$defs/money" }],
+      "properties": { "amount": { "minimum": 1 } }
+    }
+  }
+}

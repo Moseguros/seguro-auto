@@ -22,6 +22,11 @@ moseguros:
       pepper: ${MOSEGUROS_OTP_PEPPER:local-otp-pepper-only-for-development}
       # Só aqui: devolve o código no cabeçalho X-Debug-Otp (nunca com o perfil prod).
       debug-header: true
+    # Cliente de serviço do payment-file-worker (S5-09); no compose vem de
+    # SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET do infra/.env.
+    service-clients:
+      payment-file-worker:
+        secret: ${MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:local-worker-secret} # só desenvolvimento
   notification:
     webhook-secret: ${MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET:local-webhook-secret}
   # Cofre de segredos (S5-01): o Vault em modo dev do compose (S5-06). Sem ele o arranque regista um WARN
@@ -44,3 +49,10 @@ spring:
   mail:
     host: ${SPRING_MAIL_HOST:localhost}
     port: ${SPRING_MAIL_PORT:1025}
+  # RabbitMQ do docker compose (S5-06): localhost:5672, utilizador RABBITMQ_DEFAULT_USER/PASS do
+  # infra/.env (moseguros/moseguros); no compose o host vem de RABBITMQ_HOST=rabbitmq. Consola em
+  # http://localhost:15672. Sem RabbitMQ o backend arranca na mesma (aviso no arranque, health DOWN).
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    username: ${RABBITMQ_USERNAME:moseguros}
+    password: ${RABBITMQ_PASSWORD:moseguros}

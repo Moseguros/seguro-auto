@@ -1,4 +1,7 @@
 # Backend MoSeguros. Imagens fixadas e listadas em scripts/images.txt.
+# Contexto de build: a raiz do repositório (reactor Maven, S5-06), ex.:
+#   docker build -f backend/Dockerfile .
+# (no compose: context ".." e dockerfile "backend/Dockerfile"; exclusões no .dockerignore da raiz).
 
 # --- build ---
 FROM eclipse-temurin:17-jdk AS build
@@ -9,10 +12,13 @@ COPY mvnw pom.xml ./
 # Remove CR caso o repositório tenha sido clonado no Windows sem respeitar o .gitattributes.
 RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
 
-COPY src/ src/
+COPY payment-contracts/ payment-contracts/
+# O pom.xml da raiz lista também o payment-file-worker (S5-09): só o pom, não é construído com -pl.
+COPY payment-file-worker/pom.xml payment-file-worker/pom.xml
+COPY backend/ backend/
 RUN --mount=type=cache,target=/root/.m2 \
-    ./mvnw -B -DskipTests package \
-    && cp target/*.jar app.jar
+    ./mvnw -B -pl backend -am -DskipTests package \
+    && cp backend/target/backend-*.jar app.jar
 
 # --- runtime ---
 FROM eclipse-temurin:17-jre

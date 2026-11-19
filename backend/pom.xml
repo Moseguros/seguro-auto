@@ -42,6 +42,10 @@
          versão publicada do artefacto flying-saucer-pdf-openpdf. O PDFBox só lê PDFs nos testes. -->
     <flying-saucer.version>9.4.0</flying-saucer.version>
     <pdfbox.version>3.0.5</pdfbox.version>
+    <!-- Mensagens RabbitMQ partilhadas com o payment-file-worker (S5-06): módulo do reactor da raiz.
+         "cd backend && ./mvnw" resolve-o do repositório Maven local depois de
+         "./mvnw -B -pl payment-contracts install" na raiz (decisão D18). -->
+    <payment-contracts.version>1.0.0-SNAPSHOT</payment-contracts.version>
     <!-- Cofre de segredos (S5-01): HashiCorp Vault KV v2 -->
     <spring-vault.version>3.1.3</spring-vault.version>
   </properties>
@@ -228,6 +232,16 @@
       <version>${resilience4j.version}</version>
     </dependency>
 
+    <!-- Mensageria (S5-06, ADR-004): RabbitMQ e os contratos das mensagens do worker -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mz.co.moseguros</groupId>
+      <artifactId>payment-contracts</artifactId>
+      <version>${payment-contracts.version}</version>
+    </dependency>
     <!-- Cofre de segredos (S5-01; modelo transversal §7): HashiCorp Vault KV v2 -->
     <dependency>
       <groupId>org.springframework.vault</groupId>
@@ -264,6 +278,12 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Versão do testcontainers.version (1.21.4) -->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>rabbitmq</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

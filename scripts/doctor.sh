@@ -4,7 +4,8 @@
 # Uso:
 #   ./scripts/doctor.sh           verifica e mostra o que falta
 #   ./scripts/doctor.sh --fix     também descarrega as imagens Docker em falta
-#   ./scripts/doctor.sh --full    também corre os testes do backend (prova que Docker + Testcontainers funcionam)
+#   ./scripts/doctor.sh --full    também corre os testes do backend na raiz (./mvnw -B -pl backend -am verify;
+#                                 prova que Docker + Testcontainers funcionam)
 #   ./scripts/doctor.sh --help
 #
 # No Windows corre no Git Bash, ou pelo atalho scripts\doctor.ps1 a partir do PowerShell.
@@ -20,7 +21,7 @@ NODE_MAJOR=22          # AGENTS.md §2; se existir web/.nvmrc, vale esse
 PNPM_MAJOR=9
 FLUTTER_MIN="3.24.0"   # se o mobile/pubspec.yaml fixar "flutter: x.y.z", vale essa
 DOCKER_MIN_MEM_GB=4
-PORTS="5432 8080 3000 5173 1025 8025 8090"
+PORTS="5432 8080 3000 5173 1025 8025 8090 5672 15672 2222 8200"
 
 # ---------------------------------------------------------------- opções
 FIX=0
@@ -29,7 +30,7 @@ for arg in "$@"; do
   case "$arg" in
     --fix) FIX=1 ;;
     --full) FULL=1 ;;
-    -h|--help) sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Opção desconhecida: $arg (use --help)"; exit 2 ;;
   esac
 done
@@ -105,7 +106,7 @@ if has git; then
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     # Fins de linha: os scripts e o mvnw têm de ter LF, senão falham dentro dos contentores Linux.
     crlf_files=""
-    for f in backend/mvnw scripts/doctor.sh; do
+    for f in mvnw backend/mvnw scripts/doctor.sh; do
       [ -f "$f" ] && grep -q $'\r' "$f" && crlf_files="$crlf_files $f"
     done
     if [ -n "$crlf_files" ]; then
@@ -164,10 +165,23 @@ fi
 
 # ================================================================ Imagens Docker
 section "Imagens Docker (scripts/images.txt)"
+# Imagem presente? Aceita referências fixadas por digest ("nome:etiqueta@sha256:…", S5-06): procura
+# também "nome@sha256:…" e, para a cópia do espelho etiquetada "nome:etiqueta", o digest nos RepoDigests.
+image_present() {
+  docker image inspect "$1" >/dev/null 2>&1 && return 0
+  case "$1" in
+    *@sha256:*)
+      ip_digest="${1##*@}"; ip_name="${1%%@*}"; ip_repo="${ip_name%:*}"
+      docker image inspect "$ip_repo@$ip_digest" >/dev/null 2>&1 && return 0
+      docker image inspect --format '{{join .RepoDigests " "}}' "$ip_name" 2>/dev/null | grep -q "$ip_digest" && return 0
+      ;;
+  esac
+  return 1
+}
 if [ "$DOCKER_OK" = 1 ]; then
   grep -v '^[[:space:]]*#' scripts/images.txt | grep -v '^[[:space:]]*$' | while read -r image when _; do
     [ "$when" = "infra" ] && required=$NEED_INFRA || required=1
-    if docker image inspect "$image" >/dev/null 2>&1; then
+    if image_present "$image"; then
       ok "$image"
       continue
     fi
@@ -182,7 +196,10 @@ if [ "$DOCKER_OK" = 1 ]; then
         */*) mirror="mirror.gcr.io/$image" ;;
         *)   mirror="mirror.gcr.io/library/$image" ;;
       esac
-      if docker pull -q "$mirror" >/dev/null 2>&1 && docker tag "$mirror" "$image"; then
+      # Uma etiqueta não pode levar digest ("nome:etiqueta@sha256:…"): etiqueta-se só "nome:etiqueta";
+      # o conteúdo é o mesmo, porque o espelho foi pedido pelo mesmo digest.
+      tag_as="${image%%@*}"
+      if docker pull -q "$mirror" >/dev/null 2>&1 && docker tag "$mirror" "$tag_as"; then
         ok "$image (descarregada do espelho mirror.gcr.io)"
         continue
       fi
@@ -238,12 +255,24 @@ else
   need "$NEED_BACKEND" "JDK $JAVA_MAJOR não encontrado" "backend/"
   install_hint "winget install --id EclipseAdoptium.Temurin.17.JDK -e" "brew install --cask temurin@17" "sudo apt install openjdk-17-jdk"
 fi
-if [ -f backend/mvnw ]; then
-  if [ -x backend/mvnw ] || [ "$OS" = windows ]; then
-    ok "Maven Wrapper (backend/mvnw) — não é preciso instalar o Maven"
+# Maven Wrapper: o da raiz (reactor, S5-06) e o do backend (decisão D18: "cd backend && ./mvnw" continua).
+for w in mvnw backend/mvnw; do
+  [ -f "$w" ] || continue
+  if [ -x "$w" ] || [ "$OS" = windows ]; then
+    ok "Maven Wrapper ($w) — não é preciso instalar o Maven"
   else
-    fail "backend/mvnw não é executável"
-    hint "chmod +x backend/mvnw"
+    fail "$w não é executável"
+    hint "chmod +x $w"
+  fi
+done
+if [ -f pom.xml ] && [ -d payment-contracts ]; then
+  m2="${MAVEN_REPO_LOCAL:-$HOME/.m2/repository}"
+  if ls "$m2"/mz/co/moseguros/payment-contracts/*/payment-contracts-*.jar >/dev/null 2>&1; then
+    ok "payment-contracts instalado no repositório Maven local (cd backend && ./mvnw funciona)"
+    hint "se os contratos mudaram, reinstale-os: ./mvnw -B -pl payment-contracts install  (na raiz)"
+  else
+    info "payment-contracts não instalado: 'cd backend && ./mvnw' falha com \"Could not resolve dependencies … payment-contracts\""
+    hint "na raiz, use ./mvnw -B -pl backend -am verify  ou instale uma vez: ./mvnw -B -pl payment-contracts install"
   fi
 fi
 
@@ -332,9 +361,10 @@ fi
 
 # ================================================================ Teste completo
 if [ "$FULL" = 1 ] && [ "$NEED_BACKEND" = 1 ]; then
-  section "Testes do backend (./mvnw -B verify)"
+  # Na raiz, com -am: constrói o payment-contracts no reactor (não precisa de o instalar no ~/.m2).
+  section "Testes do backend (./mvnw -B -pl backend -am verify, na raiz)"
   if [ "$DOCKER_OK" = 1 ] && [ -n "$JAVA_BIN" ]; then
-    if (cd backend && ./mvnw -B -q verify > "${TMPDIR:-/tmp}/moseguros-verify.log" 2>&1); then
+    if ./mvnw -B -q -pl backend -am verify > "${TMPDIR:-/tmp}/moseguros-verify.log" 2>&1; then
       ok "build e testes do backend passam (Docker + Testcontainers a funcionar)"
     else
       fail "os testes do backend falharam; últimas linhas de ${TMPDIR:-/tmp}/moseguros-verify.log:"

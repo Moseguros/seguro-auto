@@ -17,6 +17,8 @@ import org.springframework.validation.annotation.Validated;
  * @param staffRefreshTtl    duração absoluta da sessão de staff, contada desde o login
  * @param keyId              {@code kid} da chave de assinatura
  * @param privateKey         chave privada RSA 2048 em PEM PKCS#8; vazia só nos perfis {@code local} e {@code test}
+ * @param internalAudience   {@code aud} dos tokens de serviço ({@code /internal/**}, S5-09), diferente de
+ *                           {@code audience}: um token de serviço não serve na API e vice-versa
  */
 @Validated
 @ConfigurationProperties(prefix = "moseguros.security.jwt")
@@ -27,5 +29,6 @@ public record JwtProperties(
         @NotNull Duration customerRefreshTtl,
         @NotNull Duration staffRefreshTtl,
         @NotBlank String keyId,
-        String privateKey) {
+        String privateKey,
+        @NotBlank String internalAudience) {
 }

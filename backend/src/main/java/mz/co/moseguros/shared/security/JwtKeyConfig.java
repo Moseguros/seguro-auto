@@ -99,14 +99,19 @@ public class JwtKeyConfig {
     }
 
     static OAuth2TokenValidator<Jwt> validator(JwtProperties properties, Clock clock) {
+        return validator(properties.issuer(), properties.audience(), clock);
+    }
+
+    /** {@code exp} obrigatório e válido, {@code iss} e {@code aud} indicados (também os tokens de serviço, S5-09). */
+    static OAuth2TokenValidator<Jwt> validator(String issuer, String audience, Clock clock) {
         JwtTimestampValidator timestamps = new JwtTimestampValidator(CLOCK_SKEW);
         timestamps.setClock(clock);
         return new DelegatingOAuth2TokenValidator<>(List.of(
                 new JwtClaimValidator<Object>(JwtClaimNames.EXP, exp -> exp != null),
                 timestamps,
-                new JwtIssuerValidator(properties.issuer()),
+                new JwtIssuerValidator(issuer),
                 new JwtClaimValidator<List<String>>(JwtClaimNames.AUD,
-                        aud -> aud != null && aud.contains(properties.audience()))));
+                        aud -> aud != null && aud.contains(audience))));
     }
 
     static KeyPair generate() {

@@ -1,0 +1,12 @@
+# Testes: Postgres, RabbitMQ e SFTP do Testcontainers; backend simulado com WireMock; cofre em memória.
+logging:
+  level:
+    mz.co.moseguros.paymentworker: DEBUG
+
+moseguros:
+  worker:
+    client-secret: test-worker-secret-only-for-tests-0001
+    allow-unknown-host-keys: true
+    work-dir: ${java.io.tmpdir}/payment-file-worker-test
+    lock-at-least-for: PT0S
+    publish-confirm-timeout: PT5S

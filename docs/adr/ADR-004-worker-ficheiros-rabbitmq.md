@@ -40,3 +40,11 @@ O "Pendente" acima está resolvido e substituído pelo **ADR-007**: o algoritmo 
 ## Adenda de 02/11/2026 — versão do RabbitMQ
 
 A versão passa de 3.13 para **4.1** (imagem `rabbitmq:4.1-management`), porque a 3.13 deixou de ter suporte da comunidade. As filas continuam *quorum*, com dead-letter. As ligações do exchange `payments.events` são explícitas por routing key (a ficha S5-06 tem o detalhe).
+
+## Adenda de 18/11/2026 — topologia
+
+Detalhe na ficha S5-06 §3 e em `PaymentsTopology` (`payment-contracts`).
+
+- **Ligações explícitas.** O exchange `payments.events` (`topic`) liga `reference.paid.*` à fila `core.reference-payments` e `reference.file-processed.*`, `reference.file-rejected.*` e `reference.source-polled.*` à fila `core.payment-file-events`. O plano previa uma só ligação `reference.file-*`, mas num exchange `topic` o `*` substitui uma palavra inteira entre pontos: `file-*` seria lido à letra e não encaminharia nada. As chaves terminam no `insurerId`. As filas são *quorum* com `x-delivery-limit` 20 e *dead-letter* para `payments.dlx` (`direct`), que as entrega às filas `.dlq` correspondentes. O backend declara tudo; o worker declara só o exchange `payments.events` e publica com `mandatory = true`.
+- **Mensagem nova `PaymentSourcePolled`.** Cada leitura de uma fonte publica o resultado (`OK`/`ERROR`, código do erro, ficheiros encontrados, processados e rejeitados), para a "Última leitura", o alerta de fonte parada e o ecrã de operações (S5-10, S5-12). Junta-se a `ReferencePaymentReceived`, `PaymentFileProcessed` e `PaymentFileRejected`; todas têm JSON Schema (`payment-contracts/src/main/resources/schemas/*.v1.json`).
+- **Reactor Maven na raiz.** O `pom.xml` da raiz agrega `payment-contracts` e `backend` (o S5-09 acrescenta `payment-file-worker`), para as duas aplicações usarem os contratos sem publicar artefactos: `./mvnw -B -pl backend -am verify` na raiz. `cd backend && ./mvnw -B verify` continua a funcionar depois de `./mvnw -B -pl payment-contracts install` (decisão D18). A imagem do backend constrói-se com o contexto na raiz.

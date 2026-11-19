@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moseguros.co.mz/schemas/payment-file-processed.v1.json",
+  "title": "PaymentFileProcessed",
+  "description": "Um ficheiro de movimentos lido por inteiro e com todos os registos publicados (S5-06).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "messageId", "schemaVersion", "insurerId", "sourceId", "fileFormat", "fileName", "sha256",
+    "formatFileId", "recordCount", "totalAmount", "processedAt"
+  ],
+  "properties": {
+    "messageId": { "$ref": "#/$defs/sha256" },
+    "schemaVersion": { "const": 1 },
+    "insurerId": { "$ref": "#/$defs/uuid" },
+    "sourceId": { "$ref": "#/$defs/uuid" },
+    "fileFormat": { "enum": ["MEPS", "BMEPS"] },
+    "fileName": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "sha256": { "$ref": "#/$defs/sha256" },
+    "formatFileId": { "$ref": "#/$defs/formatFileId" },
+    "recordCount": { "type": "integer", "minimum": 0 },
+    "totalAmount": { "$ref": "#/$defs/money" },
+    "totalFees": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/money" }] },
+    "processedAt": { "$ref": "#/$defs/instant" }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "instant": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+    },
+    "formatFileId": {
+      "description": "MEPS: A005 (AAAAMMDDS). BMEPS: <empresa>-<perfil>-<ID do ficheiro>.",
+      "type": "string",
+      "pattern": "^([0-9]{9}|[0-9]{3}-[0-9]{2}-[0-9]{5})$"
+    },
+    "money": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "integer", "minimum": 0 },
+        "currency": { "const": "MZN" }
+      }
+    }
+  }
+}

@@ -10,8 +10,11 @@
 postgres:16-alpine                        sempre   # BD (testes e compose)
 testcontainers/ryuk:0.12.0                sempre   # limpeza de contentores do Testcontainers 1.21.4
 adobe/s3mock:3.12.0                       sempre   # S3 nos testes do backend (S3FileStorageIT, S2-01)
+rabbitmq:4.1-management                   sempre   # mensageria (testes do backend e do worker; compose)
+atmoz/sftp:alpine@sha256:43dd1c023cf1bae487127d4b54660b0aee6e94c188a6599be36fb89ba115f961  sempre   # SFTP (testes do worker; compose)
+hashicorp/vault:1.20.4                    sempre   # cofre de segredos (VaultSecretStoreIT, VaultSecretReaderIT do worker; compose)
 axllent/mailpit:v1.33                     infra    # e-mail de desenvolvimento
-eclipse-temurin:17-jdk                    infra    # build do backend e do sms-mock
-eclipse-temurin:17-jre                    infra    # execução do backend e do sms-mock
+eclipse-temurin:17-jdk                    infra    # build do backend, do payment-file-worker e do sms-mock
+eclipse-temurin:17-jre                    infra    # execução do backend, do payment-file-worker e do sms-mock
 node:22-alpine                            infra    # build da web
 nginxinc/nginx-unprivileged:1.27-alpine   infra    # servidor da web
