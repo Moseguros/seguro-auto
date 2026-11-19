@@ -48,8 +48,10 @@ class PaymentSourceHealthJobTest {
         when(meters.getIfAvailable()).thenReturn(registry);
         PaymentProperties properties = new PaymentProperties();
         properties.getFileSource().setStaleAfter(Duration.ofMinutes(15));
-        job = new PaymentSourceHealthJob(methods, new PaymentAlerts(meters), properties,
-                mock(PlatformTransactionManager.class), Clock.fixed(NOW, ZoneOffset.UTC));
+        Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
+        job = new PaymentSourceHealthJob(methods,
+                new PaymentAlerts(methods, meters, mock(PlatformTransactionManager.class), clock), properties,
+                mock(PlatformTransactionManager.class), clock);
         when(methods.markStale(any(), any())).thenReturn(1);
         when(methods.clearStale(any())).thenReturn(1);
     }

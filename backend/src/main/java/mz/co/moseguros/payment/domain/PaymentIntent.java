@@ -222,6 +222,24 @@ public class PaymentIntent extends BaseEntity {
     }
 
     /**
+     * Consulta de estado sem resposta final (S5-04 §4): conta a tentativa e marca a seguinte
+     * ({@code null} = deixa de consultar, {@code UNRESOLVED_STATUS}).
+     */
+    public void recordStatusQuery(Instant next) {
+        if (status != PaymentStatus.UNKNOWN) {
+            throw DomainException.of(ErrorCodes.INVALID_STATE_TRANSITION,
+                    "Only an UNKNOWN payment intent is queried (status " + status + ")");
+        }
+        this.queryAttempts++;
+        this.nextQueryAt = next;
+    }
+
+    /** Conta uma consulta que terminou com resultado final (a transição vem a seguir). */
+    public void countStatusQuery() {
+        this.queryAttempts++;
+    }
+
+    /**
      * {@code expires_at} passou: referência em {@code CREATED}/{@code PENDING}, ou M-Pesa em
      * {@code CREATED} (nunca enviada).
      */

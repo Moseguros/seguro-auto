@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 /**
  * Expiração das intenções (S5-02 §8): referência vencida → {@code EXPIRED} (a referência também) com
@@ -39,6 +40,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({TestcontainersConfiguration.class, SecurityTestConfiguration.class})
 @ActiveProfiles("test")
+@TestPropertySource(properties = mz.co.moseguros.payment.TestGateway.PROPERTY)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PaymentExpiryJobIT {
 

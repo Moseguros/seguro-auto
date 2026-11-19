@@ -226,10 +226,15 @@ public class InsurerPaymentMethod extends BaseEntity {
         this.enabled = false;
     }
 
+    /** Resultado do teste de ligação; um {@code OK} limpa o último erro de configuração (S5-04 §5). */
     public void recordTest(TestResult result, Instant at) {
         this.lastTestResult = result.status();
         this.lastTestMessage = result.message();
         this.lastTestAt = Objects.requireNonNull(at, "at");
+        if (result.status() == TestResult.Status.OK) {
+            this.lastErrorCode = null;
+            this.lastErrorAt = null;
+        }
     }
 
     private ObjectNode mutableRefs() {

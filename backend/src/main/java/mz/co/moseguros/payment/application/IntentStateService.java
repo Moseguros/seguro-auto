@@ -17,6 +17,10 @@ import mz.co.moseguros.payment.PaymentSucceeded;
 import mz.co.moseguros.payment.ReferenceGenerated;
 import mz.co.moseguros.payment.application.gateway.InitiationResult;
 import mz.co.moseguros.payment.application.gateway.ReferenceData;
+import mz.co.moseguros.payment.application.gateway.StatusResult;
+import mz.co.moseguros.payment.domain.PaymentExceptionCase;
+import mz.co.moseguros.payment.domain.PaymentExceptionRepository;
+import mz.co.moseguros.payment.domain.PaymentExceptionType;
 import mz.co.moseguros.payment.domain.ConfirmedBy;
 import mz.co.moseguros.payment.domain.PaymentEvent;
 import mz.co.moseguros.payment.domain.PaymentEventRepository;
@@ -57,16 +61,21 @@ public class IntentStateService {
     private final AuditService audit;
     private final ApplicationEventPublisher events;
     private final Clock clock;
+    private final PaymentExceptionRepository exceptions;
+    private final PaymentProperties.StatusQuery schedule;
 
     public IntentStateService(PaymentIntentRepository intents, PaymentEventRepository paymentEvents,
                               ReferencePaymentRepository references, AuditService audit,
-                              ApplicationEventPublisher events, Clock clock) {
+                              ApplicationEventPublisher events, Clock clock, PaymentExceptionRepository exceptions,
+                              PaymentProperties properties) {
         this.intents = intents;
         this.paymentEvents = paymentEvents;
         this.references = references;
         this.audit = audit;
         this.events = events;
         this.clock = clock;
+        this.exceptions = exceptions;
+        this.schedule = properties.getStatusQuery();
     }
 
     /**
@@ -86,6 +95,9 @@ public class IntentStateService {
                 result.maskedRawResponse(), now));
         if (result.reference() != null) {
             createReference(intent, result.reference(), now);
+        }
+        if (intent.getStatus() != PaymentStatus.CREATED && intent.getStatus() != PaymentStatus.PENDING) {
+            return lateInitiation(intent, result, now, actor);
         }
         switch (result.outcome()) {
             case PENDING -> {
@@ -107,8 +119,7 @@ public class IntentStateService {
             }
             case UNKNOWN -> {
                 toPending(intent, actor, result, now);
-                // O S5-04 define a cadência das consultas; até lá, a primeira daqui a 30 s.
-                transition(intent, actor, i -> i.markUnknown(now, now.plusSeconds(30)));
+                transition(intent, actor, i -> i.markUnknown(now, schedule.firstQueryAt(now)));
             }
         }
         if (result.reference() != null) {
@@ -120,22 +131,94 @@ public class IntentStateService {
     }
 
     /**
-     * Início do envio assíncrono (M-Pesa, S5-04): compare-and-set {@code CREATED → PENDING} com
-     * {@code dispatched_at} e o evento {@code DISPATCHED}.
+     * Resposta do envio que chega depois de a intenção ter saído de {@code CREATED}/{@code PENDING}: a
+     * recuperação já a pôs em {@code UNKNOWN}, ou uma consulta ou o financeiro já a resolveram. Um
+     * resultado final aplica-se a uma {@code UNKNOWN}; o resto fica só no histórico.
+     */
+    private PaymentIntent lateInitiation(PaymentIntent intent, InitiationResult result, Instant now, String actor) {
+        if (intent.getStatus() == PaymentStatus.UNKNOWN) {
+            switch (result.outcome()) {
+                case SUCCEEDED -> succeed(intent, now, ConfirmedBy.PROVIDER, result.providerTxId(), actor);
+                case FAILED -> transition(intent, actor, i -> i.markFailed(result.failureCode(), now));
+                default -> intent.recordProvider(result.providerTxId(), result.providerConversationId(),
+                        result.thirdPartyReference());
+            }
+        } else if (result.outcome() == InitiationResult.Outcome.SUCCEEDED
+                && intent.getStatus() != PaymentStatus.SUCCEEDED) {
+            log.error("Provider confirmed a payment intent that is already final intentId={} reference={} status={}",
+                    intent.getId(), intent.getReference(), intent.getStatus());
+        } else {
+            log.info("Late provider response ignored intentId={} reference={} status={} outcome={}", intent.getId(),
+                    intent.getReference(), intent.getStatus(), result.outcome());
+        }
+        return intents.saveAndFlush(intent);
+    }
+
+    /**
+     * Início do envio assíncrono (M-Pesa, S5-04 §2, transacção 1): compare-and-set
+     * {@code CREATED → PENDING} com {@code dispatched_at}, a {@code third_party_reference} gerada antes
+     * do envio e o evento {@code DISPATCHED}. A linha fica bloqueada até ao commit: duas chamadas em
+     * paralelo para a mesma intenção dão um só envio.
      *
-     * @return {@code false} se a intenção já não estava em {@code CREATED} (nada muda)
+     * @return {@code false} se a intenção já não estava em {@code CREATED} ou já passou o prazo (nada muda)
      */
     @Transactional
-    public boolean startDispatch(UUID intentId, String actor) {
+    public boolean startDispatch(UUID intentId, String thirdPartyReference, String actor) {
         PaymentIntent intent = locked(intentId);
-        if (intent.getStatus() != PaymentStatus.CREATED) {
+        Instant now = clock.instant();
+        if (intent.getStatus() != PaymentStatus.CREATED || !intent.getExpiresAt().isAfter(now)) {
             return false;
         }
-        Instant now = clock.instant();
         paymentEvents.save(PaymentEvent.of(intent, PaymentEventType.DISPATCHED, null, null, null, now));
-        transition(intent, actor, i -> i.markPending(now, null, null, null));
+        transition(intent, actor, i -> i.markPending(now, null, null, thirdPartyReference));
         intents.saveAndFlush(intent);
         return true;
+    }
+
+    /**
+     * Resultado de uma consulta de estado (S5-04 §4): conta a tentativa, grava {@code STATUS_QUERY} com o
+     * pedido e a resposta mascarados e aplica a tabela da secção 3 ({@code SUCCEEDED} com
+     * {@code confirmed_by = STATUS_QUERY}, {@code FAILED}, ou a próxima consulta pelo calendário). Passado
+     * o prazo das consultas deixa de consultar e abre {@code UNRESOLVED_STATUS}. Uma intenção que já não
+     * está {@code UNKNOWN} (resolvida entretanto) só fica com o histórico.
+     */
+    @Transactional
+    public PaymentIntent applyStatusQuery(UUID intentId, StatusResult result, String actor) {
+        PaymentIntent intent = locked(intentId);
+        Instant now = clock.instant();
+        paymentEvents.save(PaymentEvent.of(intent, PaymentEventType.STATUS_QUERY, null, null,
+                result.maskedRawResponse(), now));
+        if (intent.getStatus() != PaymentStatus.UNKNOWN) {
+            log.info("Status query result for an intent that is no longer UNKNOWN intentId={} status={}",
+                    intent.getId(), intent.getStatus());
+            return intents.saveAndFlush(intent);
+        }
+        switch (result.outcome()) {
+            case SUCCEEDED -> {
+                intent.countStatusQuery();
+                succeed(intent, now, ConfirmedBy.STATUS_QUERY, result.providerTxId(), actor);
+            }
+            case FAILED -> {
+                intent.countStatusQuery();
+                transition(intent, actor, i -> i.markFailed(result.failureCode(), now));
+            }
+            case STILL_UNKNOWN -> {
+                Instant next = schedule.nextQueryAt(intent.getUnknownSince(), intent.getQueryAttempts() + 1, now);
+                intent.recordStatusQuery(next);
+                if (next == null) {
+                    giveUp(intent);
+                }
+            }
+        }
+        return intents.saveAndFlush(intent);
+    }
+
+    private void giveUp(PaymentIntent intent) {
+        if (!exceptions.existsByIntentIdAndType(intent.getId(), PaymentExceptionType.UNRESOLVED_STATUS)) {
+            exceptions.save(PaymentExceptionCase.unresolvedStatus(intent));
+        }
+        log.warn("Payment status still unknown, queries stopped intentId={} reference={} attempts={}",
+                intent.getId(), intent.getReference(), intent.getQueryAttempts());
     }
 
     /**
@@ -162,12 +245,12 @@ public class IntentStateService {
         return intents.saveAndFlush(intent);
     }
 
-    /** {@code PENDING → UNKNOWN} com a próxima consulta (S5-04). */
+    /** {@code PENDING → UNKNOWN} com a primeira consulta pelo calendário (S5-04 §4). */
     @Transactional
-    public PaymentIntent markUnknown(UUID intentId, Instant nextQueryAt, String actor) {
+    public PaymentIntent markUnknown(UUID intentId, String actor) {
         PaymentIntent intent = locked(intentId);
         Instant now = clock.instant();
-        transition(intent, actor, i -> i.markUnknown(now, nextQueryAt));
+        transition(intent, actor, i -> i.markUnknown(now, schedule.firstQueryAt(now)));
         return intents.saveAndFlush(intent);
     }
 

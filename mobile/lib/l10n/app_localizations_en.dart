@@ -2078,7 +2078,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validationMsisdnNotMpesa =>
-      'This is not an M-Pesa number (it must start with 84 or 85).';
+      'Use a Vodacom number (starting with 84 or 85).';
 
   @override
   String get validationInvalidUuid => 'Invalid identifier.';
@@ -2114,31 +2114,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentMethodBankReference => 'Entity and reference';
 
   @override
-  String get paymentFailureCustomerCancelled => 'Cancelled on the phone.';
+  String get paymentFailureCustomerCancelled =>
+      'You cancelled the payment on your phone.';
 
   @override
   String get paymentFailureInsufficientBalance => 'Insufficient balance.';
 
   @override
-  String get paymentFailureInvalidMsisdn => 'Invalid M-Pesa number.';
+  String get paymentFailureInvalidMsisdn =>
+      'This number is not registered with the payment service.';
 
   @override
-  String get paymentFailureProviderRejected => 'The payment was declined.';
+  String get paymentFailureProviderRejected =>
+      'The payment was declined by the operator.';
 
   @override
   String get paymentFailureProviderConfigError =>
-      'The insurer\'s payment method has a configuration problem.';
+      'This payment method has a problem on the insurer\'s side. Choose another one or try again later.';
 
   @override
   String get paymentFailureProviderUnavailable =>
-      'The payment service is unavailable.';
+      'The payment service is unavailable. Try again later.';
 
   @override
   String get paymentFailureTimeoutExpired =>
-      'The payment was not confirmed in time.';
+      'The request expired without confirmation.';
 
   @override
-  String get paymentFailureExpired => 'The payment deadline has passed.';
+  String get paymentFailureExpired => 'The deadline to pay has passed.';
 
   @override
   String get paymentFailureSuperseded => 'Replaced by another payment.';
@@ -2812,9 +2815,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proposalAcceptedText => 'Proposal accepted.';
 
   @override
-  String get proposalPaymentSoon => 'Payment will be available soon.';
-
-  @override
   String get proposalRejectedText => 'The proposal was not accepted.';
 
   @override
@@ -2852,4 +2852,271 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get inspectionRemoveConfirm =>
       'Remove this photo from the inspection?';
+
+  @override
+  String get paymentsTitle => 'Pay for the proposal';
+
+  @override
+  String paymentsSummaryProposal(String number) {
+    return 'Proposal $number';
+  }
+
+  @override
+  String get paymentsSummaryTotal => 'Total to pay';
+
+  @override
+  String paymentsSummaryPayBy(String date) {
+    return 'Pay by $date';
+  }
+
+  @override
+  String paymentsSummaryDirect(String insurer) {
+    return 'The payment goes directly to $insurer. MoSeguros does not receive any money.';
+  }
+
+  @override
+  String get paymentsMethodLabel => 'Payment method';
+
+  @override
+  String get paymentsMethodMpesaNumber => 'M-Pesa number';
+
+  @override
+  String get paymentsMethodReferenceHelp =>
+      'You receive an entity and a reference to pay through e-banking or your bank\'s app, an ATM, *124#, a POS or at the counter.';
+
+  @override
+  String get paymentsPaySubmit => 'Buy policy';
+
+  @override
+  String get paymentsPayNotFound => 'Proposal not found.';
+
+  @override
+  String get paymentsPayBackToProposals => 'See the proposals';
+
+  @override
+  String get paymentsPayNotPayable => 'This proposal can no longer be paid.';
+
+  @override
+  String get paymentsPayAlreadyPaid => 'This proposal is already paid.';
+
+  @override
+  String get paymentsPayBackToProposal => 'See the proposal';
+
+  @override
+  String get paymentsPayActiveIntent => 'You have a payment in progress';
+
+  @override
+  String get paymentsPayViewPayment => 'See payment';
+
+  @override
+  String get paymentsPayNoMethods =>
+      'The insurer has no payment methods available yet. Please contact the insurer.';
+
+  @override
+  String get paymentsPayMethodUnavailable =>
+      'This payment method is not available right now. Choose another one.';
+
+  @override
+  String get paymentsIntentNotFound => 'Payment not found.';
+
+  @override
+  String get paymentsIntentBackToPayments => 'See my payments';
+
+  @override
+  String get paymentsIntentPreparing => 'Preparing the payment…';
+
+  @override
+  String paymentsIntentReference(String reference) {
+    return 'Payment $reference';
+  }
+
+  @override
+  String get paymentsAwaitTitle => 'Confirm the payment on your phone';
+
+  @override
+  String paymentsAwaitStep1(String msisdn) {
+    return '1. Unlock the phone with the number $msisdn.';
+  }
+
+  @override
+  String get paymentsAwaitStep2 =>
+      '2. Enter your M-Pesa PIN in the request that appears.';
+
+  @override
+  String get paymentsAwaitStep3 => '3. Wait here for the confirmation.';
+
+  @override
+  String get paymentsAwaitRemaining => 'Time to confirm';
+
+  @override
+  String get paymentsAwaitStillWaiting =>
+      'We have not received the answer yet. We are confirming.';
+
+  @override
+  String get paymentsAwaitBackToProposal => 'Back to the proposal';
+
+  @override
+  String get paymentsCheckingLead =>
+      'We do not have the operator\'s confirmation yet.';
+
+  @override
+  String get paymentsCheckingDontPay => 'Do not pay again';
+
+  @override
+  String get paymentsCheckingRest =>
+      ': we are confirming and this page updates by itself.';
+
+  @override
+  String paymentsCheckingNextCheck(String time) {
+    return 'Next check at $time';
+  }
+
+  @override
+  String get paymentsReferenceEntity => 'Entity';
+
+  @override
+  String get paymentsReferenceReference => 'Reference';
+
+  @override
+  String get paymentsReferenceAmount => 'Amount';
+
+  @override
+  String paymentsReferenceCopy(String label) {
+    return 'Copy $label';
+  }
+
+  @override
+  String get paymentsReferenceCopied => 'Copied';
+
+  @override
+  String get paymentsReferenceCopyFailed => 'Could not copy.';
+
+  @override
+  String get paymentsReferenceExactAmount =>
+      'Pay exactly this amount. The network refuses any other value.';
+
+  @override
+  String paymentsReferenceValidUntil(String date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String get paymentsReferenceHowTo =>
+      'How to pay: in e-banking or your bank\'s app, at an ATM, by phone (*124#), at a POS or at the counter, choose service payment by entity and reference and enter the three details above.';
+
+  @override
+  String get paymentsReferenceConfirmationInfo =>
+      'The confirmation arrives when the bank sends the payments file to the insurer; we read the file as soon as it arrives. It may take a few hours. You do not need to stay on this page. You will receive an e-mail when the payment is confirmed.';
+
+  @override
+  String get paymentsReferenceDownloadPdf => 'Download PDF';
+
+  @override
+  String get paymentsReferenceSendSms => 'Send by SMS';
+
+  @override
+  String get paymentsSmsTitle => 'Send the reference by SMS';
+
+  @override
+  String get paymentsSmsMsisdn => 'Mobile number';
+
+  @override
+  String get paymentsSmsSend => 'Send';
+
+  @override
+  String paymentsSmsSent(String sentTo) {
+    return 'SMS sent to $sentTo';
+  }
+
+  @override
+  String get paymentsSmsRateLimited =>
+      'You have already sent this reference 3 times.';
+
+  @override
+  String get paymentsOutcomeSucceeded => 'Payment confirmed';
+
+  @override
+  String get paymentsOutcomeSucceededText =>
+      'Your policy will be issued shortly.';
+
+  @override
+  String get paymentsOutcomeExpired =>
+      'The deadline for this payment has passed.';
+
+  @override
+  String get paymentsOutcomeCancelled =>
+      'This payment was replaced by another one.';
+
+  @override
+  String get paymentsOutcomeRefunded => 'This payment was refunded.';
+
+  @override
+  String get paymentsOutcomeViewProposal => 'See proposal';
+
+  @override
+  String get paymentsOutcomeChooseAnother => 'Choose another payment method';
+
+  @override
+  String get paymentsListTitle => 'Payments';
+
+  @override
+  String get paymentsListEmpty => 'You have no payments yet.';
+
+  @override
+  String get paymentsListLoadMore => 'Load more';
+
+  @override
+  String get paymentsListDate => 'Date';
+
+  @override
+  String get paymentsListTarget => 'Proposal';
+
+  @override
+  String get paymentsListInsurer => 'Insurer';
+
+  @override
+  String get paymentsListMethod => 'Payment method';
+
+  @override
+  String get paymentsListAmount => 'Amount';
+
+  @override
+  String get paymentsListStatus => 'Status';
+
+  @override
+  String get paymentsLinkButton => 'Send payment link to the customer';
+
+  @override
+  String get paymentsLinkConfirmTitle => 'Send payment link';
+
+  @override
+  String get paymentsLinkConfirmText =>
+      'We will send the customer an SMS with the link to pay. The customer pays the insurer directly.';
+
+  @override
+  String get paymentsLinkSend => 'Send';
+
+  @override
+  String paymentsLinkSent(String sentTo) {
+    return 'Link sent to $sentTo';
+  }
+
+  @override
+  String paymentsLinkRateLimited(String minutes) {
+    return 'You have already sent the link 3 times in the last 24 hours. Try again in $minutes minutes.';
+  }
+
+  @override
+  String get paymentsLinkNoMsisdn =>
+      'The customer has no mobile number registered.';
+
+  @override
+  String get paymentsProposalPaid =>
+      'Payment received. Your policy will be issued shortly.';
+
+  @override
+  String get paymentsReferenceCopyButton => 'Copy';
+
+  @override
+  String get paymentsMenu => 'Payments';
 }

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M-Pesa mock - MoSeguros</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #E8EFF6; color: #142D4E; }
+    header { background: #142D4E; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    h1 { font-size: 18px; margin: 0; }
+    h2 { font-size: 15px; margin: 0 0 8px; }
+    button { background: transparent; color: #fff; border: 1px solid #fff; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+    main { padding: 16px; max-width: 1100px; margin: 0 auto; }
+    section { background: #fff; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+    .hint { font-size: 13px; color: #4a5f7a; margin: 8px 0 0; }
+    .empty { color: #4a5f7a; }
+    .scroll { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #E8EFF6; white-space: nowrap; }
+    th { color: #4a5f7a; font-weight: 600; }
+    code { font-size: 12px; }
+    .status { font-weight: 600; border-radius: 4px; padding: 2px 6px; background: #E8EFF6; }
+    .status.Completed { background: #dff3e4; color: #1c6b34; }
+    .status.Pending { background: #fff1dc; color: #8a5300; }
+    .status.Cancelled, .status.Failed { background: #fbe3e3; color: #8f1d1d; }
+    .status.Reversed { background: #e6e3fb; color: #3c2f8f; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Transacções M-Pesa simuladas (<span id="count">0</span>)</h1>
+    <button id="reset" type="button">Limpar</button>
+  </header>
+  <main>
+    <section aria-label="Números de teste">
+      <h2>Números de teste (três últimos dígitos de <code>input_CustomerMSISDN</code>)</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Final</th><th>Resposta do C2B</th><th>Estado registado</th></tr></thead>
+          <tbody>
+            <tr><td><code>000</code></td><td>INS-0 depois de <span data-delay="delay000Seconds">?</span> s</td><td>Pending → Completed</td></tr>
+            <tr><td><code>001</code></td><td>INS-5 (cancelado pelo cliente) depois de <span data-delay="failureDelaySeconds">?</span> s</td><td>Cancelled</td></tr>
+            <tr><td><code>002</code></td><td>INS-2006 (saldo insuficiente) depois de <span data-delay="failureDelaySeconds">?</span> s</td><td>Failed</td></tr>
+            <tr><td><code>003</code></td><td>INS-0 só depois de <span data-delay="slowDelaySeconds">?</span> s (força o timeout)</td><td>Pending → Completed</td></tr>
+            <tr><td><code>004</code></td><td>INS-10 (duplicado) imediatamente</td><td>Cancelled</td></tr>
+            <tr><td><code>005</code></td><td>INS-6 (transacção falhou) depois de <span data-delay="failureDelaySeconds">?</span> s</td><td>Failed</td></tr>
+            <tr><td>outro</td><td>INS-0 depois de <span data-delay="defaultDelaySeconds">?</span> s</td><td>Pending → Completed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">Exemplo: 258840000000 (sucesso), 258841234001 (cancelado). Só números 25884… e 25885…; outros dão INS-21. Simulador: nada aqui movimenta dinheiro.</p>
+    </section>
+    <section aria-label="Transacções">
+      <div id="list" class="scroll"><p class="empty">A carregar...</p></div>
+    </section>
+  </main>
+  <script>
+    // Tabela actualizada a cada 3 s a partir de GET /__mock/transactions (mais recente primeiro).
+    const list = document.getElementById('list');
+    const count = document.getElementById('count');
+    const COLUMNS = [
+      ['Criada', (t) => formatDate(t.createdAt)],
+      ['Operação', (t) => t.operation],
+      ['TransactionID', (t) => t.transactionId],
+      ['ThirdPartyReference', (t) => t.thirdPartyReference],
+      ['TransactionReference', (t) => t.transactionReference || ''],
+      ['Telemóvel', (t) => t.msisdn || ''],
+      ['Montante', (t) => t.amount || ''],
+      ['Estado', (t) => t.status],
+      ['Código', (t) => t.responseCode || ''],
+      ['Original', (t) => t.originalTransactionId || ''],
+      ['Concluída', (t) => formatDate(t.completedAt)],
+    ];
+
+    function formatDate(value) {
+      return value ? new Date(value).toLocaleString('pt-MZ', { timeZone: 'Africa/Maputo' }) : '';
+    }
+
+    function render(transactions) {
+      count.textContent = transactions.length;
+      list.replaceChildren();
+      if (transactions.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'empty';
+        empty.textContent = 'Nenhuma transacção.';
+        list.append(empty);
+        return;
+      }
+      const table = document.createElement('table');
+      const head = table.createTHead().insertRow();
+      for (const [title] of COLUMNS) {
+        const th = document.createElement('th');
+        th.textContent = title;
+        head.append(th);
+      }
+      const body = table.createTBody();
+      for (const t of transactions) {
+        const row = body.insertRow();
+        for (const [title, value] of COLUMNS) {
+          const cell = row.insertCell();
+          if (title === 'Estado') {
+            const badge = document.createElement('span');
+            badge.className = 'status ' + t.status;
+            badge.textContent = t.status;
+            cell.append(badge);
+          } else {
+            cell.textContent = value(t);
+          }
+        }
+      }
+      list.append(table);
+    }
+
+    async function refresh() {
+      try {
+        const response = await fetch('__mock/transactions', { cache: 'no-store' });
+        if (response.ok) render(await response.json());
+      } catch (e) {
+        // Tenta de novo no próximo ciclo.
+      }
+    }
+
+    async function loadDelays() {
+      try {
+        const response = await fetch('__mock/config', { cache: 'no-store' });
+        if (!response.ok) return;
+        const config = await response.json();
+        for (const el of document.querySelectorAll('[data-delay]')) {
+          el.textContent = config[el.dataset.delay];
+        }
+      } catch (e) {
+        // Tenta de novo no próximo ciclo.
+      }
+    }
+
+    document.getElementById('reset').addEventListener('click', async () => {
+      await fetch('__mock/reset', { method: 'POST' });
+      refresh();
+    });
+
+    loadDelays();
+    refresh();
+    setInterval(refresh, 3000);
+    setInterval(loadDelays, 3000);
+  </script>
+</body>
+</html>

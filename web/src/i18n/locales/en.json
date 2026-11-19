@@ -368,7 +368,7 @@
     "INVALID_PUBLIC_KEY": "Invalid public key (RSA in PEM or Base64).",
     "MIN_GREATER_THAN_MAX": "The minimum cannot be greater than the maximum.",
     "ENTITY_IN_USE": "This entity is already configured for another insurer.",
-    "MSISDN_NOT_MPESA": "This is not an M-Pesa number (it must start with 84 or 85).",
+    "MSISDN_NOT_MPESA": "Use a Vodacom number (starting with 84 or 85).",
     "INVALID_UUID": "Invalid identifier."
   },
   "paymentStatus": {
@@ -386,14 +386,14 @@
     "BANK_REFERENCE": "Entity and reference"
   },
   "paymentFailure": {
-    "CUSTOMER_CANCELLED": "Cancelled on the phone.",
+    "CUSTOMER_CANCELLED": "You cancelled the payment on your phone.",
     "INSUFFICIENT_BALANCE": "Insufficient balance.",
-    "INVALID_MSISDN": "Invalid M-Pesa number.",
-    "PROVIDER_REJECTED": "The payment was declined.",
-    "PROVIDER_CONFIG_ERROR": "The insurer's payment method has a configuration problem.",
-    "PROVIDER_UNAVAILABLE": "The payment service is unavailable.",
-    "TIMEOUT_EXPIRED": "The payment was not confirmed in time.",
-    "EXPIRED": "The payment deadline has passed.",
+    "INVALID_MSISDN": "This number is not registered with the payment service.",
+    "PROVIDER_REJECTED": "The payment was declined by the operator.",
+    "PROVIDER_CONFIG_ERROR": "This payment method has a problem on the insurer's side. Choose another one or try again later.",
+    "PROVIDER_UNAVAILABLE": "The payment service is unavailable. Try again later.",
+    "TIMEOUT_EXPIRED": "The request expired without confirmation.",
+    "EXPIRED": "The deadline to pay has passed.",
     "SUPERSEDED": "Replaced by another payment.",
     "MANUAL": "Resolved by the insurer."
   },
@@ -1998,7 +1998,6 @@
       "underReview": "{{insurer}} is reviewing your proposal. It has until {{date}} to reply.",
       "underReviewNoDate": "{{insurer}} is reviewing your proposal.",
       "accepted": "Proposal accepted.",
-      "paymentSoon": "Payment will be available soon.",
       "expiresAt": "Expires on {{date}}",
       "rejected": "The proposal was not accepted.",
       "expired": "This proposal has expired.",
@@ -2596,6 +2595,104 @@
       "profileIncomplete": "This customer's profile is incomplete. Fill in the policyholder details.",
       "vehicleAlreadyRegistered": "This customer already has a vehicle with this number plate and another chassis. Check the chassis."
     }
+  },
+  "payments": {
+    "title": "Pay for the proposal",
+    "summary": {
+      "proposal": "Proposal {{number}}",
+      "total": "Total to pay",
+      "payBy": "Pay by {{date}}",
+      "direct": "The payment goes directly to {{insurer}}. MoSeguros does not receive any money."
+    },
+    "method": {
+      "label": "Payment method",
+      "mpesaNumber": "M-Pesa number",
+      "referenceHelp": "You receive an entity and a reference to pay through e-banking or your bank's app, an ATM, *124#, a POS or at the counter."
+    },
+    "pay": {
+      "submit": "Buy policy",
+      "notFound": "Proposal not found.",
+      "backToProposals": "See the proposals",
+      "notPayable": "This proposal can no longer be paid.",
+      "alreadyPaid": "This proposal is already paid.",
+      "backToProposal": "See the proposal",
+      "activeIntent": "You have a payment in progress",
+      "viewPayment": "See payment",
+      "noMethods": "The insurer has no payment methods available yet. Please contact the insurer.",
+      "methodUnavailable": "This payment method is not available right now. Choose another one."
+    },
+    "intent": {
+      "notFound": "Payment not found.",
+      "backToPayments": "See my payments",
+      "preparing": "Preparing the payment…",
+      "reference": "Payment {{reference}}"
+    },
+    "await": {
+      "title": "Confirm the payment on your phone",
+      "step1": "1. Unlock the phone with the number {{msisdn}}.",
+      "step2": "2. Enter your M-Pesa PIN in the request that appears.",
+      "step3": "3. Wait here for the confirmation.",
+      "remaining": "Time to confirm",
+      "stillWaiting": "We have not received the answer yet. We are confirming.",
+      "backToProposal": "Back to the proposal"
+    },
+    "checking": {
+      "lead": "We do not have the operator's confirmation yet.",
+      "dontPay": "Do not pay again",
+      "rest": ": we are confirming and this page updates by itself.",
+      "nextCheck": "Next check at {{time}}"
+    },
+    "reference": {
+      "entity": "Entity",
+      "reference": "Reference",
+      "amount": "Amount",
+      "copy": "Copy {{label}}",
+      "copied": "Copied",
+      "copyFailed": "Could not copy.",
+      "exactAmount": "Pay exactly this amount. The network refuses any other value.",
+      "validUntil": "Valid until {{date}}",
+      "howTo": "How to pay: in e-banking or your bank's app, at an ATM, by phone (*124#), at a POS or at the counter, choose service payment by entity and reference and enter the three details above.",
+      "confirmationInfo": "The confirmation arrives when the bank sends the payments file to the insurer; we read the file as soon as it arrives. It may take a few hours. You do not need to stay on this page. You will receive an e-mail when the payment is confirmed.",
+      "downloadPdf": "Download PDF",
+      "sendSms": "Send by SMS"
+    },
+    "sms": {
+      "title": "Send the reference by SMS",
+      "msisdn": "Mobile number",
+      "send": "Send",
+      "sent": "SMS sent to {{sentTo}}",
+      "rateLimited": "You have already sent this reference 3 times."
+    },
+    "outcome": {
+      "succeeded": "Payment confirmed",
+      "succeededText": "Your policy will be issued shortly.",
+      "expired": "The deadline for this payment has passed.",
+      "cancelled": "This payment was replaced by another one.",
+      "refunded": "This payment was refunded.",
+      "viewProposal": "See proposal",
+      "chooseAnother": "Choose another payment method"
+    },
+    "list": {
+      "title": "Payments",
+      "empty": "You have no payments yet.",
+      "loadMore": "Load more",
+      "date": "Date",
+      "target": "Proposal",
+      "insurer": "Insurer",
+      "method": "Payment method",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "link": {
+      "button": "Send payment link to the customer",
+      "confirmTitle": "Send payment link",
+      "confirmText": "We will send the customer an SMS with the link to pay. The customer pays the insurer directly.",
+      "send": "Send",
+      "sent": "Link sent to {{sentTo}}",
+      "rateLimited": "You have already sent the link 3 times in the last 24 hours. Try again in {{minutes}} minutes.",
+      "noMsisdn": "The customer has no mobile number registered."
+    },
+    "proposalPaid": "Payment received. Your policy will be issued shortly."
   },
   "paymentResolutionHelp": {
     "LINKED": "Confirms the chosen payment with this money received.",

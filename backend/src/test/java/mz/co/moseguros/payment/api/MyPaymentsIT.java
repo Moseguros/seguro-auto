@@ -38,6 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 /**
  * Pagamentos do cliente (S5-02 §7): a lista só com os seus, a referência por SMS (com o limite de 3) e
@@ -46,6 +47,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({TestcontainersConfiguration.class, SecurityTestConfiguration.class})
 @ActiveProfiles("test")
+@TestPropertySource(properties = mz.co.moseguros.payment.TestGateway.PROPERTY)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MyPaymentsIT {
 

@@ -10,7 +10,7 @@ import StepContent from '@mui/material/StepContent';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import type { ProposalResponse } from '../../api/generated';
@@ -20,13 +20,18 @@ import { formatDateTime } from '../../i18n/format';
 import { ProposalFullSummary } from './ReviewStep';
 import { proposalPaths, type ProposalMode } from './wizardSteps';
 
-/** Estado de uma proposta fora dos passos (S4-08 §5). */
+/**
+ * Estado de uma proposta fora dos passos (S4-08 §5). `acceptedAction` aparece numa proposta
+ * aceite (S5-11 §2: "Adquirir apólice" do cliente ou o link de pagamento do mediador).
+ */
 export function ProposalStatusView({
   proposal,
   mode,
+  acceptedAction,
 }: {
   proposal: ProposalResponse;
   mode: ProposalMode;
+  acceptedAction?: ReactNode;
 }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
@@ -81,15 +86,18 @@ export function ProposalStatusView({
         <Stack spacing={1}>
           <Alert severity="success">
             <Typography fontWeight={600}>{t('proposal.status.accepted')}</Typography>
-            <Typography variant="body2">{t('proposal.status.paymentSoon')}</Typography>
           </Alert>
           {proposal.expiresAt && (
             <Typography color="text.secondary">
               {t('proposal.status.expiresAt', { date: formatDateTime(proposal.expiresAt, lang) })}
             </Typography>
           )}
+          {acceptedAction}
         </Stack>
       );
+      break;
+    case 'PAID':
+      body = <Alert severity="success">{t('payments.proposalPaid')}</Alert>;
       break;
     case 'REJECTED':
       body = (
@@ -133,7 +141,7 @@ export function ProposalStatusView({
           <Chip
             size="small"
             color={
-              proposal.status === 'ACCEPTED'
+              proposal.status === 'ACCEPTED' || proposal.status === 'PAID'
                 ? 'success'
                 : proposal.status === 'REJECTED'
                   ? 'error'

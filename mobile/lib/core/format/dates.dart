@@ -29,3 +29,13 @@ String formatDate(DateTime date) =>
 
 /// Instante apresentado como data `dd/MM/yyyy` em `Africa/Maputo`.
 String formatInstantDate(DateTime instant) => formatDate(dateInMaputo(instant));
+
+/// Instante apresentado como hora `HH:mm` em `Africa/Maputo`.
+String formatInstantTime(DateTime instant) {
+  final maputo = instant.toUtc().add(_maputoOffset);
+  return '${_two(maputo.hour)}:${_two(maputo.minute)}';
+}
+
+/// Instante apresentado como `dd/MM/yyyy HH:mm` em `Africa/Maputo`.
+String formatInstantDateTime(DateTime instant) =>
+    '${formatInstantDate(instant)} ${formatInstantTime(instant)}';

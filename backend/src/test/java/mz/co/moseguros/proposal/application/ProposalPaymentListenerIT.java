@@ -41,6 +41,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
@@ -51,6 +52,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({TestcontainersConfiguration.class, SecurityTestConfiguration.class})
 @ActiveProfiles("test")
+@TestPropertySource(properties = mz.co.moseguros.payment.TestGateway.PROPERTY)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProposalPaymentListenerIT {
 

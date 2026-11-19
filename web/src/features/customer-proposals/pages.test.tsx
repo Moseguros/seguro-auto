@@ -14,6 +14,42 @@ const me = customerMe({
 });
 const profile = { complete: false, version: 1 };
 
+describe('CustomerProposalPage (S5-11)', () => {
+  it('ACCEPTED: "Adquirir apólice" laranja (o único) para o ecrã de pagamento', async () => {
+    restore = signInCustomer(me, (c) =>
+      is(c, 'GET', '/api/v1/proposals/p1')
+        ? {
+            status: 200,
+            data: proposalFixture({ status: 'ACCEPTED', expiresAt: '2027-01-20T10:00:00Z' }),
+          }
+        : null,
+    );
+    renderRoute('/cliente/propostas/p1');
+    const buy = await screen.findByRole('link', { name: 'Adquirir apólice' }, { timeout: 10_000 });
+    expect(buy).toHaveClass('MuiButton-cta');
+    expect(buy).toHaveAttribute('href', '/cliente/propostas/p1/pagar');
+    expect(document.querySelectorAll('.MuiButton-cta')).toHaveLength(1);
+  });
+
+  it('PAID: etiqueta "Paga" e o texto, sem botão laranja', async () => {
+    restore = signInCustomer(me, (c) =>
+      is(c, 'GET', '/api/v1/proposals/p1')
+        ? { status: 200, data: proposalFixture({ status: 'PAID' }) }
+        : null,
+    );
+    renderRoute('/cliente/propostas/p1');
+    expect(
+      await screen.findByText(
+        'Pagamento recebido. A sua apólice vai ser emitida em breve.',
+        {},
+        { timeout: 10_000 },
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Paga')).toBeInTheDocument();
+    expect(document.querySelectorAll('.MuiButton-cta')).toHaveLength(0);
+  });
+});
+
 describe('NewProposalPage', () => {
   it('PROFILE_INCOMPLETE → perfil com ?completar=1&voltar=<esta URL>', async () => {
     restore = signInCustomer(

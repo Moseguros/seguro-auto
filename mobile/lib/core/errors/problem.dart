@@ -75,6 +75,13 @@ class Problem {
   /// `PROPOSAL_ALREADY_EXISTS`, `missing` de `PROPOSAL_INCOMPLETE`).
   final Map<String, dynamic> body;
 
+  /// Propriedade `intentId` (ex.: `PAYMENT_IN_PROGRESS`, S5-11): o pagamento em
+  /// curso.
+  String? get intentId {
+    final value = body['intentId'];
+    return value is String && value.isNotEmpty ? value : null;
+  }
+
   /// Mensagem para o utilizador: `error<Code>` do ARB, ou `errorUnknown`.
   String message(AppLocalizations l10n) => apiErrorMessage(l10n, code);
 

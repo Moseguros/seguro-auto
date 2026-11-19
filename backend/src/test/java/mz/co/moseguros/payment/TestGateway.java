@@ -14,17 +14,23 @@ import mz.co.moseguros.payment.application.gateway.RefundRequest;
 import mz.co.moseguros.payment.application.gateway.RefundResult;
 import mz.co.moseguros.payment.application.gateway.StatusResult;
 import mz.co.moseguros.payment.domain.PaymentIntent;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
- * Adaptador M-Pesa controlável dos testes do S5-02 (perfil {@code test}; o real é o do S5-04, que
- * substitui este): assíncrono como o real, devolve o resultado escolhido pelo teste ({@code PENDING} por
+ * Adaptador M-Pesa controlável dos testes do S5-02 que não falam com nenhum simulador (perfil
+ * {@code test} e {@link #PROPERTY}; os outros testes usam o adaptador real, {@code MpesaGateway}, contra o
+ * {@code mpesa-mock}): assíncrono como o real, devolve o resultado escolhido pelo teste ({@code PENDING} por
  * defeito) e regista as intenções enviadas.
  */
 @Component
 @Profile("test")
+@ConditionalOnProperty(name = "moseguros.payment.mpesa.adapter", havingValue = "test-stub")
 public class TestGateway implements PaymentGateway {
+
+    /** Para as classes de teste que usam este adaptador ({@code @TestPropertySource}). */
+    public static final String PROPERTY = "moseguros.payment.mpesa.adapter=test-stub";
 
     private final AtomicReference<InitiationResult> next = new AtomicReference<>();
     private final List<UUID> initiated = new CopyOnWriteArrayList<>();
