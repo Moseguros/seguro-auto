@@ -47,6 +47,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.Advised;
@@ -84,6 +85,9 @@ class ReferencePaymentListenerIT {
 
     @Autowired
     RabbitTemplate rabbit;
+
+    @Autowired
+    AmqpAdmin amqpAdmin;
 
     @Autowired
     ObjectMapper mapper;
@@ -344,6 +348,8 @@ class ReferencePaymentListenerIT {
     @Test
     @Order(8)
     void invalidJsonAndAMismatchedInsurerGoToTheDlqWithoutRetries() throws Exception {
+        amqpAdmin.purgeQueue(PaymentsTopology.REFERENCE_PAYMENTS_DLQ, false);
+        long start = System.currentTimeMillis();
         String badJson = MessageIds.sha256Hex("bad-json-" + UUID.randomUUID());
         messages.send(PaymentsTopology.referencePaidKey(insurer.id()), badJson,
                 MessageHeaders.typeOf(ReferencePaymentReceived.class), text("{not json"));
@@ -360,11 +366,12 @@ class ReferencePaymentListenerIT {
         messages.send(PaymentsTopology.referencePaidKey(insurer.id()), unknownTypeId, "SomethingElse",
                 mapper.writeValueAsBytes(unknownType));
 
-        // Com as repetições demorariam mais de 30 s: chegam logo à .dlq.
+        // Com as repetições demorariam mais de 31 s (1 + 2 + 4 + 8 + 16): chegam logo à .dlq.
         for (String id : new String[] {badJson, valid.messageId(), unknownTypeId}) {
-            Message dead = messages.receiveById(PaymentsTopology.REFERENCE_PAYMENTS_DLQ, id, Duration.ofSeconds(8));
+            Message dead = messages.receiveById(PaymentsTopology.REFERENCE_PAYMENTS_DLQ, id, Duration.ofSeconds(25));
             assertThat(dead).as(id).isNotNull();
         }
+        assertThat(System.currentTimeMillis() - start).isLessThan(30_000);
         assertThat(calls.get(valid.messageId())).isNull();
         assertThat(support.owner().queryForObject("select count(*) from payment.inbound_message where message_id = ?",
                 Long.class, valid.messageId())).isZero();
