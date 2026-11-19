@@ -10,6 +10,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import mz.co.moseguros.verification.domain.SubjectType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ public class SubjectHasher {
 
     private final SecretKeySpec key;
 
+    @Autowired
     public SubjectHasher(VerificationProperties properties) {
         this(properties.hashKey());
     }

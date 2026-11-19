@@ -152,7 +152,7 @@ public class VerificationService {
     public Page<CheckLog> myChecks(LocalDate from, LocalDate to, Pageable pageable) {
         UUID userId = currentUser.id();
         limiter.consumePolice(userId);
-        LocalDate last = to != null ? to : LocalDate.now(clock.withZone(ZONE));
+        LocalDate last = to != null ? to : LocalDate.ofInstant(clock.instant(), ZONE);
         LocalDate first = from != null ? from : last.minusDays(DEFAULT_HISTORY_DAYS);
         if (first.isAfter(last)) {
             throw new FieldValidationException("from", FieldErrorCodes.OUT_OF_RANGE, "from must not be after to");

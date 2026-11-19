@@ -20,7 +20,7 @@ public class FakeCaptchaVerifier {
 
     @Bean
     @Primary
-    CaptchaVerifier fakeCaptchaVerifier() {
+    CaptchaVerifier testCaptchaVerifier() {
         return new CaptchaVerifier() {
             @Override
             public CaptchaProvider provider() {
