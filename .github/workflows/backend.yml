@@ -50,7 +50,9 @@ jobs:
       - name: Relatórios de testes
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true # quota de artefactos esgotada não deve chumbar o CI
         with:
+          retention-days: 7
           name: payment-contracts-test-reports
           path: payment-contracts/target/surefire-reports/
           if-no-files-found: ignore
@@ -73,7 +75,9 @@ jobs:
       - name: Relatório JaCoCo
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true # quota de artefactos esgotada não deve chumbar o CI
         with:
+          retention-days: 7
           name: backend-jacoco
           path: backend/target/site/jacoco/
           if-no-files-found: ignore
@@ -81,7 +85,9 @@ jobs:
       - name: Relatórios de testes
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true # quota de artefactos esgotada não deve chumbar o CI
         with:
+          retention-days: 7
           name: backend-test-reports
           path: |
             backend/target/surefire-reports/
@@ -106,7 +112,9 @@ jobs:
       - name: Relatórios de testes
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true # quota de artefactos esgotada não deve chumbar o CI
         with:
+          retention-days: 7
           name: payment-file-worker-test-reports
           path: |
             payment-file-worker/target/surefire-reports/

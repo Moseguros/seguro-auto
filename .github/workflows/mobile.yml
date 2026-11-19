@@ -65,7 +65,9 @@ jobs:
         run: flutter build apk --flavor dev -t lib/main_dev.dart --debug
 
       - uses: actions/upload-artifact@v4
+        continue-on-error: true # quota de artefactos esgotada não deve chumbar o CI
         with:
+          retention-days: 7
           name: moseguros-dev-debug-apk
           path: mobile/build/app/outputs/flutter-apk/app-dev-debug.apk
           if-no-files-found: error
