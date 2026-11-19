@@ -22,6 +22,10 @@ export const Permissions = {
   proposalDecide: 'proposal:decide',
   kycReview: 'kyc:review',
   inspectionReview: 'inspection:review',
+  paymentRead: 'payment:read',
+  paymentConfigure: 'payment:configure',
+  paymentResolveException: 'payment:resolve-exception',
+  platformOperations: 'platform:operations',
 } as const;
 
 export type Permission = (typeof Permissions)[keyof typeof Permissions];
