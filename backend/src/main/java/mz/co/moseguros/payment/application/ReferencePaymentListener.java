@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
  * encaminhamento). Os resultados de negócio não lançam: a mensagem é confirmada; um erro técnico é repetido
  * pelo {@code paymentsListenerFactory} e, à sexta falha, vai para a {@code .dlq}.
  *
- * <p>Um só consumidor ({@code concurrency = "1"}, por cima dos 2 a 4 da fábrica): os registos de um ficheiro
- * tratam-se pela ordem de {@code lineNo} (S5-10 §3), que é a ordem da fila; com dois consumidores, dois
+ * <p>Um só consumidor ({@code concurrency = "1-1"}: mínimo e máximo, por cima dos 2 a 4 da fábrica; só
+ * {@code "1"} deixava o máximo da fábrica, 4, e o contentor podia crescer): os registos de um ficheiro tratam-se pela ordem de {@code lineNo} (S5-10 §3), que é a ordem da fila; com dois consumidores, dois
  * registos da mesma referência podiam ser tratados em paralelo e o {@code for update} só garantia que um deles
  * confirmava, não qual. A repetição sem estado de um erro técnico corre na mesma thread, por isso também não
  * troca a ordem.
@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReferencePaymentListener {
 
-    /** Um consumidor só, para manter a ordem de {@code lineNo}. */
-    static final String REFERENCE_PAYMENTS_CONCURRENCY = "1";
+    /** Um consumidor só (mínimo e máximo), para manter a ordem de {@code lineNo}. */
+    static final String REFERENCE_PAYMENTS_CONCURRENCY = "1-1";
 
     private final ReferenceReconciliationService reconciliation;
 
