@@ -19,6 +19,11 @@ public interface ProposalRepository extends JpaRepository<Proposal, UUID>, JpaSp
 
     Optional<Proposal> findByQuoteId(UUID quoteId);
 
+    /** A proposta bloqueada até ao fim da transacção ({@code select … for update}). */
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select p from Proposal p where p.id = :id")
+    Optional<Proposal> lock(@Param("id") UUID id);
+
     Page<Proposal> findByCustomerUserId(UUID customerUserId, Pageable pageable);
 
     Page<Proposal> findByCustomerUserIdAndStatusIn(UUID customerUserId, Collection<ProposalStatus> statuses,

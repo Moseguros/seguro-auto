@@ -14,6 +14,8 @@ export default defineConfig({
       output: {
         // Bibliotecas em blocos próprios: mudam pouco e ficam em cache entre versões.
         manualChunks(id) {
+          // As traduções (pt-MZ e en) num bloco próprio: o pacote inicial fica abaixo dos 500 kB.
+          if (/[\\/]src[\\/]i18n[\\/]locales[\\/]/.test(id)) return 'i18n';
           if (!id.includes('node_modules')) return undefined;
           // A grelha de dados (MUI X) só é usada na administração: bloco à parte.
           if (/[\\/]node_modules[\\/]@mui[\\/]x-/.test(id)) return 'mui-x';

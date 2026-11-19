@@ -1,0 +1,156 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'page_response_payment_exception_summary.dart';
+
+// **************************************************************************
+// BuiltValueGenerator
+// **************************************************************************
+
+class _$PageResponsePaymentExceptionSummary
+    extends PageResponsePaymentExceptionSummary {
+  @override
+  final BuiltList<PaymentExceptionSummary> content;
+  @override
+  final int page;
+  @override
+  final int size;
+  @override
+  final int totalElements;
+
+  factory _$PageResponsePaymentExceptionSummary(
+          [void Function(PageResponsePaymentExceptionSummaryBuilder)?
+              updates]) =>
+      (PageResponsePaymentExceptionSummaryBuilder()..update(updates))._build();
+
+  _$PageResponsePaymentExceptionSummary._(
+      {required this.content,
+      required this.page,
+      required this.size,
+      required this.totalElements})
+      : super._();
+  @override
+  PageResponsePaymentExceptionSummary rebuild(
+          void Function(PageResponsePaymentExceptionSummaryBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  PageResponsePaymentExceptionSummaryBuilder toBuilder() =>
+      PageResponsePaymentExceptionSummaryBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is PageResponsePaymentExceptionSummary &&
+        content == other.content &&
+        page == other.page &&
+        size == other.size &&
+        totalElements == other.totalElements;
+  }
+
+  @override
+  int get hashCode {
+    var _$hash = 0;
+    _$hash = $jc(_$hash, content.hashCode);
+    _$hash = $jc(_$hash, page.hashCode);
+    _$hash = $jc(_$hash, size.hashCode);
+    _$hash = $jc(_$hash, totalElements.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper(r'PageResponsePaymentExceptionSummary')
+          ..add('content', content)
+          ..add('page', page)
+          ..add('size', size)
+          ..add('totalElements', totalElements))
+        .toString();
+  }
+}
+
+class PageResponsePaymentExceptionSummaryBuilder
+    implements
+        Builder<PageResponsePaymentExceptionSummary,
+            PageResponsePaymentExceptionSummaryBuilder> {
+  _$PageResponsePaymentExceptionSummary? _$v;
+
+  ListBuilder<PaymentExceptionSummary>? _content;
+  ListBuilder<PaymentExceptionSummary> get content =>
+      _$this._content ??= ListBuilder<PaymentExceptionSummary>();
+  set content(ListBuilder<PaymentExceptionSummary>? content) =>
+      _$this._content = content;
+
+  int? _page;
+  int? get page => _$this._page;
+  set page(int? page) => _$this._page = page;
+
+  int? _size;
+  int? get size => _$this._size;
+  set size(int? size) => _$this._size = size;
+
+  int? _totalElements;
+  int? get totalElements => _$this._totalElements;
+  set totalElements(int? totalElements) =>
+      _$this._totalElements = totalElements;
+
+  PageResponsePaymentExceptionSummaryBuilder() {
+    PageResponsePaymentExceptionSummary._defaults(this);
+  }
+
+  PageResponsePaymentExceptionSummaryBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _content = $v.content.toBuilder();
+      _page = $v.page;
+      _size = $v.size;
+      _totalElements = $v.totalElements;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(PageResponsePaymentExceptionSummary other) {
+    _$v = other as _$PageResponsePaymentExceptionSummary;
+  }
+
+  @override
+  void update(
+      void Function(PageResponsePaymentExceptionSummaryBuilder)? updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  PageResponsePaymentExceptionSummary build() => _build();
+
+  _$PageResponsePaymentExceptionSummary _build() {
+    _$PageResponsePaymentExceptionSummary _$result;
+    try {
+      _$result = _$v ??
+          _$PageResponsePaymentExceptionSummary._(
+            content: content.build(),
+            page: BuiltValueNullFieldError.checkNotNull(
+                page, r'PageResponsePaymentExceptionSummary', 'page'),
+            size: BuiltValueNullFieldError.checkNotNull(
+                size, r'PageResponsePaymentExceptionSummary', 'size'),
+            totalElements: BuiltValueNullFieldError.checkNotNull(totalElements,
+                r'PageResponsePaymentExceptionSummary', 'totalElements'),
+          );
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'content';
+        content.build();
+      } catch (e) {
+        throw BuiltValueNestedFieldError(r'PageResponsePaymentExceptionSummary',
+            _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

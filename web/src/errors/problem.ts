@@ -12,6 +12,8 @@ export interface Problem {
   errors: FieldError[];
   retryAfterSeconds?: number;
   attemptsRemaining?: number;
+  /** Propriedade `intentId` (ex.: `PAYMENT_IN_PROGRESS`, S5-11): o pagamento em curso. */
+  intentId?: string;
 }
 
 function asNumber(value: unknown): number | undefined {
@@ -50,6 +52,8 @@ export function getProblem(error: unknown): Problem {
     errors,
     retryAfterSeconds: asNumber(data.retryAfterSeconds) ?? headerRetry,
     attemptsRemaining: asNumber(data.attemptsRemaining),
+    intentId:
+      typeof data.intentId === 'string' && data.intentId.length > 0 ? data.intentId : undefined,
   };
 }
 

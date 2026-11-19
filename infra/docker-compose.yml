@@ -51,8 +51,79 @@ services:
       <<: *healthcheck-timing
     restart: unless-stopped
 
+  # Mensageria (S5-06, ADR-004): consola em http://localhost:15672 (RABBITMQ_DEFAULT_USER/PASS).
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-moseguros}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-moseguros}
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # consola de gestão
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  # SFTP onde o "banco" deposita os ficheiros MEPS/BMEPS (S5-06; lido pelo payment-file-worker, S5-09).
+  # Utilizadores da Seguradora Demo (demo, MEPS) e da Seguradora Demo B (demob, BMEPS), S5-01 §8.
+  # Só amd64 (em arm64 corre por emulação); a etiqueta "alpine" fixa-se pelo digest. Ver mocks/sftp/README.md.
+  sftp:
+    image: atmoz/sftp:alpine@sha256:43dd1c023cf1bae487127d4b54660b0aee6e94c188a6599be36fb89ba115f961
+    command: demo:demo-sftp-pass:1001::inbound,processed,error demob:demob-sftp-pass:1002::inbound,processed,error
+    ports:
+      - "2222:22"
+    volumes:
+      - sftpdata:/home/demo
+      - sftpdatab:/home/demob
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep sshd >/dev/null"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  # Cofre de segredos (S5-01, modelo transversal §7) em modo dev: em memória, perde tudo ao reiniciar
+  # (o DevPaymentSecretsSeeder do backend volta a escrever os segredos de desenvolvimento).
+  vault:
+    image: hashicorp/vault:1.20.4
+    command: server -dev -dev-root-token-id=${VAULT_DEV_ROOT_TOKEN:-dev-root-token} -dev-listen-address=0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "8200:8200"
+    healthcheck:
+      test: ["CMD", "vault", "status", "-address=http://127.0.0.1:8200"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
+  mpesa-mock:
+    build: mocks/mpesa-mock
+    image: moseguros/mpesa-mock:local
+    environment:
+      # Valores de desenvolvimento (iguais aos da Seguradora Demo, S5-01). Nunca credenciais reais.
+      MOCK_API_KEY: dev-mpesa-api-key
+      MOCK_ALLOWED_ORIGIN: developer.mpesa.vm.co.mz
+      MOCK_SERVICE_PROVIDER_CODE: "171717"
+      MOCK_INITIATOR_IDENTIFIER: dev-initiator
+      MOCK_SECURITY_CREDENTIAL: dev-security-credential
+      MOCK_DEFAULT_DELAY_SECONDS: "2"
+      MOCK_DELAY_000_SECONDS: "5"
+      MOCK_SLOW_DELAY_SECONDS: "120"
+    ports:
+      - "18352:18352" # C2B e página http://localhost:18352/
+      - "18353:18353" # consulta de estado
+      - "18354:18354" # reversão
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:18350/actuator/health || exit 1"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
   backend:
-    build: ../backend
+    # Contexto na raiz do repositório (reactor Maven: payment-contracts + backend, S5-06).
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
     image: moseguros/backend:local
     environment:
       SPRING_PROFILES_ACTIVE: local
@@ -74,6 +145,16 @@ services:
       MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL: admin@moseguros.local
       # Ficheiros enviados (S2-01): disco, no volume "files" (apagado com "docker compose down -v").
       MOSEGUROS_FILES_DIR: /var/lib/moseguros/files
+      # RabbitMQ (S5-06): o backend declara a topologia dos pagamentos no arranque.
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-moseguros}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-moseguros}
+      # Cofre de segredos (S5-01): Vault do compose em modo dev, com o token de raiz.
+      MOSEGUROS_SECRETS_STORE: vault
+      VAULT_URI: http://vault:8200
+      VAULT_TOKEN: ${VAULT_DEV_ROOT_TOKEN:-dev-root-token}
+      # Cliente de serviço do payment-file-worker (S5-09): o mesmo segredo nos dois lados.
+      MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET: ${SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:-local-worker-secret}
       JAVA_OPTS: -XX:MaxRAMPercentage=75
     ports:
       - "8080:8080"
@@ -82,7 +163,70 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
     # Healthcheck: o HEALTHCHECK do backend/Dockerfile (GET /api/v1/health).
+    restart: unless-stopped
+
+  # Worker dos ficheiros de pagamento (S5-09): pede as fontes ao backend (token de serviço), lê o SFTP de
+  # cada seguradora de minuto a minuto e publica os pagamentos no RabbitMQ. Actuator em http://localhost:8081.
+  payment-file-worker:
+    build:
+      context: ..
+      dockerfile: payment-file-worker/Dockerfile
+    image: moseguros/payment-file-worker:local
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-moseguros}
+      # Sem privilégios de dono (schema payment_worker); o Flyway do worker usa o dono.
+      DB_USERNAME: moseguros_worker_user
+      DB_PASSWORD: moseguros_worker
+      DB_OWNER_USERNAME: ${POSTGRES_USER:-moseguros}
+      DB_OWNER_PASSWORD: ${POSTGRES_PASSWORD:-moseguros}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-moseguros}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-moseguros}
+      VAULT_URI: http://vault:8200
+      VAULT_TOKEN: ${VAULT_DEV_ROOT_TOKEN:-dev-root-token}
+      WORKER_BACKEND_BASE_URL: http://backend:8080
+      WORKER_CLIENT_SECRET: ${SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:-local-worker-secret}
+      JAVA_OPTS: -XX:MaxRAMPercentage=75
+    ports:
+      - "8081:8081"
+    depends_on:
+      backend:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+      sftp:
+        condition: service_healthy
+    # Healthcheck: o HEALTHCHECK do payment-file-worker/Dockerfile (GET /actuator/health).
+    restart: unless-stopped
+
+  # Simulador da rede Ponto24 e do banco (S5-08), só local e QA: http://localhost:8092. Aceita pagamentos de
+  # referências e, de minuto a minuto, deposita os ficheiros MEPS/BMEPS no sftp (lidos pelo payment-file-worker).
+  ponto24-mock:
+    build: mocks/ponto24-mock
+    image: moseguros/ponto24-mock:local
+    environment:
+      PONTO24_MOCK_SOURCES: 90002=MEPS@sftp://demo@sftp:22/inbound,90090=BMEPS:800:02@sftp://demob@sftp:22/inbound
+      PONTO24_MOCK_SFTP_PASSWORD_90002: demo-sftp-pass
+      PONTO24_MOCK_SFTP_PASSWORD_90090: demob-sftp-pass
+      PONTO24_MOCK_SETTLEMENT_CRON: "0 * * * * *"
+      PONTO24_MOCK_ZONE: Africa/Maputo
+      PONTO24_MOCK_FILE_STYLE: EXAMPLE
+    ports:
+      - "8092:8092"
+    depends_on:
+      sftp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8092/actuator/health"]
+      <<: *healthcheck-timing
     restart: unless-stopped
 
   web:
@@ -101,3 +245,6 @@ services:
 volumes:
   pgdata:
   files:
+  rabbitdata:
+  sftpdata:
+  sftpdatab:

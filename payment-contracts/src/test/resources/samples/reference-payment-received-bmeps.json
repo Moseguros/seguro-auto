@@ -1,0 +1,16 @@
+{
+  "messageId": "ce2b5014746967d73fe998d2b8a8bf2e056c5ed4a798755cf70d3a3cd3ed46d2",
+  "schemaVersion": 1,
+  "insurerId": "01930000-0000-7000-8000-000000000320",
+  "sourceId": "01930000-0000-7000-8000-000000000502",
+  "fileFormat": "BMEPS",
+  "entity": "90090",
+  "reference": "01875081156",
+  "amount": { "amount": 572000, "currency": "MZN" },
+  "fee": { "amount": 500, "currency": "MZN" },
+  "paidAt": "2012-11-20T16:53:00Z",
+  "fileName": "exemplo-ficheiro-bmeps.txt",
+  "fileSha256": "851bd3a0f75a2b7b96b9662b9f98218f97f48fdd145459520d91f11ec9cb383a",
+  "formatFileId": "800-02-00001",
+  "lineNo": 2
+}

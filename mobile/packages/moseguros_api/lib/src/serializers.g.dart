@@ -12,6 +12,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AcceptanceMode.serializer)
       ..add(AcknowledgeSuitabilityRequest.serializer)
       ..add(ActivateInvitationRequest.serializer)
+      ..add(AdminPaymentFileSource.serializer)
+      ..add(AdminPaymentFileSourceFileFormatEnum.serializer)
+      ..add(AdminPaymentFileSourceLastPollOutcomeEnum.serializer)
+      ..add(AdminPaymentFileSources.serializer)
       ..add(ApproveInspectionRequest.serializer)
       ..add(AssignableRolesResponse.serializer)
       ..add(BrokerPolicyholderRequest.serializer)
@@ -54,6 +58,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CreatePlateFormatRequest.serializer)
       ..add(CreateProductRequest.serializer)
       ..add(CreateProductRequestTypeEnum.serializer)
+      ..add(CreateProposalPaymentIntentRequest.serializer)
+      ..add(CreateProposalPaymentIntentRequestMethodEnum.serializer)
       ..add(CreateProposalRequest.serializer)
       ..add(CreateQuoteRequest.serializer)
       ..add(CreateQuoteRequestProductTypeEnum.serializer)
@@ -69,6 +75,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
       ..add(DriverResponse.serializer)
+      ..add(FailureCode.serializer)
       ..add(FieldError.serializer)
       ..add(ForgotPasswordRequest.serializer)
       ..add(InfoRequestItem.serializer)
@@ -80,6 +87,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(InsurerBrandingResponse.serializer)
       ..add(InsurerInspectionSummaryResponse.serializer)
       ..add(InsurerKycCheckResponse.serializer)
+      ..add(InsurerPaymentBankReference.serializer)
+      ..add(InsurerPaymentDetail.serializer)
+      ..add(InsurerPaymentDetailMethodEnum.serializer)
+      ..add(InsurerPaymentEvent.serializer)
+      ..add(InsurerPaymentSummary.serializer)
+      ..add(InsurerPaymentSummaryMethodEnum.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
       ..add(InsurerProposalDriver.serializer)
@@ -94,6 +107,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(InsurerProposalVehicle.serializer)
       ..add(InsurerRatingSettingsResponse.serializer)
       ..add(InsurerRatingSettingsResponseRatingModeEnum.serializer)
+      ..add(IntentView.serializer)
+      ..add(IntentViewMethodEnum.serializer)
       ..add(InvitationDetailsResponse.serializer)
       ..add(InvitationOrganization.serializer)
       ..add(InvitationOrganizationTypeEnum.serializer)
@@ -113,6 +128,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(KycPreviousCheckResponse.serializer)
       ..add(KycRejectionReason.serializer)
       ..add(KycState.serializer)
+      ..add(LastErrorResponse.serializer)
+      ..add(LastTestResponse.serializer)
+      ..add(LastTestResponseResultEnum.serializer)
       ..add(LogoutRequest.serializer)
       ..add(MeOrganization.serializer)
       ..add(MeOrganizationTypeEnum.serializer)
@@ -151,16 +169,57 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseCatalogProductResponse.serializer)
       ..add(PageResponseDriverResponse.serializer)
       ..add(PageResponseInsurerInspectionSummaryResponse.serializer)
+      ..add(PageResponseInsurerPaymentSummary.serializer)
       ..add(PageResponseInsurerProposalSummaryResponse.serializer)
+      ..add(PageResponseIntentView.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseKycCheckSummaryResponse.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
+      ..add(PageResponsePaymentExceptionSummary.serializer)
+      ..add(PageResponsePaymentFileImport.serializer)
       ..add(PageResponseProductSummaryResponse.serializer)
       ..add(PageResponseProposalSummaryResponse.serializer)
       ..add(PageResponseQuoteRequestSummaryResponse.serializer)
       ..add(PageResponseReferenceValueResponse.serializer)
       ..add(PageResponseStaffUserResponse.serializer)
       ..add(PageResponseVehicleResponse.serializer)
+      ..add(PaymentConfirmedBy.serializer)
+      ..add(PaymentEventType.serializer)
+      ..add(PaymentExceptionCandidate.serializer)
+      ..add(PaymentExceptionCandidates.serializer)
+      ..add(PaymentExceptionDetail.serializer)
+      ..add(PaymentExceptionDetailStatusEnum.serializer)
+      ..add(PaymentExceptionIntent.serializer)
+      ..add(PaymentExceptionSummary.serializer)
+      ..add(PaymentExceptionSummaryStatusEnum.serializer)
+      ..add(PaymentExceptionType.serializer)
+      ..add(PaymentFileImport.serializer)
+      ..add(PaymentFileImportFileFormatEnum.serializer)
+      ..add(PaymentFileImportStatusEnum.serializer)
+      ..add(PaymentFileSourceInsurer.serializer)
+      ..add(PaymentFileSourceStatus.serializer)
+      ..add(PaymentFileSourceStatusFileFormatEnum.serializer)
+      ..add(PaymentFileSourceStatusLastPollOutcomeEnum.serializer)
+      ..add(PaymentInsurerRef.serializer)
+      ..add(PaymentLinkResponse.serializer)
+      ..add(PaymentMethodOption.serializer)
+      ..add(PaymentMethodOptionMethodEnum.serializer)
+      ..add(PaymentMethodResponse.serializer)
+      ..add(PaymentMethodResponseEnvironmentEnum.serializer)
+      ..add(PaymentMethodResponseMethodEnum.serializer)
+      ..add(PaymentMethodTestResponse.serializer)
+      ..add(PaymentMethodTestResponseResultEnum.serializer)
+      ..add(PaymentMethodVersionRequest.serializer)
+      ..add(PaymentMethodsResponse.serializer)
+      ..add(PaymentNextAction.serializer)
+      ..add(PaymentNextActionType.serializer)
+      ..add(PaymentPurpose.serializer)
+      ..add(PaymentQueueStatus.serializer)
+      ..add(PaymentResolution.serializer)
+      ..add(PaymentStatus.serializer)
+      ..add(PaymentTargetRef.serializer)
+      ..add(PaymentTargetType.serializer)
+      ..add(PaymentWorkerStatus.serializer)
       ..add(PhotoSlot.serializer)
       ..add(PhotoSource.serializer)
       ..add(PlateFormatResponse.serializer)
@@ -202,6 +261,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ProposalInfoRequest.serializer)
       ..add(ProposalKyc.serializer)
       ..add(ProposalOrganization.serializer)
+      ..add(ProposalPaymentChannel.serializer)
+      ..add(ProposalPaymentMethodsResponse.serializer)
       ..add(ProposalPolicyholder.serializer)
       ..add(ProposalPremium.serializer)
       ..add(ProposalProduct.serializer)
@@ -255,6 +316,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RatingRulesValidationResponse.serializer)
       ..add(RatingSimulationResponse.serializer)
       ..add(RatingSimulationResponseStatusEnum.serializer)
+      ..add(ReferenceDocumentResponse.serializer)
+      ..add(ReferenceSmsRequest.serializer)
+      ..add(ReferenceSmsResponse.serializer)
+      ..add(ReferenceStatus.serializer)
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
@@ -278,10 +343,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RequestedCoverageResponse.serializer)
       ..add(RequestedCoverageResponseCodeEnum.serializer)
       ..add(ResetPasswordRequest.serializer)
+      ..add(ResolvePaymentExceptionRequest.serializer)
+      ..add(ResolvePaymentExceptionRequestResolutionEnum.serializer)
       ..add(RiskDriverRequest.serializer)
       ..add(RuleError.serializer)
       ..add(SaveDeclarationsRequest.serializer)
       ..add(SaveSuitabilityRequest.serializer)
+      ..add(SecretStatusResponse.serializer)
       ..add(SignatureRequestResponse.serializer)
       ..add(SignatureRequestResponseChannelEnum.serializer)
       ..add(SimulateRatingRequest.serializer)
@@ -327,6 +395,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateOtpSettingsRequestDefaultChannelEnum.serializer)
       ..add(UpdateOtpSettingsRequestEnabledChannelsEnum.serializer)
       ..add(UpdateOtpSettingsRequestFallbackOrderEnum.serializer)
+      ..add(UpdatePaymentMethodRequest.serializer)
+      ..add(UpdatePaymentMethodRequestEnvironmentEnum.serializer)
       ..add(UpdatePlateFormatRequest.serializer)
       ..add(UpdatePlatformSettingRequest.serializer)
       ..add(UpdateProductRequest.serializer)
@@ -353,6 +423,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(VerifyKycCheckRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
       ..add(VersionResponse.serializer)
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(AdminPaymentFileSource)]),
+          () => ListBuilder<AdminPaymentFileSource>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(BrokerProposalSummaryResponse)]),
@@ -432,9 +506,23 @@ Serializers _$serializers = (Serializers().toBuilder()
               const [const FullType(InsurerInspectionSummaryResponse)]),
           () => ListBuilder<InsurerInspectionSummaryResponse>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(InsurerPaymentEvent)]),
+          () => ListBuilder<InsurerPaymentEvent>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(InsurerPaymentSummary)]),
+          () => ListBuilder<InsurerPaymentSummary>())
+      ..addBuilderFactory(
           const FullType(BuiltList,
               const [const FullType(InsurerProposalSummaryResponse)]),
           () => ListBuilder<InsurerProposalSummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(IntentView)]),
+          () => ListBuilder<IntentView>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(InvitationResponse)]),
           () => ListBuilder<InvitationResponse>())
@@ -484,6 +572,31 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList,
               const [const FullType(OtpSettingsResponseFallbackOrderEnum)]),
           () => ListBuilder<OtpSettingsResponseFallbackOrderEnum>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PaymentExceptionCandidate)]),
+          () => ListBuilder<PaymentExceptionCandidate>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PaymentExceptionSummary)]),
+          () => ListBuilder<PaymentExceptionSummary>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentFileImport)]),
+          () => ListBuilder<PaymentFileImport>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PaymentMethodOption)]),
+          () => ListBuilder<PaymentMethodOption>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PaymentMethodResponse)]),
+          () => ListBuilder<PaymentMethodResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentQueueStatus)]),
+          () => ListBuilder<PaymentQueueStatus>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentResolution)]),
+          () => ListBuilder<PaymentResolution>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(PhotoSlot)]),
           () => ListBuilder<PhotoSlot>())
@@ -710,6 +823,12 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltMap, const [
             const FullType(String),
+            const FullType(SecretStatusResponse)
+          ]),
+          () => MapBuilder<String, SecretStatusResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
             const FullType.nullable(JsonObject)
           ]),
           () => MapBuilder<String, JsonObject?>())
@@ -718,7 +837,11 @@ Serializers _$serializers = (Serializers().toBuilder()
             const FullType(String),
             const FullType.nullable(JsonObject)
           ]),
-          () => MapBuilder<String, JsonObject?>()))
+          () => MapBuilder<String, JsonObject?>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap,
+              const [const FullType(String), const FullType.nullable(String)]),
+          () => MapBuilder<String, String?>()))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

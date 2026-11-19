@@ -16,6 +16,84 @@ const broker = staffMe({
   orgType: 'BROKER',
 });
 
+describe('SendPaymentLinkButton (S5-11)', () => {
+  const accepted = () =>
+    proposalFixture({ status: 'ACCEPTED', channel: 'BROKER', expiresAt: '2027-01-20T10:00:00Z' });
+
+  it('confirma, envia o link e mostra para onde foi', async () => {
+    const user = userEvent.setup();
+    let sent = 0;
+    restore = signInStaff(
+      broker,
+      (c) => (is(c, 'GET', '/api/v1/proposals/p1') ? { status: 200, data: accepted() } : null),
+      (c) => {
+        if (!is(c, 'POST', '/api/v1/broker/proposals/p1/payment-link')) return null;
+        sent++;
+        return { status: 202, data: { sentTo: '+258*****4567', sentAt: '2027-01-10T09:00:00Z' } };
+      },
+    );
+    renderRoute('/mediador/propostas/p1');
+    const button = await screen.findByRole(
+      'button',
+      {
+        name: 'Enviar link de pagamento ao cliente',
+      },
+      {
+        timeout: 10_000,
+      },
+    );
+    expect(button).not.toHaveClass('MuiButton-cta');
+    await user.click(button);
+    const dialog = await screen.findByRole('dialog');
+    expect(
+      within(dialog).getByText(
+        'Vamos enviar um SMS ao cliente com o link para pagar. O cliente paga directamente à seguradora.',
+      ),
+    ).toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: 'Enviar' }));
+    expect(await screen.findByText('Link enviado para +258*****4567')).toBeInTheDocument();
+    expect(sent).toBe(1);
+  });
+
+  it('429 PAYMENT_LINK_RATE_LIMITED: mensagem com os minutos; cliente sem telemóvel', async () => {
+    const user = userEvent.setup();
+    let answer: { status: number; data: unknown } = {
+      status: 429,
+      data: { code: 'PAYMENT_LINK_RATE_LIMITED', retryAfterSeconds: 1500 },
+    };
+    restore = signInStaff(
+      broker,
+      (c) => (is(c, 'GET', '/api/v1/proposals/p1') ? { status: 200, data: accepted() } : null),
+      (c) => (is(c, 'POST', '/api/v1/broker/proposals/p1/payment-link') ? answer : null),
+    );
+    renderRoute('/mediador/propostas/p1');
+    await user.click(
+      await screen.findByRole(
+        'button',
+        { name: 'Enviar link de pagamento ao cliente' },
+        { timeout: 10_000 },
+      ),
+    );
+    await user.click(
+      within(await screen.findByRole('dialog')).getByRole('button', { name: 'Enviar' }),
+    );
+    expect(
+      await screen.findByText(
+        'Já enviou o link 3 vezes nas últimas 24 horas. Tente dentro de 25 minutos.',
+      ),
+    ).toBeInTheDocument();
+
+    answer = { status: 409, data: { code: 'CUSTOMER_HAS_NO_MSISDN' } };
+    await user.click(
+      await screen.findByRole('button', { name: 'Enviar link de pagamento ao cliente' }),
+    );
+    await user.click(
+      within(await screen.findByRole('dialog')).getByRole('button', { name: 'Enviar' }),
+    );
+    expect(await screen.findByText('O cliente não tem telemóvel registado.')).toBeInTheDocument();
+  });
+});
+
 describe('BrokerVehicleDriverForm', () => {
   it('põe só de leitura os campos que a cotação tem e exige o chassis e o n.º da carta', async () => {
     const user = userEvent.setup();

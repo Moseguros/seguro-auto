@@ -39,6 +39,7 @@
       "organizations": "Organizações",
       "users": "Utilizadores",
       "auth": "Autenticação",
+      "paymentOps": "Operações de pagamento",
       "references": "Tabelas de referência",
       "audit": "Auditoria"
     },
@@ -244,7 +245,28 @@
     "PROPOSAL_NOT_UNDER_REVIEW": "A proposta não está em análise.",
     "KYC_NOT_VERIFIED": "A identidade do cliente ainda não foi verificada.",
     "INSPECTION_NOT_APPROVED": "A vistoria ainda não foi aprovada.",
-    "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros."
+    "CLIENT_ACCOUNT_DISABLED": "A conta deste cliente está desactivada. Contacte o apoio da MoSeguros.",
+    "PAYMENT_METHOD_NOT_FOUND": "Forma de pagamento não encontrada.",
+    "PAYMENT_METHOD_INCOMPLETE": "Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.",
+    "SECRET_STORE_UNAVAILABLE": "O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.",
+    "IDEMPOTENCY_KEY_REQUIRED": "O pedido não pôde ser identificado. Tente de novo.",
+    "IDEMPOTENCY_KEY_REUSED": "Este pedido já foi enviado com outros dados. Recarregue a página e tente de novo.",
+    "PAYMENT_TARGET_NOT_PAYABLE": "Esta proposta já não pode ser paga.",
+    "PAYMENT_TARGET_ALREADY_PAID": "Esta proposta já está paga.",
+    "PAYMENT_METHOD_NOT_AVAILABLE": "Esta forma de pagamento não está disponível para esta seguradora ou este montante.",
+    "PAYMENT_IN_PROGRESS": "Já há um pagamento M-Pesa em curso. Confirme-o no telemóvel ou aguarde.",
+    "PAYMENT_INTENT_NOT_FOUND": "Pagamento não encontrado.",
+    "NOT_A_REFERENCE_PAYMENT": "Este pagamento não é por entidade e referência.",
+    "REFERENCE_NOT_ACTIVE": "Esta referência já não está activa.",
+    "REFERENCE_SMS_RATE_LIMITED": "Já enviou esta referência por SMS 3 vezes.",
+    "REFERENCE_GENERATION_FAILED": "Não foi possível gerar a referência. Tente de novo dentro de momentos.",
+    "CUSTOMER_HAS_NO_MSISDN": "O cliente não tem telemóvel registado para receber o link.",
+    "PAYMENT_LINK_RATE_LIMITED": "Já enviou o link de pagamento 3 vezes nas últimas 24 horas.",
+    "EXPORT_TOO_LARGE": "A exportação tem demasiadas linhas. Use filtros mais estreitos.",
+    "PAYMENT_EXCEPTION_NOT_FOUND": "Excepção de pagamento não encontrada.",
+    "RESOLUTION_NOT_ALLOWED": "Esta resolução não é permitida para este tipo de excepção.",
+    "LINK_INTENT_INVALID": "Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.",
+    "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -340,7 +362,83 @@
     "PHOTO_TOO_OLD": "Esta fotografia foi tirada há mais de 7 dias. Tire uma nova.",
     "PHOTO_IN_FUTURE": "A data da fotografia é inválida. Confirme a hora do telemóvel.",
     "INVALID_COORDINATES": "Localização inválida.",
-    "INVALID_RULES": "Regra inválida."
+    "INVALID_RULES": "Regra inválida.",
+    "INVALID_FORMAT": "Formato inválido.",
+    "DIRECTORY_CONFLICT": "As pastas de entrada, de processados e de erros têm de ser diferentes.",
+    "INVALID_PUBLIC_KEY": "Chave pública inválida (RSA em PEM ou Base64).",
+    "MIN_GREATER_THAN_MAX": "O valor mínimo não pode ser maior que o máximo.",
+    "ENTITY_IN_USE": "Esta entidade já está configurada noutra seguradora.",
+    "MSISDN_NOT_MPESA": "Use um número Vodacom (começado por 84 ou 85).",
+    "INVALID_UUID": "Identificador inválido."
+  },
+  "paymentStatus": {
+    "CREATED": "Criado",
+    "PENDING": "Pendente",
+    "UNKNOWN": "A confirmar",
+    "SUCCEEDED": "Pago",
+    "FAILED": "Falhou",
+    "EXPIRED": "Expirado",
+    "CANCELLED": "Cancelado",
+    "REFUNDED": "Reembolsado"
+  },
+  "paymentMethod": {
+    "MPESA": "M-Pesa",
+    "BANK_REFERENCE": "Entidade e referência"
+  },
+  "paymentFailure": {
+    "CUSTOMER_CANCELLED": "Cancelou o pagamento no telemóvel.",
+    "INSUFFICIENT_BALANCE": "Saldo insuficiente.",
+    "INVALID_MSISDN": "Este número não está registado no serviço de pagamento.",
+    "PROVIDER_REJECTED": "O pagamento foi recusado pelo operador.",
+    "PROVIDER_CONFIG_ERROR": "Esta forma de pagamento tem um problema do lado da seguradora. Escolha outra ou tente mais tarde.",
+    "PROVIDER_UNAVAILABLE": "O serviço de pagamento não está disponível. Tente mais tarde.",
+    "TIMEOUT_EXPIRED": "O pedido expirou sem confirmação.",
+    "EXPIRED": "O prazo para pagar terminou.",
+    "SUPERSEDED": "Substituído por outro pagamento.",
+    "MANUAL": "Resolvido pela seguradora."
+  },
+  "paymentExceptionType": {
+    "AMOUNT_MISMATCH": "Montante diferente",
+    "EXPIRED_REFERENCE": "Referência expirada",
+    "ALREADY_PAID": "Referência já paga",
+    "UNKNOWN_REFERENCE": "Referência desconhecida",
+    "CANCELLED_REFERENCE": "Referência cancelada",
+    "TARGET_NOT_PAYABLE": "A proposta já não aceita pagamento",
+    "UNRESOLVED_STATUS": "Estado por confirmar no operador"
+  },
+  "paymentResolution": {
+    "LINKED": "Associar a um pagamento",
+    "REFUND": "Reembolsar fora da plataforma",
+    "IGNORED": "Ignorar",
+    "MARK_SUCCEEDED": "Confirmar como pago",
+    "MARK_FAILED": "Marcar como falhado"
+  },
+  "fileImportStatus": {
+    "PROCESSED": "Processado",
+    "REJECTED": "Rejeitado"
+  },
+  "fileRejectionReason": {
+    "ENTITY_MISMATCH": "Entidade diferente da configurada",
+    "TRAILER_COUNT_MISMATCH": "Número de registos não confere com o rodapé",
+    "TRAILER_TOTAL_MISMATCH": "Total não confere com o rodapé",
+    "INVALID_AMOUNT": "Montante inválido",
+    "PARSE_ERROR": "Linha mal formada",
+    "ENCODING_ERROR": "Codificação inválida",
+    "MISSING_HEADER": "Sem cabeçalho",
+    "MISSING_TRAILER": "Sem rodapé",
+    "UNSUPPORTED_RECORD": "Tipo de registo não suportado",
+    "FILE_TOO_LARGE": "Ficheiro demasiado grande",
+    "DUPLICATE_FILE_ID": "Ficheiro com o mesmo identificador de outro já processado, com conteúdo diferente (contacte o banco)"
+  },
+  "pollErrorCode": {
+    "SFTP_UNREACHABLE": "Servidor SFTP inacessível",
+    "SFTP_AUTH_FAILED": "Autenticação SFTP recusada",
+    "SFTP_HOST_KEY_MISMATCH": "A chave do servidor SFTP não confere",
+    "SFTP_DIRECTORY_NOT_FOUND": "Pasta de entrada inexistente",
+    "SECRET_NOT_FOUND": "Segredo SFTP em falta",
+    "UNSUPPORTED_FORMAT": "Formato de ficheiro não suportado",
+    "PUBLISH_FAILED": "Falha a publicar os pagamentos",
+    "INTERNAL_ERROR": "Erro interno do worker"
   },
   "province": {
     "MAPUTO_CITY": "Maputo Cidade",
@@ -1900,7 +1998,6 @@
       "underReview": "A {{insurer}} está a analisar a sua proposta. Tem até {{date}} para responder.",
       "underReviewNoDate": "A {{insurer}} está a analisar a sua proposta.",
       "accepted": "Proposta aceite.",
-      "paymentSoon": "O pagamento fica disponível em breve.",
       "expiresAt": "Expira em {{date}}",
       "rejected": "A proposta não foi aceite.",
       "expired": "Esta proposta expirou.",
@@ -2497,6 +2594,516 @@
       "policyholder": "Tomador do seguro",
       "profileIncomplete": "O perfil deste cliente está incompleto. Preencha os dados do tomador.",
       "vehicleAlreadyRegistered": "Este cliente já tem um veículo com esta matrícula e outro chassis. Confirme o chassis."
+    }
+  },
+  "payments": {
+    "title": "Pagar a proposta",
+    "summary": {
+      "proposal": "Proposta {{number}}",
+      "total": "Total a pagar",
+      "payBy": "Pagar até {{date}}",
+      "direct": "O pagamento é feito directamente à {{insurer}}. A MoSeguros não recebe dinheiro."
+    },
+    "method": {
+      "label": "Forma de pagamento",
+      "mpesaNumber": "Número M-Pesa",
+      "referenceHelp": "Recebe uma entidade e uma referência para pagar por e-banking ou app do banco, ATM, *124#, POS ou balcão."
+    },
+    "pay": {
+      "submit": "Adquirir apólice",
+      "notFound": "Proposta não encontrada.",
+      "backToProposals": "Ver as propostas",
+      "notPayable": "Esta proposta já não pode ser paga.",
+      "alreadyPaid": "Esta proposta já está paga.",
+      "backToProposal": "Ver a proposta",
+      "activeIntent": "Tem um pagamento em curso",
+      "viewPayment": "Ver pagamento",
+      "noMethods": "A seguradora ainda não tem formas de pagamento disponíveis. Contacte a seguradora.",
+      "methodUnavailable": "Esta forma de pagamento não está disponível agora. Escolha outra."
+    },
+    "intent": {
+      "notFound": "Pagamento não encontrado.",
+      "backToPayments": "Ver os meus pagamentos",
+      "preparing": "A preparar o pagamento…",
+      "reference": "Pagamento {{reference}}"
+    },
+    "await": {
+      "title": "Confirme o pagamento no seu telemóvel",
+      "step1": "1. Desbloqueie o telemóvel com o número {{msisdn}}.",
+      "step2": "2. Introduza o seu PIN M-Pesa no pedido que aparece.",
+      "step3": "3. Aguarde aqui a confirmação.",
+      "remaining": "Tempo para confirmar",
+      "stillWaiting": "Ainda não recebemos a resposta. Estamos a confirmar.",
+      "backToProposal": "Voltar à proposta"
+    },
+    "checking": {
+      "lead": "Ainda não temos a confirmação do operador.",
+      "dontPay": "Não volte a pagar",
+      "rest": ": estamos a confirmar e actualizamos esta página sozinhos.",
+      "nextCheck": "Próxima verificação às {{time}}"
+    },
+    "reference": {
+      "entity": "Entidade",
+      "reference": "Referência",
+      "amount": "Montante",
+      "copy": "Copiar {{label}}",
+      "copied": "Copiado",
+      "copyFailed": "Não foi possível copiar.",
+      "exactAmount": "Pague exactamente este montante. A rede recusa outro valor.",
+      "validUntil": "Válida até {{date}}",
+      "howTo": "Como pagar: no e-banking ou na app do seu banco, no ATM, pelo telemóvel (*124#), num POS ou ao balcão, escolha pagamento de serviços por entidade e referência e introduza os três dados acima.",
+      "confirmationInfo": "A confirmação chega quando o banco enviar o ficheiro de pagamentos à seguradora; lemos o ficheiro logo que chega. Pode demorar algumas horas. Não precisa de ficar nesta página. Vai receber um e-mail quando o pagamento for confirmado.",
+      "downloadPdf": "Descarregar PDF",
+      "sendSms": "Enviar por SMS"
+    },
+    "sms": {
+      "title": "Enviar a referência por SMS",
+      "msisdn": "Número de telemóvel",
+      "send": "Enviar",
+      "sent": "SMS enviado para {{sentTo}}",
+      "rateLimited": "Já enviou esta referência 3 vezes."
+    },
+    "outcome": {
+      "succeeded": "Pagamento confirmado",
+      "succeededText": "A sua apólice vai ser emitida em breve.",
+      "expired": "O prazo para este pagamento terminou.",
+      "cancelled": "Este pagamento foi substituído por outro.",
+      "refunded": "Este pagamento foi reembolsado.",
+      "viewProposal": "Ver proposta",
+      "chooseAnother": "Escolher outra forma de pagamento"
+    },
+    "list": {
+      "title": "Pagamentos",
+      "empty": "Ainda não tem pagamentos.",
+      "loadMore": "Carregar mais",
+      "date": "Data",
+      "target": "Proposta",
+      "insurer": "Seguradora",
+      "method": "Forma de pagamento",
+      "amount": "Montante",
+      "status": "Estado"
+    },
+    "link": {
+      "button": "Enviar link de pagamento ao cliente",
+      "confirmTitle": "Enviar link de pagamento",
+      "confirmText": "Vamos enviar um SMS ao cliente com o link para pagar. O cliente paga directamente à seguradora.",
+      "send": "Enviar",
+      "sent": "Link enviado para {{sentTo}}",
+      "rateLimited": "Já enviou o link 3 vezes nas últimas 24 horas. Tente dentro de {{minutes}} minutos.",
+      "noMsisdn": "O cliente não tem telemóvel registado."
+    },
+    "proposalPaid": "Pagamento recebido. A sua apólice vai ser emitida em breve."
+  },
+  "paymentResolutionHelp": {
+    "LINKED": "Confirma o pagamento escolhido com este dinheiro recebido.",
+    "REFUND": "A seguradora devolve o dinheiro ao cliente pelos seus meios.",
+    "IGNORED": "Fecha a excepção sem outra acção.",
+    "MARK_SUCCEEDED": "Use depois de confirmar no portal do operador que o cliente pagou.",
+    "MARK_FAILED": "Use depois de confirmar no portal do operador que não houve cobrança."
+  },
+  "paymentResolutionDone": {
+    "LINKED": "Associada a um pagamento",
+    "REFUND": "Reembolso fora da plataforma",
+    "IGNORED": "Ignorada",
+    "MARK_SUCCEEDED": "Confirmada como paga",
+    "MARK_FAILED": "Marcada como falhada"
+  },
+  "paymentSettings": {
+    "MPESA": {
+      "serviceProviderCode": "Código de serviço (short code)",
+      "host": "Endereço da API",
+      "ports": {
+        "c2b": "Porta C2B",
+        "query": "Porta de consulta",
+        "reversal": "Porta de reversão"
+      },
+      "origin": "Origin",
+      "initiatorIdentifier": "Identificador do iniciador",
+      "c2bTimeoutSeconds": "Tempo máximo de espera (segundos)",
+      "apiKey": "Chave da API",
+      "publicKey": "Chave pública",
+      "securityCredential": "Credencial de segurança"
+    },
+    "BANK_REFERENCE": {
+      "entity": "Entidade",
+      "fileFormat": "Formato do ficheiro",
+      "bmepsCompanyId": "ID da empresa (BMEPS)",
+      "bmepsProfileId": "ID do perfil (BMEPS)",
+      "sftp": {
+        "host": "Servidor SFTP",
+        "port": "Porta",
+        "username": "Utilizador",
+        "authType": "Autenticação",
+        "inboundDir": "Pasta de entrada",
+        "moveAfterProcessing": "Mudar os ficheiros de pasta depois de lidos",
+        "processedDir": "Pasta de processados",
+        "errorDir": "Pasta de erros",
+        "filePattern": "Padrão dos ficheiros (opcional)",
+        "hostKeyFingerprint": "Impressão digital do servidor (SHA256)",
+        "password": "Palavra-passe SFTP",
+        "privateKey": "Chave privada SFTP",
+        "passphrase": "Frase da chave privada"
+      }
+    }
+  },
+  "paymentSettingsGroup": {
+    "MPESA": {
+      "ports": "Portas"
+    },
+    "BANK_REFERENCE": {
+      "sftp": "Servidor SFTP"
+    }
+  },
+  "paymentSettingsHelp": {
+    "BANK_REFERENCE": {
+      "entity": "Entidade da seguradora na rede Ponto24 (5 dígitos)",
+      "fileFormat": "Formato do ficheiro de movimentos que o banco entrega (MEPS ou BMEPS), como no contrato com o banco",
+      "sftp": {
+        "group": "Servidor e credenciais onde o banco deposita os ficheiros. A plataforma lê-os continuamente; a frequência de envio é combinada com o banco.",
+        "moveAfterProcessing": "Desligue se o banco der acesso só de leitura. Os ficheiros nunca são processados duas vezes."
+      }
+    }
+  },
+  "paymentSettingsOption": {
+    "BANK_REFERENCE": {
+      "fileFormat": {
+        "MEPS": "MEPS",
+        "BMEPS": "BMEPS"
+      },
+      "sftp": {
+        "authType": {
+          "PASSWORD": "Palavra-passe",
+          "KEY": "Chave privada"
+        }
+      }
+    }
+  },
+  "paymentTest": {
+    "CONFIG_VALID": "Configuração válida (a ligação ao SFTP é testada pelo worker na próxima leitura)",
+    "API_KEY_REJECTED": "A chave da API foi recusada",
+    "ORIGIN_REJECTED": "O Origin foi recusado",
+    "SERVICE_PROVIDER_CODE_REJECTED": "O código de serviço foi recusado",
+    "HOST_UNREACHABLE": "Não foi possível ligar ao servidor",
+    "TIMEOUT": "O servidor não respondeu a tempo",
+    "PUBLIC_KEY_INVALID": "A chave pública não é válida",
+    "SECRET_MISSING": "Falta um segredo obrigatório",
+    "SETTINGS_INVALID": "Há dados do método inválidos"
+  },
+  "paymentExceptionDetail": {
+    "INVALID_CHECK_DIGITS": "Referência com dígitos de controlo inválidos",
+    "NOT_ISSUED": "Referência não emitida pela plataforma",
+    "PROPOSAL_EXPIRED": "A proposta já tinha expirado",
+    "PROPOSAL_ALREADY_PAID": "A proposta já estava paga",
+    "PROPOSAL_REJECTED": "A proposta tinha sido recusada",
+    "PROPOSAL_UNDER_REVIEW": "A proposta ainda estava em análise",
+    "PROPOSAL_INFO_REQUESTED": "A proposta aguardava informação do cliente",
+    "PROPOSAL_DRAFT": "A proposta ainda era um rascunho",
+    "PROPOSAL_CONVERTED": "A proposta já tinha dado origem a uma apólice",
+    "INTENT_NOT_FOUND": "Pagamento original não encontrado",
+    "INTENT_SUCCEEDED": "O pagamento já estava confirmado"
+  },
+  "paymentEventType": {
+    "CREATED": "Criado",
+    "DISPATCHED": "Enviado ao operador",
+    "PROVIDER_RESPONSE": "Resposta do operador",
+    "STATUS_QUERY": "Consulta de estado",
+    "STATUS_CHANGED": "Mudança de estado",
+    "REFERENCE_PAID": "Pago no banco",
+    "MANUAL_RESOLUTION": "Resolução manual"
+  },
+  "paymentConfirmedBy": {
+    "PROVIDER": "Operador",
+    "STATUS_QUERY": "Consulta",
+    "REFERENCE_FILE": "Ficheiro do banco",
+    "MANUAL": "Financeiro"
+  },
+  "referenceStatus": {
+    "ACTIVE": "Activa",
+    "PAID": "Paga",
+    "EXPIRED": "Expirada",
+    "CANCELLED": "Cancelada"
+  },
+  "insurerSettings": {
+    "title": "Configuração",
+    "paymentMethods": {
+      "title": "Formas de pagamento",
+      "description": "M-Pesa e entidade e referência: credenciais, limites e leitura dos ficheiros do banco.",
+      "open": "Abrir formas de pagamento"
+    }
+  },
+  "paymentSettingsPage": {
+    "title": "Formas de pagamento",
+    "back": "Configuração",
+    "state": {
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo",
+      "NOT_CONFIGURED": "Não configurado"
+    },
+    "environment": {
+      "SANDBOX": "Sandbox",
+      "PRODUCTION": "Produção"
+    },
+    "lastError": "Detectámos um erro de configuração em {{date}}. Confirme as credenciais e teste a ligação.",
+    "general": "Dados gerais",
+    "methodData": "Dados do método",
+    "secrets": "Credenciais",
+    "fields": {
+      "displayName": "Nome mostrado ao cliente",
+      "environment": "Ambiente",
+      "minAmount": "Montante mínimo",
+      "maxAmount": "Montante máximo",
+      "intentValidityMinutes": "Validade do pedido (minutos)",
+      "sortOrder": "Ordem"
+    },
+    "secret": {
+      "configured": "Configurado em {{date}} — escreva para substituir",
+      "configuredNoDate": "Configurado — escreva para substituir",
+      "notConfigured": "Não configurado",
+      "required": "Obrigatório"
+    },
+    "actions": {
+      "save": "Guardar",
+      "test": "Testar ligação",
+      "testHint": "Guarde antes de testar",
+      "enable": "Activar",
+      "disable": "Desactivar",
+      "reload": "Recarregar",
+      "confirm": "Confirmar"
+    },
+    "saved": "Guardado",
+    "enabled": "Forma de pagamento activada",
+    "disabled": "Forma de pagamento desactivada",
+    "errors": {
+      "validation": "Há campos por corrigir.",
+      "concurrent": "Outra pessoa alterou esta configuração.",
+      "secretStore": "O cofre de segredos não está disponível. Nada foi gravado.",
+      "incomplete": "Faltam dados para activar."
+    },
+    "confirmEnable": {
+      "title": "Activar {{method}}?",
+      "text": "Os clientes passam a ver esta forma de pagamento."
+    },
+    "confirmDisable": {
+      "title": "Desactivar {{method}}?",
+      "text": "Os clientes deixam de ver esta forma de pagamento. Os pagamentos já iniciados continuam."
+    },
+    "confirmEntity": {
+      "title": "Mudar a entidade ou o formato?",
+      "text": "As referências já emitidas continuam válidas com a entidade antiga. Confirme com o banco que os ficheiros novos vêm neste formato."
+    },
+    "test": {
+      "OK": "Ligação testada com sucesso",
+      "NOT_SUPPORTED": "Este método não tem teste de ligação.",
+      "failedUnknown": "O teste falhou.",
+      "last": "Último teste: {{date}}"
+    },
+    "fileSource": {
+      "title": "Leitura de ficheiros",
+      "lastPoll": "Última leitura",
+      "never": "Ainda não houve leituras",
+      "outcome": {
+        "OK": "OK",
+        "ERROR": "Erro"
+      },
+      "error": "Erro",
+      "lastSuccess": "Último sucesso",
+      "format": "Formato",
+      "entity": "Entidade",
+      "note": "A plataforma lê o SFTP continuamente; alerta ao fim de {{minutes}} min sem leitura com sucesso",
+      "stale": "Sem leituras com sucesso desde {{date}}. Confirme o acesso ao SFTP.",
+      "viewFiles": "Ver ficheiros",
+      "notConfigured": "O pagamento por entidade e referência não está configurado.",
+      "configure": "Configurar"
+    }
+  },
+  "insurerPayments": {
+    "title": "Pagamentos",
+    "tabs": {
+      "payments": "Pagamentos",
+      "exceptions": "Excepções",
+      "files": "Ficheiros"
+    },
+    "openExceptions": "{{count}} excepções por resolver",
+    "filters": {
+      "open": "Filtros",
+      "status": "Estado",
+      "method": "Método",
+      "type": "Tipo",
+      "from": "De",
+      "to": "Até",
+      "search": "Referência PG, proposta ou ID do fornecedor",
+      "exceptionSearch": "Referência ou nome do ficheiro",
+      "all": "Todos"
+    },
+    "columns": {
+      "date": "Data",
+      "reference": "Referência",
+      "proposal": "Proposta",
+      "method": "Método",
+      "amount": "Montante",
+      "status": "Estado",
+      "providerTxId": "ID do fornecedor",
+      "failure": "Motivo"
+    },
+    "export": "Exportar CSV",
+    "exportTooLarge": "Demasiadas linhas (máximo 10 000). Reduza o período.",
+    "empty": "Não há pagamentos com estes filtros.",
+    "loadMore": "Carregar mais",
+    "detail": {
+      "back": "Pagamentos",
+      "notFound": "Pagamento não encontrado.",
+      "summary": "Resumo",
+      "reference": "Referência",
+      "status": "Estado",
+      "method": "Método",
+      "amount": "Montante",
+      "proposal": "Proposta",
+      "msisdn": "Telemóvel",
+      "createdAt": "Criado",
+      "expiresAt": "Expira",
+      "succeededAt": "Confirmado em",
+      "confirmedBy": "Confirmado por",
+      "providerTxId": "ID do fornecedor",
+      "failure": "Motivo",
+      "bankReference": "Referência bancária",
+      "entity": "Entidade",
+      "bankRef": "Referência",
+      "referenceStatus": "Estado",
+      "paidAt": "Pago em",
+      "bankTransactionId": "ID da transacção do banco",
+      "history": "Histórico",
+      "noHistory": "Sem eventos.",
+      "exceptions": "Excepções",
+      "exception": "Excepção {{n}}"
+    }
+  },
+  "paymentExceptions": {
+    "statusFilter": {
+      "OPEN": "Por resolver",
+      "RESOLVED": "Resolvidas",
+      "ALL": "Todas"
+    },
+    "status": {
+      "OPEN": "Por resolver",
+      "RESOLVED": "Resolvida"
+    },
+    "columns": {
+      "date": "Data",
+      "type": "Tipo",
+      "reference": "Referência",
+      "amount": "Montante recebido",
+      "paidAt": "Pago em",
+      "intent": "Pagamento",
+      "file": "Ficheiro e linha",
+      "status": "Estado/resolução"
+    },
+    "fileLine": "{{file}}, linha {{line}}",
+    "empty": "Não há excepções com estes filtros.",
+    "drawer": {
+      "title": "Excepção",
+      "close": "Fechar",
+      "notFound": "Excepção não encontrada.",
+      "type": "Tipo",
+      "status": "Estado",
+      "createdAt": "Criada em",
+      "entity": "Entidade",
+      "reference": "Referência",
+      "amount": "Montante recebido",
+      "paidAt": "Pago em",
+      "bankTransactionId": "ID da transacção do banco",
+      "detail": "Detalhe",
+      "file": "Ficheiro",
+      "line": "Linha",
+      "intent": "Pagamento",
+      "linkedIntent": "Pagamento associado",
+      "resolution": "Resolução",
+      "note": "Nota",
+      "resolvedBy": "Resolvida por",
+      "resolvedAt": "Resolvida em",
+      "readOnly": "Só o financeiro pode resolver excepções."
+    },
+    "resolve": {
+      "title": "Resolver",
+      "resolution": "Resolução",
+      "chooseResolution": "Escolha uma resolução.",
+      "chooseCandidate": "Escolha o pagamento a associar.",
+      "providerTxId": "ID da transacção no operador",
+      "note": "Nota",
+      "noteHelp": "Entre 5 e 500 caracteres.",
+      "submit": "Resolver",
+      "confirmTitle": "Confirmar o pagamento?",
+      "confirm": "Isto confirma o pagamento {{payment}} e a proposta {{proposal}} passa a paga. Continuar?",
+      "continue": "Continuar",
+      "resolved": "Excepção resolvida",
+      "errors": {
+        "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento. Escolha reembolsar ou ignorar.",
+        "INVALID_STATE_TRANSITION": "Esta excepção já foi resolvida."
+      }
+    },
+    "candidates": {
+      "title": "Pagamentos que podem ser associados",
+      "select": "Escolher {{reference}}",
+      "reference": "Referência PG",
+      "proposal": "Proposta",
+      "amount": "Montante",
+      "status": "Estado",
+      "bankReference": "Referência bancária",
+      "createdAt": "Criado",
+      "sameReference": "Mesma referência",
+      "sameAmount": "Mesmo montante",
+      "empty": "Não há pagamentos que possam ser associados."
+    }
+  },
+  "paymentFiles": {
+    "statusFilter": "Estado",
+    "columns": {
+      "date": "Data",
+      "file": "Ficheiro",
+      "format": "Formato",
+      "fileId": "ID do ficheiro",
+      "status": "Estado",
+      "records": "Registos",
+      "total": "Total",
+      "fees": "Tarifas/comissões",
+      "confirmed": "Confirmados",
+      "exceptions": "Excepções",
+      "reason": "Motivo"
+    },
+    "line": "linha {{line}}",
+    "openExceptions": "Ver as excepções de {{file}}",
+    "empty": "Ainda não foram recebidos ficheiros."
+  },
+  "adminPaymentOps": {
+    "title": "Operações de pagamento",
+    "refresh": "Actualizar",
+    "worker": {
+      "title": "Filas de mensagens",
+      "brokerUp": "Broker ligado",
+      "brokerDown": "Broker inacessível",
+      "queue": "Fila",
+      "messages": "Mensagens",
+      "consumers": "Consumidores",
+      "missing": "Não existe",
+      "dlqAlert": "Há mensagens que falharam o processamento. Siga o procedimento 'Reprocessar mensagens' do infra/README.md.",
+      "noConsumers": "O backend não está a consumir esta fila.",
+      "lastMessage": "Última mensagem recebida: {{date}}",
+      "noMessages": "Ainda não foi recebida nenhuma mensagem.",
+      "noQueues": "Sem informação das filas."
+    },
+    "sources": {
+      "title": "Fontes de ficheiros",
+      "insurer": "Seguradora",
+      "entity": "Entidade",
+      "format": "Formato",
+      "enabled": "Activa",
+      "lastPoll": "Última leitura",
+      "outcome": "Resultado",
+      "lastSuccess": "Último sucesso",
+      "staleSince": "Parada desde",
+      "stale": "Parada",
+      "files24h": "Ficheiros (24 h)",
+      "rejected24h": "Rejeitados (24 h)",
+      "empty": "Nenhuma seguradora configurou o pagamento por entidade e referência."
     }
   }
 }

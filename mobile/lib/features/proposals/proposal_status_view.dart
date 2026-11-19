@@ -110,10 +110,21 @@ class ProposalStatusView extends StatelessWidget {
                 kind: MessageKind.success,
               ),
               const SizedBox(height: 8),
-              Text(l10n.proposalPaymentSoon),
               if (expiresAt != null)
                 Text(l10n.proposalExpiresOn(formatInstantDate(expiresAt))),
+              const SizedBox(height: 16),
+              // O único botão laranja do ecrã (S5-11 §2).
+              CtaButton(
+                key: const Key('proposal-pay'),
+                label: l10n.paymentsPaySubmit,
+                onPressed: () => context.push('/proposals/${proposal.id}/pay'),
+              ),
             ],
+          ),
+          ProposalStatus.PAID => MessageBanner(
+            l10n.paymentsProposalPaid,
+            key: const Key('proposal-paid'),
+            kind: MessageKind.success,
           ),
           ProposalStatus.REJECTED => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

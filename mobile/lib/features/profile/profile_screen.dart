@@ -142,6 +142,17 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             const ContactsSection(),
+            const SizedBox(height: 16),
+            // Os meus pagamentos (S5-11 §1).
+            Card(
+              child: ListTile(
+                key: const Key('profile-payments'),
+                leading: const Icon(Icons.payments_outlined),
+                title: Text(l10n.paymentsMenu),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.go('/payments'),
+              ),
+            ),
             const SizedBox(height: 24),
             OutlinedButton.icon(
               key: const Key('logout'),

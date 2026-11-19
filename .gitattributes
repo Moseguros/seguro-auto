@@ -24,3 +24,6 @@
 
 # Exemplos oficiais da InterBancos (MEPS/BMEPS): ficam byte a byte, com CRLF.
 docs/specs/interbancos/*.txt -text
+# Cópias dos exemplos e ficheiros derivados dos leitores e do simulador (S5-08): também byte a byte.
+payment-file-worker/src/test/resources/interbancos/*.txt -text
+infra/mocks/ponto24-mock/src/**/*.txt -text

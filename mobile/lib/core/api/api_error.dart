@@ -133,6 +133,27 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'KYC_NOT_VERIFIED' => l10n.errorKycNotVerified,
   'INSPECTION_NOT_APPROVED' => l10n.errorInspectionNotApproved,
   'CLIENT_ACCOUNT_DISABLED' => l10n.errorClientAccountDisabled,
+  'PAYMENT_METHOD_NOT_FOUND' => l10n.errorPaymentMethodNotFound,
+  'PAYMENT_METHOD_INCOMPLETE' => l10n.errorPaymentMethodIncomplete,
+  'SECRET_STORE_UNAVAILABLE' => l10n.errorSecretStoreUnavailable,
+  'IDEMPOTENCY_KEY_REQUIRED' => l10n.errorIdempotencyKeyRequired,
+  'IDEMPOTENCY_KEY_REUSED' => l10n.errorIdempotencyKeyReused,
+  'PAYMENT_TARGET_NOT_PAYABLE' => l10n.errorPaymentTargetNotPayable,
+  'PAYMENT_TARGET_ALREADY_PAID' => l10n.errorPaymentTargetAlreadyPaid,
+  'PAYMENT_METHOD_NOT_AVAILABLE' => l10n.errorPaymentMethodNotAvailable,
+  'PAYMENT_IN_PROGRESS' => l10n.errorPaymentInProgress,
+  'PAYMENT_INTENT_NOT_FOUND' => l10n.errorPaymentIntentNotFound,
+  'NOT_A_REFERENCE_PAYMENT' => l10n.errorNotAReferencePayment,
+  'REFERENCE_NOT_ACTIVE' => l10n.errorReferenceNotActive,
+  'REFERENCE_SMS_RATE_LIMITED' => l10n.errorReferenceSmsRateLimited,
+  'REFERENCE_GENERATION_FAILED' => l10n.errorReferenceGenerationFailed,
+  'CUSTOMER_HAS_NO_MSISDN' => l10n.errorCustomerHasNoMsisdn,
+  'PAYMENT_LINK_RATE_LIMITED' => l10n.errorPaymentLinkRateLimited,
+  'EXPORT_TOO_LARGE' => l10n.errorExportTooLarge,
+  'PAYMENT_EXCEPTION_NOT_FOUND' => l10n.errorPaymentExceptionNotFound,
+  'RESOLUTION_NOT_ALLOWED' => l10n.errorResolutionNotAllowed,
+  'LINK_INTENT_INVALID' => l10n.errorLinkIntentInvalid,
+  'LINK_AMOUNT_INSUFFICIENT' => l10n.errorLinkAmountInsufficient,
   _ => l10n.errorUnknown,
 };
 
@@ -202,6 +223,44 @@ String proposalStatusLabel(AppLocalizations l10n, String status) =>
       'PAID' => l10n.proposalStatusPaid,
       'CONVERTED' => l10n.proposalStatusConverted,
       _ => status,
+    };
+
+/// Estado de uma intenção de pagamento (S5-02 §3).
+String paymentStatusLabel(AppLocalizations l10n, String status) =>
+    switch (status) {
+      'CREATED' => l10n.paymentStatusCreated,
+      'PENDING' => l10n.paymentStatusPending,
+      'UNKNOWN' => l10n.paymentStatusUnknown,
+      'SUCCEEDED' => l10n.paymentStatusSucceeded,
+      'FAILED' => l10n.paymentStatusFailed,
+      'EXPIRED' => l10n.paymentStatusExpired,
+      'CANCELLED' => l10n.paymentStatusCancelled,
+      'REFUNDED' => l10n.paymentStatusRefunded,
+      _ => status,
+    };
+
+/// Forma de pagamento (ADR-007: só M-Pesa e entidade e referência).
+String paymentMethodLabel(AppLocalizations l10n, String method) =>
+    switch (method) {
+      'MPESA' => l10n.paymentMethodMpesa,
+      'BANK_REFERENCE' => l10n.paymentMethodBankReference,
+      _ => method,
+    };
+
+/// Motivo de um pagamento que não terminou (`FailureCode`, S5-02 §3).
+String paymentFailureLabel(AppLocalizations l10n, String code) =>
+    switch (code) {
+      'CUSTOMER_CANCELLED' => l10n.paymentFailureCustomerCancelled,
+      'INSUFFICIENT_BALANCE' => l10n.paymentFailureInsufficientBalance,
+      'INVALID_MSISDN' => l10n.paymentFailureInvalidMsisdn,
+      'PROVIDER_REJECTED' => l10n.paymentFailureProviderRejected,
+      'PROVIDER_CONFIG_ERROR' => l10n.paymentFailureProviderConfigError,
+      'PROVIDER_UNAVAILABLE' => l10n.paymentFailureProviderUnavailable,
+      'TIMEOUT_EXPIRED' => l10n.paymentFailureTimeoutExpired,
+      'EXPIRED' => l10n.paymentFailureExpired,
+      'SUPERSEDED' => l10n.paymentFailureSuperseded,
+      'MANUAL' => l10n.paymentFailureManual,
+      _ => code,
     };
 
 /// Mensagem traduzida para um erro de campo (`FieldErrorCodes`, em `errors[].code`).
@@ -300,6 +359,13 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'PHOTO_IN_FUTURE' => l10n.validationPhotoInFuture,
   'INVALID_COORDINATES' => l10n.validationInvalidCoordinates,
   'INVALID_RULES' => l10n.validationInvalidRules,
+  'INVALID_FORMAT' => l10n.validationInvalidFormat,
+  'DIRECTORY_CONFLICT' => l10n.validationDirectoryConflict,
+  'INVALID_PUBLIC_KEY' => l10n.validationInvalidPublicKey,
+  'MIN_GREATER_THAN_MAX' => l10n.validationMinGreaterThanMax,
+  'ENTITY_IN_USE' => l10n.validationEntityInUse,
+  'MSISDN_NOT_MPESA' => l10n.validationMsisdnNotMpesa,
+  'INVALID_UUID' => l10n.validationInvalidUuid,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,

@@ -3480,6 +3480,294 @@ abstract class AppLocalizations {
   /// **'Regra inválida.'**
   String get validationInvalidRules;
 
+  /// No description provided for @errorPaymentMethodNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Forma de pagamento não encontrada.'**
+  String get errorPaymentMethodNotFound;
+
+  /// No description provided for @errorPaymentMethodIncomplete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Faltam dados para activar esta forma de pagamento. Corrija os campos assinalados.'**
+  String get errorPaymentMethodIncomplete;
+
+  /// No description provided for @errorSecretStoreUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'O cofre de segredos não está disponível. Nada foi gravado; tente de novo dentro de momentos.'**
+  String get errorSecretStoreUnavailable;
+
+  /// No description provided for @validationInvalidFormat.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato inválido.'**
+  String get validationInvalidFormat;
+
+  /// No description provided for @validationDirectoryConflict.
+  ///
+  /// In pt, this message translates to:
+  /// **'As pastas de entrada, de processados e de erros têm de ser diferentes.'**
+  String get validationDirectoryConflict;
+
+  /// No description provided for @validationInvalidPublicKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Chave pública inválida (RSA em PEM ou Base64).'**
+  String get validationInvalidPublicKey;
+
+  /// No description provided for @validationMinGreaterThanMax.
+  ///
+  /// In pt, this message translates to:
+  /// **'O valor mínimo não pode ser maior que o máximo.'**
+  String get validationMinGreaterThanMax;
+
+  /// No description provided for @validationEntityInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta entidade já está a ser usada por outra seguradora.'**
+  String get validationEntityInUse;
+
+  /// No description provided for @errorIdempotencyKeyRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pedido não pôde ser identificado. Tente de novo.'**
+  String get errorIdempotencyKeyRequired;
+
+  /// No description provided for @errorIdempotencyKeyReused.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pedido já foi enviado com outros dados. Volte atrás e tente de novo.'**
+  String get errorIdempotencyKeyReused;
+
+  /// No description provided for @errorPaymentTargetNotPayable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já não pode ser paga.'**
+  String get errorPaymentTargetNotPayable;
+
+  /// No description provided for @errorPaymentTargetAlreadyPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já está paga.'**
+  String get errorPaymentTargetAlreadyPaid;
+
+  /// No description provided for @errorPaymentMethodNotAvailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta forma de pagamento não está disponível para esta seguradora ou este montante.'**
+  String get errorPaymentMethodNotAvailable;
+
+  /// No description provided for @errorPaymentInProgress.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já há um pagamento M-Pesa em curso. Confirme-o no telemóvel ou aguarde.'**
+  String get errorPaymentInProgress;
+
+  /// No description provided for @errorPaymentIntentNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento não encontrado.'**
+  String get errorPaymentIntentNotFound;
+
+  /// No description provided for @errorNotAReferencePayment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pagamento não é por entidade e referência.'**
+  String get errorNotAReferencePayment;
+
+  /// No description provided for @errorReferenceNotActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta referência já não está activa.'**
+  String get errorReferenceNotActive;
+
+  /// No description provided for @errorReferenceSmsRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou esta referência por SMS 3 vezes.'**
+  String get errorReferenceSmsRateLimited;
+
+  /// No description provided for @errorReferenceGenerationFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível gerar a referência. Tente de novo dentro de momentos.'**
+  String get errorReferenceGenerationFailed;
+
+  /// No description provided for @errorCustomerHasNoMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'O cliente não tem telemóvel registado para receber o link.'**
+  String get errorCustomerHasNoMsisdn;
+
+  /// No description provided for @errorPaymentLinkRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou o link de pagamento 3 vezes nas últimas 24 horas.'**
+  String get errorPaymentLinkRateLimited;
+
+  /// No description provided for @errorExportTooLarge.
+  ///
+  /// In pt, this message translates to:
+  /// **'A exportação tem demasiadas linhas. Use filtros mais estreitos.'**
+  String get errorExportTooLarge;
+
+  /// No description provided for @errorPaymentExceptionNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Excepção de pagamento não encontrada.'**
+  String get errorPaymentExceptionNotFound;
+
+  /// No description provided for @errorResolutionNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta resolução não é permitida para este tipo de excepção.'**
+  String get errorResolutionNotAllowed;
+
+  /// No description provided for @errorLinkIntentInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.'**
+  String get errorLinkIntentInvalid;
+
+  /// No description provided for @errorLinkAmountInsufficient.
+  ///
+  /// In pt, this message translates to:
+  /// **'O montante recebido é menor do que o do pagamento a associar.'**
+  String get errorLinkAmountInsufficient;
+
+  /// No description provided for @validationMsisdnNotMpesa.
+  ///
+  /// In pt, this message translates to:
+  /// **'Use um número Vodacom (começado por 84 ou 85).'**
+  String get validationMsisdnNotMpesa;
+
+  /// No description provided for @validationInvalidUuid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Identificador inválido.'**
+  String get validationInvalidUuid;
+
+  /// No description provided for @paymentStatusCreated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Criado'**
+  String get paymentStatusCreated;
+
+  /// No description provided for @paymentStatusPending.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pendente'**
+  String get paymentStatusPending;
+
+  /// No description provided for @paymentStatusUnknown.
+  ///
+  /// In pt, this message translates to:
+  /// **'A confirmar'**
+  String get paymentStatusUnknown;
+
+  /// No description provided for @paymentStatusSucceeded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pago'**
+  String get paymentStatusSucceeded;
+
+  /// No description provided for @paymentStatusFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falhou'**
+  String get paymentStatusFailed;
+
+  /// No description provided for @paymentStatusExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expirado'**
+  String get paymentStatusExpired;
+
+  /// No description provided for @paymentStatusCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelado'**
+  String get paymentStatusCancelled;
+
+  /// No description provided for @paymentStatusRefunded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reembolsado'**
+  String get paymentStatusRefunded;
+
+  /// No description provided for @paymentMethodMpesa.
+  ///
+  /// In pt, this message translates to:
+  /// **'M-Pesa'**
+  String get paymentMethodMpesa;
+
+  /// No description provided for @paymentMethodBankReference.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entidade e referência'**
+  String get paymentMethodBankReference;
+
+  /// No description provided for @paymentFailureCustomerCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelou o pagamento no telemóvel.'**
+  String get paymentFailureCustomerCancelled;
+
+  /// No description provided for @paymentFailureInsufficientBalance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saldo insuficiente.'**
+  String get paymentFailureInsufficientBalance;
+
+  /// No description provided for @paymentFailureInvalidMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este número não está registado no serviço de pagamento.'**
+  String get paymentFailureInvalidMsisdn;
+
+  /// No description provided for @paymentFailureProviderRejected.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pagamento foi recusado pelo operador.'**
+  String get paymentFailureProviderRejected;
+
+  /// No description provided for @paymentFailureProviderConfigError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta forma de pagamento tem um problema do lado da seguradora. Escolha outra ou tente mais tarde.'**
+  String get paymentFailureProviderConfigError;
+
+  /// No description provided for @paymentFailureProviderUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'O serviço de pagamento não está disponível. Tente mais tarde.'**
+  String get paymentFailureProviderUnavailable;
+
+  /// No description provided for @paymentFailureTimeoutExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pedido expirou sem confirmação.'**
+  String get paymentFailureTimeoutExpired;
+
+  /// No description provided for @paymentFailureExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O prazo para pagar terminou.'**
+  String get paymentFailureExpired;
+
+  /// No description provided for @paymentFailureSuperseded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Substituído por outro pagamento.'**
+  String get paymentFailureSuperseded;
+
+  /// No description provided for @paymentFailureManual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resolvido pela seguradora.'**
+  String get paymentFailureManual;
+
   /// No description provided for @proposalUnderwritingFailureAutoAcceptDisabled.
   ///
   /// In pt, this message translates to:
@@ -4626,12 +4914,6 @@ abstract class AppLocalizations {
   /// **'Proposta aceite.'**
   String get proposalAcceptedText;
 
-  /// No description provided for @proposalPaymentSoon.
-  ///
-  /// In pt, this message translates to:
-  /// **'O pagamento fica disponível em breve.'**
-  String get proposalPaymentSoon;
-
   /// No description provided for @proposalRejectedText.
   ///
   /// In pt, this message translates to:
@@ -4685,6 +4967,462 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Retirar esta fotografia da vistoria?'**
   String get inspectionRemoveConfirm;
+
+  /// No description provided for @paymentsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagar a proposta'**
+  String get paymentsTitle;
+
+  /// No description provided for @paymentsSummaryProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta {number}'**
+  String paymentsSummaryProposal(String number);
+
+  /// No description provided for @paymentsSummaryTotal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Total a pagar'**
+  String get paymentsSummaryTotal;
+
+  /// No description provided for @paymentsSummaryPayBy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagar até {date}'**
+  String paymentsSummaryPayBy(String date);
+
+  /// No description provided for @paymentsSummaryDirect.
+  ///
+  /// In pt, this message translates to:
+  /// **'O pagamento é feito directamente à {insurer}. A MoSeguros não recebe dinheiro.'**
+  String paymentsSummaryDirect(String insurer);
+
+  /// No description provided for @paymentsMethodLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Forma de pagamento'**
+  String get paymentsMethodLabel;
+
+  /// No description provided for @paymentsMethodMpesaNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número M-Pesa'**
+  String get paymentsMethodMpesaNumber;
+
+  /// No description provided for @paymentsMethodReferenceHelp.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recebe uma entidade e uma referência para pagar por e-banking ou app do banco, ATM, *124#, POS ou balcão.'**
+  String get paymentsMethodReferenceHelp;
+
+  /// No description provided for @paymentsPaySubmit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adquirir apólice'**
+  String get paymentsPaySubmit;
+
+  /// No description provided for @paymentsPayNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta não encontrada.'**
+  String get paymentsPayNotFound;
+
+  /// No description provided for @paymentsPayBackToProposals.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver as propostas'**
+  String get paymentsPayBackToProposals;
+
+  /// No description provided for @paymentsPayNotPayable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já não pode ser paga.'**
+  String get paymentsPayNotPayable;
+
+  /// No description provided for @paymentsPayAlreadyPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta proposta já está paga.'**
+  String get paymentsPayAlreadyPaid;
+
+  /// No description provided for @paymentsPayBackToProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver a proposta'**
+  String get paymentsPayBackToProposal;
+
+  /// No description provided for @paymentsPayActiveIntent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tem um pagamento em curso'**
+  String get paymentsPayActiveIntent;
+
+  /// No description provided for @paymentsPayViewPayment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver pagamento'**
+  String get paymentsPayViewPayment;
+
+  /// No description provided for @paymentsPayNoMethods.
+  ///
+  /// In pt, this message translates to:
+  /// **'A seguradora ainda não tem formas de pagamento disponíveis. Contacte a seguradora.'**
+  String get paymentsPayNoMethods;
+
+  /// No description provided for @paymentsPayMethodUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta forma de pagamento não está disponível agora. Escolha outra.'**
+  String get paymentsPayMethodUnavailable;
+
+  /// No description provided for @paymentsIntentNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento não encontrado.'**
+  String get paymentsIntentNotFound;
+
+  /// No description provided for @paymentsIntentBackToPayments.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver os meus pagamentos'**
+  String get paymentsIntentBackToPayments;
+
+  /// No description provided for @paymentsIntentPreparing.
+  ///
+  /// In pt, this message translates to:
+  /// **'A preparar o pagamento…'**
+  String get paymentsIntentPreparing;
+
+  /// No description provided for @paymentsIntentReference.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento {reference}'**
+  String paymentsIntentReference(String reference);
+
+  /// No description provided for @paymentsAwaitTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirme o pagamento no seu telemóvel'**
+  String get paymentsAwaitTitle;
+
+  /// No description provided for @paymentsAwaitStep1.
+  ///
+  /// In pt, this message translates to:
+  /// **'1. Desbloqueie o telemóvel com o número {msisdn}.'**
+  String paymentsAwaitStep1(String msisdn);
+
+  /// No description provided for @paymentsAwaitStep2.
+  ///
+  /// In pt, this message translates to:
+  /// **'2. Introduza o seu PIN M-Pesa no pedido que aparece.'**
+  String get paymentsAwaitStep2;
+
+  /// No description provided for @paymentsAwaitStep3.
+  ///
+  /// In pt, this message translates to:
+  /// **'3. Aguarde aqui a confirmação.'**
+  String get paymentsAwaitStep3;
+
+  /// No description provided for @paymentsAwaitRemaining.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tempo para confirmar'**
+  String get paymentsAwaitRemaining;
+
+  /// No description provided for @paymentsAwaitStillWaiting.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não recebemos a resposta. Estamos a confirmar.'**
+  String get paymentsAwaitStillWaiting;
+
+  /// No description provided for @paymentsAwaitBackToProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Voltar à proposta'**
+  String get paymentsAwaitBackToProposal;
+
+  /// No description provided for @paymentsCheckingLead.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não temos a confirmação do operador.'**
+  String get paymentsCheckingLead;
+
+  /// No description provided for @paymentsCheckingDontPay.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não volte a pagar'**
+  String get paymentsCheckingDontPay;
+
+  /// No description provided for @paymentsCheckingRest.
+  ///
+  /// In pt, this message translates to:
+  /// **': estamos a confirmar e actualizamos esta página sozinhos.'**
+  String get paymentsCheckingRest;
+
+  /// No description provided for @paymentsCheckingNextCheck.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próxima verificação às {time}'**
+  String paymentsCheckingNextCheck(String time);
+
+  /// No description provided for @paymentsReferenceEntity.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entidade'**
+  String get paymentsReferenceEntity;
+
+  /// No description provided for @paymentsReferenceReference.
+  ///
+  /// In pt, this message translates to:
+  /// **'Referência'**
+  String get paymentsReferenceReference;
+
+  /// No description provided for @paymentsReferenceAmount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Montante'**
+  String get paymentsReferenceAmount;
+
+  /// No description provided for @paymentsReferenceCopy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Copiar {label}'**
+  String paymentsReferenceCopy(String label);
+
+  /// No description provided for @paymentsReferenceCopied.
+  ///
+  /// In pt, this message translates to:
+  /// **'Copiado'**
+  String get paymentsReferenceCopied;
+
+  /// No description provided for @paymentsReferenceCopyFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível copiar.'**
+  String get paymentsReferenceCopyFailed;
+
+  /// No description provided for @paymentsReferenceExactAmount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pague exactamente este montante. A rede recusa outro valor.'**
+  String get paymentsReferenceExactAmount;
+
+  /// No description provided for @paymentsReferenceValidUntil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Válida até {date}'**
+  String paymentsReferenceValidUntil(String date);
+
+  /// No description provided for @paymentsReferenceHowTo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Como pagar: no e-banking ou na app do seu banco, no ATM, pelo telemóvel (*124#), num POS ou ao balcão, escolha pagamento de serviços por entidade e referência e introduza os três dados acima.'**
+  String get paymentsReferenceHowTo;
+
+  /// No description provided for @paymentsReferenceConfirmationInfo.
+  ///
+  /// In pt, this message translates to:
+  /// **'A confirmação chega quando o banco enviar o ficheiro de pagamentos à seguradora; lemos o ficheiro logo que chega. Pode demorar algumas horas. Não precisa de ficar nesta página. Vai receber um e-mail quando o pagamento for confirmado.'**
+  String get paymentsReferenceConfirmationInfo;
+
+  /// No description provided for @paymentsReferenceDownloadPdf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descarregar PDF'**
+  String get paymentsReferenceDownloadPdf;
+
+  /// No description provided for @paymentsReferenceSendSms.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar por SMS'**
+  String get paymentsReferenceSendSms;
+
+  /// No description provided for @paymentsSmsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar a referência por SMS'**
+  String get paymentsSmsTitle;
+
+  /// No description provided for @paymentsSmsMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'Número de telemóvel'**
+  String get paymentsSmsMsisdn;
+
+  /// No description provided for @paymentsSmsSend.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar'**
+  String get paymentsSmsSend;
+
+  /// No description provided for @paymentsSmsSent.
+  ///
+  /// In pt, this message translates to:
+  /// **'SMS enviado para {sentTo}'**
+  String paymentsSmsSent(String sentTo);
+
+  /// No description provided for @paymentsSmsRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou esta referência 3 vezes.'**
+  String get paymentsSmsRateLimited;
+
+  /// No description provided for @paymentsOutcomeSucceeded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento confirmado'**
+  String get paymentsOutcomeSucceeded;
+
+  /// No description provided for @paymentsOutcomeSucceededText.
+  ///
+  /// In pt, this message translates to:
+  /// **'A sua apólice vai ser emitida em breve.'**
+  String get paymentsOutcomeSucceededText;
+
+  /// No description provided for @paymentsOutcomeExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'O prazo para este pagamento terminou.'**
+  String get paymentsOutcomeExpired;
+
+  /// No description provided for @paymentsOutcomeCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pagamento foi substituído por outro.'**
+  String get paymentsOutcomeCancelled;
+
+  /// No description provided for @paymentsOutcomeRefunded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este pagamento foi reembolsado.'**
+  String get paymentsOutcomeRefunded;
+
+  /// No description provided for @paymentsOutcomeViewProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver proposta'**
+  String get paymentsOutcomeViewProposal;
+
+  /// No description provided for @paymentsOutcomeChooseAnother.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher outra forma de pagamento'**
+  String get paymentsOutcomeChooseAnother;
+
+  /// No description provided for @paymentsListTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamentos'**
+  String get paymentsListTitle;
+
+  /// No description provided for @paymentsListEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não tem pagamentos.'**
+  String get paymentsListEmpty;
+
+  /// No description provided for @paymentsListLoadMore.
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregar mais'**
+  String get paymentsListLoadMore;
+
+  /// No description provided for @paymentsListDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data'**
+  String get paymentsListDate;
+
+  /// No description provided for @paymentsListTarget.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta'**
+  String get paymentsListTarget;
+
+  /// No description provided for @paymentsListInsurer.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguradora'**
+  String get paymentsListInsurer;
+
+  /// No description provided for @paymentsListMethod.
+  ///
+  /// In pt, this message translates to:
+  /// **'Forma de pagamento'**
+  String get paymentsListMethod;
+
+  /// No description provided for @paymentsListAmount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Montante'**
+  String get paymentsListAmount;
+
+  /// No description provided for @paymentsListStatus.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado'**
+  String get paymentsListStatus;
+
+  /// No description provided for @paymentsLinkButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar link de pagamento ao cliente'**
+  String get paymentsLinkButton;
+
+  /// No description provided for @paymentsLinkConfirmTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar link de pagamento'**
+  String get paymentsLinkConfirmTitle;
+
+  /// No description provided for @paymentsLinkConfirmText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vamos enviar um SMS ao cliente com o link para pagar. O cliente paga directamente à seguradora.'**
+  String get paymentsLinkConfirmText;
+
+  /// No description provided for @paymentsLinkSend.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar'**
+  String get paymentsLinkSend;
+
+  /// No description provided for @paymentsLinkSent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Link enviado para {sentTo}'**
+  String paymentsLinkSent(String sentTo);
+
+  /// No description provided for @paymentsLinkRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já enviou o link 3 vezes nas últimas 24 horas. Tente dentro de {minutes} minutos.'**
+  String paymentsLinkRateLimited(String minutes);
+
+  /// No description provided for @paymentsLinkNoMsisdn.
+  ///
+  /// In pt, this message translates to:
+  /// **'O cliente não tem telemóvel registado.'**
+  String get paymentsLinkNoMsisdn;
+
+  /// No description provided for @paymentsProposalPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento recebido. A sua apólice vai ser emitida em breve.'**
+  String get paymentsProposalPaid;
+
+  /// No description provided for @paymentsReferenceCopyButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Copiar'**
+  String get paymentsReferenceCopyButton;
+
+  /// No description provided for @paymentsMenu.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamentos'**
+  String get paymentsMenu;
 }
 
 class _AppLocalizationsDelegate

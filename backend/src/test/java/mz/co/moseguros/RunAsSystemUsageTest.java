@@ -121,6 +121,46 @@ class RunAsSystemUsageTest {
                 .containsExactly("VehicleSystemLookups.registerForCustomer");
     }
 
+    /** S5-01: as formas de pagamento lêem-se entre âmbitos só pelo PaymentSystemLookups. */
+    @Test
+    void paymentSystemLookupsIsAllowed() {
+        JavaClasses payment = new ClassFileImporter().importClasses(
+                mz.co.moseguros.payment.application.PaymentSystemLookups.class,
+                mz.co.moseguros.payment.application.DevPaymentSecretsSeeder.class,
+                mz.co.moseguros.payment.application.PaymentMethodConfigService.class);
+        RUN_AS_SYSTEM_OWNERS.check(payment);
+        org.assertj.core.api.Assertions.assertThat(payment.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("PaymentSystemLookups.enabledConfig", "PaymentSystemLookups.enabledConfigs",
+                        "PaymentSystemLookups.entityInUse", "PaymentSystemLookups.configsOf",
+                        "PaymentSystemLookups.configById", "PaymentSystemLookups.insurerNames",
+                        "PaymentSystemLookups.activeFileSources");
+    }
+
+    /**
+     * S5-02 e S5-04: o envio do C2B, a recuperação dos envios perdidos, as consultas de estado, a
+     * expiração das intenções e o ouvinte do pagamento das propostas correm em SYSTEM, em classes …Job e
+     * …Listener de application.
+     */
+    @Test
+    void paymentJobsAndProposalPaymentListenerAreAllowed() {
+        JavaClasses classes = new ClassFileImporter().importClasses(
+                mz.co.moseguros.payment.application.MpesaC2bJob.class,
+                mz.co.moseguros.payment.application.PaymentDispatchRecoveryJob.class,
+                mz.co.moseguros.payment.application.PaymentStatusQueryJob.class,
+                mz.co.moseguros.payment.application.PaymentExpiryJob.class,
+                mz.co.moseguros.proposal.application.ProposalPaymentListener.class);
+        RUN_AS_SYSTEM_OWNERS.check(classes);
+        org.assertj.core.api.Assertions.assertThat(classes.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("MpesaC2bJob.run", "PaymentDispatchRecoveryJob.recover",
+                        "PaymentStatusQueryJob.query", "PaymentExpiryJob.expire", "ProposalPaymentListener.on");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

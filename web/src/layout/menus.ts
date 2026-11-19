@@ -18,6 +18,7 @@ import Inventory from '@mui/icons-material/Inventory';
 import Key from '@mui/icons-material/Key';
 import ListAlt from '@mui/icons-material/ListAlt';
 import LocalShipping from '@mui/icons-material/LocalShipping';
+import MonitorHeart from '@mui/icons-material/MonitorHeart';
 import Payments from '@mui/icons-material/Payments';
 import People from '@mui/icons-material/People';
 import Person from '@mui/icons-material/Person';
@@ -91,6 +92,12 @@ export const menus: Record<Area, MenuItem[]> = {
     { key: 'users', path: '/admin/utilizadores', icon: Group, permission: 'org-user:read' },
     { key: 'auth', path: '/admin/autenticacao', icon: Key, permission: 'otp-settings:read' },
     {
+      key: 'paymentOps',
+      path: '/admin/operacoes/pagamentos',
+      icon: MonitorHeart,
+      permission: 'platform:operations',
+    },
+    {
       key: 'references',
       path: '/admin/referencias',
       icon: ListAlt,
@@ -119,12 +126,22 @@ export const menus: Record<Area, MenuItem[]> = {
       permission: 'proposal:read',
     },
     { key: 'policies', path: '/seguradora/apolices', icon: Description },
-    { key: 'payments', path: '/seguradora/pagamentos', icon: Payments },
+    {
+      key: 'payments',
+      path: '/seguradora/pagamentos',
+      icon: Payments,
+      permission: 'payment:read',
+    },
     { key: 'claims', path: '/seguradora/sinistros', icon: CarCrash },
     { key: 'complaints', path: '/seguradora/reclamacoes', icon: ReportProblem },
     { key: 'reports', path: '/seguradora/relatorios', icon: BarChart },
     { key: 'users', path: '/seguradora/utilizadores', icon: Group, permission: 'org-user:read' },
-    { key: 'settings', path: '/seguradora/configuracao', icon: Settings },
+    {
+      key: 'settings',
+      path: '/seguradora/configuracao',
+      icon: Settings,
+      permission: 'payment:configure',
+    },
   ],
   mediador: [
     { key: 'home', path: '/mediador', icon: Dashboard },

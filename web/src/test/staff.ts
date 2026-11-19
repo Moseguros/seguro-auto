@@ -24,7 +24,10 @@ export function staffMe(
 }
 
 export type MockResult = { status: number; data?: unknown };
-export type StaffHandler = (config: InternalAxiosRequestConfig) => MockResult | null | undefined;
+/** `'network-error'` simula um pedido sem resposta do servidor. */
+export type StaffHandler = (
+  config: InternalAxiosRequestConfig,
+) => MockResult | 'network-error' | null | undefined;
 
 /** Pedido `METHOD url` (sem os parâmetros de pesquisa). */
 export function is(config: InternalAxiosRequestConfig, method: string, url: string): boolean {

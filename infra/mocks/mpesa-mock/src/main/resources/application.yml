@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: mpesa-mock
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+# Conector principal: C2B e endpoints de apoio. Os conectores da consulta e da reversão
+# são acrescentados pelo PortsConfig (mock.ports.query, mock.ports.reversal).
+server:
+  port: ${MOCK_C2B_PORT:18352}
+  tomcat:
+    threads:
+      max: 200
+
+# Só o health fica exposto, numa porta própria (healthcheck do Dockerfile e do compose).
+management:
+  server:
+    port: ${MOCK_MANAGEMENT_PORT:18350}
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+mock:
+  ports:
+    query: ${MOCK_QUERY_PORT:18353}
+    reversal: ${MOCK_REVERSAL_PORT:18354}
+  api-key: ${MOCK_API_KEY:dev-mpesa-api-key}
+  allowed-origin: ${MOCK_ALLOWED_ORIGIN:developer.mpesa.vm.co.mz}
+  service-provider-code: ${MOCK_SERVICE_PROVIDER_CODE:171717}
+  initiator-identifier: ${MOCK_INITIATOR_IDENTIFIER:dev-initiator}
+  security-credential: ${MOCK_SECURITY_CREDENTIAL:dev-security-credential}
+  private-key: classpath:keys/mock-private.pem
+  default-delay-seconds: ${MOCK_DEFAULT_DELAY_SECONDS:2}
+  delay000-seconds: ${MOCK_DELAY_000_SECONDS:5}
+  slow-delay-seconds: ${MOCK_SLOW_DELAY_SECONDS:120}
+  failure-delay-seconds: ${MOCK_FAILURE_DELAY_SECONDS:2}

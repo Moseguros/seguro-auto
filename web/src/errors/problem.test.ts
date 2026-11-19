@@ -39,6 +39,14 @@ describe('getProblem', () => {
     expect(problem.retryAfterSeconds).toBe(120);
   });
 
+  it('lê o intentId de PAYMENT_IN_PROGRESS', () => {
+    const problem = getProblem(
+      httpError(409, { code: 'PAYMENT_IN_PROGRESS', intentId: 'intent-1' }),
+    );
+    expect(problem.intentId).toBe('intent-1');
+    expect(getProblem(httpError(409, { code: 'X', intentId: 3 })).intentId).toBeUndefined();
+  });
+
   it('sem resposta → NETWORK_ERROR; outro erro → UNKNOWN', () => {
     expect(getProblem(new AxiosError('Network Error', 'ERR_NETWORK')).code).toBe('NETWORK_ERROR');
     expect(getProblem(new Error('x')).code).toBe('UNKNOWN');

@@ -1,0 +1,14 @@
+{
+  "messageId": "dd5b32d55381e3bd47597d331126f7c6734e245ccbecbf1d11143cf6185d789a",
+  "schemaVersion": 1,
+  "insurerId": "01930000-0000-7000-8000-000000000001",
+  "sourceId": "01930000-0000-7000-8000-000000000501",
+  "fileFormat": "MEPS",
+  "fileName": "exemplo-ficheiro-meps.txt",
+  "sha256": "1b96115a3a8e399da57a6bdb3e7371a8ca4bbada5aca146d1e2077507217256e",
+  "formatFileId": "201211230",
+  "recordCount": 11,
+  "totalAmount": { "amount": 5132000, "currency": "MZN" },
+  "totalFees": { "amount": 11000, "currency": "MZN" },
+  "processedAt": "2027-01-15T09:12:44Z"
+}

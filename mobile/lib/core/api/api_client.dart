@@ -90,6 +90,9 @@ class ApiClient {
   /// Descarga de ficheiros (tag `Document`).
   DocumentApi get document => _api.getDocumentApi();
 
+  /// Pagamentos do cliente (tag `Payment`, S5-11).
+  PaymentApi get payment => _api.getPaymentApi();
+
   /// `Identity` sem renovação automática: usado pelo `SessionController` para
   /// `refreshToken` e `logoutSession`.
   IdentityApi get sessionIdentity => IdentityApi(bareDio(), apiSerializers);

@@ -29,6 +29,10 @@
       "status" : 409
     },
     {
+      "code" : "CUSTOMER_HAS_NO_MSISDN",
+      "status" : 409
+    },
+    {
       "code" : "DECRYPTION_FAILED",
       "status" : 500
     },
@@ -53,6 +57,10 @@
       "status" : 409
     },
     {
+      "code" : "EXPORT_TOO_LARGE",
+      "status" : 400
+    },
+    {
       "code" : "FILE_EMPTY",
       "status" : 400
     },
@@ -75,6 +83,14 @@
     {
       "code" : "FORBIDDEN",
       "status" : 403
+    },
+    {
+      "code" : "IDEMPOTENCY_KEY_REQUIRED",
+      "status" : 400
+    },
+    {
+      "code" : "IDEMPOTENCY_KEY_REUSED",
+      "status" : 422
     },
     {
       "code" : "INSPECTION_NOT_APPROVED",
@@ -177,6 +193,18 @@
       "status" : 400
     },
     {
+      "code" : "LINK_AMOUNT_INSUFFICIENT",
+      "status" : 400
+    },
+    {
+      "code" : "LINK_INTENT_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "NOT_A_REFERENCE_PAYMENT",
+      "status" : 409
+    },
+    {
       "code" : "NOT_FOUND",
       "status" : 404
     },
@@ -255,6 +283,42 @@
     {
       "code" : "PASSWORD_TOO_WEAK",
       "status" : 400
+    },
+    {
+      "code" : "PAYMENT_EXCEPTION_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PAYMENT_INTENT_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PAYMENT_IN_PROGRESS",
+      "status" : 409
+    },
+    {
+      "code" : "PAYMENT_LINK_RATE_LIMITED",
+      "status" : 429
+    },
+    {
+      "code" : "PAYMENT_METHOD_INCOMPLETE",
+      "status" : 409
+    },
+    {
+      "code" : "PAYMENT_METHOD_NOT_AVAILABLE",
+      "status" : 409
+    },
+    {
+      "code" : "PAYMENT_METHOD_NOT_FOUND",
+      "status" : 404
+    },
+    {
+      "code" : "PAYMENT_TARGET_ALREADY_PAID",
+      "status" : 409
+    },
+    {
+      "code" : "PAYMENT_TARGET_NOT_PAYABLE",
+      "status" : 409
     },
     {
       "code" : "PDF_RENDER_FAILED",
@@ -389,6 +453,18 @@
       "status" : 404
     },
     {
+      "code" : "REFERENCE_GENERATION_FAILED",
+      "status" : 503
+    },
+    {
+      "code" : "REFERENCE_NOT_ACTIVE",
+      "status" : 409
+    },
+    {
+      "code" : "REFERENCE_SMS_RATE_LIMITED",
+      "status" : 429
+    },
+    {
       "code" : "REFERENCE_VALUE_NOT_FOUND",
       "status" : 404
     },
@@ -405,8 +481,16 @@
       "status" : 400
     },
     {
+      "code" : "RESOLUTION_NOT_ALLOWED",
+      "status" : 400
+    },
+    {
       "code" : "ROLE_NOT_ALLOWED_FOR_ORGANIZATION",
       "status" : 400
+    },
+    {
+      "code" : "SECRET_STORE_UNAVAILABLE",
+      "status" : 503
     },
     {
       "code" : "SHORT_CODE_ALREADY_IN_USE",
@@ -488,6 +572,7 @@
     "COVERAGE_TARIFF_MISSING",
     "CROSS_BORDER_SCOPE_REQUIRED",
     "DEFAULT_CHANNEL_NOT_ENABLED",
+    "DIRECTORY_CONFLICT",
     "DOCUMENT_REQUIRED",
     "DUPLICATED",
     "DUPLICATE_CHARGE",
@@ -497,6 +582,7 @@
     "DURATION_365_NOT_ONE",
     "DURATION_FACTORS_REQUIRED",
     "DURATION_NOT_ALLOWED",
+    "ENTITY_IN_USE",
     "EXAMPLE_DOES_NOT_MATCH",
     "EXTRA_PHOTOS_LIMIT",
     "FALLBACK_ORDER_MISMATCH",
@@ -511,6 +597,7 @@
     "INVALID_DATE",
     "INVALID_DOCUMENT_NUMBER",
     "INVALID_EMAIL",
+    "INVALID_FORMAT",
     "INVALID_INSURER",
     "INVALID_LICENCE_NUMBER",
     "INVALID_MSISDN",
@@ -519,6 +606,7 @@
     "INVALID_PATTERN",
     "INVALID_PHONE",
     "INVALID_PLATE",
+    "INVALID_PUBLIC_KEY",
     "INVALID_RANGE",
     "INVALID_REQUIREMENT",
     "INVALID_RULES",
@@ -526,10 +614,13 @@
     "INVALID_SLOT",
     "INVALID_SORT",
     "INVALID_URL",
+    "INVALID_UUID",
     "INVALID_VALUE",
     "INVALID_YEAR",
     "LICENCE_CATEGORY_UNKNOWN",
     "LICENCE_ISSUE_DATE_INVALID",
+    "MIN_GREATER_THAN_MAX",
+    "MSISDN_NOT_MPESA",
     "MTPL_CAPITAL_BELOW_MINIMUM",
     "MTPL_MUST_BE_MANDATORY",
     "MTPL_REQUIRED",

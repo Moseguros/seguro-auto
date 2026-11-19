@@ -11,6 +11,16 @@ import {
   ProposalDetailRoute,
   ProposalQueueRoute,
 } from './features/insurer-proposals/lazyPages';
+import {
+  ExceptionsPage,
+  FileImportsPage,
+  InsurerPaymentsLayout,
+  InsurerSettingsPage,
+  PaymentDetailPage,
+  PaymentMethodsSettingsPage,
+  PaymentOperationsPage,
+  PaymentsListPage,
+} from './features/insurer-payments/lazyPages';
 import { CustomerLoginPage } from './features/customer-auth/CustomerLoginPage';
 import { CustomerHomePage } from './features/customer-profile/CustomerHomePage';
 import { DriverFormPage } from './features/drivers/DriverFormPage';
@@ -29,6 +39,11 @@ import {
   MyProposalsPage,
   NewProposalPage,
 } from './features/proposal-wizard/lazyPages';
+import {
+  MyPaymentsPage,
+  PaymentIntentPage,
+  ProposalPaymentPage,
+} from './features/payments/lazyPages';
 import { ProductListPage } from './features/products/ProductListPage';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
 import { BrokerQuotesPage } from './features/quotes/BrokerQuotesPage';
@@ -111,6 +126,11 @@ const adminRoutes: RouteObject[] = [
     path: 'referencias',
     element: withPermission(Permissions.referenceManage, <ReferenceTablesPage />),
   },
+  // Operações de pagamento (S5-12): filas do worker e fontes de ficheiros.
+  {
+    path: 'operacoes/pagamentos',
+    element: withPermission(Permissions.platformOperations, <PaymentOperationsPage />),
+  },
 ];
 
 /** Páginas comuns às áreas das organizações. */
@@ -153,6 +173,28 @@ const insurerRoutes: RouteObject[] = [
     element: withPermission(Permissions.inspectionReview, <InspectionQueuePage />),
   },
   { path: 'propostas/:id', element: <ProposalDetailRoute /> },
+  // Configuração e pagamentos (S5-12).
+  {
+    path: 'configuracao',
+    element: withPermission(Permissions.paymentConfigure, <InsurerSettingsPage />),
+  },
+  {
+    path: 'configuracao/pagamentos',
+    element: withPermission(Permissions.paymentConfigure, <PaymentMethodsSettingsPage />),
+  },
+  {
+    path: 'pagamentos',
+    element: withPermission(Permissions.paymentRead, <InsurerPaymentsLayout />),
+    children: [
+      { index: true, element: <PaymentsListPage /> },
+      { path: 'excepcoes', element: <ExceptionsPage /> },
+      { path: 'ficheiros', element: <FileImportsPage /> },
+    ],
+  },
+  {
+    path: 'pagamentos/:id',
+    element: withPermission(Permissions.paymentRead, <PaymentDetailPage />),
+  },
 ];
 
 /** Cotações do mediador (S3-04): só com `quote:create-for-client`. */
@@ -256,6 +298,10 @@ const customerRoutes: RouteObject = {
     { path: 'propostas/nova', element: <NewProposalPage /> },
     { path: 'propostas/:id', element: <CustomerProposalPage /> },
     { path: 'identidade', element: <IdentityPage /> },
+    // Pagamentos (S5-11).
+    { path: 'propostas/:id/pagar', element: <ProposalPaymentPage /> },
+    { path: 'pagamentos', element: <MyPaymentsPage /> },
+    { path: 'pagamentos/:intentId', element: <PaymentIntentPage /> },
     { path: '*', element: <UnderConstructionPage /> },
   ],
 };

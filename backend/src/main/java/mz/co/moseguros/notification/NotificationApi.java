@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import mz.co.moseguros.notification.application.EmailMessageService;
 import mz.co.moseguros.notification.application.OtpMessageService;
+import mz.co.moseguros.notification.application.SmsMessageService;
 import mz.co.moseguros.shared.domain.Channel;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,13 @@ public class NotificationApi {
 
     private final OtpMessageService otpMessages;
     private final EmailMessageService emailMessages;
+    private final SmsMessageService smsMessages;
 
-    public NotificationApi(OtpMessageService otpMessages, EmailMessageService emailMessages) {
+    public NotificationApi(OtpMessageService otpMessages, EmailMessageService emailMessages,
+                           SmsMessageService smsMessages) {
         this.otpMessages = otpMessages;
         this.emailMessages = emailMessages;
+        this.smsMessages = smsMessages;
     }
 
     /**
@@ -70,5 +74,22 @@ public class NotificationApi {
     public DeliveryResult sendEmail(String to, String templateKey, Object[] args, String language, String purpose,
                                     UUID correlationId) {
         return emailMessages.sendEmail(to, templateKey, args, language, purpose, correlationId);
+    }
+
+    /**
+     * Envia já, de forma síncrona, um SMS a partir do modelo {@code templateKey} (a chave em
+     * {@code messages/notifications_*.properties}, com os {@code args} formatados por
+     * {@code MessageFormat}) pelo canal SMS, sem alternativa (S5-02 §10), e regista-o em
+     * {@code outbound_message}. Nunca lança por falha do fornecedor: devolve {@code FAILED}. O texto não
+     * é gravado nem registado.
+     *
+     * @param toE164        telemóvel em E.164 ({@code +258…})
+     * @param language      {@code en} → inglês; outro valor → {@code pt}
+     * @param purpose       finalidade gravada em {@code outbound_message.purpose} (ex.: {@code PAYMENT})
+     * @param correlationId id do objecto que originou o envio (ex.: a intenção de pagamento)
+     */
+    public DeliveryResult sendSms(String toE164, String templateKey, Object[] args, String language, String purpose,
+                                  UUID correlationId) {
+        return smsMessages.sendSms(toE164, templateKey, args, language, purpose, correlationId);
     }
 }

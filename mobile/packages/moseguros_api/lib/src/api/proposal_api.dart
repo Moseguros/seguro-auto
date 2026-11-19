@@ -15,6 +15,7 @@ import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/approve_inspection_request.dart';
 import 'package:moseguros_api/src/model/confirm_signature_request.dart';
 import 'package:moseguros_api/src/model/create_broker_proposal_request.dart';
+import 'package:moseguros_api/src/model/create_proposal_payment_intent_request.dart';
 import 'package:moseguros_api/src/model/create_proposal_request.dart';
 import 'package:moseguros_api/src/model/date.dart';
 import 'package:moseguros_api/src/model/inspection_mode.dart';
@@ -22,14 +23,17 @@ import 'package:moseguros_api/src/model/inspection_photo_response.dart';
 import 'package:moseguros_api/src/model/inspection_response.dart';
 import 'package:moseguros_api/src/model/inspection_status.dart';
 import 'package:moseguros_api/src/model/insurer_proposal_response.dart';
+import 'package:moseguros_api/src/model/intent_view.dart';
 import 'package:moseguros_api/src/model/page_response_broker_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_inspection_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
+import 'package:moseguros_api/src/model/payment_link_response.dart';
 import 'package:moseguros_api/src/model/photo_slot.dart';
 import 'package:moseguros_api/src/model/photo_source.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
 import 'package:moseguros_api/src/model/proposal_channel.dart';
+import 'package:moseguros_api/src/model/proposal_payment_methods_response.dart';
 import 'package:moseguros_api/src/model/proposal_response.dart';
 import 'package:moseguros_api/src/model/proposal_status.dart';
 import 'package:moseguros_api/src/model/reject_inspection_request.dart';
@@ -657,6 +661,112 @@ class ProposalApi {
     }
 
     return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Paga uma proposta aceite
+  /// Permissão self:payments. Cabeçalho Idempotency-Key obrigatório (UUID; a mesma chave devolve a mesma resposta durante 24 h; outro pedido com a mesma chave → 422 IDEMPOTENCY_KEY_REUSED). MPESA exige payerMsisdn a começar por 84 ou 85 (REQUIRED, MSISDN_NOT_MPESA); BANK_REFERENCE devolve já a entidade e a referência (nextAction PAY_BY_REFERENCE) e reutiliza a referência activa com o mesmo montante. Erros: 404 PROPOSAL_NOT_FOUND; 409 PAYMENT_TARGET_NOT_PAYABLE, PAYMENT_TARGET_ALREADY_PAID, PAYMENT_METHOD_NOT_AVAILABLE, PAYMENT_IN_PROGRESS (intentId).
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [idempotencyKey] 
+  /// * [createProposalPaymentIntentRequest] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [IntentView] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<IntentView>> createProposalPaymentIntent({ 
+    required String id,
+    required String idempotencyKey,
+    required CreateProposalPaymentIntentRequest createProposalPaymentIntentRequest,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/proposals/{id}/payment-intents'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        r'Idempotency-Key': idempotencyKey,
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      const _type = FullType(CreateProposalPaymentIntentRequest);
+      _bodyData = _serializers.serialize(createProposalPaymentIntentRequest, specifiedType: _type);
+
+    } catch(error, stackTrace) {
+      throw DioException(
+         requestOptions: _options.compose(
+          _dio.options,
+          _path,
+        ),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    IntentView? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(IntentView),
+      ) as IntentView;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<IntentView>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -1304,6 +1414,87 @@ class ProposalApi {
     }
 
     return Response<PageResponseProposalSummaryResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Formas de pagamento de uma proposta aceite
+  /// Permissão self:payments. As formas de pagamento activas da seguradora, dentro dos limites do montante, por sortOrder, e a intenção em curso (activeIntent) para retomar. Proposta paga → paid &#x3D; true sem métodos; fora de ACCEPTED → 409 PAYMENT_TARGET_NOT_PAYABLE; de outro cliente → 404 PROPOSAL_NOT_FOUND.
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ProposalPaymentMethodsResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ProposalPaymentMethodsResponse>> listProposalPaymentMethods({ 
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/proposals/{id}/payment-methods'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ProposalPaymentMethodsResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(ProposalPaymentMethodsResponse),
+      ) as ProposalPaymentMethodsResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ProposalPaymentMethodsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -2080,6 +2271,87 @@ class ProposalApi {
     }
 
     return Response<ProposalResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Envia ao cliente o link de pagamento
+  /// Permissão payment:link-for-client. SMS ao telemóvel do cliente com o link {web}/cliente/propostas/{id}/pagar?origem&#x3D;mediador. Só propostas deste mediador (senão 404 PROPOSAL_NOT_FOUND) em ACCEPTED (409 PAYMENT_TARGET_NOT_PAYABLE); cliente sem telemóvel → 409 CUSTOMER_HAS_NO_MSISDN; no máximo 3 envios por proposta em 24 h (429 PAYMENT_LINK_RATE_LIMITED, retryAfterSeconds).
+  ///
+  /// Parameters:
+  /// * [id] 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [PaymentLinkResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<PaymentLinkResponse>> sendProposalPaymentLink({ 
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/broker/proposals/{id}/payment-link'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(String)).toString());
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    PaymentLinkResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(PaymentLinkResponse),
+      ) as PaymentLinkResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<PaymentLinkResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

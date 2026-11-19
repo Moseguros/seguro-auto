@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moseguros.co.mz/schemas/payment-source-polled.v1.json",
+  "title": "PaymentSourcePolled",
+  "description": "O resultado de uma leitura de uma fonte de ficheiros de movimentos (S5-06).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "messageId", "schemaVersion", "insurerId", "sourceId", "startedAt", "finishedAt", "outcome",
+    "filesFound", "filesProcessed", "filesRejected"
+  ],
+  "properties": {
+    "messageId": { "$ref": "#/$defs/uuid" },
+    "schemaVersion": { "const": 1 },
+    "insurerId": { "$ref": "#/$defs/uuid" },
+    "sourceId": { "$ref": "#/$defs/uuid" },
+    "startedAt": { "$ref": "#/$defs/instant" },
+    "finishedAt": { "$ref": "#/$defs/instant" },
+    "outcome": { "enum": ["OK", "ERROR"] },
+    "errorCode": {
+      "enum": [
+        null, "SFTP_UNREACHABLE", "SFTP_AUTH_FAILED", "SFTP_HOST_KEY_MISMATCH",
+        "SFTP_DIRECTORY_NOT_FOUND", "SECRET_NOT_FOUND", "UNSUPPORTED_FORMAT", "PUBLISH_FAILED",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "filesFound": { "type": "integer", "minimum": 0 },
+    "filesProcessed": { "type": "integer", "minimum": 0 },
+    "filesRejected": { "type": "integer", "minimum": 0 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "outcome": { "const": "OK" } }, "required": ["outcome"] },
+      "then": { "properties": { "errorCode": { "const": null } } }
+    },
+    {
+      "if": { "properties": { "outcome": { "const": "ERROR" } }, "required": ["outcome"] },
+      "then": {
+        "required": ["errorCode"],
+        "properties": { "errorCode": { "type": "string" } }
+      }
+    }
+  ],
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "instant": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+    }
+  }
+}

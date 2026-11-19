@@ -19,6 +19,8 @@ import 'package:moseguros_api/src/model/accept_proposal_request.dart';
 import 'package:moseguros_api/src/model/acceptance_mode.dart';
 import 'package:moseguros_api/src/model/acknowledge_suitability_request.dart';
 import 'package:moseguros_api/src/model/activate_invitation_request.dart';
+import 'package:moseguros_api/src/model/admin_payment_file_source.dart';
+import 'package:moseguros_api/src/model/admin_payment_file_sources.dart';
 import 'package:moseguros_api/src/model/approve_inspection_request.dart';
 import 'package:moseguros_api/src/model/assignable_roles_response.dart';
 import 'package:moseguros_api/src/model/broker_policyholder_request.dart';
@@ -41,6 +43,7 @@ import 'package:moseguros_api/src/model/create_driver_request.dart';
 import 'package:moseguros_api/src/model/create_organization_request.dart';
 import 'package:moseguros_api/src/model/create_plate_format_request.dart';
 import 'package:moseguros_api/src/model/create_product_request.dart';
+import 'package:moseguros_api/src/model/create_proposal_payment_intent_request.dart';
 import 'package:moseguros_api/src/model/create_proposal_request.dart';
 import 'package:moseguros_api/src/model/create_quote_request.dart';
 import 'package:moseguros_api/src/model/create_reference_value_request.dart';
@@ -51,6 +54,7 @@ import 'package:moseguros_api/src/model/declaration_answer_response.dart';
 import 'package:moseguros_api/src/model/declaration_question.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
 import 'package:moseguros_api/src/model/driver_response.dart';
+import 'package:moseguros_api/src/model/failure_code.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
 import 'package:moseguros_api/src/model/forgot_password_request.dart';
 import 'package:moseguros_api/src/model/info_request_item.dart';
@@ -62,6 +66,10 @@ import 'package:moseguros_api/src/model/inspection_status.dart';
 import 'package:moseguros_api/src/model/insurer_branding_response.dart';
 import 'package:moseguros_api/src/model/insurer_inspection_summary_response.dart';
 import 'package:moseguros_api/src/model/insurer_kyc_check_response.dart';
+import 'package:moseguros_api/src/model/insurer_payment_bank_reference.dart';
+import 'package:moseguros_api/src/model/insurer_payment_detail.dart';
+import 'package:moseguros_api/src/model/insurer_payment_event.dart';
+import 'package:moseguros_api/src/model/insurer_payment_summary.dart';
 import 'package:moseguros_api/src/model/insurer_profile_request.dart';
 import 'package:moseguros_api/src/model/insurer_profile_response.dart';
 import 'package:moseguros_api/src/model/insurer_proposal_driver.dart';
@@ -72,6 +80,7 @@ import 'package:moseguros_api/src/model/insurer_proposal_sla.dart';
 import 'package:moseguros_api/src/model/insurer_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/insurer_proposal_vehicle.dart';
 import 'package:moseguros_api/src/model/insurer_rating_settings_response.dart';
+import 'package:moseguros_api/src/model/intent_view.dart';
 import 'package:moseguros_api/src/model/invitation_details_response.dart';
 import 'package:moseguros_api/src/model/invitation_organization.dart';
 import 'package:moseguros_api/src/model/invitation_response.dart';
@@ -86,6 +95,8 @@ import 'package:moseguros_api/src/model/kyc_files_response.dart';
 import 'package:moseguros_api/src/model/kyc_previous_check_response.dart';
 import 'package:moseguros_api/src/model/kyc_rejection_reason.dart';
 import 'package:moseguros_api/src/model/kyc_state.dart';
+import 'package:moseguros_api/src/model/last_error_response.dart';
+import 'package:moseguros_api/src/model/last_test_response.dart';
 import 'package:moseguros_api/src/model/logout_request.dart';
 import 'package:moseguros_api/src/model/me_organization.dart';
 import 'package:moseguros_api/src/model/me_response.dart';
@@ -104,16 +115,47 @@ import 'package:moseguros_api/src/model/page_response_broker_proposal_summary_re
 import 'package:moseguros_api/src/model/page_response_catalog_product_response.dart';
 import 'package:moseguros_api/src/model/page_response_driver_response.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_inspection_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_insurer_payment_summary.dart';
 import 'package:moseguros_api/src/model/page_response_insurer_proposal_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_intent_view.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_kyc_check_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_payment_exception_summary.dart';
+import 'package:moseguros_api/src/model/page_response_payment_file_import.dart';
 import 'package:moseguros_api/src/model/page_response_product_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_proposal_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_quote_request_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_reference_value_response.dart';
 import 'package:moseguros_api/src/model/page_response_staff_user_response.dart';
 import 'package:moseguros_api/src/model/page_response_vehicle_response.dart';
+import 'package:moseguros_api/src/model/payment_confirmed_by.dart';
+import 'package:moseguros_api/src/model/payment_event_type.dart';
+import 'package:moseguros_api/src/model/payment_exception_candidate.dart';
+import 'package:moseguros_api/src/model/payment_exception_candidates.dart';
+import 'package:moseguros_api/src/model/payment_exception_detail.dart';
+import 'package:moseguros_api/src/model/payment_exception_intent.dart';
+import 'package:moseguros_api/src/model/payment_exception_summary.dart';
+import 'package:moseguros_api/src/model/payment_exception_type.dart';
+import 'package:moseguros_api/src/model/payment_file_import.dart';
+import 'package:moseguros_api/src/model/payment_file_source_insurer.dart';
+import 'package:moseguros_api/src/model/payment_file_source_status.dart';
+import 'package:moseguros_api/src/model/payment_insurer_ref.dart';
+import 'package:moseguros_api/src/model/payment_link_response.dart';
+import 'package:moseguros_api/src/model/payment_method_option.dart';
+import 'package:moseguros_api/src/model/payment_method_response.dart';
+import 'package:moseguros_api/src/model/payment_method_test_response.dart';
+import 'package:moseguros_api/src/model/payment_method_version_request.dart';
+import 'package:moseguros_api/src/model/payment_methods_response.dart';
+import 'package:moseguros_api/src/model/payment_next_action.dart';
+import 'package:moseguros_api/src/model/payment_next_action_type.dart';
+import 'package:moseguros_api/src/model/payment_purpose.dart';
+import 'package:moseguros_api/src/model/payment_queue_status.dart';
+import 'package:moseguros_api/src/model/payment_resolution.dart';
+import 'package:moseguros_api/src/model/payment_status.dart';
+import 'package:moseguros_api/src/model/payment_target_ref.dart';
+import 'package:moseguros_api/src/model/payment_target_type.dart';
+import 'package:moseguros_api/src/model/payment_worker_status.dart';
 import 'package:moseguros_api/src/model/photo_slot.dart';
 import 'package:moseguros_api/src/model/photo_source.dart';
 import 'package:moseguros_api/src/model/plate_format_response.dart';
@@ -139,6 +181,8 @@ import 'package:moseguros_api/src/model/proposal_driver.dart';
 import 'package:moseguros_api/src/model/proposal_info_request.dart';
 import 'package:moseguros_api/src/model/proposal_kyc.dart';
 import 'package:moseguros_api/src/model/proposal_organization.dart';
+import 'package:moseguros_api/src/model/proposal_payment_channel.dart';
+import 'package:moseguros_api/src/model/proposal_payment_methods_response.dart';
 import 'package:moseguros_api/src/model/proposal_policyholder.dart';
 import 'package:moseguros_api/src/model/proposal_premium.dart';
 import 'package:moseguros_api/src/model/proposal_product.dart';
@@ -173,6 +217,10 @@ import 'package:moseguros_api/src/model/rating_rule_error.dart';
 import 'package:moseguros_api/src/model/rating_rules_response.dart';
 import 'package:moseguros_api/src/model/rating_rules_validation_response.dart';
 import 'package:moseguros_api/src/model/rating_simulation_response.dart';
+import 'package:moseguros_api/src/model/reference_document_response.dart';
+import 'package:moseguros_api/src/model/reference_sms_request.dart';
+import 'package:moseguros_api/src/model/reference_sms_response.dart';
+import 'package:moseguros_api/src/model/reference_status.dart';
 import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
 import 'package:moseguros_api/src/model/registration_doc_response.dart';
@@ -189,10 +237,12 @@ import 'package:moseguros_api/src/model/request_signature_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_request.dart';
 import 'package:moseguros_api/src/model/requested_coverage_response.dart';
 import 'package:moseguros_api/src/model/reset_password_request.dart';
+import 'package:moseguros_api/src/model/resolve_payment_exception_request.dart';
 import 'package:moseguros_api/src/model/risk_driver_request.dart';
 import 'package:moseguros_api/src/model/rule_error.dart';
 import 'package:moseguros_api/src/model/save_declarations_request.dart';
 import 'package:moseguros_api/src/model/save_suitability_request.dart';
+import 'package:moseguros_api/src/model/secret_status_response.dart';
 import 'package:moseguros_api/src/model/signature_request_response.dart';
 import 'package:moseguros_api/src/model/simulate_rating_request.dart';
 import 'package:moseguros_api/src/model/simulation_vehicle_request.dart';
@@ -225,6 +275,7 @@ import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
 import 'package:moseguros_api/src/model/update_otp_settings_request.dart';
+import 'package:moseguros_api/src/model/update_payment_method_request.dart';
 import 'package:moseguros_api/src/model/update_plate_format_request.dart';
 import 'package:moseguros_api/src/model/update_platform_setting_request.dart';
 import 'package:moseguros_api/src/model/update_product_request.dart';
@@ -256,6 +307,8 @@ part 'serializers.g.dart';
   AcceptanceMode,
   AcknowledgeSuitabilityRequest,
   ActivateInvitationRequest,
+  AdminPaymentFileSource,
+  AdminPaymentFileSources,
   ApproveInspectionRequest,
   AssignableRolesResponse,
   BrokerPolicyholderRequest,
@@ -278,6 +331,7 @@ part 'serializers.g.dart';
   CreateOrganizationRequest,
   CreatePlateFormatRequest,
   CreateProductRequest,
+  CreateProposalPaymentIntentRequest,
   CreateProposalRequest,
   CreateQuoteRequest,
   CreateReferenceValueRequest,
@@ -288,6 +342,7 @@ part 'serializers.g.dart';
   DeclarationQuestion,
   DeliveryReceiptRequest,
   DriverResponse,
+  FailureCode,
   FieldError,
   ForgotPasswordRequest,
   InfoRequestItem,
@@ -299,6 +354,10 @@ part 'serializers.g.dart';
   InsurerBrandingResponse,
   InsurerInspectionSummaryResponse,
   InsurerKycCheckResponse,
+  InsurerPaymentBankReference,
+  InsurerPaymentDetail,
+  InsurerPaymentEvent,
+  InsurerPaymentSummary,
   InsurerProfileRequest,
   InsurerProfileResponse,
   InsurerProposalDriver,
@@ -309,6 +368,7 @@ part 'serializers.g.dart';
   InsurerProposalSummaryResponse,
   InsurerProposalVehicle,
   InsurerRatingSettingsResponse,
+  IntentView,
   InvitationDetailsResponse,
   InvitationOrganization,
   InvitationResponse,
@@ -323,6 +383,8 @@ part 'serializers.g.dart';
   KycPreviousCheckResponse,
   KycRejectionReason,
   KycState,
+  LastErrorResponse,
+  LastTestResponse,
   LogoutRequest,
   MeOrganization,
   MeResponse,
@@ -341,16 +403,47 @@ part 'serializers.g.dart';
   PageResponseCatalogProductResponse,
   PageResponseDriverResponse,
   PageResponseInsurerInspectionSummaryResponse,
+  PageResponseInsurerPaymentSummary,
   PageResponseInsurerProposalSummaryResponse,
+  PageResponseIntentView,
   PageResponseInvitationResponse,
   PageResponseKycCheckSummaryResponse,
   PageResponseOrganizationSummaryResponse,
+  PageResponsePaymentExceptionSummary,
+  PageResponsePaymentFileImport,
   PageResponseProductSummaryResponse,
   PageResponseProposalSummaryResponse,
   PageResponseQuoteRequestSummaryResponse,
   PageResponseReferenceValueResponse,
   PageResponseStaffUserResponse,
   PageResponseVehicleResponse,
+  PaymentConfirmedBy,
+  PaymentEventType,
+  PaymentExceptionCandidate,
+  PaymentExceptionCandidates,
+  PaymentExceptionDetail,
+  PaymentExceptionIntent,
+  PaymentExceptionSummary,
+  PaymentExceptionType,
+  PaymentFileImport,
+  PaymentFileSourceInsurer,
+  PaymentFileSourceStatus,
+  PaymentInsurerRef,
+  PaymentLinkResponse,
+  PaymentMethodOption,
+  PaymentMethodResponse,
+  PaymentMethodTestResponse,
+  PaymentMethodVersionRequest,
+  PaymentMethodsResponse,
+  PaymentNextAction,
+  PaymentNextActionType,
+  PaymentPurpose,
+  PaymentQueueStatus,
+  PaymentResolution,
+  PaymentStatus,
+  PaymentTargetRef,
+  PaymentTargetType,
+  PaymentWorkerStatus,
   PhotoSlot,
   PhotoSource,
   PlateFormatResponse,
@@ -376,6 +469,8 @@ part 'serializers.g.dart';
   ProposalInfoRequest,
   ProposalKyc,
   ProposalOrganization,
+  ProposalPaymentChannel,
+  ProposalPaymentMethodsResponse,
   ProposalPolicyholder,
   ProposalPremium,
   ProposalProduct,
@@ -410,6 +505,10 @@ part 'serializers.g.dart';
   RatingRulesResponse,
   RatingRulesValidationResponse,
   RatingSimulationResponse,
+  ReferenceDocumentResponse,
+  ReferenceSmsRequest,
+  ReferenceSmsResponse,
+  ReferenceStatus,
   ReferenceValueResponse,
   RefreshTokenRequest,
   RegistrationDocResponse,
@@ -426,10 +525,12 @@ part 'serializers.g.dart';
   RequestedCoverageRequest,
   RequestedCoverageResponse,
   ResetPasswordRequest,
+  ResolvePaymentExceptionRequest,
   RiskDriverRequest,
   RuleError,
   SaveDeclarationsRequest,
   SaveSuitabilityRequest,
+  SecretStatusResponse,
   SignatureRequestResponse,
   SimulateRatingRequest,
   SimulationVehicleRequest,
@@ -462,6 +563,7 @@ part 'serializers.g.dart';
   UpdateMyProfileRequest,
   UpdateOrganizationRequest,
   UpdateOtpSettingsRequest,
+  UpdatePaymentMethodRequest,
   UpdatePlateFormatRequest,
   UpdatePlatformSettingRequest,
   UpdateProductRequest,
@@ -487,8 +589,16 @@ part 'serializers.g.dart';
 ])
 Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(PaymentStatus)]),
+        () => ListBuilder<PaymentStatus>(),
+      )
+      ..addBuilderFactory(
         const FullType(BuiltList, [FullType(ProposalStatus)]),
         () => ListBuilder<ProposalStatus>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(PaymentExceptionType)]),
+        () => ListBuilder<PaymentExceptionType>(),
       )
       ..add(const OneOfSerializer())
       ..add(const AnyOfSerializer())

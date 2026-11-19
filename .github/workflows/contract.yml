@@ -4,12 +4,22 @@ on:
   pull_request:
     paths:
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
       - "api/**"
+      - "scripts/check-openapi.sh"
   push:
     branches: [main]
     paths:
       - "backend/**"
+      - "payment-contracts/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
       - "api/**"
+      - "scripts/check-openapi.sh"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -38,7 +48,9 @@ jobs:
       - name: Log da geração
         if: failure()
         uses: actions/upload-artifact@v4
+        continue-on-error: true # quota de artefactos esgotada não deve chumbar o CI
         with:
+          retention-days: 7
           name: check-openapi-log
           path: backend/target/check-openapi.log
           if-no-files-found: ignore

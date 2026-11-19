@@ -1,0 +1,13 @@
+{
+  "messageId": "0b9d8c7e-6f5a-4b3c-8d2e-1f0a9b8c7d6e",
+  "schemaVersion": 1,
+  "insurerId": "01930000-0000-7000-8000-000000000320",
+  "sourceId": "01930000-0000-7000-8000-000000000502",
+  "startedAt": "2027-01-15T09:13:00Z",
+  "finishedAt": "2027-01-15T09:13:10Z",
+  "outcome": "ERROR",
+  "errorCode": "SFTP_UNREACHABLE",
+  "filesFound": 0,
+  "filesProcessed": 0,
+  "filesRejected": 0
+}

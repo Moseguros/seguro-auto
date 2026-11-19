@@ -44,6 +44,15 @@ spring:
       mail.smtp.connectiontimeout: 5000
       mail.smtp.timeout: 5000
       mail.smtp.writetimeout: 5000
+  # RabbitMQ (S5-06, ADR-004): o backend declara a topologia dos pagamentos por referência
+  # (payment.infrastructure.amqp.PaymentsAmqpConfig). Em staging e produção o utilizador é
+  # moseguros_backend e a palavra-passe vem do cofre (infra/README.md, "RabbitMQ — utilizadores").
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:moseguros}
+    password: ${RABBITMQ_PASSWORD:moseguros}
+    connection-timeout: 5s
 
 server:
   port: ${SERVER_PORT:8080}
@@ -72,6 +81,8 @@ springdoc:
   override-with-generic-response: false
   swagger-ui:
     enabled: true
+  # Endpoints internos (S5-09: token de serviço e fontes do worker) ficam fora do contrato público.
+  paths-to-exclude: /internal/**
 
 moseguros:
   # Tokens JWT (ADR-003). Sem private-key, os perfis local e test geram um par RSA no
@@ -85,6 +96,15 @@ moseguros:
       staff-refresh-ttl: PT12H          # absoluto: a sessão de staff acaba 12 h depois do login
       key-id: ${MOSEGUROS_JWT_KEY_ID:dev}
       private-key: ${MOSEGUROS_JWT_PRIVATE_KEY:}
+      # aud dos tokens de serviço (S5-09): só valem em /internal/** (InternalSecurityConfig)
+      internal-audience: moseguros-internal
+    # Clientes de serviço (S5-09, client credentials em POST /internal/v1/auth/token). Fora de local e
+    # test: segredo vazio = cliente desactivado (WARN); menos de 32 caracteres = não arranca. Em
+    # staging e produção o segredo vem do cofre de segredos (S6-08).
+    service-clients:
+      payment-file-worker:
+        secret: ${MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:}
+        scopes: [ "payments:file-sources" ]
     # OTP do cliente (S1-03). Sem pepper (MOSEGUROS_OTP_PEPPER) só os perfis local e test
     # arrancam. O debug-header (código no cabeçalho X-Debug-Otp) só se liga no perfil local e
     # o arranque falha se estiver ligado com o perfil prod.
@@ -184,6 +204,37 @@ moseguros:
       bulkhead:
         max-concurrent-calls: 20
     secrets: {}
+  # Cofre de segredos (S5-01 §2; modelo transversal §7): chaves M-Pesa e credenciais SFTP das
+  # seguradoras; a BD guarda só o caminho (secret/insurers/<id>/payments/<MÉTODO>/<campo>). vault (KV v2
+  # no mount "secret") ou in-memory (só nos perfis local e test). Fora de local/test, in-memory ou
+  # token vazio impedem o arranque. AppRole em staging/produção decide-se com o alojamento (S6-08).
+  secrets:
+    store: ${MOSEGUROS_SECRETS_STORE:vault}     # vault | in-memory
+    vault:
+      uri: ${VAULT_URI:http://localhost:8200}
+      token: ${VAULT_TOKEN:}
+      mount: secret
+  # Pagamentos (S5-02, S5-04). M-Pesa: API oficial da Vodacom (o mpesa-mock em desenvolvimento e testes);
+  # as credenciais e o anfitrião de cada seguradora estão na configuração dela (S5-01). O C2B só responde
+  # quando o cliente confirma: corre no mpesaC2bExecutor. Uma intenção UNKNOWN é consultada aos delays
+  # (desde unknown_since), depois a cada repeat-interval; passado give-up-after → UNRESOLVED_STATUS.
+  # Pagamentos (S5-10 §5): uma fonte de ficheiros (BANK_REFERENCE activo) sem leitura com sucesso do
+  # SFTP há mais do que stale-after fica "parada" (stale_since, alerta PAYMENT_SOURCE_STALE). Mede a
+  # ligação, não a chegada de ficheiros (a frequência é combinada entre a seguradora e o banco).
+  payment:
+    file-source:
+      stale-after: PT15M
+    mpesa:
+      adapter: vodacom          # vodacom | test-stub (só nos testes do S5-02)
+      connect-timeout: PT5S
+      read-timeout: PT15S       # consulta e reversão; o C2B usa c2bTimeoutSeconds da seguradora
+      circuit-breaker-window: 20
+      circuit-breaker-failure-rate: 50
+      circuit-breaker-open-for: PT60S
+    status-query:
+      delays: PT30S,PT60S,PT120S,PT300S
+      repeat-interval: PT15M
+      give-up-after: PT24H
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada

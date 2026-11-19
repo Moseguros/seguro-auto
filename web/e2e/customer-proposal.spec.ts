@@ -187,7 +187,8 @@ test('só RC aceite logo na submissão: "Proposta aceite"', async ({ page }) => 
 
   await signAndSubmit(page, 'Enviámos um código por SMS para +25884****002.');
   await expect(page.getByText('Proposta aceite.')).toBeVisible();
-  await expect(page.getByText('O pagamento fica disponível em breve.')).toBeVisible();
+  // S5-11 §2: a proposta aceite mostra o "Adquirir apólice" (link para o pagamento).
+  await expect(page.getByRole('link', { name: 'Adquirir apólice' })).toBeVisible();
   await expect(page.getByText(/^Expira em /)).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Descarregar a proposta assinada (PDF)' }),

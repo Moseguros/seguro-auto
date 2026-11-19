@@ -5,12 +5,24 @@ on:
     paths:
       - "infra/**"
       - "backend/**"
+      - "payment-contracts/**"
+      - "payment-file-worker/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
+      - ".dockerignore"
       - "web/**"
   push:
     branches: [main]
     paths:
       - "infra/**"
       - "backend/**"
+      - "payment-contracts/**"
+      - "payment-file-worker/**"
+      - "pom.xml"
+      - ".mvn/**"
+      - "mvnw"
+      - ".dockerignore"
       - "web/**"
 
 concurrency:
@@ -24,6 +36,23 @@ env:
   COMPOSE_FILE: infra/docker-compose.yml
 
 jobs:
+  mpesa-mock:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/mocks/mpesa-mock
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Testes do simulador M-Pesa
+        run: ./mvnw -B verify
+
   compose:
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +73,22 @@ jobs:
           echo
           curl -fsS http://localhost:3000/api/v1/meta/version
           echo
+
+      # O backend declara a topologia dos pagamentos no arranque (S5-06).
+      - name: Filas do RabbitMQ
+        run: |
+          queues=$(curl -fsS -u moseguros:moseguros http://localhost:15672/api/queues | grep -o '"name":"core[^"]*"' | sort)
+          echo "$queues"
+          for q in core.reference-payments core.payment-file-events core.reference-payments.dlq core.payment-file-events.dlq; do
+            echo "$queues" | grep -q "\"name\":\"$q\"" || { echo "falta a fila $q"; exit 1; }
+          done
+
+      # O worker obtém o token de serviço e lê as fontes do backend (S5-09).
+      - name: Worker de ficheiros de pagamento
+        run: |
+          curl -fsS http://localhost:8081/actuator/health
+          echo
+          docker compose logs --no-color payment-file-worker | grep -q "Source .* scheduled" || { echo "o worker não agendou as fontes de demonstração"; exit 1; }
 
       - name: Estado e registos
         if: failure()

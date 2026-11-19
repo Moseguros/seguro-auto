@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: ponto24-mock
+
+server:
+  port: ${SERVER_PORT:8092}
+
+# Só o health fica exposto (/actuator/health), usado pelo healthcheck do compose.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+# S5-08 §6.1. As palavras-passe SFTP vêm de PONTO24_MOCK_SFTP_PASSWORD_<entidade> (variáveis de ambiente).
+# Os valores por defeito servem para correr fora do compose com o SFTP do compose (porta 2222).
+ponto24mock:
+  sources: ${PONTO24_MOCK_SOURCES:90002=MEPS@sftp://demo@localhost:2222/inbound,90090=BMEPS:800:02@sftp://demob@localhost:2222/inbound}
+  settlement-cron: ${PONTO24_MOCK_SETTLEMENT_CRON:0 * * * * *}
+  zone: ${PONTO24_MOCK_ZONE:Africa/Maputo}
+  file-style: ${PONTO24_MOCK_FILE_STYLE:EXAMPLE}
