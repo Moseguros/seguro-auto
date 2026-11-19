@@ -11,12 +11,12 @@ security:
 tags:
 - description: Informação técnica da aplicação
   name: Meta
-- description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
-  name: Rating
 - description: "Pagamentos: formas de pagamento das seguradoras (M-Pesa e entidade\
     \ e referência), intenções de pagamento e pagamentos recebidos. O dinheiro vai\
     \ directamente para a conta da seguradora"
   name: Payment
+- description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
+  name: Rating
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
 - description: Envio de mensagens e recibos de entrega
@@ -208,6 +208,62 @@ paths:
       summary: Envia um código de teste
       tags:
       - Identity
+  /api/v1/admin/payment-file-sources:
+    get:
+      description: "Permissão platform:operations. Todas as formas de pagamento BANK_REFERENCE\
+        \ (activas e inactivas), por nome da seguradora, com a última leitura e os\
+        \ ficheiros das últimas 24 h."
+      operationId: listPaymentFileSources
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPaymentFileSources"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as fontes de ficheiros de todas as seguradoras
+      tags:
+      - Payment
+  /api/v1/admin/payment-worker-status:
+    get:
+      description: Permissão platform:operations. Mensagens e consumidores das quatro
+        filas dos pagamentos e a última mensagem recebida. Broker inacessível → brokerReachable
+        false e queues vazio.
+      operationId: getPaymentWorkerStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentWorkerStatus"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Estado das filas e do worker de ficheiros
+      tags:
+      - Payment
   /api/v1/admin/plate-formats:
     get:
       description: "Permissão reference:manage. Todos, incluindo os inactivos, por\
@@ -2104,6 +2160,297 @@ paths:
       summary: Verifica uma identidade
       tags:
       - Identity
+  /api/v1/insurer/payment-exceptions:
+    get:
+      description: "Permissão payment:read. Filtros: status (OPEN por defeito; vazio\
+        \ = todos), type repetível, from e to em datas de Africa/Maputo (inclusivas,\
+        \ sobre createdAt), q igual à referência ou ao nome do ficheiro. Ordenaçã\
+        o createdAt (defeito desc)."
+      operationId: listPaymentExceptions
+      parameters:
+      - description: "OPEN (defeito), RESOLVED, ou vazio para todos"
+        in: query
+        name: status
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: type
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentExceptionType"
+      - in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "createdAt, com ,asc ou ,desc"
+        example: "createdAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponsePaymentExceptionSummary"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as excepções de pagamento da seguradora
+      tags:
+      - Payment
+  /api/v1/insurer/payment-exceptions/{id}:
+    get:
+      description: Permissão payment:read. Com as resoluções permitidas e a versão.
+        De outra seguradora → 404 PAYMENT_EXCEPTION_NOT_FOUND.
+      operationId: getPaymentException
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentExceptionDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma excepção de pagamento
+      tags:
+      - Payment
+  /api/v1/insurer/payment-exceptions/{id}/candidates:
+    get:
+      description: "Permissão payment:resolve-exception. Intenções BANK_REFERENCE\
+        \ da seguradora em PENDING, EXPIRED ou CANCELLED dos últimos 60 dias: mesma\
+        \ referência primeiro, depois o mesmo montante, depois as mais recentes; até\
+        \ 20. Tipo que não permite LINKED → lista vazia."
+      operationId: listPaymentExceptionCandidates
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentExceptionCandidates"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as intenções a que a excepção pode ser associada
+      tags:
+      - Payment
+  /api/v1/insurer/payment-exceptions/{id}/resolve:
+    post:
+      description: "Permissão payment:resolve-exception. AMOUNT_MISMATCH, UNKNOWN_REFERENCE,\
+        \ EXPIRED_REFERENCE, CANCELLED_REFERENCE: LINKED, REFUND, IGNORED; ALREADY_PAID\
+        \ e TARGET_NOT_PAYABLE: REFUND, IGNORED; UNRESOLVED_STATUS: MARK_SUCCEEDED,\
+        \ MARK_FAILED. Outra → 400 RESOLUTION_NOT_ALLOWED. LINKED: intenção de outra\
+        \ seguradora, de outro método ou noutro estado → 400 LINK_INTENT_INVALID;\
+        \ montante recebido menor → 400 LINK_AMOUNT_INSUFFICIENT; alvo já pago → 409\
+        \ PAYMENT_TARGET_ALREADY_PAID. Já resolvida → 409 INVALID_STATE_TRANSITION;\
+        \ versão diferente → 409 CONCURRENT_MODIFICATION. REFUND só regista a decisã\
+        o: a devolução faz-se fora da plataforma."
+      operationId: resolvePaymentException
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolvePaymentExceptionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentExceptionDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Resolve uma excepção de pagamento
+      tags:
+      - Payment
+  /api/v1/insurer/payment-file-source:
+    get:
+      description: "Permissão payment:read. Última leitura do SFTP, último sucesso\
+        \ e se a fonte está parada (sem leitura com sucesso há mais de staleAfterMinutes).\
+        \ Sem BANK_REFERENCE → configured false."
+      operationId: getPaymentFileSourceStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentFileSourceStatus"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Estado da fonte de ficheiros da seguradora
+      tags:
+      - Payment
+  /api/v1/insurer/payment-files:
+    get:
+      description: "Permissão payment:read. Ficheiros MEPS ou BMEPS processados ou\
+        \ rejeitados pelo worker, com os pagamentos confirmados e as excepções de\
+        \ cada um. Filtros: status (PROCESSED, REJECTED), from e to em datas de Africa/Maputo\
+        \ (inclusivas, sobre occurredAt). Ordenação occurredAt (defeito desc)."
+      operationId: listPaymentFileImports
+      parameters:
+      - description: PROCESSED ou REJECTED
+        in: query
+        name: status
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "occurredAt, com ,asc ou ,desc"
+        example: "occurredAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponsePaymentFileImport"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os ficheiros de movimentos da seguradora
+      tags:
+      - Payment
   /api/v1/insurer/payment-methods:
     get:
       description: "Permissão payment:configure, staff de uma seguradora (outro â\
@@ -6459,6 +6806,62 @@ components:
           example: "123456"
       required:
       - totpCode
+    AdminPaymentFileSource:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        entity:
+          type: string
+          example: "90002"
+        fileFormat:
+          type: string
+          enum:
+          - MEPS
+          - BMEPS
+        filesLast24h:
+          type: integer
+          format: int64
+        insurer:
+          $ref: "#/components/schemas/PaymentFileSourceInsurer"
+        lastPollAt:
+          type: string
+          format: date-time
+        lastPollError:
+          type: string
+          description: PollErrorCode (i18n pollErrorCode.*)
+        lastPollOutcome:
+          type: string
+          enum:
+          - OK
+          - ERROR
+        lastSuccessAt:
+          type: string
+          format: date-time
+        rejectedLast24h:
+          type: integer
+          format: int64
+        sourceId:
+          type: string
+          format: uuid
+        staleSince:
+          type: string
+          format: date-time
+      required:
+      - enabled
+      - filesLast24h
+      - insurer
+      - rejectedLast24h
+      - sourceId
+    AdminPaymentFileSources:
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminPaymentFileSource"
+      required:
+      - sources
     ApproveInspectionRequest:
       type: object
       properties:
@@ -9557,6 +9960,52 @@ components:
       - page
       - size
       - totalElements
+    PageResponsePaymentExceptionSummary:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentExceptionSummary"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponsePaymentFileImport:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentFileImport"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseProductSummaryResponse:
       type: object
       properties:
@@ -9712,6 +10161,307 @@ components:
       - STATUS_CHANGED
       - REFERENCE_PAID
       - MANUAL_RESOLUTION
+    PaymentExceptionCandidate:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        bankReference:
+          type: string
+          description: Referência bancária (11 dígitos) da intenção
+          example: "00001240106"
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        matchesAmount:
+          type: boolean
+        matchesReference:
+          type: boolean
+        reference:
+          type: string
+          example: PG-2027-0001234
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        targetLabel:
+          type: string
+      required:
+      - amount
+      - createdAt
+      - id
+      - matchesAmount
+      - matchesReference
+      - reference
+      - status
+      - targetLabel
+    PaymentExceptionCandidates:
+      type: object
+      properties:
+        candidates:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentExceptionCandidate"
+      required:
+      - candidates
+    PaymentExceptionDetail:
+      type: object
+      properties:
+        allowedResolutions:
+          type: array
+          description: Resoluções permitidas para o tipo; vazio depois de resolvida
+          items:
+            $ref: "#/components/schemas/PaymentResolution"
+        amount:
+          $ref: "#/components/schemas/Money"
+        bankTransactionId:
+          type: string
+          description: "Identificador da transacção no banco, se o ficheiro o trouxer"
+        createdAt:
+          type: string
+          format: date-time
+        detail:
+          type: string
+        entity:
+          type: string
+        fileName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        intent:
+          $ref: "#/components/schemas/PaymentExceptionIntent"
+        lineNo:
+          type: integer
+          format: int32
+        linkedIntent:
+          $ref: "#/components/schemas/PaymentExceptionIntent"
+        note:
+          type: string
+        paidAt:
+          type: string
+          format: date-time
+        reference:
+          type: string
+        resolution:
+          $ref: "#/components/schemas/PaymentResolution"
+        resolvedAt:
+          type: string
+          format: date-time
+        resolvedBy:
+          type: string
+          format: uuid
+          description: Id do utilizador que resolveu
+        status:
+          type: string
+          enum:
+          - OPEN
+          - RESOLVED
+        type:
+          $ref: "#/components/schemas/PaymentExceptionType"
+        version:
+          type: integer
+          format: int64
+          description: Versão; enviada na resolução (diferente → 409 CONCURRENT_MODIFICATION)
+      required:
+      - allowedResolutions
+      - createdAt
+      - id
+      - status
+      - type
+      - version
+    PaymentExceptionIntent:
+      type: object
+      description: Intenção associada (LINKED)
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        id:
+          type: string
+          format: uuid
+        reference:
+          type: string
+          example: PG-2027-0001234
+        status:
+          $ref: "#/components/schemas/PaymentStatus"
+        targetLabel:
+          type: string
+          example: PR-2027-000123
+      required:
+      - amount
+      - id
+      - reference
+      - status
+      - targetLabel
+    PaymentExceptionSummary:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        createdAt:
+          type: string
+          format: date-time
+        detail:
+          type: string
+          description: "Ex.: INVALID_CHECK_DIGITS, NOT_ISSUED (UNKNOWN_REFERENCE)"
+        entity:
+          type: string
+          description: Entidade (5 dígitos)
+          example: "90002"
+        fileName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        intent:
+          $ref: "#/components/schemas/PaymentExceptionIntent"
+        lineNo:
+          type: integer
+          format: int32
+        paidAt:
+          type: string
+          format: date-time
+        reference:
+          type: string
+          description: Referência (11 dígitos)
+          example: "00001240106"
+        resolution:
+          $ref: "#/components/schemas/PaymentResolution"
+        status:
+          type: string
+          enum:
+          - OPEN
+          - RESOLVED
+        type:
+          $ref: "#/components/schemas/PaymentExceptionType"
+      required:
+      - createdAt
+      - id
+      - status
+      - type
+    PaymentExceptionType:
+      type: string
+      enum:
+      - AMOUNT_MISMATCH
+      - EXPIRED_REFERENCE
+      - ALREADY_PAID
+      - UNKNOWN_REFERENCE
+      - CANCELLED_REFERENCE
+      - TARGET_NOT_PAYABLE
+      - UNRESOLVED_STATUS
+    PaymentFileImport:
+      type: object
+      properties:
+        confirmedCount:
+          type: integer
+          format: int64
+          description: Pagamentos confirmados
+        detail:
+          type: string
+        exceptionCount:
+          type: integer
+          format: int64
+          description: Pagamentos que geraram excepções
+        fileFormat:
+          type: string
+          enum:
+          - MEPS
+          - BMEPS
+        fileName:
+          type: string
+        formatFileId:
+          type: string
+          description: Identificador do ficheiro no formato (MEPS AAAAMMDDS; BMEPS
+            empresa-perfil-ID)
+        id:
+          type: string
+          format: uuid
+        lineNo:
+          type: integer
+          format: int32
+        occurredAt:
+          type: string
+          format: date-time
+        reason:
+          type: string
+          description: "Só REJECTED: FileRejectionReason (i18n fileRejectionReason.*)"
+        recordCount:
+          type: integer
+          format: int32
+          description: Só PROCESSED
+        sha256:
+          type: string
+        status:
+          type: string
+          enum:
+          - PROCESSED
+          - REJECTED
+        totalAmount:
+          $ref: "#/components/schemas/Money"
+        totalFees:
+          $ref: "#/components/schemas/Money"
+      required:
+      - confirmedCount
+      - exceptionCount
+      - fileFormat
+      - fileName
+      - id
+      - occurredAt
+      - sha256
+      - status
+    PaymentFileSourceInsurer:
+      type: object
+      properties:
+        displayName:
+          type: string
+        id:
+          type: string
+          format: uuid
+      required:
+      - displayName
+      - id
+    PaymentFileSourceStatus:
+      type: object
+      properties:
+        configured:
+          type: boolean
+          description: false sem forma de pagamento BANK_REFERENCE (os outros campos
+            não vêm)
+        enabled:
+          type: boolean
+        entity:
+          type: string
+          example: "90002"
+        fileFormat:
+          type: string
+          enum:
+          - MEPS
+          - BMEPS
+        lastPollAt:
+          type: string
+          format: date-time
+        lastPollError:
+          type: string
+          description: PollErrorCode (i18n pollErrorCode.*)
+        lastPollOutcome:
+          type: string
+          enum:
+          - OK
+          - ERROR
+        lastSuccessAt:
+          type: string
+          format: date-time
+        staleAfterMinutes:
+          type: integer
+          format: int64
+          description: Minutos sem leitura com sucesso a partir dos quais a fonte
+            está parada
+        staleSince:
+          type: string
+          format: date-time
+      required:
+      - configured
     PaymentInsurerRef:
       type: object
       properties:
@@ -9893,6 +10643,34 @@ components:
       - RENEWAL
       - ENDORSEMENT
       - FLEET_INCLUSION
+    PaymentQueueStatus:
+      type: object
+      description: Vazio se o broker não responder
+      properties:
+        consumers:
+          type: integer
+          format: int64
+          description: -1 se a fila não existir
+        messages:
+          type: integer
+          format: int64
+          description: -1 se a fila não existir
+        name:
+          type: string
+          example: core.reference-payments
+      required:
+      - consumers
+      - messages
+      - name
+    PaymentResolution:
+      type: string
+      description: Resoluções permitidas para o tipo; vazio depois de resolvida
+      enum:
+      - LINKED
+      - REFUND
+      - IGNORED
+      - MARK_SUCCEEDED
+      - MARK_FAILED
     PaymentStatus:
       type: string
       enum:
@@ -9927,6 +10705,23 @@ components:
       - RENEWAL
       - ENDORSEMENT
       - FLEET_INCLUSION
+    PaymentWorkerStatus:
+      type: object
+      properties:
+        brokerReachable:
+          type: boolean
+        lastMessageAt:
+          type: string
+          format: date-time
+          description: Última mensagem recebida do worker
+        queues:
+          type: array
+          description: Vazio se o broker não responder
+          items:
+            $ref: "#/components/schemas/PaymentQueueStatus"
+      required:
+      - brokerReachable
+      - queues
     PhotoSlot:
       type: string
       enum:
@@ -11960,6 +12755,39 @@ components:
       required:
       - newPassword
       - token
+    ResolvePaymentExceptionRequest:
+      type: object
+      properties:
+        intentId:
+          type: string
+          format: uuid
+          description: "Só LINKED (obrigatório): intenção BANK_REFERENCE desta seguradora\
+            \ em PENDING, EXPIRED ou CANCELLED"
+        note:
+          type: string
+          maxLength: 500
+          minLength: 5
+        providerTxId:
+          type: string
+          description: "Só MARK_SUCCEEDED: id da transacção no portal do fornecedor"
+          maxLength: 100
+        resolution:
+          type: string
+          description: "REFUND só regista a decisão: a seguradora devolve o dinheiro\
+            \ fora da plataforma"
+          enum:
+          - LINKED
+          - REFUND
+          - IGNORED
+          - MARK_SUCCEEDED
+          - MARK_FAILED
+        version:
+          type: integer
+          format: int64
+      required:
+      - note
+      - resolution
+      - version
     RiskDriverRequest:
       type: object
       properties:
