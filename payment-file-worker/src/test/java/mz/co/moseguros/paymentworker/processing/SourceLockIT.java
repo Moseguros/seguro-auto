@@ -75,7 +75,7 @@ class SourceLockIT extends WorkerITSupport {
         String dir = "lock" + UUID.randomUUID().toString().substring(0, 8);
         // sem mudança de pasta: só o trinco impede a segunda leitura de descarregar o ficheiro
         FileSourceDescriptor source = source(dir, false);
-        put(dir + "/inbound/a.txt", stubFile("1", null, 100_000, 200_000));
+        put(dir + "/inbound/a.txt", mepsFile("202611181", null, 100_000, 200_000));
 
         CountDownLatch start = new CountDownLatch(1);
         CompletableFuture<Optional<PollResult>> first = CompletableFuture.supplyAsync(() -> {

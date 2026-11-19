@@ -22,7 +22,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import mz.co.moseguros.paymentcontracts.FileSourceDescriptor;
 import mz.co.moseguros.paymentcontracts.PaymentsTopology;
 import mz.co.moseguros.paymentworker.WorkerTestConfiguration.NackingRabbitTemplate;
-import mz.co.moseguros.paymentworker.parser.TestStubParser;
 import mz.co.moseguros.paymentworker.secrets.InMemorySecretReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.amqp.core.BindingBuilder;
@@ -51,7 +50,8 @@ import org.testcontainers.utility.MountableFile;
  * Base dos testes de integração do worker (S5-09): Postgres com o {@code init-roles.sql} (a aplicação liga-se
  * como {@code moseguros_worker_user}, o Flyway como dono), RabbitMQ {@code rabbitmq:4.1-management}
  * (decisão D19), {@code atmoz/sftp} com o registo das operações SFTP em {@code /tmp/sftp.log}, e o backend simulado com WireMock
- * (token de serviço e uma lista de fontes vazia: os testes chamam o {@code SourcePoller} directamente).
+ * (token de serviço e uma lista de fontes vazia: os testes chamam o {@code SourcePoller} directamente). Os
+ * ficheiros são MEPS e BMEPS reais, lidos pelos leitores do S5-08.
  * Uma fila de teste ligada a {@code payments.events} por {@code reference.#} recebe todas as mensagens.
  *
  * <p>Os contentores arrancam uma vez por execução e são partilhados pelas classes de teste.
@@ -72,6 +72,8 @@ public abstract class WorkerITSupport {
     public static final String SERVICE_TOKEN = "wiremock-service-token-0123456789";
     public static final String TEST_QUEUE = "test.payment-events";
     public static final String ENTITY = "90002";
+    public static final String BMEPS_ENTITY = "90090";
+    static final String CRLF = "\r\n";
 
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"))
             .withInitScript("db/init-roles.sql");
@@ -136,21 +138,35 @@ public abstract class WorkerITSupport {
 
     // --- fontes ---
 
-    /** Fonte {@code TEST_STUB} com pastas próprias no SFTP ({@code <dir>/inbound}, …) e a palavra-passe no cofre. */
+    /** Fonte MEPS da entidade {@link #ENTITY} com pastas próprias no SFTP ({@code <dir>/inbound}, …) e a palavra-passe no cofre. */
     protected FileSourceDescriptor source(String dir, boolean move) {
         return source(dir, move, null, SFTP_PASSWORD);
     }
 
     protected FileSourceDescriptor source(String dir, boolean move, String fingerprint, String password) {
+        return source(dir, move, fingerprint, password, ENTITY, FileSourceDescriptor.FORMAT_MEPS, null, null, "*.txt");
+    }
+
+    /**
+     * Fonte BMEPS (entidade {@link #BMEPS_ENTITY}, empresa {@code 800}, perfil {@code 02}, como o exemplo oficial),
+     * com o padrão {@code *} (os nomes {@code BMEPS_out…} não têm extensão).
+     */
+    protected FileSourceDescriptor bmepsSource(String dir, boolean move) {
+        return source(dir, move, null, SFTP_PASSWORD, BMEPS_ENTITY, FileSourceDescriptor.FORMAT_BMEPS, "800", "02", "*");
+    }
+
+    protected FileSourceDescriptor source(String dir, boolean move, String fingerprint, String password, String entity,
+                                          String format, String bmepsCompanyId, String bmepsProfileId,
+                                          String filePattern) {
         UUID sourceId = UUID.randomUUID();
         UUID insurerId = UUID.randomUUID();
         mkdirs(dir + "/inbound", dir + "/processed", dir + "/error");
         String path = "secret/insurers/" + insurerId + "/payments/BANK_REFERENCE/sftp.password";
         secrets.put(path, password);
-        return new FileSourceDescriptor(sourceId, insurerId, 1, true, ENTITY, TestStubParser.FORMAT, null, null,
+        return new FileSourceDescriptor(sourceId, insurerId, 1, true, entity, format, bmepsCompanyId, bmepsProfileId,
                 new FileSourceDescriptor.Sftp(SFTP.getHost(), SFTP.getMappedPort(22), SFTP_USER, "PASSWORD",
                         dir + "/inbound", move, move ? dir + "/processed" : null, move ? dir + "/error" : null,
-                        "*.txt", fingerprint),
+                        filePattern, fingerprint),
                 Map.of("sftp.password", path));
     }
 
@@ -164,8 +180,12 @@ public abstract class WorkerITSupport {
 
     /** Põe um ficheiro na pasta indicada (relativa à raiz do utilizador). */
     protected static void put(String path, String content) {
-        SFTP.copyFileToContainer(Transferable.of(content.getBytes(StandardCharsets.ISO_8859_1), 0644),
-                "/home/demo/" + path);
+        put(path, content.getBytes(StandardCharsets.ISO_8859_1));
+    }
+
+    /** Põe um ficheiro tal como está (byte a byte). */
+    protected static void put(String path, byte[] content) {
+        SFTP.copyFileToContainer(Transferable.of(content, 0644), "/home/demo/" + path);
     }
 
     protected static List<String> ls(String dir) {
@@ -205,24 +225,38 @@ public abstract class WorkerITSupport {
         return count;
     }
 
-    // --- ficheiros TEST_STUB ---
+    // --- ficheiros MEPS ---
 
-    /** {@code H;entidade;id;anterior} + detalhes {@code D;referência;centavos;data} + {@code T;n;total}. */
-    protected static String stubFile(String fileId, String previous, long... amounts) {
-        return stubFile(ENTITY, fileId, previous, amounts.length, sum(amounts), amounts);
+    /** MEPS ({@code docs/specs/interbancos/README.md} §2) da entidade {@link #ENTITY}, com o rodapé certo. */
+    protected static String mepsFile(String a005, String previous, long... amounts) {
+        return mepsFile(ENTITY, a005, previous, amounts.length, sum(amounts), amounts);
     }
 
-    protected static String stubFile(String entity, String fileId, String previous, int count, long total,
+    /**
+     * MEPS com o cabeçalho, os detalhes e o rodapé indicados: A005 {@code a005} (9 dígitos), A007 {@code previous}
+     * (zeros se {@code null}), referências {@code 00548781108}, {@code 00548791108}, … pagas a 18/11/2026 às 10:30,
+     * 10:31, … em Maputo, tarifa 10,00 cada; o rodapé declara {@code count} registos e o total {@code total}.
+     */
+    protected static String mepsFile(String entity, String a005, String previous, int count, long total,
                                      long... amounts) {
         StringBuilder sb = new StringBuilder();
-        sb.append("H;").append(entity).append(';').append(fileId).append(';').append(previous == null ? "" : previous)
-                .append("\r\n");
+        sb.append(pad("0MEPS00000008000" + entity + a005 + (previous == null ? "000000000" : previous) + entity
+                + "943XX0000")).append(CRLF);
         for (int i = 0; i < amounts.length; i++) {
-            sb.append("D;").append(String.format("%07d", 54878 + i)).append("1108;").append(amounts[i])
-                    .append(";2026-11-18T10:3").append(i).append(":00\r\n");
+            sb.append(pad("2040000000000002026111810" + String.format("%02d", 30 + i) + String.format("%013d", amounts[i])
+                    + "000001000" + "  " + "0".repeat(15) + " ".repeat(15) + String.format("%07d", 54878 + i) + "1108"
+                    + "00")).append(CRLF);
         }
-        sb.append("T;").append(count).append(';').append(total).append("\r\n");
+        sb.append(pad("9" + String.format("%08d", count) + String.format("%017d", total)
+                + String.format("%012d", 1000L * amounts.length) + "00000000000 ")).append(CRLF);
         return sb.toString();
+    }
+
+    private static String pad(String line) {
+        if (line.length() > 107) {
+            throw new IllegalArgumentException("MEPS line longer than 107");
+        }
+        return line + " ".repeat(107 - line.length());
     }
 
     private static long sum(long... amounts) {

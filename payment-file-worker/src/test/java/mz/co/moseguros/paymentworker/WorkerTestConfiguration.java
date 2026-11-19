@@ -3,7 +3,6 @@ package mz.co.moseguros.paymentworker;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import mz.co.moseguros.paymentcontracts.ReferencePaymentReceived;
-import mz.co.moseguros.paymentworker.parser.TestStubParser;
 import mz.co.moseguros.paymentworker.secrets.InMemorySecretReader;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -16,8 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 /**
- * Beans dos testes de integração do worker: o cofre em memória, o leitor {@code TEST_STUB} (até aos
- * leitores reais do S5-08) e um {@link RabbitTemplate} que pode devolver {@code nack} ao N-ésimo
+ * Beans dos testes de integração do worker: o cofre em memória e um {@link RabbitTemplate} que pode devolver {@code nack} ao N-ésimo
  * {@code ReferencePaymentReceived}.
  */
 @TestConfiguration(proxyBeanMethods = false)
@@ -27,11 +25,6 @@ public class WorkerTestConfiguration {
     @Primary
     InMemorySecretReader inMemorySecretReader() {
         return new InMemorySecretReader();
-    }
-
-    @Bean
-    TestStubParser testStubParser() {
-        return new TestStubParser();
     }
 
     /** Configurado como o do Spring Boot (confirms, mandatory, conversor JSON do worker). */
