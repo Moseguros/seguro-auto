@@ -318,6 +318,16 @@ public final class ErrorCodes {
     /** A exportação teria mais linhas do que o limite; filtros mais estreitos (400). */
     public static final String EXPORT_TOO_LARGE = "EXPORT_TOO_LARGE";
 
+    // Reconciliação e excepções dos pagamentos (S5-10)
+    /** Excepção de pagamento inexistente ou de outra seguradora (404). */
+    public static final String PAYMENT_EXCEPTION_NOT_FOUND = "PAYMENT_EXCEPTION_NOT_FOUND";
+    /** Resolução que o tipo da excepção não permite; propriedade {@code allowedResolutions} (400). */
+    public static final String RESOLUTION_NOT_ALLOWED = "RESOLUTION_NOT_ALLOWED";
+    /** Intenção a associar de outra seguradora, de outro método ou num estado que não o permite (400). */
+    public static final String LINK_INTENT_INVALID = "LINK_INTENT_INVALID";
+    /** O montante recebido é menor do que o da intenção a associar (400). */
+    public static final String LINK_AMOUNT_INSUFFICIENT = "LINK_AMOUNT_INSUFFICIENT";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -454,7 +464,11 @@ public final class ErrorCodes {
             Map.entry(REFERENCE_GENERATION_FAILED, 503),
             Map.entry(CUSTOMER_HAS_NO_MSISDN, 409),
             Map.entry(PAYMENT_LINK_RATE_LIMITED, 429),
-            Map.entry(EXPORT_TOO_LARGE, 400));
+            Map.entry(EXPORT_TOO_LARGE, 400),
+            Map.entry(PAYMENT_EXCEPTION_NOT_FOUND, 404),
+            Map.entry(RESOLUTION_NOT_ALLOWED, 400),
+            Map.entry(LINK_INTENT_INVALID, 400),
+            Map.entry(LINK_AMOUNT_INSUFFICIENT, 400));
 
     private ErrorCodes() {
     }

@@ -23,6 +23,20 @@ public interface ReferencePaymentRepository extends JpaRepository<ReferencePayme
 
     List<ReferencePayment> findByIntentIdIn(Collection<UUID> intentIds);
 
+    /**
+     * A referência da seguradora com esta entidade e referência, bloqueada até ao fim da transacção (S5-10
+     * §3): a activa primeiro, depois a mais recente. Filtra sempre pela seguradora (corre em SYSTEM).
+     */
+    @Query(value = """
+            select * from payment.reference_payment
+             where insurer_id = :insurerId and entity = :entity and reference = :reference
+             order by (status = 'ACTIVE') desc, created_at desc
+             limit 1
+             for update""", nativeQuery = true)
+    Optional<ReferencePayment> lockForReconciliation(@Param("insurerId") UUID insurerId,
+                                                     @Param("entity") String entity,
+                                                     @Param("reference") String reference);
+
     boolean existsByEntityAndReference(String entity, String reference);
 
     boolean existsByEntityAndInvoiceNumber(String entity, int invoiceNumber);

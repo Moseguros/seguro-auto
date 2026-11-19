@@ -1,6 +1,7 @@
 package mz.co.moseguros.payment.domain;
 
-/** Tipos de {@code payment.payment_exception} (S5-02 §2; tratados no S5-10 e S5-12). */
+/** Tipos de {@code payment.payment_exception} (S5-02 §2; tratados no S5-10 e S5-12; i18n {@code paymentExceptionType.<CODE>}). */
+@io.swagger.v3.oas.annotations.media.Schema(name = "PaymentExceptionType", enumAsRef = true)
 public enum PaymentExceptionType {
     AMOUNT_MISMATCH,
     EXPIRED_REFERENCE,

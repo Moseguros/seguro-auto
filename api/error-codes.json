@@ -193,6 +193,14 @@
       "status" : 400
     },
     {
+      "code" : "LINK_AMOUNT_INSUFFICIENT",
+      "status" : 400
+    },
+    {
+      "code" : "LINK_INTENT_INVALID",
+      "status" : 400
+    },
+    {
       "code" : "NOT_A_REFERENCE_PAYMENT",
       "status" : 409
     },
@@ -275,6 +283,10 @@
     {
       "code" : "PASSWORD_TOO_WEAK",
       "status" : 400
+    },
+    {
+      "code" : "PAYMENT_EXCEPTION_NOT_FOUND",
+      "status" : 404
     },
     {
       "code" : "PAYMENT_INTENT_NOT_FOUND",
@@ -466,6 +478,10 @@
     },
     {
       "code" : "RESET_TOKEN_INVALID",
+      "status" : 400
+    },
+    {
+      "code" : "RESOLUTION_NOT_ALLOWED",
       "status" : 400
     },
     {

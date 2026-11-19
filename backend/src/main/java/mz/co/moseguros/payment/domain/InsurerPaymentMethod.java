@@ -98,6 +98,24 @@ public class InsurerPaymentMethod extends BaseEntity {
     @Column(name = "last_error_at")
     private Instant lastErrorAt;
 
+    // Estado das leituras da fonte de ficheiros (S5-10): só leitura no JPA. Gravam-se com updates
+    // próprios (InsurerPaymentMethodRepository.recordPoll, markStale, clearStale) que não mudam a
+    // version: uma leitura de 60 em 60 s não pode dar CONCURRENT_MODIFICATION a quem edita a configuração.
+    @Column(name = "last_poll_at", insertable = false, updatable = false)
+    private Instant lastPollAt;
+
+    @Column(name = "last_poll_outcome", insertable = false, updatable = false)
+    private String lastPollOutcome;
+
+    @Column(name = "last_poll_error", insertable = false, updatable = false)
+    private String lastPollError;
+
+    @Column(name = "last_poll_success_at", insertable = false, updatable = false)
+    private Instant lastPollSuccessAt;
+
+    @Column(name = "stale_since", insertable = false, updatable = false)
+    private Instant staleSince;
+
     protected InsurerPaymentMethod() {
     }
 
@@ -289,6 +307,26 @@ public class InsurerPaymentMethod extends BaseEntity {
 
     public String getLastErrorCode() {
         return lastErrorCode;
+    }
+
+    public Instant getLastPollAt() {
+        return lastPollAt;
+    }
+
+    public String getLastPollOutcome() {
+        return lastPollOutcome;
+    }
+
+    public String getLastPollError() {
+        return lastPollError;
+    }
+
+    public Instant getLastPollSuccessAt() {
+        return lastPollSuccessAt;
+    }
+
+    public Instant getStaleSince() {
+        return staleSince;
     }
 
     public Instant getLastErrorAt() {

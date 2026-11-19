@@ -58,7 +58,7 @@ public class ReferencePayment extends BaseEntity {
     @Column(name = "paid_at")
     private Instant paidAt;
 
-    @Column(name = "bank_transaction_id", length = 60)
+    @Column(name = "bank_transaction_id", length = 64)
     private String bankTransactionId;
 
     @Column(name = "message_id", length = 64)
@@ -110,12 +110,23 @@ public class ReferencePayment extends BaseEntity {
         }
     }
 
-    /** A intenção foi confirmada; os dados do banco ({@code bank_transaction_id}, {@code message_id}) vêm no S5-10. */
+    /** A intenção foi confirmada; os dados do banco vêm de {@link #recordBankPayment}. */
     public void markPaid(Instant at) {
         this.status = ReferenceStatus.PAID;
         if (this.paidAt == null) {
             this.paidAt = at;
         }
+    }
+
+    /**
+     * Pagamento lido no ficheiro do banco (S5-10 §3) ou associado pelo financeiro ({@code LINKED}, S5-10 §6):
+     * {@code PAID} com a data, o identificador do banco e a mensagem de origem.
+     */
+    public void recordBankPayment(Instant at, String bankTransactionId, String messageId) {
+        this.status = ReferenceStatus.PAID;
+        this.paidAt = Objects.requireNonNull(at, "at");
+        this.bankTransactionId = bankTransactionId;
+        this.messageId = messageId;
     }
 
     public void smsSent() {
