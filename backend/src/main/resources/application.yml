@@ -120,12 +120,21 @@ moseguros:
     sms:
       provider: mock
       mock-url: ${MOSEGUROS_NOTIFICATION_SMS_MOCK_URL:http://localhost:8090}
+      # S6-04 §5: tira os acentos dos SMS das notificações (160 caracteres GSM-7 em vez de 70)
+      ascii-fold: true
     whatsapp:
       provider: mock
       mock-url: ${MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL:http://localhost:8090}
     email:
       provider: smtp
       from: ${MOSEGUROS_NOTIFICATION_EMAIL_FROM:MoSeguros <nao-responder@moseguros.co.mz>}
+    # Notificações (S6-04 §4): o primeiro canal disponível e permitido, por esta ordem.
+    channel-order: [PUSH, WHATSAPP, SMS, EMAIL]
+    # Push (S6-04 §6): mock (MockPushSender; com mock-url, POST {mock-url}/push no sms-mock) ou fcm
+    # (FcmPushSender, credencial no cofre em secret/platform/fcm/service-account). mock não arranca em prod.
+    push:
+      provider: ${MOSEGUROS_NOTIFICATION_PUSH_PROVIDER:mock}
+      mock-url: ${MOSEGUROS_NOTIFICATION_PUSH_MOCK_URL:}
   # Endereço da web (links nos e-mails). Local: Vite em 5173; no compose: nginx em 3000.
   # trusted-proxies (ClientIpResolver, D15): IPs ou CIDR dos proxies cujo X-Forwarded-For é aceite
   # como IP do cliente (vazia = usa sempre o endereço remoto). Ex.: MOSEGUROS_WEB_TRUSTED_PROXIES=172.18.0.0/16.
@@ -189,6 +198,8 @@ moseguros:
     global-timeout: PT3S
     max-start-days-ahead: 60
     max-requests-per-hour: 30
+    # Aviso de simulação a expirar (S6-04 §9.1, QuoteExpiryNotifierJob às 09:00): dias antes do fim da validade.
+    quote-expiry-notice-days: 2
     executor:
       core-size: 8
       max-size: 32

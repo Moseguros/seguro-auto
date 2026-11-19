@@ -332,6 +332,14 @@ public final class ErrorCodes {
     /** Apólice inexistente ou fora do âmbito de quem pede (404). */
     public static final String POLICY_NOT_FOUND = "POLICY_NOT_FOUND";
 
+    // Notificações (S6-04 §12)
+    /** Notificação inexistente ou de outro cliente. */
+    public static final String NOTIFICATION_NOT_FOUND = "NOTIFICATION_NOT_FOUND";
+    /** Modelo de notificação inexistente. */
+    public static final String TEMPLATE_NOT_FOUND = "TEMPLATE_NOT_FOUND";
+    /** Dispositivo inexistente ou de outro cliente. */
+    public static final String DEVICE_NOT_FOUND = "DEVICE_NOT_FOUND";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -473,7 +481,10 @@ public final class ErrorCodes {
             Map.entry(RESOLUTION_NOT_ALLOWED, 400),
             Map.entry(LINK_INTENT_INVALID, 400),
             Map.entry(LINK_AMOUNT_INSUFFICIENT, 400),
-            Map.entry(POLICY_NOT_FOUND, 404));
+            Map.entry(POLICY_NOT_FOUND, 404),
+            Map.entry(NOTIFICATION_NOT_FOUND, 404),
+            Map.entry(TEMPLATE_NOT_FOUND, 404),
+            Map.entry(DEVICE_NOT_FOUND, 404));
 
     private ErrorCodes() {
     }

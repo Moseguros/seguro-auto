@@ -30,6 +30,9 @@ moseguros:
       provider: fake
     email:
       provider: fake
+    # Push falso (FakeOtpDeliveryChannels.FakePush, S6-04).
+    push:
+      provider: fake
   # Cofre em memória (InMemorySecretStore); o VaultSecretStoreIT usa um Vault real (Testcontainers).
   secrets:
     store: in-memory

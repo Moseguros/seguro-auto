@@ -14,13 +14,16 @@ import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Recibos de entrega dos fornecedores: actualizam {@code outbound_message} e, numa falha de um
- * OTP, publicam {@link OtpDeliveryFailed} (o módulo Identidade tenta então o canal seguinte).
+ * OTP, publicam {@link OtpDeliveryFailed} (o módulo Identidade tenta então o canal seguinte). Sem linha em
+ * {@code outbound_message}, procuram em {@code notification.message} (S6-04 §4): {@code FAILED} até 10 minutos
+ * depois do envio aplica a alternativa.
  */
 @Service
 public class DeliveryReceiptService {
@@ -35,14 +38,17 @@ public class DeliveryReceiptService {
     private final NotificationProperties properties;
     private final ApplicationEventPublisher events;
     private final Clock clock;
+    private final ObjectProvider<MessageSender> notificationMessages;
 
     public DeliveryReceiptService(OutboundMessageRepository messages, OtpMessageService otpMessages,
-                                  NotificationProperties properties, ApplicationEventPublisher events, Clock clock) {
+                                  NotificationProperties properties, ApplicationEventPublisher events, Clock clock,
+                                  ObjectProvider<MessageSender> notificationMessages) {
         this.messages = messages;
         this.otpMessages = otpMessages;
         this.properties = properties;
         this.events = events;
         this.clock = clock;
+        this.notificationMessages = notificationMessages;
     }
 
     /**
@@ -65,7 +71,12 @@ public class DeliveryReceiptService {
         OutboundMessage message = messages.findFirstByProviderAndProviderMessageId(provider, providerMessageId)
                 .orElse(null);
         if (message == null) {
-            log.info("Delivery receipt from {} for unknown message ignored", provider);
+            MessageSender notifications = notificationMessages == null ? null
+                    : notificationMessages.getIfAvailable();
+            if (notifications == null || !notifications.applyReceipt(provider, providerMessageId,
+                    status == ReceiptStatus.DELIVERED, reason)) {
+                log.info("Delivery receipt from {} for unknown message ignored", provider);
+            }
             return;
         }
         DeliveryStatus previous = message.getStatus();
