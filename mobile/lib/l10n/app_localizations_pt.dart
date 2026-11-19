@@ -2063,7 +2063,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get validationMsisdnNotMpesa =>
-      'Este número não é M-Pesa (tem de começar por 84 ou 85).';
+      'Use um número Vodacom (começado por 84 ou 85).';
 
   @override
   String get validationInvalidUuid => 'Identificador inválido.';
@@ -2081,7 +2081,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get paymentStatusSucceeded => 'Pago';
 
   @override
-  String get paymentStatusFailed => 'Falhado';
+  String get paymentStatusFailed => 'Falhou';
 
   @override
   String get paymentStatusExpired => 'Expirado';
@@ -2099,28 +2099,31 @@ class AppLocalizationsPt extends AppLocalizations {
   String get paymentMethodBankReference => 'Entidade e referência';
 
   @override
-  String get paymentFailureCustomerCancelled => 'Cancelado no telemóvel.';
+  String get paymentFailureCustomerCancelled =>
+      'Cancelou o pagamento no telemóvel.';
 
   @override
   String get paymentFailureInsufficientBalance => 'Saldo insuficiente.';
 
   @override
-  String get paymentFailureInvalidMsisdn => 'Número M-Pesa inválido.';
+  String get paymentFailureInvalidMsisdn =>
+      'Este número não está registado no serviço de pagamento.';
 
   @override
-  String get paymentFailureProviderRejected => 'O pagamento foi recusado.';
+  String get paymentFailureProviderRejected =>
+      'O pagamento foi recusado pelo operador.';
 
   @override
   String get paymentFailureProviderConfigError =>
-      'A forma de pagamento da seguradora tem um problema de configuração.';
+      'Esta forma de pagamento tem um problema do lado da seguradora. Escolha outra ou tente mais tarde.';
 
   @override
   String get paymentFailureProviderUnavailable =>
-      'O serviço de pagamento não está disponível.';
+      'O serviço de pagamento não está disponível. Tente mais tarde.';
 
   @override
   String get paymentFailureTimeoutExpired =>
-      'O pagamento não foi confirmado a tempo.';
+      'O pedido expirou sem confirmação.';
 
   @override
   String get paymentFailureExpired => 'O prazo para pagar terminou.';
@@ -2797,9 +2800,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get proposalAcceptedText => 'Proposta aceite.';
 
   @override
-  String get proposalPaymentSoon => 'O pagamento fica disponível em breve.';
-
-  @override
   String get proposalRejectedText => 'A proposta não foi aceite.';
 
   @override
@@ -2833,4 +2833,269 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get inspectionRemoveConfirm => 'Retirar esta fotografia da vistoria?';
+
+  @override
+  String get paymentsTitle => 'Pagar a proposta';
+
+  @override
+  String paymentsSummaryProposal(String number) {
+    return 'Proposta $number';
+  }
+
+  @override
+  String get paymentsSummaryTotal => 'Total a pagar';
+
+  @override
+  String paymentsSummaryPayBy(String date) {
+    return 'Pagar até $date';
+  }
+
+  @override
+  String paymentsSummaryDirect(String insurer) {
+    return 'O pagamento é feito directamente à $insurer. A MoSeguros não recebe dinheiro.';
+  }
+
+  @override
+  String get paymentsMethodLabel => 'Forma de pagamento';
+
+  @override
+  String get paymentsMethodMpesaNumber => 'Número M-Pesa';
+
+  @override
+  String get paymentsMethodReferenceHelp =>
+      'Recebe uma entidade e uma referência para pagar por e-banking ou app do banco, ATM, *124#, POS ou balcão.';
+
+  @override
+  String get paymentsPaySubmit => 'Adquirir apólice';
+
+  @override
+  String get paymentsPayNotFound => 'Proposta não encontrada.';
+
+  @override
+  String get paymentsPayBackToProposals => 'Ver as propostas';
+
+  @override
+  String get paymentsPayNotPayable => 'Esta proposta já não pode ser paga.';
+
+  @override
+  String get paymentsPayAlreadyPaid => 'Esta proposta já está paga.';
+
+  @override
+  String get paymentsPayBackToProposal => 'Ver a proposta';
+
+  @override
+  String get paymentsPayActiveIntent => 'Tem um pagamento em curso';
+
+  @override
+  String get paymentsPayViewPayment => 'Ver pagamento';
+
+  @override
+  String get paymentsPayNoMethods =>
+      'A seguradora ainda não tem formas de pagamento disponíveis. Contacte a seguradora.';
+
+  @override
+  String get paymentsPayMethodUnavailable =>
+      'Esta forma de pagamento não está disponível agora. Escolha outra.';
+
+  @override
+  String get paymentsIntentNotFound => 'Pagamento não encontrado.';
+
+  @override
+  String get paymentsIntentBackToPayments => 'Ver os meus pagamentos';
+
+  @override
+  String get paymentsIntentPreparing => 'A preparar o pagamento…';
+
+  @override
+  String paymentsIntentReference(String reference) {
+    return 'Pagamento $reference';
+  }
+
+  @override
+  String get paymentsAwaitTitle => 'Confirme o pagamento no seu telemóvel';
+
+  @override
+  String paymentsAwaitStep1(String msisdn) {
+    return '1. Desbloqueie o telemóvel com o número $msisdn.';
+  }
+
+  @override
+  String get paymentsAwaitStep2 =>
+      '2. Introduza o seu PIN M-Pesa no pedido que aparece.';
+
+  @override
+  String get paymentsAwaitStep3 => '3. Aguarde aqui a confirmação.';
+
+  @override
+  String get paymentsAwaitRemaining => 'Tempo para confirmar';
+
+  @override
+  String get paymentsAwaitStillWaiting =>
+      'Ainda não recebemos a resposta. Estamos a confirmar.';
+
+  @override
+  String get paymentsAwaitBackToProposal => 'Voltar à proposta';
+
+  @override
+  String get paymentsCheckingLead =>
+      'Ainda não temos a confirmação do operador.';
+
+  @override
+  String get paymentsCheckingDontPay => 'Não volte a pagar';
+
+  @override
+  String get paymentsCheckingRest =>
+      ': estamos a confirmar e actualizamos esta página sozinhos.';
+
+  @override
+  String paymentsCheckingNextCheck(String time) {
+    return 'Próxima verificação às $time';
+  }
+
+  @override
+  String get paymentsReferenceEntity => 'Entidade';
+
+  @override
+  String get paymentsReferenceReference => 'Referência';
+
+  @override
+  String get paymentsReferenceAmount => 'Montante';
+
+  @override
+  String paymentsReferenceCopy(String label) {
+    return 'Copiar $label';
+  }
+
+  @override
+  String get paymentsReferenceCopied => 'Copiado';
+
+  @override
+  String get paymentsReferenceCopyFailed => 'Não foi possível copiar.';
+
+  @override
+  String get paymentsReferenceExactAmount =>
+      'Pague exactamente este montante. A rede recusa outro valor.';
+
+  @override
+  String paymentsReferenceValidUntil(String date) {
+    return 'Válida até $date';
+  }
+
+  @override
+  String get paymentsReferenceHowTo =>
+      'Como pagar: no e-banking ou na app do seu banco, no ATM, pelo telemóvel (*124#), num POS ou ao balcão, escolha pagamento de serviços por entidade e referência e introduza os três dados acima.';
+
+  @override
+  String get paymentsReferenceConfirmationInfo =>
+      'A confirmação chega quando o banco enviar o ficheiro de pagamentos à seguradora; lemos o ficheiro logo que chega. Pode demorar algumas horas. Não precisa de ficar nesta página. Vai receber um e-mail quando o pagamento for confirmado.';
+
+  @override
+  String get paymentsReferenceDownloadPdf => 'Descarregar PDF';
+
+  @override
+  String get paymentsReferenceSendSms => 'Enviar por SMS';
+
+  @override
+  String get paymentsSmsTitle => 'Enviar a referência por SMS';
+
+  @override
+  String get paymentsSmsMsisdn => 'Número de telemóvel';
+
+  @override
+  String get paymentsSmsSend => 'Enviar';
+
+  @override
+  String paymentsSmsSent(String sentTo) {
+    return 'SMS enviado para $sentTo';
+  }
+
+  @override
+  String get paymentsSmsRateLimited => 'Já enviou esta referência 3 vezes.';
+
+  @override
+  String get paymentsOutcomeSucceeded => 'Pagamento confirmado';
+
+  @override
+  String get paymentsOutcomeSucceededText =>
+      'A sua apólice vai ser emitida em breve.';
+
+  @override
+  String get paymentsOutcomeExpired => 'O prazo para este pagamento terminou.';
+
+  @override
+  String get paymentsOutcomeCancelled =>
+      'Este pagamento foi substituído por outro.';
+
+  @override
+  String get paymentsOutcomeRefunded => 'Este pagamento foi reembolsado.';
+
+  @override
+  String get paymentsOutcomeViewProposal => 'Ver proposta';
+
+  @override
+  String get paymentsOutcomeChooseAnother =>
+      'Escolher outra forma de pagamento';
+
+  @override
+  String get paymentsListTitle => 'Pagamentos';
+
+  @override
+  String get paymentsListEmpty => 'Ainda não tem pagamentos.';
+
+  @override
+  String get paymentsListLoadMore => 'Carregar mais';
+
+  @override
+  String get paymentsListDate => 'Data';
+
+  @override
+  String get paymentsListTarget => 'Proposta';
+
+  @override
+  String get paymentsListInsurer => 'Seguradora';
+
+  @override
+  String get paymentsListMethod => 'Forma de pagamento';
+
+  @override
+  String get paymentsListAmount => 'Montante';
+
+  @override
+  String get paymentsListStatus => 'Estado';
+
+  @override
+  String get paymentsLinkButton => 'Enviar link de pagamento ao cliente';
+
+  @override
+  String get paymentsLinkConfirmTitle => 'Enviar link de pagamento';
+
+  @override
+  String get paymentsLinkConfirmText =>
+      'Vamos enviar um SMS ao cliente com o link para pagar. O cliente paga directamente à seguradora.';
+
+  @override
+  String get paymentsLinkSend => 'Enviar';
+
+  @override
+  String paymentsLinkSent(String sentTo) {
+    return 'Link enviado para $sentTo';
+  }
+
+  @override
+  String paymentsLinkRateLimited(String minutes) {
+    return 'Já enviou o link 3 vezes nas últimas 24 horas. Tente dentro de $minutes minutos.';
+  }
+
+  @override
+  String get paymentsLinkNoMsisdn => 'O cliente não tem telemóvel registado.';
+
+  @override
+  String get paymentsProposalPaid =>
+      'Pagamento recebido. A sua apólice vai ser emitida em breve.';
+
+  @override
+  String get paymentsReferenceCopyButton => 'Copiar';
+
+  @override
+  String get paymentsMenu => 'Pagamentos';
 }

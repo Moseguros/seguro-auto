@@ -957,25 +957,25 @@
   "errorCustomerHasNoMsisdn": "O cliente não tem telemóvel registado para receber o link.",
   "errorPaymentLinkRateLimited": "Já enviou o link de pagamento 3 vezes nas últimas 24 horas.",
   "errorExportTooLarge": "A exportação tem demasiadas linhas. Use filtros mais estreitos.",
-  "validationMsisdnNotMpesa": "Este número não é M-Pesa (tem de começar por 84 ou 85).",
+  "validationMsisdnNotMpesa": "Use um número Vodacom (começado por 84 ou 85).",
   "validationInvalidUuid": "Identificador inválido.",
   "paymentStatusCreated": "Criado",
   "paymentStatusPending": "Pendente",
   "paymentStatusUnknown": "A confirmar",
   "paymentStatusSucceeded": "Pago",
-  "paymentStatusFailed": "Falhado",
+  "paymentStatusFailed": "Falhou",
   "paymentStatusExpired": "Expirado",
   "paymentStatusCancelled": "Cancelado",
   "paymentStatusRefunded": "Reembolsado",
   "paymentMethodMpesa": "M-Pesa",
   "paymentMethodBankReference": "Entidade e referência",
-  "paymentFailureCustomerCancelled": "Cancelado no telemóvel.",
+  "paymentFailureCustomerCancelled": "Cancelou o pagamento no telemóvel.",
   "paymentFailureInsufficientBalance": "Saldo insuficiente.",
-  "paymentFailureInvalidMsisdn": "Número M-Pesa inválido.",
-  "paymentFailureProviderRejected": "O pagamento foi recusado.",
-  "paymentFailureProviderConfigError": "A forma de pagamento da seguradora tem um problema de configuração.",
-  "paymentFailureProviderUnavailable": "O serviço de pagamento não está disponível.",
-  "paymentFailureTimeoutExpired": "O pagamento não foi confirmado a tempo.",
+  "paymentFailureInvalidMsisdn": "Este número não está registado no serviço de pagamento.",
+  "paymentFailureProviderRejected": "O pagamento foi recusado pelo operador.",
+  "paymentFailureProviderConfigError": "Esta forma de pagamento tem um problema do lado da seguradora. Escolha outra ou tente mais tarde.",
+  "paymentFailureProviderUnavailable": "O serviço de pagamento não está disponível. Tente mais tarde.",
+  "paymentFailureTimeoutExpired": "O pedido expirou sem confirmação.",
   "paymentFailureExpired": "O prazo para pagar terminou.",
   "paymentFailureSuperseded": "Substituído por outro pagamento.",
   "paymentFailureManual": "Resolvido pela seguradora.",
@@ -1276,7 +1276,6 @@
     }
   },
   "proposalAcceptedText": "Proposta aceite.",
-  "proposalPaymentSoon": "O pagamento fica disponível em breve.",
   "proposalRejectedText": "A proposta não foi aceite.",
   "proposalExpiredText": "Esta proposta expirou.",
   "proposalDownloadSigned": "Descarregar a proposta assinada (PDF)",
@@ -1292,5 +1291,158 @@
   "logoutAnyway": "Terminar na mesma",
   "cameraUnavailableNoGallery": "Não foi possível abrir a câmara.",
   "inspectionRemove": "Retirar",
-  "inspectionRemoveConfirm": "Retirar esta fotografia da vistoria?"
+  "inspectionRemoveConfirm": "Retirar esta fotografia da vistoria?",
+  "paymentsTitle": "Pagar a proposta",
+  "paymentsSummaryProposal": "Proposta {number}",
+  "@paymentsSummaryProposal": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsSummaryTotal": "Total a pagar",
+  "paymentsSummaryPayBy": "Pagar até {date}",
+  "@paymentsSummaryPayBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsSummaryDirect": "O pagamento é feito directamente à {insurer}. A MoSeguros não recebe dinheiro.",
+  "@paymentsSummaryDirect": {
+    "placeholders": {
+      "insurer": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsMethodLabel": "Forma de pagamento",
+  "paymentsMethodMpesaNumber": "Número M-Pesa",
+  "paymentsMethodReferenceHelp": "Recebe uma entidade e uma referência para pagar por e-banking ou app do banco, ATM, *124#, POS ou balcão.",
+  "paymentsPaySubmit": "Adquirir apólice",
+  "paymentsPayNotFound": "Proposta não encontrada.",
+  "paymentsPayBackToProposals": "Ver as propostas",
+  "paymentsPayNotPayable": "Esta proposta já não pode ser paga.",
+  "paymentsPayAlreadyPaid": "Esta proposta já está paga.",
+  "paymentsPayBackToProposal": "Ver a proposta",
+  "paymentsPayActiveIntent": "Tem um pagamento em curso",
+  "paymentsPayViewPayment": "Ver pagamento",
+  "paymentsPayNoMethods": "A seguradora ainda não tem formas de pagamento disponíveis. Contacte a seguradora.",
+  "paymentsPayMethodUnavailable": "Esta forma de pagamento não está disponível agora. Escolha outra.",
+  "paymentsIntentNotFound": "Pagamento não encontrado.",
+  "paymentsIntentBackToPayments": "Ver os meus pagamentos",
+  "paymentsIntentPreparing": "A preparar o pagamento…",
+  "paymentsIntentReference": "Pagamento {reference}",
+  "@paymentsIntentReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsAwaitTitle": "Confirme o pagamento no seu telemóvel",
+  "paymentsAwaitStep1": "1. Desbloqueie o telemóvel com o número {msisdn}.",
+  "@paymentsAwaitStep1": {
+    "placeholders": {
+      "msisdn": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsAwaitStep2": "2. Introduza o seu PIN M-Pesa no pedido que aparece.",
+  "paymentsAwaitStep3": "3. Aguarde aqui a confirmação.",
+  "paymentsAwaitRemaining": "Tempo para confirmar",
+  "paymentsAwaitStillWaiting": "Ainda não recebemos a resposta. Estamos a confirmar.",
+  "paymentsAwaitBackToProposal": "Voltar à proposta",
+  "paymentsCheckingLead": "Ainda não temos a confirmação do operador.",
+  "paymentsCheckingDontPay": "Não volte a pagar",
+  "paymentsCheckingRest": ": estamos a confirmar e actualizamos esta página sozinhos.",
+  "paymentsCheckingNextCheck": "Próxima verificação às {time}",
+  "@paymentsCheckingNextCheck": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsReferenceEntity": "Entidade",
+  "paymentsReferenceReference": "Referência",
+  "paymentsReferenceAmount": "Montante",
+  "paymentsReferenceCopy": "Copiar {label}",
+  "@paymentsReferenceCopy": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsReferenceCopied": "Copiado",
+  "paymentsReferenceCopyFailed": "Não foi possível copiar.",
+  "paymentsReferenceExactAmount": "Pague exactamente este montante. A rede recusa outro valor.",
+  "paymentsReferenceValidUntil": "Válida até {date}",
+  "@paymentsReferenceValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsReferenceHowTo": "Como pagar: no e-banking ou na app do seu banco, no ATM, pelo telemóvel (*124#), num POS ou ao balcão, escolha pagamento de serviços por entidade e referência e introduza os três dados acima.",
+  "paymentsReferenceConfirmationInfo": "A confirmação chega quando o banco enviar o ficheiro de pagamentos à seguradora; lemos o ficheiro logo que chega. Pode demorar algumas horas. Não precisa de ficar nesta página. Vai receber um e-mail quando o pagamento for confirmado.",
+  "paymentsReferenceDownloadPdf": "Descarregar PDF",
+  "paymentsReferenceSendSms": "Enviar por SMS",
+  "paymentsSmsTitle": "Enviar a referência por SMS",
+  "paymentsSmsMsisdn": "Número de telemóvel",
+  "paymentsSmsSend": "Enviar",
+  "paymentsSmsSent": "SMS enviado para {sentTo}",
+  "@paymentsSmsSent": {
+    "placeholders": {
+      "sentTo": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsSmsRateLimited": "Já enviou esta referência 3 vezes.",
+  "paymentsOutcomeSucceeded": "Pagamento confirmado",
+  "paymentsOutcomeSucceededText": "A sua apólice vai ser emitida em breve.",
+  "paymentsOutcomeExpired": "O prazo para este pagamento terminou.",
+  "paymentsOutcomeCancelled": "Este pagamento foi substituído por outro.",
+  "paymentsOutcomeRefunded": "Este pagamento foi reembolsado.",
+  "paymentsOutcomeViewProposal": "Ver proposta",
+  "paymentsOutcomeChooseAnother": "Escolher outra forma de pagamento",
+  "paymentsListTitle": "Pagamentos",
+  "paymentsListEmpty": "Ainda não tem pagamentos.",
+  "paymentsListLoadMore": "Carregar mais",
+  "paymentsListDate": "Data",
+  "paymentsListTarget": "Proposta",
+  "paymentsListInsurer": "Seguradora",
+  "paymentsListMethod": "Forma de pagamento",
+  "paymentsListAmount": "Montante",
+  "paymentsListStatus": "Estado",
+  "paymentsLinkButton": "Enviar link de pagamento ao cliente",
+  "paymentsLinkConfirmTitle": "Enviar link de pagamento",
+  "paymentsLinkConfirmText": "Vamos enviar um SMS ao cliente com o link para pagar. O cliente paga directamente à seguradora.",
+  "paymentsLinkSend": "Enviar",
+  "paymentsLinkSent": "Link enviado para {sentTo}",
+  "@paymentsLinkSent": {
+    "placeholders": {
+      "sentTo": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsLinkRateLimited": "Já enviou o link 3 vezes nas últimas 24 horas. Tente dentro de {minutes} minutos.",
+  "@paymentsLinkRateLimited": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentsLinkNoMsisdn": "O cliente não tem telemóvel registado.",
+  "paymentsProposalPaid": "Pagamento recebido. A sua apólice vai ser emitida em breve.",
+  "paymentsReferenceCopyButton": "Copiar",
+  "paymentsMenu": "Pagamentos"
 }
