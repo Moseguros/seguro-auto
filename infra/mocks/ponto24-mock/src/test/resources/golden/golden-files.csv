@@ -1,0 +1,5 @@
+file,format,entity,companyId,profileId,recordCount,totalAmountCentavos
+meps-example.txt,MEPS,90002,,,3,1610950
+meps-spec.txt,MEPS,90002,,,3,1610950
+bmeps-example.txt,BMEPS,90090,800,02,2,682000
+bmeps-spec.txt,BMEPS,90090,800,02,2,682000

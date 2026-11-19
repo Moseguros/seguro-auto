@@ -185,6 +185,28 @@ services:
     # Healthcheck: o HEALTHCHECK do payment-file-worker/Dockerfile (GET /actuator/health).
     restart: unless-stopped
 
+  # Simulador da rede Ponto24 e do banco (S5-08), só local e QA: http://localhost:8092. Aceita pagamentos de
+  # referências e, de minuto a minuto, deposita os ficheiros MEPS/BMEPS no sftp (lidos pelo payment-file-worker).
+  ponto24-mock:
+    build: mocks/ponto24-mock
+    image: moseguros/ponto24-mock:local
+    environment:
+      PONTO24_MOCK_SOURCES: 90002=MEPS@sftp://demo@sftp:22/inbound,90090=BMEPS:800:02@sftp://demob@sftp:22/inbound
+      PONTO24_MOCK_SFTP_PASSWORD_90002: demo-sftp-pass
+      PONTO24_MOCK_SFTP_PASSWORD_90090: demob-sftp-pass
+      PONTO24_MOCK_SETTLEMENT_CRON: "0 * * * * *"
+      PONTO24_MOCK_ZONE: Africa/Maputo
+      PONTO24_MOCK_FILE_STYLE: EXAMPLE
+    ports:
+      - "8092:8092"
+    depends_on:
+      sftp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8092/actuator/health"]
+      <<: *healthcheck-timing
+    restart: unless-stopped
+
   web:
     build: ../web
     image: moseguros/web:local

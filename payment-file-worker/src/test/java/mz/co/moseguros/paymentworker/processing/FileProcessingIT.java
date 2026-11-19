@@ -30,7 +30,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * Leitura de ficheiros de ponta a ponta no worker (S5-09 §5 a §7), com o leitor {@code TEST_STUB}:
+ * Leitura de ficheiros de ponta a ponta no worker (S5-09 §5 a §7), com ficheiros MEPS reais (S5-08):
  * publicação com confirms, mudança de pasta, deduplicação por conteúdo e pelo identificador do ficheiro,
  * SFTP só de leitura, ficheiros a meio de envio, agendamento, sequência, rejeições, falha de publicação a
  * meio e erros da fonte.
@@ -57,14 +57,6 @@ class FileProcessingIT extends WorkerITSupport {
         return MessageIds.sha256Hex(content.getBytes(StandardCharsets.ISO_8859_1));
     }
 
-    static String resource(String path) {
-        try (var in = FileProcessingIT.class.getClassLoader().getResourceAsStream(path)) {
-            return new String(in.readAllBytes(), StandardCharsets.ISO_8859_1);
-        } catch (java.io.IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     static String dir() {
         return "t" + UUID.randomUUID().toString().substring(0, 8);
     }
@@ -73,7 +65,7 @@ class FileProcessingIT extends WorkerITSupport {
     void fileWithTwoRecordsIsPublishedAndMovedToProcessed() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        String content = resource("files/two-records.txt");
+        String content = mepsFile("202611181", null, 300_000, 275_000);
         put(dir + "/inbound/a.txt", content);
 
         PollResult result = poller.poll(source);
@@ -93,7 +85,7 @@ class FileProcessingIT extends WorkerITSupport {
         assertThat(first.body().path("schemaVersion").asInt()).isEqualTo(1);
         assertThat(first.body().path("insurerId").asText()).isEqualTo(source.insurerId().toString());
         assertThat(first.body().path("sourceId").asText()).isEqualTo(source.sourceId().toString());
-        assertThat(first.body().path("fileFormat").asText()).isEqualTo("TEST_STUB");
+        assertThat(first.body().path("fileFormat").asText()).isEqualTo("MEPS");
         assertThat(first.body().path("entity").asText()).isEqualTo(ENTITY);
         assertThat(first.body().path("reference").asText()).isEqualTo("00548781108");
         assertThat(first.body().path("amount").path("amount").asLong()).isEqualTo(300_000);
@@ -101,9 +93,11 @@ class FileProcessingIT extends WorkerITSupport {
         assertThat(first.body().path("paidAt").asText()).isEqualTo("2026-11-18T08:30:00Z"); // 10:30 em Maputo
         assertThat(first.body().path("fileName").asText()).isEqualTo("a.txt");
         assertThat(first.body().path("fileSha256").asText()).isEqualTo(sha);
-        assertThat(first.body().path("formatFileId").asText()).isEqualTo("1");
+        assertThat(first.body().path("formatFileId").asText()).isEqualTo("202611181");
         assertThat(first.body().path("lineNo").asInt()).isEqualTo(2);
-        assertThat(first.body().has("fee")).isFalse();
+        assertThat(first.body().path("fee").path("amount").asLong()).isEqualTo(1_000);
+        assertThat(first.body().has("channel")).isFalse();
+        assertThat(first.body().has("bankTransactionId")).isFalse();
         Received second = payments.get(1);
         assertThat(second.messageId()).isEqualTo(MessageIds.referencePaymentReceived(source.sourceId(), sha, 3));
         assertThat(second.body().path("reference").asText()).isEqualTo("00548791108");
@@ -130,7 +124,7 @@ class FileProcessingIT extends WorkerITSupport {
         Map<String, Object> row = jdbc.queryForMap(
                 "select * from payment_worker.processed_file where sha256 = ? and source_id = ?", sha, source.sourceId());
         assertThat(row).containsEntry("record_count", 2).containsEntry("total_amount", 575_000L)
-                .containsEntry("format_file_id", "1").containsEntry("created_by", "payment-file-worker");
+                .containsEntry("format_file_id", "202611181").containsEntry("created_by", "payment-file-worker");
         assertThat(jdbc.queryForObject("select count(*) from payment_worker.file_record r join "
                 + "payment_worker.processed_file f on f.id = r.file_id where f.sha256 = ? and f.source_id = ? "
                 + "and r.published_at is not null", Integer.class, sha, source.sourceId())).isEqualTo(2);
@@ -140,7 +134,7 @@ class FileProcessingIT extends WorkerITSupport {
     void theSameFileAgainWithTheSameOrAnotherNamePublishesNothing() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        String content = stubFile("7", null, 100_000);
+        String content = mepsFile("202611187", null, 100_000);
         put(dir + "/inbound/a.txt", content);
         poller.poll(source);
         drain();
@@ -166,11 +160,11 @@ class FileProcessingIT extends WorkerITSupport {
     void otherContentWithTheSameFileIdIsRejected(CapturedOutput output) {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        put(dir + "/inbound/a.txt", stubFile("5", null, 100_000));
+        put(dir + "/inbound/a.txt", mepsFile("202611185", null, 100_000));
         poller.poll(source);
         drain();
 
-        String other = stubFile("5", null, 200_000, 300_000);
+        String other = mepsFile("202611185", null, 200_000, 300_000);
         put(dir + "/inbound/b.txt", other);
         PollResult result = poller.poll(source);
 
@@ -181,7 +175,7 @@ class FileProcessingIT extends WorkerITSupport {
         List<Received> rejected = ofType(messages, "PaymentFileRejected");
         assertThat(rejected).hasSize(1);
         assertThat(rejected.get(0).body().path("reason").asText()).isEqualTo("DUPLICATE_FILE_ID");
-        assertThat(rejected.get(0).body().path("formatFileId").asText()).isEqualTo("5");
+        assertThat(rejected.get(0).body().path("formatFileId").asText()).isEqualTo("202611185");
         assertThat(rejected.get(0).routingKey()).isEqualTo(PaymentsTopology.fileRejectedKey(source.insurerId()));
         assertThat(ls(dir + "/error")).containsExactly("b.txt");
         assertThat(fileStatus(source.sourceId(), sha(other))).isEqualTo("ERROR");
@@ -197,7 +191,7 @@ class FileProcessingIT extends WorkerITSupport {
     void readOnlySourceKeepsTheFileAndNeverDownloadsItAgain() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, false);
-        put(dir + "/inbound/a.txt", stubFile("1", null, 100_000, 200_000));
+        put(dir + "/inbound/a.txt", mepsFile("202611181", null, 100_000, 200_000));
 
         poller.poll(source);
         poller.poll(source);
@@ -216,8 +210,8 @@ class FileProcessingIT extends WorkerITSupport {
     void partialFilesAreIgnoredUntilRenamed() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        put(dir + "/inbound/x.txt.part", stubFile("1", null, 100_000));
-        put(dir + "/inbound/.y.txt", stubFile("2", null, 100_000));
+        put(dir + "/inbound/x.txt.part", mepsFile("202611181", null, 100_000));
+        put(dir + "/inbound/.y.txt", mepsFile("202611182", null, 100_000));
 
         PollResult first = poller.poll(source);
         assertThat(first.filesFound()).isZero();
@@ -238,12 +232,12 @@ class FileProcessingIT extends WorkerITSupport {
         String sources = new ObjectMapper().writeValueAsString(new FileSourceList(List.of(source)));
         BACKEND.stubFor(get(urlEqualTo("/internal/v1/payment-file-sources")).willReturn(okJson(sources)));
         try {
-            String first = stubFile("1", null, 100_000);
+            String first = mepsFile("202611181", null, 100_000);
             put(dir + "/inbound/a.txt", first);
             assertThat(registry.refresh()).isTrue();
             await().dontCatchUncaughtExceptions().atMost(Duration.ofSeconds(20)).until(() -> "DONE".equals(statusOrNull(source, sha(first))));
 
-            String second = stubFile("2", "1", 200_000);
+            String second = mepsFile("202611182", "202611181", 200_000);
             Instant put = Instant.now();
             put(dir + "/inbound/b.txt", second);
             await().dontCatchUncaughtExceptions().atMost(Duration.ofSeconds(15)).until(() -> "DONE".equals(statusOrNull(source, sha(second))));
@@ -266,11 +260,12 @@ class FileProcessingIT extends WorkerITSupport {
     void aMissingFileInTheSequenceOnlyWarns(CapturedOutput output) {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        put(dir + "/inbound/a.txt", stubFile("1", null, 100_000));
+        put(dir + "/inbound/a.txt", mepsFile("202611181", null, 100_000));
         poller.poll(source);
         assertThat(output).doesNotContain("alert=PAYMENT_FILE_SEQUENCE_GAP");
 
-        String third = stubFile("3", "1", 100_000);
+        // A007 aponta para um ficheiro (…2) que nunca chegou
+        String third = mepsFile("202611183", "202611182", 100_000);
         put(dir + "/inbound/c.txt", third);
         PollResult result = poller.poll(source);
 
@@ -283,7 +278,7 @@ class FileProcessingIT extends WorkerITSupport {
     void wrongTrailerTotalIsRejected() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        String content = resource("files/wrong-trailer-total.txt");
+        String content = mepsFile(ENTITY, "202611181", null, 2, 999, 100_000, 200_000);
         put(dir + "/inbound/a.txt", content);
 
         PollResult result = poller.poll(source);
@@ -307,7 +302,7 @@ class FileProcessingIT extends WorkerITSupport {
     void otherEntityIsRejected() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        put(dir + "/inbound/a.txt", stubFile("90003", "1", null, 1, 100_000, 100_000));
+        put(dir + "/inbound/a.txt", mepsFile("90003", "202611181", null, 1, 100_000, 100_000));
 
         poller.poll(source);
 
@@ -321,7 +316,7 @@ class FileProcessingIT extends WorkerITSupport {
     void emptyFileWithZeroTrailerIsDone() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        String content = stubFile("1", null);
+        String content = mepsFile("202611181", null);
         put(dir + "/inbound/a.txt", content);
 
         poller.poll(source);
@@ -338,7 +333,7 @@ class FileProcessingIT extends WorkerITSupport {
     void fileTooLargeIsRejectedWithoutDownloading() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        put(dir + "/inbound/big.txt", stubFile("1", null, 100_000));
+        put(dir + "/inbound/big.txt", mepsFile("202611181", null, 100_000));
         long max = (long) ReflectionTestUtils.getField(processor, "maxFileSize");
         ReflectionTestUtils.setField(processor, "maxFileSize", 10L);
         try {
@@ -357,7 +352,7 @@ class FileProcessingIT extends WorkerITSupport {
     void publishFailureInTheMiddleResumesOnTheNextPoll() {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        String content = stubFile("1", null, 100_000, 200_000);
+        String content = mepsFile("202611181", null, 100_000, 200_000);
         String sha = sha(content);
         put(dir + "/inbound/a.txt", content);
         rabbit.nackReferencePayment(2);
@@ -426,9 +421,10 @@ class FileProcessingIT extends WorkerITSupport {
         secrets.remove(source.secretRefs().get("sftp.password"));
         assertThat(poller.poll(source).errorCode()).hasToString("SECRET_NOT_FOUND");
 
-        FileSourceDescriptor meps = new FileSourceDescriptor(UUID.randomUUID(), UUID.randomUUID(), 1, true, ENTITY,
-                "MEPS", null, null, source.sftp(), source.secretRefs());
-        assertThat(poller.poll(meps).errorCode()).hasToString("UNSUPPORTED_FORMAT");
+        // só há leitores MEPS e BMEPS (S5-08)
+        FileSourceDescriptor other = new FileSourceDescriptor(UUID.randomUUID(), UUID.randomUUID(), 1, true, ENTITY,
+                "CSV", null, null, source.sftp(), source.secretRefs());
+        assertThat(poller.poll(other).errorCode()).hasToString("UNSUPPORTED_FORMAT");
     }
 
     @Test
@@ -446,7 +442,7 @@ class FileProcessingIT extends WorkerITSupport {
     void logsOfACompletePollHaveNoSecretsTokensOrLines(CapturedOutput output) {
         String dir = dir();
         FileSourceDescriptor source = source(dir, true);
-        String content = stubFile("1", null, 100_000, 200_000);
+        String content = mepsFile("202611181", null, 100_000, 200_000);
         put(dir + "/inbound/a.txt", content);
 
         registry.refresh(); // usa o token de serviço

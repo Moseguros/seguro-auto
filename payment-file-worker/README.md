@@ -23,7 +23,7 @@ Em local, com a stack do `infra/docker-compose.yml` (serviço `payment-file-work
 | `processing/SourcePoller` | uma leitura com o trinco `source:{sourceId}` (ShedLock): segredos do Vault, SFTP, listagem, ficheiros, `PaymentSourcePolled` |
 | `processing/FileProcessor` | um ficheiro: deduplicação (nome+tamanho+data, SHA-256, identificador no formato), leitura, validação, registos, publicação, mudança de pasta |
 | `processing/RecordPublisher` | publica com *publisher confirms* e `mandatory`; só `ack` sem devolução conta |
-| `parser/` | contrato dos leitores (`PaymentFileParser`, `ParserRegistry`, `FileValidator`); os leitores MEPS e BMEPS entram no S5-08 |
+| `parser/` | contrato dos leitores (`PaymentFileParser`, `ParserRegistry`, `FileValidator`) e os leitores reais `MepsFileParser` e `BmepsFileParser` (S5-08, `docs/specs/interbancos/`), com a leitura por posição comum em `FixedWidthLines` |
 | `sftp/` | ligações SFTP (Spring Integration / Apache MINA SSHD) e verificação da chave do servidor por impressão digital |
 | `secrets/` | leitura dos segredos no Vault (KV v2) |
 | `domain/` | `payment_worker.processed_file` e `payment_worker.file_record` (Spring Data JDBC) |
@@ -36,6 +36,6 @@ Estados de um ficheiro: `RECEIVED → PARSED → PUBLISHED → DONE`, ou `ERROR`
 
 ## Testes
 
-- Unitários (`*Test`): `FileValidatorTest`, `SourceRegistryTest`, `ServiceTokenProviderTest`, `StartupChecksTest`.
+- Unitários (`*Test`): `FileValidatorTest`, `SourceRegistryTest`, `ServiceTokenProviderTest`, `StartupChecksTest`, `ParsersInProdTest`, `MepsFileParserTest`, `BmepsFileParserTest` (ficheiros de `src/test/resources/interbancos/`, ver o README dessa pasta, e os `golden/` do `ponto24-mock`) e `OfficialExamplesAreCopiesTest`.
 - Integração (`*IT`, Testcontainers): `FileProcessingIT`, `SourceLockIT` (Postgres com `src/test/resources/db/init-roles.sql`, `rabbitmq:4.1-management`, `atmoz/sftp` com o `src/test/resources/sftp/sshd_config` e o `sftp-logged.sh`, que registam as aberturas de ficheiros em `/tmp/sftp.log`, backend simulado com WireMock) e `VaultSecretReaderIT` (`hashicorp/vault:1.20.4`).
-- Até ao S5-08 usam o leitor `TestStubParser` (formato `TEST_STUB`, só em `src/test`).
+- Os testes de integração usam ficheiros MEPS e BMEPS reais (`WorkerITSupport.mepsFile`, exemplos oficiais); o `ReferencePaymentE2EIT` lê os dois exemplos oficiais de ponta a ponta (S5-08 §7).

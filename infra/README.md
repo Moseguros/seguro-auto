@@ -35,6 +35,7 @@ curl -fsS localhost:3000/api/v1/meta/version   # pela web (nginx → backend)
 | `sftp` | `localhost:2222` | SFTP onde o "banco" deposita os ficheiros MEPS/BMEPS (S5-09 lê-os); utilizadores `demo` e `demob` (ver [`mocks/sftp/README.md`](mocks/sftp/README.md)) |
 | `vault` | <http://localhost:8200> | cofre de segredos em modo dev (em memória); entrar na interface com o token `dev-root-token` (`VAULT_DEV_ROOT_TOKEN` do `.env`) |
 | `payment-file-worker` | <http://localhost:8081/actuator/health> | lê os ficheiros de movimentos do SFTP de cada seguradora e publica os pagamentos no RabbitMQ (ver "Worker de ficheiros de pagamento") |
+| `ponto24-mock` | <http://localhost:8092> | simulador da rede Ponto24 e do banco (S5-08): paga referências e deposita ficheiros MEPS/BMEPS no `sftp` de minuto a minuto (ver "Pagar uma referência em local" e [`mocks/ponto24-mock/README.md`](mocks/ponto24-mock/README.md)) |
 
 API do `sms-mock` (alvo do `MockSmsSender` e do `MockWhatsAppSender` do backend, S1-03):
 
@@ -115,7 +116,7 @@ rabbitmqctl set_permissions -p / moseguros_worker '^payments\.events$' '^payment
 ## Dados de pagamento de desenvolvimento
 
 - **Vault** (modo dev, <http://localhost:8200>, token `dev-root-token`): *mount* KV v2 `secret/`. Os segredos ficam em `secret/insurers/{insurerId}/payments/{METHOD}/{campo}` (S5-01); a BD guarda só a referência. Em modo dev o Vault perde tudo quando o contentor reinicia; no perfil `local` o backend volta a escrever os segredos de desenvolvimento das seguradoras de demonstração no arranque (`DevPaymentSecretsSeeder`, S5-01), por exemplo `BANK_REFERENCE/sftp.password` = `demo-sftp-pass` (Seguradora Demo) e `demob-sftp-pass` (Seguradora Demo B).
-- **SFTP**: utilizadores `demo` (MEPS, entidade `90002`) e `demob` (BMEPS, entidade `90090`, empresa `800`, perfil `02`), pastas `inbound`, `processed`, `error` ([`mocks/sftp/README.md`](mocks/sftp/README.md)). Os exemplos oficiais (`docs/specs/interbancos/exemplo-ficheiro-*.txt`) podem ser postos em `inbound` para o worker os ler (S5-09).
+- **SFTP**: utilizadores `demo` (MEPS, entidade `90002`) e `demob` (BMEPS, entidade `90090`, empresa `800`, perfil `02`), pastas `inbound`, `processed`, `error` ([`mocks/sftp/README.md`](mocks/sftp/README.md)). O `ponto24-mock` deposita lá os ficheiros (S5-08); os exemplos oficiais (`docs/specs/interbancos/exemplo-ficheiro-*.txt`) também se enviam pela página dele.
 - Ler um segredo à mão: `docker compose exec -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=dev-root-token vault vault kv get secret/insurers/01930000-0000-7000-8000-000000000001/payments/BANK_REFERENCE/sftp.password`.
 
 ## Base de dados — papéis
@@ -151,7 +152,7 @@ O `payment-file-worker` (S5-09, ADR-004 e ADR-007) é um executável à parte do
 
 O papel `moseguros_worker_user` só é criado com o volume `pgdata` vazio: quem já tinha a stack de antes do S5-09 corre uma vez `docker compose down -v && docker compose up -d --build` (senão o worker falha com `password authentication failed for user "moseguros_worker_user"`).
 
-Os leitores reais `MEPS` e `BMEPS` entram no S5-08: até lá as fontes de demonstração dão `UNSUPPORTED_FORMAT` em cada leitura (é o esperado). Ver o estado:
+O worker tem os leitores reais `MEPS` e `BMEPS` (S5-08), em todos os perfis. Ver o estado:
 
 ```bash
 docker compose ps payment-file-worker                      # (healthy)
@@ -161,6 +162,25 @@ curl -s localhost:8081/actuator/metrics/worker.polls
 ```
 
 **Staging e produção:** `/internal/**` **não** pode ser encaminhado pelo *proxy* de entrada (o nginx da web só encaminha `/api/`; S6-08): o worker chama o backend pela rede interna. O worker recebe `WORKER_CLIENT_SECRET` (igual a `MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET` do backend, pelo menos 32 caracteres, do cofre de segredos), `VAULT_URI`/`VAULT_TOKEN` (só leitura de `secret/insurers/*`), `DB_*` (`moseguros_worker_user`, criado como em `postgres/init/02-worker-role.sql` com a palavra-passe do cofre) e o utilizador RabbitMQ `moseguros_worker`. Sem `WORKER_CLIENT_SECRET` ou `VAULT_TOKEN`, ou com `allow-unknown-host-keys`, não arranca.
+
+## Pagar uma referência em local
+
+O `ponto24-mock` (S5-08) faz de rede Ponto24 e de banco: aceita o pagamento de uma referência (como a rede, recusa com `INVALID_REFERENCE` um montante diferente do da referência) e, de minuto a minuto, deposita no SFTP da seguradora um ficheiro no formato dela; o worker lê-o e o backend confirma o pagamento. Seguradora Demo: MEPS, entidade `90002`, utilizador SFTP `demo`; Seguradora Demo B: BMEPS, entidade `90090` (empresa `800`, perfil `02`), utilizador `demob`.
+
+1. Na web, como cliente, pagar uma proposta aceite por referência e anotar a entidade, a referência e o montante.
+2. Em <http://localhost:8092>, escolher a entidade, introduzir a referência e o montante e carregar em **Pagar** (ou pela API):
+   ```bash
+   curl -s -X POST localhost:8092/payments -H 'content-type: application/json' \
+     -d '{"entity":"90002","reference":"<referência mostrada na web>","amountCentavos":299900}'
+   ```
+3. No minuto seguinte (ou com **Enviar ficheiros agora** / `curl -s -X POST localhost:8092/settlements/run`) o ficheiro aparece em `processed` no SFTP e a proposta passa a `PAID`:
+   ```bash
+   sftp -P 2222 demo@localhost      # palavra-passe demo-sftp-pass; ls processed error
+   docker compose logs payment-file-worker | grep "parsed"
+   ```
+4. Outros casos na página: **Reenviar o último ficheiro** (o worker não o processa de novo), pagar a mesma referência outra vez (excepção `ALREADY_PAID`, S5-10), **Forçar** com outro montante (`AMOUNT_MISMATCH`, S5-10), **Enviar ficheiro com rodapé errado** (vai para `error`), **Enviar ficheiro vazio**, **Enviar exemplo oficial** e **Limpar**.
+
+O simulador guarda tudo em memória: depois de o reiniciar, as sequências dos ficheiros recomeçam e o worker pode recusar um ficheiro com um identificador já visto (`DUPLICATE_FILE_ID`); `docker compose down -v` limpa tudo.
 
 ## Ficheiros
 
@@ -238,8 +258,8 @@ A imagem do backend constrói-se com o contexto na raiz: `docker build -f backen
 ## Notas
 
 - As imagens têm versão fixada; quem mudar uma imagem aqui ou num `Dockerfile` actualiza `scripts/images.txt` no mesmo PR.
-- Os contentores do backend e do `sms-mock` correm como `app` (uid 10001) e o da web como `nginx` (uid 101).
+- Os contentores do backend, do `sms-mock` e do `ponto24-mock` correm como `app` (uid 10001) e o da web como `nginx` (uid 101).
 - O nginx escuta em IPv4 e IPv6 dentro do contentor (o healthcheck usa `localhost`, que resolve para `::1`).
 - Se o Docker Hub responder 429 (limite de pedidos), ver as notas em `docs/STATUS.md`.
-- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP e o cofre de segredos (Vault em modo dev) entraram no S5-06; o `mpesa-mock` entra no S5-03 e o `payment-file-worker` no S5-09.
+- O compose guarda os ficheiros em disco (volume `files`); S3 só em staging e produção (fornecedor escolhido com o alojamento, S6-08). RabbitMQ, SFTP e o cofre de segredos (Vault em modo dev) entraram no S5-06; o `mpesa-mock` entra no S5-03, o `payment-file-worker` no S5-09 e o `ponto24-mock` no S5-08.
 - O `atmoz/sftp` só tem imagem `amd64`: em `arm64` corre por emulação.

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ponto24 mock - MoSeguros</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #E8EFF6; color: #142D4E; }
+    .banner { background: #b3261e; color: #fff; padding: 8px 16px; font-weight: 600; text-align: center; }
+    header { background: #142D4E; color: #fff; padding: 12px 16px; }
+    h1 { font-size: 18px; margin: 0; }
+    h2 { font-size: 16px; margin: 0 0 8px; }
+    main { padding: 16px; max-width: 1080px; margin: 0 auto; display: grid; gap: 12px; }
+    section { background: #fff; border-radius: 6px; padding: 12px; }
+    form { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: end; }
+    label { display: grid; gap: 4px; font-size: 13px; }
+    input, select { padding: 6px 8px; border: 1px solid #9fb2c8; border-radius: 4px; font: inherit; }
+    .check { display: flex; gap: 6px; align-items: center; }
+    button { border: 1px solid #142D4E; background: #fff; color: #142D4E; border-radius: 4px; padding: 6px 12px; cursor: pointer; font: inherit; }
+    button.primary { background: #F28C28; border-color: #F28C28; color: #fff; font-weight: 600; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    #message { min-height: 20px; font-size: 14px; margin: 8px 0 0; white-space: pre-wrap; }
+    #message.error { color: #b3261e; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 6px; border-bottom: 1px solid #E8EFF6; }
+    .scroll { overflow-x: auto; }
+    .empty { color: #4a5f7a; }
+  </style>
+</head>
+<body>
+  <div class="banner">SIMULADOR — não é a rede Ponto24; nenhum dinheiro real é movimentado</div>
+  <header><h1>Ponto24 mock: pagamento por entidade e referência</h1></header>
+  <main>
+    <section>
+      <h2>Pagar uma referência</h2>
+      <form id="pay">
+        <label>Entidade <select id="entity" required></select></label>
+        <label>Referência <input id="reference" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" required placeholder="11 dígitos"></label>
+        <label>Montante (MT) <input id="amount" inputmode="decimal" required placeholder="2 999,00"></label>
+        <label class="check"><input type="checkbox" id="force"> Forçar (sem validar)</label>
+        <button class="primary" type="submit">Pagar</button>
+      </form>
+      <p id="message" role="status"></p>
+    </section>
+    <section>
+      <h2>Ficheiros</h2>
+      <div class="actions">
+        <button type="button" data-action="run">Enviar ficheiros agora</button>
+        <button type="button" data-action="corrupt">Enviar ficheiro com rodapé errado</button>
+        <button type="button" data-action="empty">Enviar ficheiro vazio</button>
+        <button type="button" data-action="resend">Reenviar o último ficheiro</button>
+        <button type="button" data-action="example-meps">Enviar exemplo oficial (MEPS)</button>
+        <button type="button" data-action="example-bmeps">Enviar exemplo oficial (BMEPS)</button>
+        <button type="button" data-action="reset">Limpar</button>
+      </div>
+    </section>
+    <section>
+      <h2>Pagamentos</h2>
+      <div class="scroll"><table>
+        <thead><tr><th>Data</th><th>Entidade</th><th>Referência</th><th>Montante</th><th>Estado</th><th>Ficheiro</th></tr></thead>
+        <tbody id="payments"></tbody>
+      </table></div>
+    </section>
+    <section>
+      <h2>Ficheiros enviados</h2>
+      <div class="scroll"><table>
+        <thead><tr><th>Data</th><th>Nome</th><th>Entidade</th><th>Formato</th><th>ID</th><th>Registos</th><th>Total</th><th>Destino</th></tr></thead>
+        <tbody id="files"></tbody>
+      </table></div>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const fmt = (c) => (c / 100).toLocaleString('pt-PT', { minimumFractionDigits: 2 }) + ' MT';
+    const date = (iso) => new Date(iso).toLocaleString('pt-PT', { timeZone: 'Africa/Maputo' });
+    const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    function show(text, error) {
+      $('message').textContent = text;
+      $('message').className = error ? 'error' : '';
+    }
+
+    // "2 999,50" ou "2999.5" → 299950 centavos (sem vírgula flutuante)
+    function toCentavos(text) {
+      const s = text.replace(/[\s ]/g, '').replace(',', '.');
+      if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(s)) return null;
+      const [int, dec = ''] = s.split('.');
+      return Number(int) * 100 + Number((dec + '00').slice(0, 2));
+    }
+
+    async function call(method, url, body) {
+      const res = await fetch(url, { method, headers: body ? { 'content-type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+      const text = await res.text();
+      const json = text ? JSON.parse(text) : null;
+      if (!res.ok) throw new Error((json && json.error) || res.status);
+      return json;
+    }
+
+    async function loadSources() {
+      const sources = await call('GET', '/sources');
+      $('entity').innerHTML = sources.map((s) => `<option value="${esc(s.entity)}">${esc(s.entity)} (${esc(s.formatLabel)})</option>`).join('');
+    }
+
+    async function refresh() {
+      const [payments, files] = await Promise.all([call('GET', '/payments'), call('GET', '/settlements')]);
+      $('payments').innerHTML = payments.length ? payments.map((p) => `<tr><td>${esc(date(p.paidAt))}</td><td>${esc(p.entity)}</td><td>${esc(p.reference)}</td><td>${fmt(p.amountCentavos)}${p.forced ? ' (forçado)' : ''}</td><td>${esc(p.status)}</td><td>${esc(p.fileName)}</td></tr>`).join('') : '<tr><td colspan="6" class="empty">Sem pagamentos.</td></tr>';
+      $('files').innerHTML = files.length ? files.map((f) => `<tr><td>${esc(date(f.sentAt))}</td><td>${esc(f.name)}${f.corruption ? ' (defeito ' + esc(f.corruption) + ')' : ''}${f.resendOf ? ' (reenvio)' : ''}</td><td>${esc(f.entity)}</td><td>${esc(f.format)}</td><td>${esc(f.formatFileId)}</td><td>${f.records}</td><td>${fmt(f.totalCentavos)}</td><td>${esc(f.destination)}</td></tr>`).join('') : '<tr><td colspan="8" class="empty">Sem ficheiros.</td></tr>';
+      return files;
+    }
+
+    $('pay').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amountCentavos = toCentavos($('amount').value);
+      if (amountCentavos === null) { show('Montante inválido.', true); return; }
+      const force = $('force').checked;
+      try {
+        await call('POST', '/payments' + (force ? '?force=true' : ''), { entity: $('entity').value, reference: $('reference').value.trim(), amountCentavos });
+        show('Pagamento aceite: o ficheiro vai no próximo envio (de minuto a minuto ou com "Enviar ficheiros agora").');
+      } catch (err) {
+        show('Recusado: ' + err.message, true);
+      }
+      refresh();
+    });
+
+    const actions = {
+      run: () => call('POST', '/settlements/run'),
+      corrupt: () => call('POST', '/settlements/run?corrupt=TRAILER_TOTAL&entity=' + encodeURIComponent($('entity').value)),
+      empty: () => call('POST', '/settlements/empty?entity=' + encodeURIComponent($('entity').value)),
+      resend: async () => {
+        const files = await call('GET', '/settlements');
+        const last = files.find((f) => !f.resendOf) || files[0];
+        if (!last) throw new Error('nenhum ficheiro enviado');
+        return call('POST', '/settlements/resend?file=' + encodeURIComponent(last.name));
+      },
+      'example-meps': () => call('POST', '/settlements/official-example?format=MEPS'),
+      'example-bmeps': () => call('POST', '/settlements/official-example?format=BMEPS'),
+      reset: () => call('POST', '/__mock/reset'),
+    };
+
+    document.querySelectorAll('[data-action]').forEach((b) => b.addEventListener('click', async () => {
+      try {
+        const result = await actions[b.dataset.action]();
+        const files = (result && result.files) || [];
+        const errors = (result && result.errors) || [];
+        show(b.textContent + ': ' + (files.length ? files.map((f) => f.name).join(', ') : 'nenhum ficheiro')
+          + (errors.length ? ' — falhou: ' + errors.map((x) => x.entity + ' ' + x.error).join(', ') : ''), errors.length > 0);
+      } catch (err) {
+        show(b.textContent + ': ' + err.message, true);
+      }
+      refresh();
+    }));
+
+    loadSources().then(refresh).catch((err) => show(err.message, true));
+    setInterval(refresh, 5000);
+  </script>
+</body>
+</html>
