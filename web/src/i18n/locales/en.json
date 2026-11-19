@@ -39,6 +39,7 @@
       "organizations": "Organizations",
       "users": "Users",
       "auth": "Authentication",
+      "paymentOps": "Payment operations",
       "references": "Reference tables",
       "audit": "Audit"
     },
@@ -366,7 +367,7 @@
     "DIRECTORY_CONFLICT": "The inbound, processed and error folders must be different.",
     "INVALID_PUBLIC_KEY": "Invalid public key (RSA in PEM or Base64).",
     "MIN_GREATER_THAN_MAX": "The minimum cannot be greater than the maximum.",
-    "ENTITY_IN_USE": "This entity is already used by another insurer.",
+    "ENTITY_IN_USE": "This entity is already configured for another insurer.",
     "MSISDN_NOT_MPESA": "This is not an M-Pesa number (it must start with 84 or 85).",
     "INVALID_UUID": "Invalid identifier."
   },
@@ -402,42 +403,42 @@
     "ALREADY_PAID": "Reference already paid",
     "UNKNOWN_REFERENCE": "Unknown reference",
     "CANCELLED_REFERENCE": "Cancelled reference",
-    "TARGET_NOT_PAYABLE": "Proposal that can no longer be paid",
-    "UNRESOLVED_STATUS": "M-Pesa payment to be confirmed"
+    "TARGET_NOT_PAYABLE": "The proposal no longer accepts payment",
+    "UNRESOLVED_STATUS": "Status to be confirmed with the operator"
   },
   "paymentResolution": {
-    "LINKED": "Linked to a payment",
+    "LINKED": "Link to a payment",
     "REFUND": "Refund outside the platform",
-    "IGNORED": "Ignored",
-    "MARK_SUCCEEDED": "Marked as paid",
-    "MARK_FAILED": "Marked as failed"
+    "IGNORED": "Ignore",
+    "MARK_SUCCEEDED": "Confirm as paid",
+    "MARK_FAILED": "Mark as failed"
   },
   "fileImportStatus": {
     "PROCESSED": "Processed",
     "REJECTED": "Rejected"
   },
   "fileRejectionReason": {
-    "ENTITY_MISMATCH": "The entity of the file is not this insurer's",
-    "TRAILER_COUNT_MISMATCH": "The record count of the trailer does not match",
-    "TRAILER_TOTAL_MISMATCH": "The total of the trailer does not match",
+    "ENTITY_MISMATCH": "Entity differs from the configured one",
+    "TRAILER_COUNT_MISMATCH": "Record count does not match the trailer",
+    "TRAILER_TOTAL_MISMATCH": "Total does not match the trailer",
     "INVALID_AMOUNT": "Invalid amount",
-    "PARSE_ERROR": "Line with an invalid format",
-    "ENCODING_ERROR": "Invalid character encoding",
-    "MISSING_HEADER": "Missing header",
-    "MISSING_TRAILER": "Missing trailer",
-    "UNSUPPORTED_RECORD": "Unknown record type",
+    "PARSE_ERROR": "Malformed line",
+    "ENCODING_ERROR": "Invalid encoding",
+    "MISSING_HEADER": "No header",
+    "MISSING_TRAILER": "No trailer",
+    "UNSUPPORTED_RECORD": "Unsupported record type",
     "FILE_TOO_LARGE": "File too large",
-    "DUPLICATE_FILE_ID": "File with the same identifier already processed with other content"
+    "DUPLICATE_FILE_ID": "File with the same identifier as another already processed, with different content (contact the bank)"
   },
   "pollErrorCode": {
     "SFTP_UNREACHABLE": "SFTP server unreachable",
-    "SFTP_AUTH_FAILED": "SFTP credentials refused",
-    "SFTP_HOST_KEY_MISMATCH": "The SFTP server key does not match the configured one",
-    "SFTP_DIRECTORY_NOT_FOUND": "SFTP folder not found",
-    "SECRET_NOT_FOUND": "Credentials missing from the secret store",
+    "SFTP_AUTH_FAILED": "SFTP authentication refused",
+    "SFTP_HOST_KEY_MISMATCH": "The SFTP server key does not match",
+    "SFTP_DIRECTORY_NOT_FOUND": "Inbound folder does not exist",
+    "SECRET_NOT_FOUND": "SFTP secret missing",
     "UNSUPPORTED_FORMAT": "Unsupported file format",
-    "PUBLISH_FAILED": "Failed to send the payments to the platform",
-    "INTERNAL_ERROR": "Internal error of the file reader"
+    "PUBLISH_FAILED": "Failed to publish the payments",
+    "INTERNAL_ERROR": "Worker internal error"
   },
   "province": {
     "MAPUTO_CITY": "Maputo City",
@@ -2594,6 +2595,418 @@
       "policyholder": "Policyholder",
       "profileIncomplete": "This customer's profile is incomplete. Fill in the policyholder details.",
       "vehicleAlreadyRegistered": "This customer already has a vehicle with this number plate and another chassis. Check the chassis."
+    }
+  },
+  "paymentResolutionHelp": {
+    "LINKED": "Confirms the chosen payment with this money received.",
+    "REFUND": "The insurer returns the money to the customer by its own means.",
+    "IGNORED": "Closes the exception with no further action.",
+    "MARK_SUCCEEDED": "Use after confirming on the operator's portal that the customer paid.",
+    "MARK_FAILED": "Use after confirming on the operator's portal that nothing was charged."
+  },
+  "paymentResolutionDone": {
+    "LINKED": "Linked to a payment",
+    "REFUND": "Refund outside the platform",
+    "IGNORED": "Ignored",
+    "MARK_SUCCEEDED": "Confirmed as paid",
+    "MARK_FAILED": "Marked as failed"
+  },
+  "paymentSettings": {
+    "MPESA": {
+      "serviceProviderCode": "Service code (short code)",
+      "host": "API address",
+      "ports": {
+        "c2b": "C2B port",
+        "query": "Query port",
+        "reversal": "Reversal port"
+      },
+      "origin": "Origin",
+      "initiatorIdentifier": "Initiator identifier",
+      "c2bTimeoutSeconds": "Maximum wait time (seconds)",
+      "apiKey": "API key",
+      "publicKey": "Public key",
+      "securityCredential": "Security credential"
+    },
+    "BANK_REFERENCE": {
+      "entity": "Entity",
+      "fileFormat": "File format",
+      "bmepsCompanyId": "Company ID (BMEPS)",
+      "bmepsProfileId": "Profile ID (BMEPS)",
+      "sftp": {
+        "host": "SFTP server",
+        "port": "Port",
+        "username": "User",
+        "authType": "Authentication",
+        "inboundDir": "Inbound folder",
+        "moveAfterProcessing": "Move files to another folder after reading",
+        "processedDir": "Processed folder",
+        "errorDir": "Error folder",
+        "filePattern": "File pattern (optional)",
+        "hostKeyFingerprint": "Server fingerprint (SHA256)",
+        "password": "SFTP password",
+        "privateKey": "SFTP private key",
+        "passphrase": "Private key passphrase"
+      }
+    }
+  },
+  "paymentSettingsGroup": {
+    "MPESA": {
+      "ports": "Ports"
+    },
+    "BANK_REFERENCE": {
+      "sftp": "SFTP server"
+    }
+  },
+  "paymentSettingsHelp": {
+    "BANK_REFERENCE": {
+      "entity": "Insurer's entity on the Ponto24 network (5 digits)",
+      "fileFormat": "Format of the transactions file the bank delivers (MEPS or BMEPS), as in the contract with the bank",
+      "sftp": {
+        "group": "Server and credentials where the bank drops the files. The platform reads them continuously; how often they are sent is agreed with the bank.",
+        "moveAfterProcessing": "Turn off if the bank only gives read access. Files are never processed twice."
+      }
+    }
+  },
+  "paymentSettingsOption": {
+    "BANK_REFERENCE": {
+      "fileFormat": {
+        "MEPS": "MEPS",
+        "BMEPS": "BMEPS"
+      },
+      "sftp": {
+        "authType": {
+          "PASSWORD": "Password",
+          "KEY": "Private key"
+        }
+      }
+    }
+  },
+  "paymentTest": {
+    "CONFIG_VALID": "Configuration valid (the SFTP connection is tested by the worker on the next read)",
+    "API_KEY_REJECTED": "The API key was refused",
+    "ORIGIN_REJECTED": "The Origin was refused",
+    "SERVICE_PROVIDER_CODE_REJECTED": "The service code was refused",
+    "HOST_UNREACHABLE": "Could not connect to the server",
+    "TIMEOUT": "The server did not answer in time",
+    "PUBLIC_KEY_INVALID": "The public key is not valid",
+    "SECRET_MISSING": "A required secret is missing",
+    "SETTINGS_INVALID": "Some method data is invalid"
+  },
+  "paymentExceptionDetail": {
+    "INVALID_CHECK_DIGITS": "Reference with invalid check digits",
+    "NOT_ISSUED": "Reference not issued by the platform",
+    "PROPOSAL_EXPIRED": "The proposal had already expired",
+    "PROPOSAL_ALREADY_PAID": "The proposal was already paid",
+    "PROPOSAL_REJECTED": "The proposal had been rejected",
+    "PROPOSAL_UNDER_REVIEW": "The proposal was still under review",
+    "PROPOSAL_INFO_REQUESTED": "The proposal was waiting for information from the customer",
+    "PROPOSAL_DRAFT": "The proposal was still a draft",
+    "PROPOSAL_CONVERTED": "The proposal had already become a policy",
+    "INTENT_NOT_FOUND": "Original payment not found",
+    "INTENT_SUCCEEDED": "The payment was already confirmed"
+  },
+  "paymentEventType": {
+    "CREATED": "Created",
+    "DISPATCHED": "Sent to the operator",
+    "PROVIDER_RESPONSE": "Operator response",
+    "STATUS_QUERY": "Status query",
+    "STATUS_CHANGED": "Status change",
+    "REFERENCE_PAID": "Paid at the bank",
+    "MANUAL_RESOLUTION": "Manual resolution"
+  },
+  "paymentConfirmedBy": {
+    "PROVIDER": "Operator",
+    "STATUS_QUERY": "Query",
+    "REFERENCE_FILE": "Bank file",
+    "MANUAL": "Finance"
+  },
+  "referenceStatus": {
+    "ACTIVE": "Active",
+    "PAID": "Paid",
+    "EXPIRED": "Expired",
+    "CANCELLED": "Cancelled"
+  },
+  "insurerSettings": {
+    "title": "Settings",
+    "paymentMethods": {
+      "title": "Payment methods",
+      "description": "M-Pesa and entity and reference: credentials, limits and reading of the bank files.",
+      "open": "Open payment methods"
+    }
+  },
+  "paymentSettingsPage": {
+    "title": "Payment methods",
+    "back": "Settings",
+    "state": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "NOT_CONFIGURED": "Not configured"
+    },
+    "environment": {
+      "SANDBOX": "Sandbox",
+      "PRODUCTION": "Production"
+    },
+    "lastError": "We detected a configuration error on {{date}}. Check the credentials and test the connection.",
+    "general": "General data",
+    "methodData": "Method data",
+    "secrets": "Credentials",
+    "fields": {
+      "displayName": "Name shown to the customer",
+      "environment": "Environment",
+      "minAmount": "Minimum amount",
+      "maxAmount": "Maximum amount",
+      "intentValidityMinutes": "Request validity (minutes)",
+      "sortOrder": "Order"
+    },
+    "secret": {
+      "configured": "Configured on {{date}} — type to replace",
+      "configuredNoDate": "Configured — type to replace",
+      "notConfigured": "Not configured",
+      "required": "Required"
+    },
+    "actions": {
+      "save": "Save",
+      "test": "Test connection",
+      "testHint": "Save before testing",
+      "enable": "Enable",
+      "disable": "Disable",
+      "reload": "Reload",
+      "confirm": "Confirm"
+    },
+    "saved": "Saved",
+    "enabled": "Payment method enabled",
+    "disabled": "Payment method disabled",
+    "errors": {
+      "validation": "Some fields need fixing.",
+      "concurrent": "Someone else changed this configuration.",
+      "secretStore": "The secret store is not available. Nothing was saved.",
+      "incomplete": "Some data is missing to enable it."
+    },
+    "confirmEnable": {
+      "title": "Enable {{method}}?",
+      "text": "Customers will see this payment method."
+    },
+    "confirmDisable": {
+      "title": "Disable {{method}}?",
+      "text": "Customers will no longer see this payment method. Payments already started continue."
+    },
+    "confirmEntity": {
+      "title": "Change the entity or the format?",
+      "text": "References already issued remain valid with the old entity. Confirm with the bank that new files come in this format."
+    },
+    "test": {
+      "OK": "Connection tested successfully",
+      "NOT_SUPPORTED": "This method has no connection test.",
+      "failedUnknown": "The test failed.",
+      "last": "Last test: {{date}}"
+    },
+    "fileSource": {
+      "title": "File reading",
+      "lastPoll": "Last read",
+      "never": "No reads yet",
+      "outcome": {
+        "OK": "OK",
+        "ERROR": "Error"
+      },
+      "error": "Error",
+      "lastSuccess": "Last success",
+      "format": "Format",
+      "entity": "Entity",
+      "note": "The platform reads the SFTP continuously; it alerts after {{minutes}} min without a successful read",
+      "stale": "No successful reads since {{date}}. Check access to the SFTP.",
+      "viewFiles": "View files",
+      "notConfigured": "Payment by entity and reference is not configured.",
+      "configure": "Configure"
+    }
+  },
+  "insurerPayments": {
+    "title": "Payments",
+    "tabs": {
+      "payments": "Payments",
+      "exceptions": "Exceptions",
+      "files": "Files"
+    },
+    "openExceptions": "{{count}} exceptions to resolve",
+    "filters": {
+      "open": "Filters",
+      "status": "Status",
+      "method": "Method",
+      "type": "Type",
+      "from": "From",
+      "to": "To",
+      "search": "PG reference, proposal or provider ID",
+      "exceptionSearch": "Reference or file name",
+      "all": "All"
+    },
+    "columns": {
+      "date": "Date",
+      "reference": "Reference",
+      "proposal": "Proposal",
+      "method": "Method",
+      "amount": "Amount",
+      "status": "Status",
+      "providerTxId": "Provider ID",
+      "failure": "Reason"
+    },
+    "export": "Export CSV",
+    "exportTooLarge": "Too many rows (maximum 10,000). Shorten the period.",
+    "empty": "There are no payments with these filters.",
+    "loadMore": "Load more",
+    "detail": {
+      "back": "Payments",
+      "notFound": "Payment not found.",
+      "summary": "Summary",
+      "reference": "Reference",
+      "status": "Status",
+      "method": "Method",
+      "amount": "Amount",
+      "proposal": "Proposal",
+      "msisdn": "Mobile",
+      "createdAt": "Created",
+      "expiresAt": "Expires",
+      "succeededAt": "Confirmed on",
+      "confirmedBy": "Confirmed by",
+      "providerTxId": "Provider ID",
+      "failure": "Reason",
+      "bankReference": "Bank reference",
+      "entity": "Entity",
+      "bankRef": "Reference",
+      "referenceStatus": "Status",
+      "paidAt": "Paid on",
+      "bankTransactionId": "Bank transaction ID",
+      "history": "History",
+      "noHistory": "No events.",
+      "exceptions": "Exceptions",
+      "exception": "Exception {{n}}"
+    }
+  },
+  "paymentExceptions": {
+    "statusFilter": {
+      "OPEN": "To resolve",
+      "RESOLVED": "Resolved",
+      "ALL": "All"
+    },
+    "status": {
+      "OPEN": "To resolve",
+      "RESOLVED": "Resolved"
+    },
+    "columns": {
+      "date": "Date",
+      "type": "Type",
+      "reference": "Reference",
+      "amount": "Amount received",
+      "paidAt": "Paid on",
+      "intent": "Payment",
+      "file": "File and line",
+      "status": "Status/resolution"
+    },
+    "fileLine": "{{file}}, line {{line}}",
+    "empty": "There are no exceptions with these filters.",
+    "drawer": {
+      "title": "Exception",
+      "close": "Close",
+      "notFound": "Exception not found.",
+      "type": "Type",
+      "status": "Status",
+      "createdAt": "Created on",
+      "entity": "Entity",
+      "reference": "Reference",
+      "amount": "Amount received",
+      "paidAt": "Paid on",
+      "bankTransactionId": "Bank transaction ID",
+      "detail": "Detail",
+      "file": "File",
+      "line": "Line",
+      "intent": "Payment",
+      "linkedIntent": "Linked payment",
+      "resolution": "Resolution",
+      "note": "Note",
+      "resolvedBy": "Resolved by",
+      "resolvedAt": "Resolved on",
+      "readOnly": "Only finance can resolve exceptions."
+    },
+    "resolve": {
+      "title": "Resolve",
+      "resolution": "Resolution",
+      "chooseResolution": "Choose a resolution.",
+      "chooseCandidate": "Choose the payment to link.",
+      "providerTxId": "Transaction ID at the operator",
+      "note": "Note",
+      "noteHelp": "Between 5 and 500 characters.",
+      "submit": "Resolve",
+      "confirmTitle": "Confirm the payment?",
+      "confirm": "This confirms payment {{payment}} and proposal {{proposal}} becomes paid. Continue?",
+      "continue": "Continue",
+      "resolved": "Exception resolved",
+      "errors": {
+        "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the payment amount. Choose refund or ignore.",
+        "INVALID_STATE_TRANSITION": "This exception has already been resolved."
+      }
+    },
+    "candidates": {
+      "title": "Payments that can be linked",
+      "select": "Choose {{reference}}",
+      "reference": "PG reference",
+      "proposal": "Proposal",
+      "amount": "Amount",
+      "status": "Status",
+      "bankReference": "Bank reference",
+      "createdAt": "Created",
+      "sameReference": "Same reference",
+      "sameAmount": "Same amount",
+      "empty": "There are no payments that can be linked."
+    }
+  },
+  "paymentFiles": {
+    "statusFilter": "Status",
+    "columns": {
+      "date": "Date",
+      "file": "File",
+      "format": "Format",
+      "fileId": "File ID",
+      "status": "Status",
+      "records": "Records",
+      "total": "Total",
+      "fees": "Fees/commissions",
+      "confirmed": "Confirmed",
+      "exceptions": "Exceptions",
+      "reason": "Reason"
+    },
+    "line": "line {{line}}",
+    "openExceptions": "View the exceptions of {{file}}",
+    "empty": "No files have been received yet."
+  },
+  "adminPaymentOps": {
+    "title": "Payment operations",
+    "refresh": "Refresh",
+    "worker": {
+      "title": "Message queues",
+      "brokerUp": "Broker connected",
+      "brokerDown": "Broker unreachable",
+      "queue": "Queue",
+      "messages": "Messages",
+      "consumers": "Consumers",
+      "missing": "Does not exist",
+      "dlqAlert": "Some messages failed processing. Follow the 'Reprocess messages' procedure in infra/README.md.",
+      "noConsumers": "The backend is not consuming this queue.",
+      "lastMessage": "Last message received: {{date}}",
+      "noMessages": "No message has been received yet.",
+      "noQueues": "No queue information."
+    },
+    "sources": {
+      "title": "File sources",
+      "insurer": "Insurer",
+      "entity": "Entity",
+      "format": "Format",
+      "enabled": "Active",
+      "lastPoll": "Last read",
+      "outcome": "Result",
+      "lastSuccess": "Last success",
+      "staleSince": "Stopped since",
+      "stale": "Stopped",
+      "files24h": "Files (24 h)",
+      "rejected24h": "Rejected (24 h)",
+      "empty": "No insurer has configured payment by entity and reference."
     }
   }
 }
