@@ -9,6 +9,9 @@ servers:
 security:
 - bearerAuth: []
 tags:
+- description: "Notificações: centro de notificações e preferências do cliente, dispositivos\
+    \ para push, modelos das mensagens e recibos de entrega"
+  name: Notification
 - description: Informação técnica da aplicação
   name: Meta
 - description: "Pagamentos: formas de pagamento das seguradoras (M-Pesa e entidade\
@@ -119,6 +122,256 @@ paths:
       summary: Lista os convites da plataforma
       tags:
       - Identity
+  /api/v1/admin/notification-templates:
+    get:
+      description: "Permissão notification-template:manage. Filtros code (prefixo),\
+        \ channel, locale, customized; por code, channel e locale."
+      operationId: listNotificationTemplates
+      parameters:
+      - in: query
+        name: code
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: channel
+        required: false
+        schema:
+          $ref: "#/components/schemas/NotificationChannel"
+      - in: query
+        name: locale
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: customized
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseNotificationTemplateSummary"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os modelos das notificações
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}:
+    get:
+      description: Permissão notification-template:manage. defaultSubject e defaultBody
+        são o texto do ficheiro de mensagens. Inexistente → 404 TEMPLATE_NOT_FOUND.
+      operationId: getNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um modelo
+      tags:
+      - Notification
+    put:
+      description: "Permissão notification-template:manage. Validação: TEMPLATE_SYNTAX,\
+        \ TEMPLATE_UNKNOWN_VARIABLE, REQUIRED, TOO_LONG, SMS_TOO_LONG (errors[] de\
+        \ 400 VALIDATION_ERROR); version diferente → 409 CONCURRENT_MODIFICATION.\
+        \ Fica customized."
+      operationId: updateNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotificationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera o texto de um modelo
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}/preview:
+    post:
+      description: "Permissão notification-template:manage. Não grava. Sem params\
+        \ usa os valores de exemplo. smsText, length, limit e fits só em SMS. Erros\
+        \ de validação como no PUT."
+      operationId: previewNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreviewNotificationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplatePreview"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Pré-visualiza um texto
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}/reset:
+    post:
+      description: Permissão notification-template:manage. customized passa a false.
+      operationId: resetNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Repõe o texto do ficheiro
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}/test:
+    post:
+      description: "Permissão notification-template:manage. Envia já, com os valores\
+        \ de exemplo e o texto gravado, sem alternativa: telemóvel para SMS/WHATSAPP\
+        \ (INVALID_MSISDN), e-mail para EMAIL (INVALID_EMAIL), token FCM para PUSH."
+      operationId: testNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestNotificationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateTestResult"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia uma mensagem de teste
+      tags:
+      - Notification
   /api/v1/admin/otp-settings:
     get:
       description: Permissão otp-settings:read.
@@ -4332,6 +4585,70 @@ paths:
       summary: Remove um contacto
       tags:
       - Identity
+  /api/v1/me/devices:
+    post:
+      description: Permissão self:profile. Token já registado para este cliente →
+        actualiza e reactiva; registado para outro cliente → esse fica inactivo e
+        cria-se um novo para este.
+      operationId: registerMyDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDeviceRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Regista o dispositivo para push
+      tags:
+      - Notification
+  /api/v1/me/devices/{id}:
+    delete:
+      description: Permissão self:profile. Remoção lógica (deixa de receber push).
+        De outro cliente → 404 DEVICE_NOT_FOUND.
+      operationId: unregisterMyDevice
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Remove o dispositivo
+      tags:
+      - Notification
   /api/v1/me/drivers:
     get:
       description: "Só os activos. Ordenação por createdAt (defeito, desc)."
@@ -4589,6 +4906,192 @@ paths:
       summary: Envia o documento e a selfie para verificação
       tags:
       - Identity
+  /api/v1/me/notification-preferences:
+    get:
+      description: "Permissão self:profile. Todas as categorias, pela ordem do enum;\
+        \ canais pela ordem de envio (PUSH, WHATSAPP, SMS, EMAIL). available usa só\
+        \ os contactos verificados e os dispositivos activos."
+      operationId: getMyNotificationPreferences
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferencesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta as preferências de notificação
+      tags:
+      - Notification
+    put:
+      description: "Permissão self:profile. Só o que muda. Numa categoria obrigató\
+        ria (PAYMENT, POLICY, LEGAL) não se desligam SMS, WhatsApp e e-mail ao mesmo\
+        \ tempo → 400 VALIDATION_ERROR com errors[0] = { field: categories[i].channels,\
+        \ code: MANDATORY_CATEGORY_NEEDS_CHANNEL } (o push não conta)."
+      operationId: updateMyNotificationPreferences
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotificationPreferencesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferencesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as preferências de notificação
+      tags:
+      - Notification
+  /api/v1/me/notifications:
+    get:
+      description: "Permissão self:profile. Só as do próprio cliente, por createdAt\
+        \ desc; unreadOnly=true mostra só as não lidas."
+      operationId: listMyNotifications
+      parameters:
+      - in: query
+        name: unreadOnly
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseMyNotificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as notificações do cliente
+      tags:
+      - Notification
+  /api/v1/me/notifications/read-all:
+    post:
+      description: Permissão self:profile.
+      operationId: markAllMyNotificationsRead
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Marca todas as notificações como lidas
+      tags:
+      - Notification
+  /api/v1/me/notifications/unread-count:
+    get:
+      description: Permissão self:profile.
+      operationId: countMyUnreadNotifications
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnreadCountResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Conta as notificações por ler
+      tags:
+      - Notification
+  /api/v1/me/notifications/{id}/read:
+    post:
+      description: Permissão self:profile. Idempotente; de outro cliente ou inexistente
+        → 404 NOTIFICATION_NOT_FOUND.
+      operationId: markMyNotificationRead
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Marca uma notificação como lida
+      tags:
+      - Notification
   /api/v1/me/payments:
     get:
       description: "Permissão self:payments. As intenções do próprio cliente, as mais\
@@ -8263,6 +8766,25 @@ components:
       required:
       - providerMessageId
       - status
+    DevicePlatform:
+      type: string
+      enum:
+      - ANDROID
+      - IOS
+    DeviceResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        platform:
+          $ref: "#/components/schemas/DevicePlatform"
+      required:
+      - active
+      - id
+      - platform
     DriverResponse:
       type: object
       properties:
@@ -9649,6 +10171,44 @@ components:
           $ref: "#/components/schemas/KycState"
       required:
       - state
+    MyNotificationResponse:
+      type: object
+      properties:
+        body:
+          type: string
+          example: A apólice AP-2027-000123 (ABC-123-MC) está activa até 10/02/2028
+            10:31.
+        category:
+          type: string
+          example: POLICY
+        createdAt:
+          type: string
+          format: date-time
+        deepLink:
+          type: string
+          example: moseguros://policy/0194f7a2-3b1c-7d2e-9f00-1234567890ab
+        id:
+          type: string
+          format: uuid
+        readAt:
+          type: string
+          format: date-time
+        templateCode:
+          type: string
+          example: POLICY_ISSUED
+        title:
+          type: string
+          example: Apólice emitida
+        webPath:
+          type: string
+          example: /cliente/apolices/0194f7a2-3b1c-7d2e-9f00-1234567890ab
+      required:
+      - body
+      - category
+      - createdAt
+      - id
+      - templateCode
+      - title
     MyPolicySummaryResponse:
       type: object
       properties:
@@ -9691,6 +10251,202 @@ components:
       - startAt
       - status
       - vehicle
+    NotificationCategory:
+      type: string
+      enum:
+      - PAYMENT
+      - POLICY
+      - LEGAL
+      - PROPOSAL
+      - QUOTE
+    NotificationCategoryPreferences:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/NotificationCategory"
+        channels:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationChannelPreference"
+        mandatory:
+          type: boolean
+      required:
+      - category
+      - channels
+      - mandatory
+    NotificationCategoryPreferencesChange:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/NotificationCategory"
+        channels:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationChannelPreferenceChange"
+          maxItems: 4
+          minItems: 0
+      required:
+      - category
+      - channels
+    NotificationChannel:
+      type: string
+      enum:
+      - PUSH
+      - WHATSAPP
+      - SMS
+      - EMAIL
+    NotificationChannelPreference:
+      type: object
+      properties:
+        available:
+          type: boolean
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        enabled:
+          type: boolean
+      required:
+      - available
+      - channel
+      - enabled
+    NotificationChannelPreferenceChange:
+      type: object
+      properties:
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        enabled:
+          type: boolean
+      required:
+      - channel
+      - enabled
+    NotificationPreferencesResponse:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationCategoryPreferences"
+      required:
+      - categories
+    NotificationTemplateDetail:
+      type: object
+      properties:
+        active:
+          type: boolean
+        body:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        code:
+          type: string
+        customized:
+          type: boolean
+        defaultBody:
+          type: string
+        defaultSubject:
+          type: string
+        id:
+          type: string
+          format: uuid
+        locale:
+          type: string
+        sampleParams:
+          type: object
+          additionalProperties:
+            type: string
+        subject:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+        variables:
+          type: array
+          items:
+            type: string
+        version:
+          type: integer
+          format: int64
+        whatsappParams:
+          type: array
+          items:
+            type: string
+        whatsappTemplateName:
+          type: string
+      required:
+      - active
+      - body
+      - channel
+      - code
+      - customized
+      - id
+      - locale
+      - sampleParams
+      - updatedAt
+      - updatedBy
+      - variables
+      - version
+    NotificationTemplatePreview:
+      type: object
+      properties:
+        body:
+          type: string
+        fits:
+          type: boolean
+        length:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        smsText:
+          type: string
+        subject:
+          type: string
+    NotificationTemplateSummary:
+      type: object
+      properties:
+        active:
+          type: boolean
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        code:
+          type: string
+          example: POLICY_ISSUED
+        customized:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        locale:
+          type: string
+          example: pt
+        subject:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+      required:
+      - active
+      - channel
+      - code
+      - customized
+      - id
+      - locale
+      - updatedAt
+      - updatedBy
+    NotificationTemplateTestResult:
+      type: object
+      properties:
+        reason:
+          type: string
+        status:
+          type: string
+          example: SENT
+      required:
+      - status
     Nuit:
       type: string
       description: "NUIT: 9 dígitos"
@@ -10289,6 +11045,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseMyNotificationResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/MyNotificationResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseMyPolicySummaryResponse:
       type: object
       properties:
@@ -10296,6 +11075,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MyPolicySummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseNotificationTemplateSummary:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationTemplateSummary"
         page:
           type: integer
           format: int32
@@ -11478,6 +12280,21 @@ components:
         \ coverages (capitalAmount, deductible, base, factors, bonusMalusFactor, exactPremium,\
         \ premiumAmount), commercialPremiumAmount, charges, subtotalAmount, roundingAdjustmentAmount\
         \ e totalAmount. Decimais em texto, centavos em inteiro."
+    PreviewNotificationTemplateRequest:
+      type: object
+      properties:
+        body:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+        subject:
+          type: string
+          maxLength: 1000
+          minLength: 0
+      required:
+      - body
     ProblemDetail:
       type: object
       description: Erro RFC 7807 (application/problem+json)
@@ -13094,6 +13911,23 @@ components:
           description: Refresh token recebido no login ou na última renovação
       required:
       - refreshToken
+    RegisterDeviceRequest:
+      type: object
+      properties:
+        appVersion:
+          type: string
+          example: 1.0.0+12
+          maxLength: 30
+          minLength: 0
+        platform:
+          $ref: "#/components/schemas/DevicePlatform"
+        token:
+          type: string
+          maxLength: 512
+          minLength: 0
+      required:
+      - platform
+      - token
     RegistrationDocResponse:
       type: object
       properties:
@@ -13821,6 +14655,15 @@ components:
           minLength: 0
       required:
       - reason
+    TestNotificationTemplateRequest:
+      type: object
+      properties:
+        destination:
+          type: string
+          maxLength: 512
+          minLength: 0
+      required:
+      - destination
     TestPlateFormatRequest:
       type: object
       properties:
@@ -14008,6 +14851,15 @@ components:
       - isDefault
       - rules
       - version
+    UnreadCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          example: 3
+      required:
+      - count
     UpdateBrokerProposalRequest:
       type: object
       properties:
@@ -14151,6 +15003,44 @@ components:
       - fullName
       - idDocType
       - province
+      - version
+    UpdateNotificationPreferencesRequest:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationCategoryPreferencesChange"
+          maxItems: 20
+          minItems: 0
+      required:
+      - categories
+    UpdateNotificationTemplateRequest:
+      type: object
+      properties:
+        active:
+          type: boolean
+        body:
+          type: string
+        subject:
+          type: string
+          maxLength: 1000
+          minLength: 0
+        version:
+          type: integer
+          format: int64
+        whatsappParams:
+          type: array
+          items:
+            type: string
+          maxItems: 20
+          minItems: 0
+        whatsappTemplateName:
+          type: string
+          maxLength: 100
+          minLength: 0
+      required:
+      - body
       - version
     UpdateOrganizationRequest:
       type: object
