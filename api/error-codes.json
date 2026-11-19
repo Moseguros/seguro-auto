@@ -37,6 +37,10 @@
       "status" : 500
     },
     {
+      "code" : "DEVICE_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "DRIVER_ALREADY_REGISTERED",
       "status" : 409
     },
@@ -199,6 +203,10 @@
     {
       "code" : "LINK_INTENT_INVALID",
       "status" : 400
+    },
+    {
+      "code" : "NOTIFICATION_NOT_FOUND",
+      "status" : 404
     },
     {
       "code" : "NOT_A_REFERENCE_PAYMENT",
@@ -513,6 +521,10 @@
       "status" : 409
     },
     {
+      "code" : "TEMPLATE_NOT_FOUND",
+      "status" : 404
+    },
+    {
       "code" : "TENANT_REQUIRED",
       "status" : 500
     },
@@ -623,6 +635,7 @@
     "INVALID_YEAR",
     "LICENCE_CATEGORY_UNKNOWN",
     "LICENCE_ISSUE_DATE_INVALID",
+    "MANDATORY_CATEGORY_NEEDS_CHANNEL",
     "MIN_GREATER_THAN_MAX",
     "MSISDN_NOT_MPESA",
     "MTPL_CAPITAL_BELOW_MINIMUM",
@@ -651,8 +664,11 @@
     "RESERVED_FACTOR_CODE",
     "SCHEMA_VIOLATION",
     "SIZE",
+    "SMS_TOO_LONG",
     "START_DATE_OUT_OF_RANGE",
     "TEMPLATE_GROUP_UNKNOWN",
+    "TEMPLATE_SYNTAX",
+    "TEMPLATE_UNKNOWN_VARIABLE",
     "TOO_COMMON",
     "TOO_LONG",
     "TOO_SHORT",

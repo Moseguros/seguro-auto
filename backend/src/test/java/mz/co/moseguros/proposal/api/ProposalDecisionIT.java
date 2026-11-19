@@ -206,7 +206,8 @@ class ProposalDecisionIT {
                 .body("decision.reason", equalTo("Histórico de sinistros acima do aceitável."));
         // S6-04: a recusa chega por notify (PROPOSAL_REJECTED); o motivo vê-se no detalhe, pelo link.
         awaitNotification(c.id(), "PROPOSAL_REJECTED", id);
-        assertThat(channels.sentTo(email)).isEmpty();
+        assertThat(channels.sentTo(email)).extracting(FakeOtpDeliveryChannels.Sent::subject)
+                .noneMatch(subject -> subject.contains("não aceite")); // só o proposal.submitted do S4-05
         List<ProposalRejected> rejected = events.of(ProposalRejected.class).stream()
                 .filter(e -> e.proposalId().equals(id)).toList();
         assertThat(rejected).hasSize(1);
