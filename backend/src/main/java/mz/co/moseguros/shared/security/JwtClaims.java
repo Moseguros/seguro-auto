@@ -5,8 +5,10 @@ package mz.co.moseguros.shared.security;
  */
 public final class JwtClaims {
 
-    /** {@code CUSTOMER} ou {@code STAFF}. */
+    /** {@code CUSTOMER}, {@code STAFF} ou {@code SERVICE} (token de serviço, S5-09). */
     public static final String TYPE = "type";
+    /** Âmbitos de um token de serviço, separados por espaços (RFC 6749). */
+    public static final String SCOPE = "scope";
     /** Id da organização do staff; ausente para clientes e staff da plataforma. */
     public static final String ORG_ID = "orgId";
     /** Tipo da organização ({@code INSURER}, {@code BROKER}…); ausente sem organização. */
@@ -18,6 +20,7 @@ public final class JwtClaims {
 
     public static final String TYPE_CUSTOMER = "CUSTOMER";
     public static final String TYPE_STAFF = "STAFF";
+    public static final String TYPE_SERVICE = "SERVICE";
     public static final String ORG_TYPE_INSURER = "INSURER";
     public static final String ROLE_PLATFORM_ADMIN = "PLATFORM_ADMIN";
 

@@ -44,6 +44,15 @@ spring:
       mail.smtp.connectiontimeout: 5000
       mail.smtp.timeout: 5000
       mail.smtp.writetimeout: 5000
+  # RabbitMQ (S5-06, ADR-004): o backend declara a topologia dos pagamentos por referência
+  # (payment.infrastructure.amqp.PaymentsAmqpConfig). Em staging e produção o utilizador é
+  # moseguros_backend e a palavra-passe vem do cofre (infra/README.md, "RabbitMQ — utilizadores").
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:moseguros}
+    password: ${RABBITMQ_PASSWORD:moseguros}
+    connection-timeout: 5s
 
 server:
   port: ${SERVER_PORT:8080}
@@ -72,6 +81,8 @@ springdoc:
   override-with-generic-response: false
   swagger-ui:
     enabled: true
+  # Endpoints internos (S5-09: token de serviço e fontes do worker) ficam fora do contrato público.
+  paths-to-exclude: /internal/**
 
 moseguros:
   # Tokens JWT (ADR-003). Sem private-key, os perfis local e test geram um par RSA no
@@ -85,6 +96,15 @@ moseguros:
       staff-refresh-ttl: PT12H          # absoluto: a sessão de staff acaba 12 h depois do login
       key-id: ${MOSEGUROS_JWT_KEY_ID:dev}
       private-key: ${MOSEGUROS_JWT_PRIVATE_KEY:}
+      # aud dos tokens de serviço (S5-09): só valem em /internal/** (InternalSecurityConfig)
+      internal-audience: moseguros-internal
+    # Clientes de serviço (S5-09, client credentials em POST /internal/v1/auth/token). Fora de local e
+    # test: segredo vazio = cliente desactivado (WARN); menos de 32 caracteres = não arranca. Em
+    # staging e produção o segredo vem do cofre de segredos (S6-08).
+    service-clients:
+      payment-file-worker:
+        secret: ${MOSEGUROS_SERVICE_CLIENT_PAYMENT_FILE_WORKER_SECRET:}
+        scopes: [ "payments:file-sources" ]
     # OTP do cliente (S1-03). Sem pepper (MOSEGUROS_OTP_PEPPER) só os perfis local e test
     # arrancam. O debug-header (código no cabeçalho X-Debug-Otp) só se liga no perfil local e
     # o arranque falha se estiver ligado com o perfil prod.

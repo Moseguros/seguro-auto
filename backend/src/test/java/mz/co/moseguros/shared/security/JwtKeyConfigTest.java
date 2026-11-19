@@ -24,6 +24,7 @@ class JwtKeyConfigTest {
             .withPropertyValues(
                     "moseguros.security.jwt.issuer=https://api.moseguros.co.mz",
                     "moseguros.security.jwt.audience=moseguros-api",
+                    "moseguros.security.jwt.internal-audience=moseguros-internal",
                     "moseguros.security.jwt.access-token-ttl=PT15M",
                     "moseguros.security.jwt.customer-refresh-ttl=P60D",
                     "moseguros.security.jwt.staff-refresh-ttl=PT12H",

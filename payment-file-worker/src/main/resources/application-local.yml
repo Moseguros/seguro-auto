@@ -1,0 +1,12 @@
+# Desenvolvimento local: backend em localhost:8080, Postgres, RabbitMQ, Vault e SFTP do docker compose.
+logging:
+  level:
+    mz.co.moseguros.paymentworker: DEBUG
+
+moseguros:
+  worker:
+    client-secret: ${WORKER_CLIENT_SECRET:local-worker-secret} # só desenvolvimento (igual ao do backend local)
+    # A chave do SFTP do compose muda quando o contentor é recriado (infra/mocks/sftp/README.md).
+    allow-unknown-host-keys: true
+  vault:
+    token: ${VAULT_TOKEN:dev-root-token} # token só para o Vault em modo dev

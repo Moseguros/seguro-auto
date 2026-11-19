@@ -17,6 +17,10 @@ moseguros:
   security:
     otp:
       pepper: test-otp-pepper-only-for-tests
+    # Cliente de serviço do payment-file-worker (S5-09).
+    service-clients:
+      payment-file-worker:
+        secret: test-worker-secret-only-for-tests-0001
   # Os testes de integração usam canais falsos (FakeOtpDeliveryChannels, perfil test).
   notification:
     webhook-secret: test-webhook-secret

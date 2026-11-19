@@ -47,7 +47,8 @@ class TokenServiceTest {
 
     static final Instant NOW = Instant.parse("2026-11-02T10:00:00Z");
     static final JwtProperties PROPERTIES = new JwtProperties("https://api.moseguros.co.mz", "moseguros-api",
-            Duration.ofMinutes(15), Duration.ofDays(60), Duration.ofHours(12), "test-kid", null);
+            Duration.ofMinutes(15), Duration.ofDays(60), Duration.ofHours(12), "test-kid", null,
+            "moseguros-internal");
 
     UserRoleRepository userRoles = mock(UserRoleRepository.class);
     RoleRepository roles = mock(RoleRepository.class);

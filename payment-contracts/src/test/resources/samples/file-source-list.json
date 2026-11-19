@@ -1,0 +1,50 @@
+{
+  "sources": [
+    {
+      "sourceId": "01930000-0000-7000-8000-000000000501",
+      "insurerId": "01930000-0000-7000-8000-000000000001",
+      "version": 0,
+      "enabled": true,
+      "entity": "90002",
+      "fileFormat": "MEPS",
+      "sftp": {
+        "host": "sftp",
+        "port": 22,
+        "username": "demo",
+        "authType": "PASSWORD",
+        "inboundDir": "inbound",
+        "moveAfterProcessing": true,
+        "processedDir": "processed",
+        "errorDir": "error",
+        "filePattern": "*"
+      },
+      "secretRefs": {
+        "sftp.password": "secret/insurers/01930000-0000-7000-8000-000000000001/payments/BANK_REFERENCE/sftp.password"
+      }
+    },
+    {
+      "sourceId": "01930000-0000-7000-8000-000000000502",
+      "insurerId": "01930000-0000-7000-8000-000000000320",
+      "version": 3,
+      "enabled": true,
+      "entity": "90090",
+      "fileFormat": "BMEPS",
+      "bmepsCompanyId": "800",
+      "bmepsProfileId": "02",
+      "sftp": {
+        "host": "sftp.seguradora-b.example",
+        "port": 2222,
+        "username": "demob",
+        "authType": "KEY",
+        "inboundDir": "/upload/in",
+        "moveAfterProcessing": false,
+        "filePattern": "BMEPS_out*",
+        "hostKeyFingerprint": "SHA256:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+      },
+      "secretRefs": {
+        "sftp.privateKey": "secret/insurers/01930000-0000-7000-8000-000000000320/payments/BANK_REFERENCE/sftp.privateKey",
+        "sftp.passphrase": "secret/insurers/01930000-0000-7000-8000-000000000320/payments/BANK_REFERENCE/sftp.passphrase"
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "messageId": "50065d4ad175a10c3f6add98fe08abb964baa0b8189ea6749420597ca6b4ff01",
+  "schemaVersion": 1,
+  "insurerId": "01930000-0000-7000-8000-000000000001",
+  "sourceId": "01930000-0000-7000-8000-000000000501",
+  "fileFormat": "MEPS",
+  "entity": "90002",
+  "reference": "00548781108",
+  "amount": { "amount": 300000, "currency": "MZN" },
+  "fee": { "amount": 1000, "currency": "MZN" },
+  "paidAt": "2012-11-22T08:34:00Z",
+  "fileName": "exemplo-ficheiro-meps.txt",
+  "fileSha256": "1b96115a3a8e399da57a6bdb3e7371a8ca4bbada5aca146d1e2077507217256e",
+  "formatFileId": "201211230",
+  "lineNo": 2
+}
