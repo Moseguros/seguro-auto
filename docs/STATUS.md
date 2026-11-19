@@ -107,7 +107,7 @@ As onze tarefas entraram juntas no `main` pelo PR de integração #62 (`task/S5-
 | S6-02 PDF do certificado com QR e documentos da apólice | S6-01, S6-04 | pronta |
 | S6-03 Verificação pública e área da polícia (API, CAPTCHA, registo) | S6-01 | pronta |
 | S6-04 Notificações: modelos, mensagens, preferências, dispositivos, push; aviso de cotação a expirar (`QuoteExpiryNotifierJob` no `rating`) | S5 | pronta |
-| S6-05 Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-03, S6-04 | pronta |
+| S6-05 Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-02, S6-03, S6-04 | pronta |
 | S6-06 Web cliente: apólices, certificado, notificações e preferências | S6-02, S6-04 | pronta |
 | S6-07 Mobile: apólices offline, "mostrar à polícia", push e deep links | S6-02, S6-04 | pronta |
 | S6-08 Release 1: staging, observabilidade, carga (k6), ASVS nível 1, distribuição do APK | S6-05, S6-06, S6-07 | pronta — deploy em staging bloqueado (alojamento por decidir) |
