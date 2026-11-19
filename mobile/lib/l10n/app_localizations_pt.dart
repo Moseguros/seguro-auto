@@ -2081,11 +2081,35 @@ class AppLocalizationsPt extends AppLocalizations {
   String get errorPolicyNotFound => 'Apólice não encontrada.';
 
   @override
+  String get errorNotificationNotFound => 'Notificação não encontrada.';
+
+  @override
+  String get errorTemplateNotFound => 'Modelo não encontrado.';
+
+  @override
+  String get errorDeviceNotFound => 'Dispositivo não encontrado.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Use um número Vodacom (começado por 84 ou 85).';
 
   @override
   String get validationInvalidUuid => 'Identificador inválido.';
+
+  @override
+  String get validationTemplateSyntax =>
+      'O texto tem um erro de sintaxe (verifique as chavetas).';
+
+  @override
+  String get validationTemplateUnknownVariable =>
+      'Variável desconhecida. Use só as variáveis indicadas.';
+
+  @override
+  String get validationSmsTooLong => 'O SMS passa dos 160 caracteres.';
+
+  @override
+  String get validationMandatoryCategoryNeedsChannel =>
+      'Estes avisos são obrigatórios: mantenha pelo menos SMS, WhatsApp ou e-mail.';
 
   @override
   String get paymentStatusCreated => 'Criado';

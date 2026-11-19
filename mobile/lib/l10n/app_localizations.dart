@@ -3642,6 +3642,24 @@ abstract class AppLocalizations {
   /// **'Apólice não encontrada.'**
   String get errorPolicyNotFound;
 
+  /// No description provided for @errorNotificationNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificação não encontrada.'**
+  String get errorNotificationNotFound;
+
+  /// No description provided for @errorTemplateNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modelo não encontrado.'**
+  String get errorTemplateNotFound;
+
+  /// No description provided for @errorDeviceNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dispositivo não encontrado.'**
+  String get errorDeviceNotFound;
+
   /// No description provided for @validationMsisdnNotMpesa.
   ///
   /// In pt, this message translates to:
@@ -3653,6 +3671,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Identificador inválido.'**
   String get validationInvalidUuid;
+
+  /// No description provided for @validationTemplateSyntax.
+  ///
+  /// In pt, this message translates to:
+  /// **'O texto tem um erro de sintaxe (verifique as chavetas).'**
+  String get validationTemplateSyntax;
+
+  /// No description provided for @validationTemplateUnknownVariable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Variável desconhecida. Use só as variáveis indicadas.'**
+  String get validationTemplateUnknownVariable;
+
+  /// No description provided for @validationSmsTooLong.
+  ///
+  /// In pt, this message translates to:
+  /// **'O SMS passa dos 160 caracteres.'**
+  String get validationSmsTooLong;
+
+  /// No description provided for @validationMandatoryCategoryNeedsChannel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estes avisos são obrigatórios: mantenha pelo menos SMS, WhatsApp ou e-mail.'**
+  String get validationMandatoryCategoryNeedsChannel;
 
   /// No description provided for @paymentStatusCreated.
   ///
