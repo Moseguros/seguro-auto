@@ -267,7 +267,10 @@
     "RESOLUTION_NOT_ALLOWED": "This resolution is not allowed for this type of exception.",
     "LINK_INTENT_INVALID": "This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.",
     "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link.",
-    "POLICY_NOT_FOUND": "Policy not found."
+    "POLICY_NOT_FOUND": "Policy not found.",
+    "NOTIFICATION_NOT_FOUND": "Notification not found.",
+    "TEMPLATE_NOT_FOUND": "Template not found.",
+    "DEVICE_NOT_FOUND": "Device not found."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -370,7 +373,11 @@
     "MIN_GREATER_THAN_MAX": "The minimum cannot be greater than the maximum.",
     "ENTITY_IN_USE": "This entity is already configured for another insurer.",
     "MSISDN_NOT_MPESA": "Use a Vodacom number (starting with 84 or 85).",
-    "INVALID_UUID": "Invalid identifier."
+    "INVALID_UUID": "Invalid identifier.",
+    "TEMPLATE_SYNTAX": "The text has a syntax error (check the braces).",
+    "TEMPLATE_UNKNOWN_VARIABLE": "Unknown variable. Use only the listed variables.",
+    "SMS_TOO_LONG": "The SMS is longer than 160 characters.",
+    "MANDATORY_CATEGORY_NEEDS_CHANNEL": "These notices are mandatory: keep at least SMS, WhatsApp or e-mail."
   },
   "paymentStatus": {
     "CREATED": "Created",

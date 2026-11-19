@@ -267,7 +267,10 @@
     "RESOLUTION_NOT_ALLOWED": "Esta resolução não é permitida para este tipo de excepção.",
     "LINK_INTENT_INVALID": "Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.",
     "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar.",
-    "POLICY_NOT_FOUND": "Apólice não encontrada."
+    "POLICY_NOT_FOUND": "Apólice não encontrada.",
+    "NOTIFICATION_NOT_FOUND": "Notificação não encontrada.",
+    "TEMPLATE_NOT_FOUND": "Modelo não encontrado.",
+    "DEVICE_NOT_FOUND": "Dispositivo não encontrado."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -370,7 +373,11 @@
     "MIN_GREATER_THAN_MAX": "O valor mínimo não pode ser maior que o máximo.",
     "ENTITY_IN_USE": "Esta entidade já está configurada noutra seguradora.",
     "MSISDN_NOT_MPESA": "Use um número Vodacom (começado por 84 ou 85).",
-    "INVALID_UUID": "Identificador inválido."
+    "INVALID_UUID": "Identificador inválido.",
+    "TEMPLATE_SYNTAX": "O texto tem um erro de sintaxe (verifique as chavetas).",
+    "TEMPLATE_UNKNOWN_VARIABLE": "Variável desconhecida. Use só as variáveis indicadas.",
+    "SMS_TOO_LONG": "O SMS passa dos 160 caracteres.",
+    "MANDATORY_CATEGORY_NEEDS_CHANNEL": "Estes avisos são obrigatórios: mantenha pelo menos SMS, WhatsApp ou e-mail."
   },
   "paymentStatus": {
     "CREATED": "Criado",

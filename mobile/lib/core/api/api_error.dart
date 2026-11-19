@@ -155,6 +155,9 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'LINK_INTENT_INVALID' => l10n.errorLinkIntentInvalid,
   'LINK_AMOUNT_INSUFFICIENT' => l10n.errorLinkAmountInsufficient,
   'POLICY_NOT_FOUND' => l10n.errorPolicyNotFound,
+  'NOTIFICATION_NOT_FOUND' => l10n.errorNotificationNotFound,
+  'TEMPLATE_NOT_FOUND' => l10n.errorTemplateNotFound,
+  'DEVICE_NOT_FOUND' => l10n.errorDeviceNotFound,
   _ => l10n.errorUnknown,
 };
 
@@ -367,6 +370,10 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'ENTITY_IN_USE' => l10n.validationEntityInUse,
   'MSISDN_NOT_MPESA' => l10n.validationMsisdnNotMpesa,
   'INVALID_UUID' => l10n.validationInvalidUuid,
+  'TEMPLATE_SYNTAX' => l10n.validationTemplateSyntax,
+  'TEMPLATE_UNKNOWN_VARIABLE' => l10n.validationTemplateUnknownVariable,
+  'SMS_TOO_LONG' => l10n.validationSmsTooLong,
+  'MANDATORY_CATEGORY_NEEDS_CHANNEL' => l10n.validationMandatoryCategoryNeedsChannel,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,
