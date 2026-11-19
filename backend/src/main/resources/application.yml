@@ -129,8 +129,11 @@ moseguros:
   # Endereço da web (links nos e-mails). Local: Vite em 5173; no compose: nginx em 3000.
   # trusted-proxies (ClientIpResolver, D15): IPs ou CIDR dos proxies cujo X-Forwarded-For é aceite
   # como IP do cliente (vazia = usa sempre o endereço remoto). Ex.: MOSEGUROS_WEB_TRUSTED_PROXIES=172.18.0.0/16.
+  # public-base-url (S6-01 regra 6): endereço público da verificação dos certificados
+  # ({public-base-url}/v/{código}, no QR); por defeito igual a base-url.
   web:
     base-url: ${MOSEGUROS_WEB_BASE_URL:http://localhost:5173}
+    public-base-url: ${MOSEGUROS_WEB_PUBLIC_BASE_URL:${moseguros.web.base-url}}
     trusted-proxies: ${MOSEGUROS_WEB_TRUSTED_PROXIES:}
   # Convites de staff (S1-04): link {web.base-url}/convite/{token}, válido 7 dias; 5 códigos TOTP
   # errados revogam o convite.

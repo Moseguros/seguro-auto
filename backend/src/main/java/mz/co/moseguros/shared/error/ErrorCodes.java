@@ -328,6 +328,10 @@ public final class ErrorCodes {
     /** O montante recebido é menor do que o da intenção a associar (400). */
     public static final String LINK_AMOUNT_INSUFFICIENT = "LINK_AMOUNT_INSUFFICIENT";
 
+    // Apólices (S6-01)
+    /** Apólice inexistente ou fora do âmbito de quem pede (404). */
+    public static final String POLICY_NOT_FOUND = "POLICY_NOT_FOUND";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -468,7 +472,8 @@ public final class ErrorCodes {
             Map.entry(PAYMENT_EXCEPTION_NOT_FOUND, 404),
             Map.entry(RESOLUTION_NOT_ALLOWED, 400),
             Map.entry(LINK_INTENT_INVALID, 400),
-            Map.entry(LINK_AMOUNT_INSUFFICIENT, 400));
+            Map.entry(LINK_AMOUNT_INSUFFICIENT, 400),
+            Map.entry(POLICY_NOT_FOUND, 404));
 
     private ErrorCodes() {
     }

@@ -37,9 +37,12 @@ moseguros:
     storage: filesystem
     filesystem:
       base-dir: ${java.io.tmpdir}/moseguros-test-files
-  # Sem @Scheduled nos testes: chamam o job directamente.
+  # Sem @Scheduled nos testes: chamam o job directamente (o LockProvider do ShedLock existe na mesma).
   jobs:
     enabled: false
+  # URL de verificação dos certificados nos testes (S6-01 regra 6).
+  web:
+    public-base-url: https://verificar.moseguros.test
   # Pagamentos (S5-04 §9): o mpesa-mock dos testes (MpesaGatewayIT) responde depressa; o calendário das
   # consultas é curto para o PaymentStatusQueryJobIT.
   payment:

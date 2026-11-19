@@ -161,6 +161,28 @@ class RunAsSystemUsageTest {
                         "PaymentStatusQueryJob.query", "PaymentExpiryJob.expire", "ProposalPaymentListener.on");
     }
 
+    /**
+     * S6-01: a emissão (ouvinte do ProposalPaid) e as leituras da verificação e do guard da remoção do
+     * veículo correm em SYSTEM; o PolicyVehicleRemovalGuard e o IncompletePublicationsJob não têm
+     * {@code @RunAsSystem}.
+     */
+    @Test
+    void policyListenerAndSystemLookupsAreAllowed() {
+        JavaClasses classes = new ClassFileImporter().importClasses(
+                mz.co.moseguros.policy.application.ProposalPaidListener.class,
+                mz.co.moseguros.policy.application.PolicySystemLookups.class,
+                mz.co.moseguros.policy.application.PolicyVehicleRemovalGuard.class,
+                mz.co.moseguros.shared.events.IncompletePublicationsJob.class);
+        RUN_AS_SYSTEM_OWNERS.check(classes);
+        org.assertj.core.api.Assertions.assertThat(classes.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("ProposalPaidListener.on", "PolicySystemLookups.findActiveByPlate",
+                        "PolicySystemLookups.findLatestByPlate", "PolicySystemLookups.findByCertificateToken",
+                        "PolicySystemLookups.coverAt", "PolicySystemLookups.vehicleHasPolicyInForce");
+    }
+
     @Test
     void ruleRejectsUsageInOtherModules() {
         JavaClasses offending = new ClassFileImporter().importClasses(OffendingPolicyService.class);

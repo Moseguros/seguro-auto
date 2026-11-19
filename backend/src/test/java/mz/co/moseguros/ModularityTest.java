@@ -62,16 +62,17 @@ class ModularityTest {
     /**
      * S2-03: vehicle só usa document e shared (o vehicle → identity do grafo ainda não é usado). Desde
      * o S3-02 o rating depende de vehicle (snapshots do veículo e do condutor nas cotações) e desde o
-     * S4-02 também o proposal (snapshots na proposta).
+     * S4-02 também o proposal (snapshots na proposta). Desde o S6-01 o policy implementa o
+     * {@code VehicleRemovalGuard} (decisão D29).
      */
     @Test
-    void vehicleDependsOnDocumentAndSharedAndOnlyRatingAndProposalDependOnVehicle() {
+    void vehicleDependsOnDocumentAndSharedAndOnlyRatingProposalAndPolicyDependOnVehicle() {
         assertThat(dependenciesOf("vehicle")).contains("document").isSubsetOf("shared", "document");
         assertThat(modules.stream()
                 .filter(m -> !m.getName().equals("vehicle"))
                 .filter(m -> dependenciesOf(m.getName()).contains("vehicle"))
                 .map(ApplicationModule::getName))
-                .containsOnly("rating", "proposal");
+                .containsOnly("rating", "proposal", "policy");
     }
 
     /**
@@ -95,8 +96,8 @@ class ModularityTest {
      * fotografias da vistoria, S4-03, e o PDF e a assinatura, S4-04) e notification (os e-mails da
      * submissão, da decisão e do alerta de SLA, S4-05); modelo transversal §1: {@code proposal → rating,
      * catalog, vehicle, identity, organization, document, notification, payment}; payment entra no S5.
-     * Nenhum módulo depende de proposal nesta fase (o catalog guarda as regras de aceitação sem conhecer
-     * o proposal). O código de assinatura passa pelo identity ({@code identity → notification}); o
+     * Só o policy depende de proposal (S6-01: {@code ProposalApi.view} e {@code markConverted}; o catalog
+     * guarda as regras de aceitação sem conhecer o proposal). O código de assinatura passa pelo identity ({@code identity → notification}); o
      * document continua a depender só do shared.
      */
     @Test
@@ -113,19 +114,19 @@ class ModularityTest {
                 .filter(m -> !m.getName().equals("proposal"))
                 .filter(m -> dependenciesOf(m.getName()).contains("proposal"))
                 .map(ApplicationModule::getName))
-                .isEmpty();
+                .containsOnly("policy");
     }
 
     /**
      * S5-01 e S5-02: payment só depende de organization, notification e document (modelo transversal §1:
      * {@code payment → organization, notification, document}) e não conhece o proposal (usa o
-     * {@code PaymentTargetResolver} que o proposal implementa). Só o proposal depende de payment
-     * ({@code PaymentApi}; o policy entra no S6). O {@code paymentcontracts} não é um módulo: é a
+     * {@code PaymentTargetResolver} que o proposal implementa). Só o proposal e o policy (S6-01: a
+     * intenção que levou à emissão) dependem de payment ({@code PaymentApi}). O {@code paymentcontracts} não é um módulo: é a
      * biblioteca das mensagens e do contrato interno partilhada com o worker (S5-06, S5-09), que o
      * Spring Modulith vê como módulo por estar debaixo de {@code mz.co.moseguros}.
      */
     @Test
-    void paymentDependsOnOrganizationNotificationAndDocumentOnlyAndOnlyProposalDependsOnPayment() {
+    void paymentDependsOnOrganizationNotificationAndDocumentOnlyAndOnlyProposalAndPolicyDependOnPayment() {
         assertThat(dependenciesOf("payment")).contains("organization", "notification", "document")
                 .isSubsetOf("shared", "organization", "notification", "document", "paymentcontracts");
         assertThat(dependenciesOf("payment")).doesNotContain("proposal");
@@ -133,7 +134,22 @@ class ModularityTest {
                 .filter(m -> !m.getName().equals("payment"))
                 .filter(m -> dependenciesOf(m.getName()).contains("payment"))
                 .map(ApplicationModule::getName))
-                .containsOnly("proposal");
+                .containsOnly("proposal", "policy");
+    }
+
+    /**
+     * S6-01: policy usa só proposal ({@code ProposalApi}, {@code ProposalPaid}), payment ({@code PaymentApi}),
+     * catalog (nome do produto), organization (nome da seguradora), vehicle (o {@code VehicleRemovalGuard}) e
+     * shared, todos no grafo do modelo transversal §1. Nenhum destes depende do policy.
+     */
+    @Test
+    void policyDependsOnProposalPaymentCatalogOrganizationAndVehicleOnly() {
+        assertThat(dependenciesOf("policy"))
+                .contains("proposal", "payment", "catalog", "organization", "vehicle")
+                .isSubsetOf("shared", "proposal", "payment", "catalog", "organization", "vehicle");
+        for (String module : java.util.List.of("proposal", "payment", "catalog", "organization", "vehicle")) {
+            assertThat(dependenciesOf(module)).as(module).doesNotContain("policy");
+        }
     }
 
     private Set<String> dependenciesOf(String name) {
