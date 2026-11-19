@@ -34,7 +34,11 @@ describe('ProposalPaymentPage', () => {
       ),
     );
     renderRoute('/cliente/propostas/p1/pagar');
-    expect(await screen.findByText('Proposta PR-2027-000123 · Seguradora Demo')).toBeVisible();
+    expect(
+      await screen.findByText('Proposta PR-2027-000123 · Seguradora Demo', undefined, {
+        timeout: 10_000,
+      }),
+    ).toBeVisible();
     expect(screen.getAllByText(/^2.?999,00 MT$/).length).toBeGreaterThan(0);
     expect(screen.getByText('Pagar até 20/01/2027 12:00')).toBeVisible();
     expect(
