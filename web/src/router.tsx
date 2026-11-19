@@ -29,6 +29,11 @@ import {
   MyProposalsPage,
   NewProposalPage,
 } from './features/proposal-wizard/lazyPages';
+import {
+  MyPaymentsPage,
+  PaymentIntentPage,
+  ProposalPaymentPage,
+} from './features/payments/lazyPages';
 import { ProductListPage } from './features/products/ProductListPage';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
 import { BrokerQuotesPage } from './features/quotes/BrokerQuotesPage';
@@ -256,6 +261,10 @@ const customerRoutes: RouteObject = {
     { path: 'propostas/nova', element: <NewProposalPage /> },
     { path: 'propostas/:id', element: <CustomerProposalPage /> },
     { path: 'identidade', element: <IdentityPage /> },
+    // Pagamentos (S5-11).
+    { path: 'propostas/:id/pagar', element: <ProposalPaymentPage /> },
+    { path: 'pagamentos', element: <MyPaymentsPage /> },
+    { path: 'pagamentos/:intentId', element: <PaymentIntentPage /> },
     { path: '*', element: <UnderConstructionPage /> },
   ],
 };
