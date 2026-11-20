@@ -12,7 +12,7 @@ import mz.co.moseguros.policy.application.PolicyQueryService.Document;
  * @param fileId   ausente enquanto {@code status = PENDING}
  * @param fileName ausente só no certificado de uma apólice sem certificado válido
  */
-@Schema(name = "PolicyDocument")
+@Schema(name = "PolicyDocument", description = "Documento da apólice; PENDING (sem fileId) enquanto não foi gerado")
 public record PolicyDocumentResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) PolicyDocumentType type,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) PolicyDocumentStatus status,
