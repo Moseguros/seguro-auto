@@ -4,6 +4,11 @@ import { AuthRoot } from './auth/AuthProvider';
 import { Permissions, RequirePermission, type Permission } from './auth/permissions';
 import { RequireAuth } from './auth/RequireAuth';
 import { OtpSettingsPage } from './features/admin-auth/OtpSettingsPage';
+import { TemplateEditorPage, TemplateListPage } from './features/admin-notifications/lazyPages';
+import {
+  InsurerPolicyDetailPage,
+  InsurerPolicyListPage,
+} from './features/insurer-policies/lazyPages';
 import {
   InspectionQueuePage,
   KycQueuePage,
@@ -28,7 +33,7 @@ import { DriverListPage } from './features/drivers/DriverListPage';
 import { ProfilePage } from './features/customer-profile/ProfilePage';
 import { OrganizationCreatePage } from './features/organizations/OrganizationCreatePage';
 import { OrganizationDetailPage } from './features/organizations/OrganizationDetailPage';
-import { OrganizationListPage } from './features/organizations/OrganizationListPage';
+import { OrganizationListPage } from './features/organizations/lazyPages';
 import { ProductDetailPage } from './features/products/ProductDetailPage';
 import {
   BrokerNewProposalPage,
@@ -44,7 +49,7 @@ import {
   PaymentIntentPage,
   ProposalPaymentPage,
 } from './features/payments/lazyPages';
-import { ProductListPage } from './features/products/ProductListPage';
+import { ProductListPage } from './features/products/lazyPages';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
 import { BrokerQuotesPage } from './features/quotes/BrokerQuotesPage';
 import { MyQuotesPage } from './features/quotes/MyQuotesPage';
@@ -52,7 +57,7 @@ import { QuoteComparePage } from './features/quotes/QuoteComparePage';
 import { QuoteDetailPage } from './features/quotes/QuoteDetailPage';
 import { QuoteResultsPage } from './features/quotes/QuoteResultsPage';
 import { QuoteWizard } from './features/quotes/QuoteWizard';
-import { ReferenceTablesPage } from './features/references/ReferenceTablesPage';
+import { ReferenceTablesPage } from './features/references/lazyPages';
 import { TariffEditorPage } from './features/tariffs/TariffEditorPage';
 import { TariffsPage } from './features/tariffs/TariffsPage';
 import { ForgotPasswordPage } from './features/staff-auth/ForgotPasswordPage';
@@ -62,6 +67,7 @@ import { StaffLoginPage } from './features/staff-auth/StaffLoginPage';
 import { UsersPage } from './features/users/UsersPage';
 import { VehicleDetailPage } from './features/vehicles/VehicleDetailPage';
 import { VehicleFormPage } from './features/vehicles/VehicleFormPage';
+import { PoliceHistoryPage, TokenResultPage, VerifyPage } from './features/verification/lazyPages';
 import { VehicleListPage } from './features/vehicles/VehicleListPage';
 import { AppLayout } from './layout/AppLayout';
 import { PublicLayout } from './layout/PublicLayout';
@@ -70,7 +76,6 @@ import { HomePage } from './pages/HomePage';
 import { NoAccessPage } from './pages/NoAccessPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { UnderConstructionPage } from './pages/UnderConstructionPage';
-import { VerificarPage } from './pages/VerificarPage';
 import { AdminPage } from './pages/areas/AdminPage';
 import { AssistenciaPage } from './pages/areas/AssistenciaPage';
 import { FrotaPage } from './pages/areas/FrotaPage';
@@ -130,6 +135,15 @@ const adminRoutes: RouteObject[] = [
   {
     path: 'operacoes/pagamentos',
     element: withPermission(Permissions.platformOperations, <PaymentOperationsPage />),
+  },
+  // Modelos de notificação (S6-05).
+  {
+    path: 'notificacoes',
+    element: withPermission(Permissions.notificationTemplateManage, <TemplateListPage />),
+  },
+  {
+    path: 'notificacoes/:id',
+    element: withPermission(Permissions.notificationTemplateManage, <TemplateEditorPage />),
   },
 ];
 
@@ -194,6 +208,15 @@ const insurerRoutes: RouteObject[] = [
   {
     path: 'pagamentos/:id',
     element: withPermission(Permissions.paymentRead, <PaymentDetailPage />),
+  },
+  // Apólices (S6-05).
+  {
+    path: 'apolices',
+    element: withPermission(Permissions.policyRead, <InsurerPolicyListPage />),
+  },
+  {
+    path: 'apolices/:id',
+    element: withPermission(Permissions.policyRead, <InsurerPolicyDetailPage />),
   },
 ];
 
@@ -320,8 +343,17 @@ export const routes: RouteObject[] = [
           { path: '/recuperar/:token', element: <ResetPasswordPage /> },
           { path: '/convite/:token', element: <InvitationPage /> },
           { path: '/sem-acesso', element: <NoAccessPage /> },
-          { path: '/verificar', element: <VerificarPage /> },
-          { path: '/v/:token', element: <VerificarPage /> },
+          // Verificação pública e da polícia (S6-05); o histórico só para a polícia (sem área).
+          { path: '/verificar', element: <VerifyPage /> },
+          {
+            path: '/verificar/historico',
+            element: (
+              <RequireAuth type="STAFF">
+                {withPermission(Permissions.verificationPolice, <PoliceHistoryPage />)}
+              </RequireAuth>
+            ),
+          },
+          { path: '/v/:token', element: <TokenResultPage /> },
           { path: '*', element: <NotFoundPage /> },
         ],
       },
