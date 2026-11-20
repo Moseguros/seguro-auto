@@ -45,7 +45,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Todas as mudanças de estado das intenções (S5-02 §3): bloqueia a linha ({@code PESSIMISTIC_WRITE}),
  * aplica a transição do domínio, grava {@code payment_event} ({@code STATUS_CHANGED}), a auditoria
  * {@code PAYMENT_INTENT.STATUS_CHANGE} (actor {@code SYSTEM}, {@code actorId} = quem pediu a transição)
- * e publica o evento ({@link PaymentSucceeded}, {@link PaymentFailed}).
+ * e publica o evento ({@link PaymentSucceeded}, {@link PaymentFailed}). As transições para um estado final
+ * ou {@code UNKNOWN} contam em {@link PaymentMetrics}.
  *
  * <p>Corre na transacção de quem chama (ou numa nova); quem chama garante o âmbito: em {@code SYSTEM}
  * (jobs, listeners) ou no do pagador (criação da intenção).
@@ -63,11 +64,12 @@ public class IntentStateService {
     private final Clock clock;
     private final PaymentExceptionRepository exceptions;
     private final PaymentProperties.StatusQuery schedule;
+    private final PaymentMetrics metrics;
 
     public IntentStateService(PaymentIntentRepository intents, PaymentEventRepository paymentEvents,
                               ReferencePaymentRepository references, AuditService audit,
                               ApplicationEventPublisher events, Clock clock, PaymentExceptionRepository exceptions,
-                              PaymentProperties properties) {
+                              PaymentProperties properties, PaymentMetrics metrics) {
         this.intents = intents;
         this.paymentEvents = paymentEvents;
         this.references = references;
@@ -76,6 +78,7 @@ public class IntentStateService {
         this.clock = clock;
         this.exceptions = exceptions;
         this.schedule = properties.getStatusQuery();
+        this.metrics = metrics;
     }
 
     /**
@@ -328,6 +331,8 @@ public class IntentStateService {
                 "PAYMENT_INTENT.STATUS_CHANGE", "PaymentIntent", intent.getId().toString(), before, state(intent)));
         log.info("Payment intent status changed intentId={} reference={} method={} from={} to={} actor={}",
                 intent.getId(), intent.getReference(), intent.getMethod(), from, to, actor);
+        // moseguros.payment.intents{method, status} (S6-08 §1), depois do commit
+        metrics.transitioned(intent.getMethod(), to);
         switch (to) {
             case SUCCEEDED -> events.publishEvent(new PaymentSucceeded(Ids.newId(), now, intent.getId(),
                     intent.getReference(), intent.getInsurerId(), intent.getPayerUserId(), intent.getTargetType(),

@@ -2,11 +2,13 @@ package mz.co.moseguros.shared.security;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import mz.co.moseguros.shared.error.ErrorCodes;
 import mz.co.moseguros.shared.error.Problems;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.security.oauth2.server.resource.web.authentication.Be
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -35,6 +38,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  * acesso expirado daria 401 mesmo em {@code permitAll}, e a renovação (chamada precisamente
  * quando o token expirou) falharia sempre. Nos caminhos de {@link #OPTIONAL_AUTH_PATHS} (download de
  * ficheiros) o pedido pode ser anónimo, mas um token presente é validado.
+ *
+ * <p>{@code /api/v1/prometheus} (S6-08 §1) não pede token, mas só responde a endereços remotos em
+ * {@code moseguros.observability.allowed-cidrs} ({@link ObservabilityAccessFilter}; os outros têm 404).
  */
 @Configuration
 @EnableMethodSecurity
@@ -79,7 +85,9 @@ public class SecurityConfig {
             .toList());
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper,
+            @Value("${moseguros.observability.allowed-cidrs:127.0.0.1/32,::1/128}") List<String> observabilityCidrs)
+            throws Exception {
         AuthenticationEntryPoint unauthorized = (req, res, ex) -> write(res, objectMapper,
                 Problems.of(HttpStatus.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED, "Authentication required"));
         AccessDeniedHandler forbidden = (req, res, ex) -> write(res, objectMapper,
@@ -92,12 +100,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC).permitAll()
                         .requestMatchers(OPTIONAL_AUTH).permitAll()
+                        // a rede é verificada antes, pelo ObservabilityAccessFilter
+                        .requestMatchers(ObservabilityAccessFilter.PROMETHEUS).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .bearerTokenResolver(bearerTokenResolver())
                         .authenticationEntryPoint(unauthorized)
                         .accessDeniedHandler(forbidden)
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtClaimsConverter())))
+                .addFilterAfter(new ObservabilityAccessFilter(observabilityCidrs, objectMapper), HeaderWriterFilter.class)
                 .addFilterAfter(new TenantContextFilter(), BearerTokenAuthenticationFilter.class)
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(unauthorized)
@@ -105,10 +116,11 @@ public class SecurityConfig {
                 .build();
     }
 
-    /** Ignora o {@code Authorization} nos caminhos públicos; nos outros usa o resolvedor normal. */
+    /** Ignora o {@code Authorization} nos caminhos públicos e no Prometheus; nos outros usa o resolvedor normal. */
     static BearerTokenResolver bearerTokenResolver() {
         DefaultBearerTokenResolver delegate = new DefaultBearerTokenResolver();
-        return request -> PUBLIC.matches(request) ? null : delegate.resolve(request);
+        return request -> PUBLIC.matches(request) || ObservabilityAccessFilter.PROMETHEUS.matches(request)
+                ? null : delegate.resolve(request);
     }
 
     private static void write(HttpServletResponse response, ObjectMapper mapper, ProblemDetail problem)

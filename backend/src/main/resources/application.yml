@@ -58,17 +58,31 @@ server:
   port: ${SERVER_PORT:8080}
   shutdown: graceful
 
+# Observabilidade (S6-08 §1, modelo transversal §7): /api/v1/prometheus só responde a endereços remotos em
+# moseguros.observability.allowed-cidrs (os outros têm 404; o nginx da web também o bloqueia).
 management:
   endpoints:
     web:
       base-path: /api/v1
       exposure:
-        include: health,info
+        include: health,info,prometheus
   endpoint:
     health:
       probes:
         enabled: true
       show-details: never
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: moseguros-backend
+      environment: ${MOSEGUROS_ENVIRONMENT:local}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        moseguros.policy.issuance.latency: true
+      slo:
+        http.server.requests: 100ms,250ms,500ms,1s,2s
 
 springdoc:
   api-docs:
@@ -85,6 +99,10 @@ springdoc:
   paths-to-exclude: /internal/**
 
 moseguros:
+  # Quem pode ler /api/v1/prometheus (S6-08 §1): endereço remoto do pedido (nunca o X-Forwarded-For) numa
+  # destas redes; fora delas 404. Em staging e produção, a rede interna do Prometheus.
+  observability:
+    allowed-cidrs: ${MOSEGUROS_OBSERVABILITY_ALLOWED_CIDRS:127.0.0.1/32,::1/128,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
   # Tokens JWT (ADR-003). Sem private-key, os perfis local e test geram um par RSA no
   # arranque; os outros perfis não arrancam (MOSEGUROS_JWT_PRIVATE_KEY, PEM PKCS#8, RSA 2048).
   security:
@@ -266,8 +284,8 @@ moseguros:
     hash-key: ${MOSEGUROS_VERIFICATION_HASH_KEY:}
     cache-ttl: PT60S
     rate-limit:
-      public-per-minute: 60
-      police-per-minute: 300
+      public-per-minute: ${MOSEGUROS_VERIFICATION_RATE_LIMIT_PUBLIC_PER_MINUTE:60}
+      police-per-minute: ${MOSEGUROS_VERIFICATION_RATE_LIMIT_POLICE_PER_MINUTE:300}
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada
