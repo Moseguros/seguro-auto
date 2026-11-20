@@ -253,6 +253,19 @@ public class Policy extends BaseEntity {
         };
     }
 
+    /**
+     * Liga o PDF das condições particulares (S6-02 §1). Só uma vez.
+     *
+     * @throws IllegalStateException se já tiver o PDF
+     */
+    public void attachSchedule(UUID fileId) {
+        Objects.requireNonNull(fileId, "fileId");
+        if (scheduleFileId != null) {
+            throw new IllegalStateException("The policy already has a schedule PDF");
+        }
+        scheduleFileId = fileId;
+    }
+
     public CoverPeriod period() {
         return new CoverPeriod(startAt, endAt);
     }

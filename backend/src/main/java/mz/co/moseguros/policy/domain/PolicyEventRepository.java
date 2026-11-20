@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PolicyEventRepository extends JpaRepository<PolicyEvent, UUID> {
 
     List<PolicyEvent> findByPolicyIdOrderByOccurredAtAscIdAsc(UUID policyId);
+
+    boolean existsByPolicyIdAndType(UUID policyId, PolicyEventType type);
 }

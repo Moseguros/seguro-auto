@@ -73,6 +73,19 @@ public class Certificate extends BaseEntity {
         return c;
     }
 
+    /**
+     * Liga o PDF do certificado (S6-02 §1). Só uma vez: um certificado já com PDF não muda.
+     *
+     * @throws IllegalStateException se já tiver PDF
+     */
+    public void attachPdf(UUID fileId) {
+        Objects.requireNonNull(fileId, "fileId");
+        if (pdfFileId != null) {
+            throw new IllegalStateException("The certificate already has a PDF");
+        }
+        pdfFileId = fileId;
+    }
+
     public UUID getPolicyId() {
         return policyId;
     }

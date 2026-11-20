@@ -46,6 +46,18 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID>, JpaSpecif
     @Query("select p from Policy p where p.plate = :plate order by p.endAt desc, p.id desc")
     List<Policy> findLatest(@Param("plate") String plate, Pageable pageable);
 
+    /**
+     * Apólices com certificado {@code VALID} sem PDF ou sem as condições particulares, emitidas antes de
+     * {@code issuedBefore}, as mais antigas primeiro (S6-02 §1, {@code PolicyDocumentsJob}).
+     */
+    @Query("""
+            select p.id from Policy p, Certificate c
+             where c.policyId = p.id and c.status = mz.co.moseguros.policy.CertificateStatus.VALID
+               and (c.pdfFileId is null or p.scheduleFileId is null)
+               and p.issuedAt < :issuedBefore
+             order by p.issuedAt asc, p.id asc""")
+    List<UUID> findMissingDocuments(@Param("issuedBefore") Instant issuedBefore, Pageable pageable);
+
     /** Existe apólice do veículo num dos estados indicados ainda em vigor ({@code end_at > now}). */
     @Query("""
             select count(p) > 0 from Policy p
