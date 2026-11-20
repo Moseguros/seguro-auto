@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { PolicyDetailResponse, PolicyDocument } from '../../api/generated';
+import { mzn } from '../../format/money';
 import { renderRoute, renderWithProviders } from '../../test/render';
 import { is, signInStaff, staffMe } from '../../test/staff';
 import { DocumentsList } from '../policies/common/DocumentsList';
@@ -12,7 +13,6 @@ import { readPolicyFilters } from './PolicyFilters';
 const download = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock('../../files/downloadFile', () => ({ downloadFile: download }));
 
-const mzn = (amount: number) => ({ amount, currency: 'MZN' });
 const slow = { timeout: 10_000 };
 
 const policy: PolicyDetailResponse = {

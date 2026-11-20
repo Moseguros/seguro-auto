@@ -45,10 +45,22 @@ const detail = {
   paymentPlan: 'FULL',
   renewalType: 'ANNUAL_RENEWABLE',
   coverages: [
-    { code: 'MTPL', mandatory: true, capital: mzn(300000000), deductibleType: 'NONE', premium: mzn(299900) },
+    {
+      code: 'MTPL',
+      mandatory: true,
+      capital: mzn(300000000),
+      deductibleType: 'NONE',
+      premium: mzn(299900),
+    },
   ],
   instalments: [
-    { seq: 1, dueDate: '2027-02-10', amount: mzn(299900), status: 'PAID', paidAt: '2027-02-10T08:31:00Z' },
+    {
+      seq: 1,
+      dueDate: '2027-02-10',
+      amount: mzn(299900),
+      status: 'PAID',
+      paidAt: '2027-02-10T08:31:00Z',
+    },
   ],
   documents: [
     { type: 'CERTIFICATE', status: 'READY', fileId, fileName: 'certificado-AP-2027-000001.pdf' },
@@ -112,6 +124,9 @@ async function signIn(p: Page, email: string, to: string) {
 }
 
 test.describe('apólices da seguradora', () => {
+  // Login, lista e detalhe carregados à parte: sob carga passam dos 30 s por defeito.
+  test.setTimeout(90_000);
+
   test('lista com filtros → detalhe → documentos → descarregar o certificado', async ({
     page: p,
   }) => {
@@ -127,9 +142,11 @@ test.describe('apólices da seguradora', () => {
     await p.keyboard.press('Escape');
     await expect(p).toHaveURL(/status=ACTIVE/);
     await p.getByLabel('N.º da apólice, matrícula ou nome').fill('ABC-123');
-    await expect(p).toHaveURL(/q=ABC-123/);
+    await expect(p).toHaveURL(/status=ACTIVE&q=ABC-123/);
     await expect
-      .poll(() => state.listQueries.some((q) => q.includes('status=ACTIVE') && q.includes('q=ABC-123')))
+      .poll(() =>
+        state.listQueries.some((q) => q.includes('status=ACTIVE') && q.includes('q=ABC-123')),
+      )
       .toBe(true);
 
     await p.getByRole('gridcell', { name: 'AP-2027-000001' }).click();

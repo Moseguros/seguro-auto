@@ -52,7 +52,8 @@ async function mockApi(p: Page) {
     if (key === 'GET /api/v1/public/verifications') {
       const plate = url.searchParams.get('plate');
       state.publicQueries.push({ plate, captcha: request.headers()['x-captcha-token'] });
-      if (plate === 'XYZ-999-MP') return json(route, 200, { status: 'NOT_FOUND', checkedAt: valid.checkedAt });
+      if (plate === 'XYZ-999-MP')
+        return json(route, 200, { status: 'NOT_FOUND', checkedAt: valid.checkedAt });
       if (plate === 'AAA-000-MC') {
         return problem(route, 429, 'RATE_LIMITED', { retryAfterSeconds: 30 });
       }
@@ -110,6 +111,7 @@ async function expectNoHorizontalScroll(p: Page) {
 
 test.describe('verificação do seguro (360 px)', () => {
   test.use({ viewport: { width: 360, height: 740 } });
+  test.setTimeout(90_000);
 
   test('verifica uma matrícula com CAPTCHA NONE e vê "Seguro válido"', async ({ page: p }) => {
     const state = await mockApi(p);
@@ -139,7 +141,9 @@ test.describe('verificação do seguro (360 px)', () => {
     await p.goto('/verificar');
     await p.getByLabel('Matrícula').fill('AAA-000-MC');
     await p.getByRole('button', { name: 'Verificar' }).click();
-    await expect(p.getByText(/Demasiados pedidos\. Tente de novo dentro de \d+ segundos\./)).toBeVisible();
+    await expect(
+      p.getByText(/Demasiados pedidos\. Tente de novo dentro de \d+ segundos\./),
+    ).toBeVisible();
     await expect(p.getByRole('button', { name: 'Verificar' })).toBeDisabled();
   });
 

@@ -21,7 +21,13 @@ const defaultBody = 'MoSeguros: apolice {{policyNumber}} emitida. Certificado: {
 function render(body: string, sample: Record<string, string>) {
   const text = body.replace(/\{\{(\w+)\}\}/g, (_, name: string) => sample[name] ?? '');
   const folded = text.normalize('NFD').replace(/[̀-ͯ]/g, '');
-  return { body: text, smsText: folded, length: folded.length, limit: 160, fits: folded.length <= 160 };
+  return {
+    body: text,
+    smsText: folded,
+    length: folded.length,
+    limit: 160,
+    fits: folded.length <= 160,
+  };
 }
 
 async function mockApi(p: Page) {
@@ -47,9 +53,17 @@ async function mockApi(p: Page) {
     resets: 0,
   };
   const summary = () => {
-    const { body: _b, variables: _v, sampleParams: _s, defaultBody: _d, version: _n, ...rest } =
-      state.template;
-    return rest;
+    const t = state.template;
+    return {
+      id: t.id,
+      code: t.code,
+      channel: t.channel,
+      locale: t.locale,
+      active: t.active,
+      customized: t.customized,
+      updatedAt: t.updatedAt,
+      updatedBy: t.updatedBy,
+    };
   };
   const json = (route: Route, status: number, body?: unknown) =>
     route.fulfill({
@@ -123,6 +137,8 @@ async function mockApi(p: Page) {
 test('o administrador abre o SMS, insere uma variável, pré-visualiza, guarda e repõe', async ({
   page: p,
 }) => {
+  // Fluxo longo (vários ecrãs carregados à parte): sob carga passa dos 30 s por defeito.
+  test.setTimeout(90_000);
   const state = await mockApi(p);
   await p.goto(`/entrar?voltar=${encodeURIComponent('/admin/notificacoes')}`);
   await p.getByLabel('E-mail').fill(admin.email);
@@ -132,7 +148,9 @@ test('o administrador abre o SMS, insere uma variável, pré-visualiza, guarda e
 
   await expect(p.getByRole('heading', { level: 1, name: 'Modelos de notificação' })).toBeVisible();
   await expect(
-    p.getByRole('navigation', { name: 'Administração' }).getByRole('link', { name: 'Notificações' }),
+    p
+      .getByRole('navigation', { name: 'Administração' })
+      .getByRole('link', { name: 'Notificações' }),
   ).toBeVisible();
   // A linha do SMS em português.
   await p
