@@ -19,6 +19,7 @@ import Key from '@mui/icons-material/Key';
 import ListAlt from '@mui/icons-material/ListAlt';
 import LocalShipping from '@mui/icons-material/LocalShipping';
 import MonitorHeart from '@mui/icons-material/MonitorHeart';
+import NotificationsActive from '@mui/icons-material/NotificationsActive';
 import Payments from '@mui/icons-material/Payments';
 import People from '@mui/icons-material/People';
 import Person from '@mui/icons-material/Person';
@@ -92,6 +93,12 @@ export const menus: Record<Area, MenuItem[]> = {
     { key: 'users', path: '/admin/utilizadores', icon: Group, permission: 'org-user:read' },
     { key: 'auth', path: '/admin/autenticacao', icon: Key, permission: 'otp-settings:read' },
     {
+      key: 'notifications',
+      path: '/admin/notificacoes',
+      icon: NotificationsActive,
+      permission: 'notification-template:manage',
+    },
+    {
       key: 'paymentOps',
       path: '/admin/operacoes/pagamentos',
       icon: MonitorHeart,
@@ -125,7 +132,12 @@ export const menus: Record<Area, MenuItem[]> = {
       icon: Assignment,
       permission: 'proposal:read',
     },
-    { key: 'policies', path: '/seguradora/apolices', icon: Description },
+    {
+      key: 'policies',
+      path: '/seguradora/apolices',
+      icon: Description,
+      permission: 'policy:read',
+    },
     {
       key: 'payments',
       path: '/seguradora/pagamentos',

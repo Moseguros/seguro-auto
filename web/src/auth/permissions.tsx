@@ -26,6 +26,9 @@ export const Permissions = {
   paymentConfigure: 'payment:configure',
   paymentResolveException: 'payment:resolve-exception',
   platformOperations: 'platform:operations',
+  policyRead: 'policy:read',
+  verificationPolice: 'verification:police',
+  notificationTemplateManage: 'notification-template:manage',
 } as const;
 
 export type Permission = (typeof Permissions)[keyof typeof Permissions];
