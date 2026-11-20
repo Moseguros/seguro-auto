@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/api/api_client.dart';
+import '../../core/auth/session_controller.dart';
 import '../../core/errors/problem.dart';
 import '../../core/widgets/message_banner.dart';
 import '../../l10n/app_localizations.dart';
@@ -25,9 +26,14 @@ class CodeScreen extends ConsumerWidget {
     final controller = ref.read(loginControllerProvider.notifier);
 
     if (sent == null || options == null) {
-      // Sem código pedido (ex.: a app foi reaberta neste ecrã): volta ao primeiro passo.
+      // Sem código pedido (ex.: a app foi reaberta neste ecrã): volta ao primeiro
+      // passo. Depois do login (o `verify` limpa o estado) não: o router já vai
+      // para o destino pedido (ex.: uma ligação `moseguros://`, S6-07 §6).
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) context.go('/login');
+        if (context.mounted &&
+            ref.read(sessionControllerProvider).value == null) {
+          context.go('/login');
+        }
       });
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
