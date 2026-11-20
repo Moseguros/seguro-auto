@@ -2,11 +2,15 @@ package mz.co.moseguros.policy.application;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import mz.co.moseguros.document.DocumentApi;
 import mz.co.moseguros.policy.CertificateStatus;
 import mz.co.moseguros.policy.CoverStatus;
 import mz.co.moseguros.policy.PolicyCoverView;
@@ -20,13 +24,19 @@ import mz.co.moseguros.shared.error.DomainException;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Leituras das apólices entre âmbitos, em {@code SYSTEM} (S6-01 §9 e §9.1): a verificação pública (sem
- * utilizador, S6-03) e o {@link PolicyVehicleRemovalGuard}. Nunca devolvem dados pessoais: o
- * {@link PolicyCoverView} não tem nome nem contactos, e o guard só recebe {@code true}/{@code false}.
+ * utilizador, S6-03), o {@link PolicyVehicleRemovalGuard} e os nomes dos documentos do detalhe (S6-02 §7).
+ * Nunca devolvem dados pessoais: o {@link PolicyCoverView} não tem nome nem contactos, e o guard só recebe
+ * {@code true}/{@code false}.
  */
 @Component
 public class PolicySystemLookups {
@@ -34,18 +44,54 @@ public class PolicySystemLookups {
     /** Estados em que a apólice impede retirar o veículo (§9.1). */
     static final Set<PolicyStatus> BLOCKING = EnumSet.of(PolicyStatus.ACTIVE, PolicyStatus.SUSPENDED);
     private static final Pageable FIRST = PageRequest.of(0, 1);
+    private static final Logger log = LoggerFactory.getLogger(PolicySystemLookups.class);
 
     private final PolicyRepository policies;
     private final CertificateRepository certificates;
+    private final DocumentApi documents;
     private final PlateParser plates;
+    private final TransactionTemplate readOnlyNewTx;
     private final Clock clock;
 
-    public PolicySystemLookups(PolicyRepository policies, CertificateRepository certificates, PlateParser plates,
-                               Clock clock) {
+    public PolicySystemLookups(PolicyRepository policies, CertificateRepository certificates, DocumentApi documents,
+                               PlateParser plates, PlatformTransactionManager transactionManager, Clock clock) {
         this.policies = policies;
         this.certificates = certificates;
+        this.documents = documents;
         this.plates = plates;
+        this.readOnlyNewTx = new TransactionTemplate(transactionManager);
+        this.readOnlyNewTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        this.readOnlyNewTx.setReadOnly(true);
         this.clock = clock;
+    }
+
+    /**
+     * Nomes ({@code originalFilename}) dos ficheiros indicados (S6-02 §7). O RLS de {@code document.file}
+     * esconde ao cliente os ficheiros que não enviou (e, a uma seguradora, os de outra): quem chama já leu a
+     * apólice no seu âmbito e só passa os ids que essa apólice referencia. Um id inexistente ou limpo
+     * ({@code FILE_NOT_FOUND}) não aparece no mapa. Cada leitura corre numa transacção só de leitura à parte,
+     * para um ficheiro em falta não desfazer a transacção de quem chama.
+     */
+    @RunAsSystem
+    public Map<UUID, String> fileNames(Collection<UUID> fileIds) {
+        Map<UUID, String> names = new LinkedHashMap<>();
+        if (fileIds == null) {
+            return names;
+        }
+        for (UUID fileId : fileIds) {
+            if (fileId == null || names.containsKey(fileId)) {
+                continue;
+            }
+            try {
+                String name = readOnlyNewTx.execute(status -> documents.metadata(fileId).originalFilename());
+                if (name != null) {
+                    names.put(fileId, name);
+                }
+            } catch (DomainException e) {
+                log.info("Policy document not readable fileId={} code={}", fileId, e.getCode());
+            }
+        }
+        return names;
     }
 
     /** Apólice {@code ACTIVE} com {@code start_at <= at < end_at}; havendo várias, a de {@code end_at} maior. */

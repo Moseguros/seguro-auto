@@ -25,7 +25,9 @@ import mz.co.moseguros.shared.domain.Money;
 
 /**
  * Detalhe de uma apólice ({@code getMyPolicy} e {@code getInsurerPolicy}, S6-01 §10). {@code events} e
- * {@code proposal} só vêm no detalhe da seguradora. O S6-02 acrescenta {@code documents}.
+ * {@code proposal} só vêm no detalhe da seguradora. {@code documents} (S6-02 §7): o certificado e as
+ * condições particulares (sempre, {@code PENDING} até estarem prontos), as condições gerais, a informação
+ * pré-contratual e o PDF assinado da proposta (se existirem).
  *
  * @param coverStatus {@code coverAt(agora)}
  * @param certificate o certificado válido; ausente se não houver
@@ -50,7 +52,10 @@ public record PolicyDetailResponse(
         CertificateResponse certificate,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) Instant issuedAt,
         @Schema(description = "Só no detalhe da seguradora") List<EventResponse> events,
-        @Schema(description = "Só no detalhe da seguradora") ProposalRef proposal) {
+        @Schema(description = "Só no detalhe da seguradora") ProposalRef proposal,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                description = "Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId}")
+        List<PolicyDocumentResponse> documents) {
 
     /** O produto e a versão da emissão. */
     @Schema(name = "PolicyProductRef")
@@ -149,6 +154,7 @@ public record PolicyDetailResponse(
                 d.certificate() == null ? null : CertificateResponse.from(d.certificate(), d.verificationUrl()),
                 p.getIssuedAt(),
                 d.events() == null ? null : d.events().stream().map(EventResponse::from).toList(),
-                d.proposal() == null ? null : new ProposalRef(d.proposal().id(), d.proposal().number()));
+                d.proposal() == null ? null : new ProposalRef(d.proposal().id(), d.proposal().number()),
+                d.documents().stream().map(PolicyDocumentResponse::from).toList());
     }
 }
