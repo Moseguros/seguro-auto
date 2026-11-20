@@ -65,6 +65,8 @@ lib/src/model/declaration_answer_request.dart
 lib/src/model/declaration_answer_response.dart
 lib/src/model/declaration_question.dart
 lib/src/model/delivery_receipt_request.dart
+lib/src/model/device_platform.dart
+lib/src/model/device_response.dart
 lib/src/model/driver_response.dart
 lib/src/model/failure_code.dart
 lib/src/model/field_error.dart
@@ -116,7 +118,19 @@ lib/src/model/me_organization.dart
 lib/src/model/me_response.dart
 lib/src/model/money.dart
 lib/src/model/my_kyc_response.dart
+lib/src/model/my_notification_response.dart
 lib/src/model/my_policy_summary_response.dart
+lib/src/model/notification_category.dart
+lib/src/model/notification_category_preferences.dart
+lib/src/model/notification_category_preferences_change.dart
+lib/src/model/notification_channel.dart
+lib/src/model/notification_channel_preference.dart
+lib/src/model/notification_channel_preference_change.dart
+lib/src/model/notification_preferences_response.dart
+lib/src/model/notification_template_detail.dart
+lib/src/model/notification_template_preview.dart
+lib/src/model/notification_template_summary.dart
+lib/src/model/notification_template_test_result.dart
 lib/src/model/organization_response.dart
 lib/src/model/organization_summary_response.dart
 lib/src/model/otp_challenge_response.dart
@@ -136,7 +150,9 @@ lib/src/model/page_response_insurer_proposal_summary_response.dart
 lib/src/model/page_response_intent_view.dart
 lib/src/model/page_response_invitation_response.dart
 lib/src/model/page_response_kyc_check_summary_response.dart
+lib/src/model/page_response_my_notification_response.dart
 lib/src/model/page_response_my_policy_summary_response.dart
+lib/src/model/page_response_notification_template_summary.dart
 lib/src/model/page_response_organization_summary_response.dart
 lib/src/model/page_response_payment_exception_summary.dart
 lib/src/model/page_response_payment_file_import.dart
@@ -192,6 +208,7 @@ lib/src/model/policy_status.dart
 lib/src/model/policy_timeline_event.dart
 lib/src/model/policy_vehicle_ref.dart
 lib/src/model/policyholder_source.dart
+lib/src/model/preview_notification_template_request.dart
 lib/src/model/problem_detail.dart
 lib/src/model/product_document_response.dart
 lib/src/model/product_response.dart
@@ -252,6 +269,7 @@ lib/src/model/reference_sms_response.dart
 lib/src/model/reference_status.dart
 lib/src/model/reference_value_response.dart
 lib/src/model/refresh_token_request.dart
+lib/src/model/register_device_request.dart
 lib/src/model/registration_doc_response.dart
 lib/src/model/registry_lookup_response.dart
 lib/src/model/reject_inspection_request.dart
@@ -288,6 +306,7 @@ lib/src/model/suitability_question.dart
 lib/src/model/suitability_reason.dart
 lib/src/model/suitability_result.dart
 lib/src/model/suspend_organization_request.dart
+lib/src/model/test_notification_template_request.dart
 lib/src/model/test_plate_format_request.dart
 lib/src/model/test_plate_format_response.dart
 lib/src/model/token_response.dart
@@ -298,11 +317,14 @@ lib/src/model/underwriting_inputs.dart
 lib/src/model/underwriting_outcome.dart
 lib/src/model/underwriting_result.dart
 lib/src/model/underwriting_rules_response.dart
+lib/src/model/unread_count_response.dart
 lib/src/model/update_broker_proposal_request.dart
 lib/src/model/update_driver_request.dart
 lib/src/model/update_insurer_rating_settings_request.dart
 lib/src/model/update_me_request.dart
 lib/src/model/update_my_profile_request.dart
+lib/src/model/update_notification_preferences_request.dart
+lib/src/model/update_notification_template_request.dart
 lib/src/model/update_organization_request.dart
 lib/src/model/update_otp_settings_request.dart
 lib/src/model/update_payment_method_request.dart

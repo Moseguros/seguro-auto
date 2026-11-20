@@ -77,6 +77,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DeclarationQuestion.serializer)
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
+      ..add(DevicePlatform.serializer)
+      ..add(DeviceResponse.serializer)
       ..add(DriverResponse.serializer)
       ..add(FailureCode.serializer)
       ..add(FieldError.serializer)
@@ -144,7 +146,19 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(Money.serializer)
       ..add(MoneyCurrencyEnum.serializer)
       ..add(MyKycResponse.serializer)
+      ..add(MyNotificationResponse.serializer)
       ..add(MyPolicySummaryResponse.serializer)
+      ..add(NotificationCategory.serializer)
+      ..add(NotificationCategoryPreferences.serializer)
+      ..add(NotificationCategoryPreferencesChange.serializer)
+      ..add(NotificationChannel.serializer)
+      ..add(NotificationChannelPreference.serializer)
+      ..add(NotificationChannelPreferenceChange.serializer)
+      ..add(NotificationPreferencesResponse.serializer)
+      ..add(NotificationTemplateDetail.serializer)
+      ..add(NotificationTemplatePreview.serializer)
+      ..add(NotificationTemplateSummary.serializer)
+      ..add(NotificationTemplateTestResult.serializer)
       ..add(OrganizationResponse.serializer)
       ..add(OrganizationResponseProvinceEnum.serializer)
       ..add(OrganizationResponseStatusEnum.serializer)
@@ -181,7 +195,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseIntentView.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseKycCheckSummaryResponse.serializer)
+      ..add(PageResponseMyNotificationResponse.serializer)
       ..add(PageResponseMyPolicySummaryResponse.serializer)
+      ..add(PageResponseNotificationTemplateSummary.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
       ..add(PageResponsePaymentExceptionSummary.serializer)
       ..add(PageResponsePaymentFileImport.serializer)
@@ -251,6 +267,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PolicyTimelineEventActorTypeEnum.serializer)
       ..add(PolicyVehicleRef.serializer)
       ..add(PolicyholderSource.serializer)
+      ..add(PreviewNotificationTemplateRequest.serializer)
       ..add(ProblemDetail.serializer)
       ..add(ProductDocumentResponse.serializer)
       ..add(ProductDocumentResponseDocTypeEnum.serializer)
@@ -346,6 +363,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
+      ..add(RegisterDeviceRequest.serializer)
       ..add(RegistrationDocResponse.serializer)
       ..add(RegistryLookupResponse.serializer)
       ..add(RejectInspectionRequest.serializer)
@@ -394,6 +412,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(SuitabilityReason.serializer)
       ..add(SuitabilityResult.serializer)
       ..add(SuspendOrganizationRequest.serializer)
+      ..add(TestNotificationTemplateRequest.serializer)
       ..add(TestPlateFormatRequest.serializer)
       ..add(TestPlateFormatResponse.serializer)
       ..add(TokenResponse.serializer)
@@ -405,6 +424,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UnderwritingResult.serializer)
       ..add(UnderwritingResultRulesSourceEnum.serializer)
       ..add(UnderwritingRulesResponse.serializer)
+      ..add(UnreadCountResponse.serializer)
       ..add(UpdateBrokerProposalRequest.serializer)
       ..add(UpdateDriverRequest.serializer)
       ..add(UpdateInsurerRatingSettingsRequest.serializer)
@@ -413,6 +433,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateMyProfileRequest.serializer)
       ..add(UpdateMyProfileRequestIdDocTypeEnum.serializer)
       ..add(UpdateMyProfileRequestProvinceEnum.serializer)
+      ..add(UpdateNotificationPreferencesRequest.serializer)
+      ..add(UpdateNotificationTemplateRequest.serializer)
       ..add(UpdateOrganizationRequest.serializer)
       ..add(UpdateOrganizationRequestProvinceEnum.serializer)
       ..add(UpdateOtpSettingsRequest.serializer)
@@ -590,8 +612,32 @@ Serializers _$serializers = (Serializers().toBuilder()
           () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(
+              BuiltList, const [const FullType(MyNotificationResponse)]),
+          () => ListBuilder<MyNotificationResponse>())
+      ..addBuilderFactory(
+          const FullType(
               BuiltList, const [const FullType(MyPolicySummaryResponse)]),
           () => ListBuilder<MyPolicySummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(NotificationCategoryPreferences)]),
+          () => ListBuilder<NotificationCategoryPreferences>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(NotificationCategoryPreferencesChange)]),
+          () => ListBuilder<NotificationCategoryPreferencesChange>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(NotificationChannelPreference)]),
+          () => ListBuilder<NotificationChannelPreference>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(NotificationChannelPreferenceChange)]),
+          () => ListBuilder<NotificationChannelPreferenceChange>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(NotificationTemplateSummary)]),
+          () => ListBuilder<NotificationTemplateSummary>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(OrganizationSummaryResponse)]),
@@ -805,6 +851,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(SuitabilityAnswerRequest)]),
           () => ListBuilder<SuitabilityAnswerRequest>())
@@ -868,6 +917,20 @@ Serializers _$serializers = (Serializers().toBuilder()
             const FullType(SecretStatusResponse)
           ]),
           () => MapBuilder<String, SecretStatusResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltMap, const [const FullType(String), const FullType(String)]),
+          () => MapBuilder<String, String>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltMap, const [const FullType(String), const FullType(String)]),
+          () => MapBuilder<String, String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltMap, const [
             const FullType(String),

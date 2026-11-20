@@ -968,6 +968,20 @@ export interface DeliveryReceiptRequest {
   status: DeliveryReceiptRequestStatus;
 }
 
+export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const DevicePlatform = {
+  ANDROID: 'ANDROID',
+  IOS: 'IOS',
+} as const;
+
+export interface DeviceResponse {
+  active: boolean;
+  id: string;
+  platform: DevicePlatform;
+}
+
 export interface DriverResponse {
   birthDate: string;
   createdAt: string;
@@ -1766,6 +1780,18 @@ export interface MyKycResponse {
   state: KycState;
 }
 
+export interface MyNotificationResponse {
+  body: string;
+  category: string;
+  createdAt: string;
+  deepLink?: string;
+  id: string;
+  readAt?: string;
+  templateCode: string;
+  title: string;
+  webPath?: string;
+}
+
 export interface MyPolicySummaryResponse {
   certificateReady: boolean;
   coverStatus: CoverStatus;
@@ -1778,6 +1804,105 @@ export interface MyPolicySummaryResponse {
   startAt: string;
   status: PolicyStatus;
   vehicle: PolicyVehicleRef;
+}
+
+export type NotificationCategory = (typeof NotificationCategory)[keyof typeof NotificationCategory];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const NotificationCategory = {
+  PAYMENT: 'PAYMENT',
+  POLICY: 'POLICY',
+  LEGAL: 'LEGAL',
+  PROPOSAL: 'PROPOSAL',
+  QUOTE: 'QUOTE',
+} as const;
+
+export interface NotificationCategoryPreferences {
+  category: NotificationCategory;
+  channels: NotificationChannelPreference[];
+  mandatory: boolean;
+}
+
+export interface NotificationCategoryPreferencesChange {
+  category: NotificationCategory;
+  /**
+   * @minItems 0
+   * @maxItems 4
+   */
+  channels: NotificationChannelPreferenceChange[];
+}
+
+export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const NotificationChannel = {
+  PUSH: 'PUSH',
+  WHATSAPP: 'WHATSAPP',
+  SMS: 'SMS',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface NotificationChannelPreference {
+  available: boolean;
+  channel: NotificationChannel;
+  enabled: boolean;
+}
+
+export interface NotificationChannelPreferenceChange {
+  channel: NotificationChannel;
+  enabled: boolean;
+}
+
+export interface NotificationPreferencesResponse {
+  categories: NotificationCategoryPreferences[];
+}
+
+export type NotificationTemplateDetailSampleParams = { [key: string]: string };
+
+export interface NotificationTemplateDetail {
+  active: boolean;
+  body: string;
+  channel: NotificationChannel;
+  code: string;
+  customized: boolean;
+  defaultBody?: string;
+  defaultSubject?: string;
+  id: string;
+  locale: string;
+  sampleParams: NotificationTemplateDetailSampleParams;
+  subject?: string;
+  updatedAt: string;
+  updatedBy: string;
+  variables: string[];
+  version: number;
+  whatsappParams?: string[];
+  whatsappTemplateName?: string;
+}
+
+export interface NotificationTemplatePreview {
+  body?: string;
+  fits?: boolean;
+  length?: number;
+  limit?: number;
+  smsText?: string;
+  subject?: string;
+}
+
+export interface NotificationTemplateSummary {
+  active: boolean;
+  channel: NotificationChannel;
+  code: string;
+  customized: boolean;
+  id: string;
+  locale: string;
+  subject?: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface NotificationTemplateTestResult {
+  reason?: string;
+  status: string;
 }
 
 /**
@@ -2168,8 +2293,22 @@ export interface PageResponseKycCheckSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseMyNotificationResponse {
+  content: MyNotificationResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseMyPolicySummaryResponse {
   content: MyPolicySummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseNotificationTemplateSummary {
+  content: NotificationTemplateSummary[];
   page: number;
   size: number;
   totalElements: number;
@@ -2884,6 +3023,18 @@ export const PolicyholderSource = {
  */
 export interface PremiumBreakdown {
   [key: string]: unknown;
+}
+
+export type PreviewNotificationTemplateRequestParams = { [key: string]: string };
+
+export interface PreviewNotificationTemplateRequest {
+  body: string;
+  params?: PreviewNotificationTemplateRequestParams;
+  /**
+   * @minLength 0
+   * @maxLength 1000
+   */
+  subject?: string;
 }
 
 /**
@@ -3913,6 +4064,20 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
+export interface RegisterDeviceRequest {
+  /**
+   * @minLength 0
+   * @maxLength 30
+   */
+  appVersion?: string;
+  platform: DevicePlatform;
+  /**
+   * @minLength 0
+   * @maxLength 512
+   */
+  token: string;
+}
+
 export interface RegistrationDocResponse {
   contentType: string;
   /** Descarregar com GET /api/v1/files/{fileId} (downloadFile) */
@@ -4464,6 +4629,14 @@ export interface SuspendOrganizationRequest {
   reason: string;
 }
 
+export interface TestNotificationTemplateRequest {
+  /**
+   * @minLength 0
+   * @maxLength 512
+   */
+  destination: string;
+}
+
 export interface TestPlateFormatRequest {
   /**
    * @minLength 0
@@ -4599,6 +4772,10 @@ export interface UnderwritingRulesResponse {
   version: number;
 }
 
+export interface UnreadCountResponse {
+  count: number;
+}
+
 export interface UpdateBrokerProposalRequest {
   policyholder?: BrokerPolicyholderRequest;
   /** Nova data de início (hoje a hoje + 60 dias, Africa/Maputo); omitida mantém a actual */
@@ -4696,6 +4873,35 @@ export interface UpdateMyProfileRequest {
   province: UpdateMyProfileRequestProvince;
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
+}
+
+export interface UpdateNotificationPreferencesRequest {
+  /**
+   * @minItems 0
+   * @maxItems 20
+   */
+  categories: NotificationCategoryPreferencesChange[];
+}
+
+export interface UpdateNotificationTemplateRequest {
+  active?: boolean;
+  body: string;
+  /**
+   * @minLength 0
+   * @maxLength 1000
+   */
+  subject?: string;
+  version: number;
+  /**
+   * @minItems 0
+   * @maxItems 20
+   */
+  whatsappParams?: string[];
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  whatsappTemplateName?: string;
 }
 
 export type UpdateOrganizationRequestProvince =
@@ -5144,6 +5350,15 @@ export const ListPlatformInvitationsStatus = {
   REVOKED: 'REVOKED',
 } as const;
 
+export type ListNotificationTemplatesParams = {
+  code?: string;
+  channel?: NotificationChannel;
+  locale?: string;
+  customized?: boolean;
+  page?: number;
+  size?: number;
+};
+
 export type ListAdminReferenceValuesParams = {
   active?: boolean;
   parentCode?: string;
@@ -5461,6 +5676,12 @@ export type SubmitMyKycBody = {
   /** Seguradora a quem a verificação é enviada */
   insurerId?: string;
   selfie?: Blob;
+};
+
+export type ListMyNotificationsParams = {
+  unreadOnly?: boolean;
+  page?: number;
+  size?: number;
 };
 
 export type ListMyPaymentsParams = {
@@ -5879,6 +6100,627 @@ export function useListPlatformInvitations<
 
   return query;
 }
+
+/**
+ * Permissão notification-template:manage. Filtros code (prefixo), channel, locale, customized; por code, channel e locale.
+ * @summary Lista os modelos das notificações
+ */
+export const listNotificationTemplates = (
+  params?: ListNotificationTemplatesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseNotificationTemplateSummary>(
+    { url: `/api/v1/admin/notification-templates`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListNotificationTemplatesQueryKey = (params?: ListNotificationTemplatesParams) => {
+  return [`/api/v1/admin/notification-templates`, ...(params ? [params] : [])] as const;
+};
+
+export const getListNotificationTemplatesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListNotificationTemplatesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listNotificationTemplates>>> = ({
+    signal,
+  }) => listNotificationTemplates(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listNotificationTemplates>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListNotificationTemplatesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listNotificationTemplates>>
+>;
+export type ListNotificationTemplatesQueryError = ErrorType<ProblemDetail>;
+
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListNotificationTemplatesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listNotificationTemplates>>,
+          TError,
+          Awaited<ReturnType<typeof listNotificationTemplates>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listNotificationTemplates>>,
+          TError,
+          Awaited<ReturnType<typeof listNotificationTemplates>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os modelos das notificações
+ */
+
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListNotificationTemplatesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão notification-template:manage. defaultSubject e defaultBody são o texto do ficheiro de mensagens. Inexistente → 404 TEMPLATE_NOT_FOUND.
+ * @summary Consulta um modelo
+ */
+export const getNotificationTemplate = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplateDetail>(
+    { url: `/api/v1/admin/notification-templates/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetNotificationTemplateQueryKey = (id?: string) => {
+  return [`/api/v1/admin/notification-templates/${id}`] as const;
+};
+
+export const getGetNotificationTemplateQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNotificationTemplateQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotificationTemplate>>> = ({
+    signal,
+  }) => getNotificationTemplate(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationTemplate>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetNotificationTemplateQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNotificationTemplate>>
+>;
+export type GetNotificationTemplateQueryError = ErrorType<ProblemDetail>;
+
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getNotificationTemplate>>,
+          TError,
+          Awaited<ReturnType<typeof getNotificationTemplate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getNotificationTemplate>>,
+          TError,
+          Awaited<ReturnType<typeof getNotificationTemplate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta um modelo
+ */
+
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetNotificationTemplateQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão notification-template:manage. Validação: TEMPLATE_SYNTAX, TEMPLATE_UNKNOWN_VARIABLE, REQUIRED, TOO_LONG, SMS_TOO_LONG (errors[] de 400 VALIDATION_ERROR); version diferente → 409 CONCURRENT_MODIFICATION. Fica customized.
+ * @summary Altera o texto de um modelo
+ */
+export const updateNotificationTemplate = (
+  id: string,
+  updateNotificationTemplateRequest: BodyType<UpdateNotificationTemplateRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<NotificationTemplateDetail>(
+    {
+      url: `/api/v1/admin/notification-templates/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateNotificationTemplateRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotificationTemplate>>,
+    TError,
+    { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateNotificationTemplate>>,
+    { id: string; data: BodyType<UpdateNotificationTemplateRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateNotificationTemplate(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateNotificationTemplate>>
+>;
+export type UpdateNotificationTemplateMutationBody = BodyType<UpdateNotificationTemplateRequest>;
+export type UpdateNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera o texto de um modelo
+ */
+export const useUpdateNotificationTemplate = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateNotificationTemplate>>,
+      TError,
+      { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão notification-template:manage. Não grava. Sem params usa os valores de exemplo. smsText, length, limit e fits só em SMS. Erros de validação como no PUT.
+ * @summary Pré-visualiza um texto
+ */
+export const previewNotificationTemplate = (
+  id: string,
+  previewNotificationTemplateRequest: BodyType<PreviewNotificationTemplateRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplatePreview>(
+    {
+      url: `/api/v1/admin/notification-templates/${id}/preview`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: previewNotificationTemplateRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getPreviewNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof previewNotificationTemplate>>,
+    TError,
+    { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof previewNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationKey = ['previewNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof previewNotificationTemplate>>,
+    { id: string; data: BodyType<PreviewNotificationTemplateRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return previewNotificationTemplate(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PreviewNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof previewNotificationTemplate>>
+>;
+export type PreviewNotificationTemplateMutationBody = BodyType<PreviewNotificationTemplateRequest>;
+export type PreviewNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pré-visualiza um texto
+ */
+export const usePreviewNotificationTemplate = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof previewNotificationTemplate>>,
+      TError,
+      { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof previewNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationOptions = getPreviewNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão notification-template:manage. customized passa a false.
+ * @summary Repõe o texto do ficheiro
+ */
+export const resetNotificationTemplate = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplateDetail>(
+    { url: `/api/v1/admin/notification-templates/${id}/reset`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getResetNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof resetNotificationTemplate>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof resetNotificationTemplate>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['resetNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof resetNotificationTemplate>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return resetNotificationTemplate(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ResetNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof resetNotificationTemplate>>
+>;
+
+export type ResetNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Repõe o texto do ficheiro
+ */
+export const useResetNotificationTemplate = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof resetNotificationTemplate>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof resetNotificationTemplate>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getResetNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão notification-template:manage. Envia já, com os valores de exemplo e o texto gravado, sem alternativa: telemóvel para SMS/WHATSAPP (INVALID_MSISDN), e-mail para EMAIL (INVALID_EMAIL), token FCM para PUSH.
+ * @summary Envia uma mensagem de teste
+ */
+export const testNotificationTemplate = (
+  id: string,
+  testNotificationTemplateRequest: BodyType<TestNotificationTemplateRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplateTestResult>(
+    {
+      url: `/api/v1/admin/notification-templates/${id}/test`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: testNotificationTemplateRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getTestNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof testNotificationTemplate>>,
+    TError,
+    { id: string; data: BodyType<TestNotificationTemplateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof testNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<TestNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationKey = ['testNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof testNotificationTemplate>>,
+    { id: string; data: BodyType<TestNotificationTemplateRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return testNotificationTemplate(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TestNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof testNotificationTemplate>>
+>;
+export type TestNotificationTemplateMutationBody = BodyType<TestNotificationTemplateRequest>;
+export type TestNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia uma mensagem de teste
+ */
+export const useTestNotificationTemplate = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof testNotificationTemplate>>,
+      TError,
+      { id: string; data: BodyType<TestNotificationTemplateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof testNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<TestNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationOptions = getTestNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 
 /**
  * Permissão otp-settings:read.
@@ -16460,6 +17302,169 @@ export const useRemoveMyContact = <TError = ErrorType<ProblemDetail>, TContext =
 };
 
 /**
+ * Permissão self:profile. Token já registado para este cliente → actualiza e reactiva; registado para outro cliente → esse fica inactivo e cria-se um novo para este.
+ * @summary Regista o dispositivo para push
+ */
+export const registerMyDevice = (
+  registerDeviceRequest: BodyType<RegisterDeviceRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<DeviceResponse>(
+    {
+      url: `/api/v1/me/devices`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: registerDeviceRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRegisterMyDeviceMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof registerMyDevice>>,
+    TError,
+    { data: BodyType<RegisterDeviceRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof registerMyDevice>>,
+  TError,
+  { data: BodyType<RegisterDeviceRequest> },
+  TContext
+> => {
+  const mutationKey = ['registerMyDevice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof registerMyDevice>>,
+    { data: BodyType<RegisterDeviceRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return registerMyDevice(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RegisterMyDeviceMutationResult = NonNullable<
+  Awaited<ReturnType<typeof registerMyDevice>>
+>;
+export type RegisterMyDeviceMutationBody = BodyType<RegisterDeviceRequest>;
+export type RegisterMyDeviceMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Regista o dispositivo para push
+ */
+export const useRegisterMyDevice = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof registerMyDevice>>,
+      TError,
+      { data: BodyType<RegisterDeviceRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof registerMyDevice>>,
+  TError,
+  { data: BodyType<RegisterDeviceRequest> },
+  TContext
+> => {
+  const mutationOptions = getRegisterMyDeviceMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile. Remoção lógica (deixa de receber push). De outro cliente → 404 DEVICE_NOT_FOUND.
+ * @summary Remove o dispositivo
+ */
+export const unregisterMyDevice = (id: string, options?: SecondParameter<typeof http>) => {
+  return http<void>({ url: `/api/v1/me/devices/${id}`, method: 'DELETE' }, options);
+};
+
+export const getUnregisterMyDeviceMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unregisterMyDevice>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof unregisterMyDevice>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['unregisterMyDevice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof unregisterMyDevice>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return unregisterMyDevice(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UnregisterMyDeviceMutationResult = NonNullable<
+  Awaited<ReturnType<typeof unregisterMyDevice>>
+>;
+
+export type UnregisterMyDeviceMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Remove o dispositivo
+ */
+export const useUnregisterMyDevice = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof unregisterMyDevice>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof unregisterMyDevice>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getUnregisterMyDeviceMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Só os activos. Ordenação por createdAt (defeito, desc).
  * @summary Lista os condutores do cliente
  */
@@ -17143,6 +18148,642 @@ export const useSubmitMyKyc = <TError = ErrorType<ProblemDetail>, TContext = unk
   TContext
 > => {
   const mutationOptions = getSubmitMyKycMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile. Todas as categorias, pela ordem do enum; canais pela ordem de envio (PUSH, WHATSAPP, SMS, EMAIL). available usa só os contactos verificados e os dispositivos activos.
+ * @summary Consulta as preferências de notificação
+ */
+export const getMyNotificationPreferences = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationPreferencesResponse>(
+    { url: `/api/v1/me/notification-preferences`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetMyNotificationPreferencesQueryKey = () => {
+  return [`/api/v1/me/notification-preferences`] as const;
+};
+
+export const getGetMyNotificationPreferencesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyNotificationPreferencesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyNotificationPreferences>>> = ({
+    signal,
+  }) => getMyNotificationPreferences(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyNotificationPreferencesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyNotificationPreferences>>
+>;
+export type GetMyNotificationPreferencesQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+          TError,
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+          TError,
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta as preferências de notificação
+ */
+
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyNotificationPreferencesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:profile. Só o que muda. Numa categoria obrigatória (PAYMENT, POLICY, LEGAL) não se desligam SMS, WhatsApp e e-mail ao mesmo tempo → 400 VALIDATION_ERROR com errors[0] = { field: categories[i].channels, code: MANDATORY_CATEGORY_NEEDS_CHANNEL } (o push não conta).
+ * @summary Altera as preferências de notificação
+ */
+export const updateMyNotificationPreferences = (
+  updateNotificationPreferencesRequest: BodyType<UpdateNotificationPreferencesRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<NotificationPreferencesResponse>(
+    {
+      url: `/api/v1/me/notification-preferences`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateNotificationPreferencesRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateMyNotificationPreferencesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+    TError,
+    { data: BodyType<UpdateNotificationPreferencesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+  TError,
+  { data: BodyType<UpdateNotificationPreferencesRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateMyNotificationPreferences'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+    { data: BodyType<UpdateNotificationPreferencesRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateMyNotificationPreferences(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateMyNotificationPreferencesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateMyNotificationPreferences>>
+>;
+export type UpdateMyNotificationPreferencesMutationBody =
+  BodyType<UpdateNotificationPreferencesRequest>;
+export type UpdateMyNotificationPreferencesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera as preferências de notificação
+ */
+export const useUpdateMyNotificationPreferences = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+      TError,
+      { data: BodyType<UpdateNotificationPreferencesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+  TError,
+  { data: BodyType<UpdateNotificationPreferencesRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateMyNotificationPreferencesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile. Só as do próprio cliente, por createdAt desc; unreadOnly=true mostra só as não lidas.
+ * @summary Lista as notificações do cliente
+ */
+export const listMyNotifications = (
+  params?: ListMyNotificationsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseMyNotificationResponse>(
+    { url: `/api/v1/me/notifications`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyNotificationsQueryKey = (params?: ListMyNotificationsParams) => {
+  return [`/api/v1/me/notifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyNotificationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyNotifications>>> = ({ signal }) =>
+    listMyNotifications(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyNotificationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyNotifications>>
+>;
+export type ListMyNotificationsQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyNotificationsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof listMyNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof listMyNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as notificações do cliente
+ */
+
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyNotificationsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:profile.
+ * @summary Marca todas as notificações como lidas
+ */
+export const markAllMyNotificationsRead = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>({ url: `/api/v1/me/notifications/read-all`, method: 'POST', signal }, options);
+};
+
+export const getMarkAllMyNotificationsReadMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['markAllMyNotificationsRead'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+    void
+  > = () => {
+    return markAllMyNotificationsRead(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MarkAllMyNotificationsReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof markAllMyNotificationsRead>>
+>;
+
+export type MarkAllMyNotificationsReadMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Marca todas as notificações como lidas
+ */
+export const useMarkAllMyNotificationsRead = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getMarkAllMyNotificationsReadMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile.
+ * @summary Conta as notificações por ler
+ */
+export const countMyUnreadNotifications = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<UnreadCountResponse>(
+    { url: `/api/v1/me/notifications/unread-count`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getCountMyUnreadNotificationsQueryKey = () => {
+  return [`/api/v1/me/notifications/unread-count`] as const;
+};
+
+export const getCountMyUnreadNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getCountMyUnreadNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof countMyUnreadNotifications>>> = ({
+    signal,
+  }) => countMyUnreadNotifications(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type CountMyUnreadNotificationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof countMyUnreadNotifications>>
+>;
+export type CountMyUnreadNotificationsQueryError = ErrorType<ProblemDetail>;
+
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Conta as notificações por ler
+ */
+
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCountMyUnreadNotificationsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:profile. Idempotente; de outro cliente ou inexistente → 404 NOTIFICATION_NOT_FOUND.
+ * @summary Marca uma notificação como lida
+ */
+export const markMyNotificationRead = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>(
+    { url: `/api/v1/me/notifications/${id}/read`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getMarkMyNotificationReadMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markMyNotificationRead>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof markMyNotificationRead>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['markMyNotificationRead'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof markMyNotificationRead>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return markMyNotificationRead(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MarkMyNotificationReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof markMyNotificationRead>>
+>;
+
+export type MarkMyNotificationReadMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Marca uma notificação como lida
+ */
+export const useMarkMyNotificationRead = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof markMyNotificationRead>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof markMyNotificationRead>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getMarkMyNotificationReadMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

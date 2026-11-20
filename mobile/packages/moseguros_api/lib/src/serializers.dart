@@ -56,6 +56,8 @@ import 'package:moseguros_api/src/model/declaration_answer_request.dart';
 import 'package:moseguros_api/src/model/declaration_answer_response.dart';
 import 'package:moseguros_api/src/model/declaration_question.dart';
 import 'package:moseguros_api/src/model/delivery_receipt_request.dart';
+import 'package:moseguros_api/src/model/device_platform.dart';
+import 'package:moseguros_api/src/model/device_response.dart';
 import 'package:moseguros_api/src/model/driver_response.dart';
 import 'package:moseguros_api/src/model/failure_code.dart';
 import 'package:moseguros_api/src/model/field_error.dart';
@@ -107,7 +109,19 @@ import 'package:moseguros_api/src/model/me_organization.dart';
 import 'package:moseguros_api/src/model/me_response.dart';
 import 'package:moseguros_api/src/model/money.dart';
 import 'package:moseguros_api/src/model/my_kyc_response.dart';
+import 'package:moseguros_api/src/model/my_notification_response.dart';
 import 'package:moseguros_api/src/model/my_policy_summary_response.dart';
+import 'package:moseguros_api/src/model/notification_category.dart';
+import 'package:moseguros_api/src/model/notification_category_preferences.dart';
+import 'package:moseguros_api/src/model/notification_category_preferences_change.dart';
+import 'package:moseguros_api/src/model/notification_channel.dart';
+import 'package:moseguros_api/src/model/notification_channel_preference.dart';
+import 'package:moseguros_api/src/model/notification_channel_preference_change.dart';
+import 'package:moseguros_api/src/model/notification_preferences_response.dart';
+import 'package:moseguros_api/src/model/notification_template_detail.dart';
+import 'package:moseguros_api/src/model/notification_template_preview.dart';
+import 'package:moseguros_api/src/model/notification_template_summary.dart';
+import 'package:moseguros_api/src/model/notification_template_test_result.dart';
 import 'package:moseguros_api/src/model/organization_response.dart';
 import 'package:moseguros_api/src/model/organization_summary_response.dart';
 import 'package:moseguros_api/src/model/otp_challenge_response.dart';
@@ -127,7 +141,9 @@ import 'package:moseguros_api/src/model/page_response_insurer_proposal_summary_r
 import 'package:moseguros_api/src/model/page_response_intent_view.dart';
 import 'package:moseguros_api/src/model/page_response_invitation_response.dart';
 import 'package:moseguros_api/src/model/page_response_kyc_check_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_my_notification_response.dart';
 import 'package:moseguros_api/src/model/page_response_my_policy_summary_response.dart';
+import 'package:moseguros_api/src/model/page_response_notification_template_summary.dart';
 import 'package:moseguros_api/src/model/page_response_organization_summary_response.dart';
 import 'package:moseguros_api/src/model/page_response_payment_exception_summary.dart';
 import 'package:moseguros_api/src/model/page_response_payment_file_import.dart';
@@ -183,6 +199,7 @@ import 'package:moseguros_api/src/model/policy_status.dart';
 import 'package:moseguros_api/src/model/policy_timeline_event.dart';
 import 'package:moseguros_api/src/model/policy_vehicle_ref.dart';
 import 'package:moseguros_api/src/model/policyholder_source.dart';
+import 'package:moseguros_api/src/model/preview_notification_template_request.dart';
 import 'package:moseguros_api/src/model/problem_detail.dart';
 import 'package:moseguros_api/src/model/product_document_response.dart';
 import 'package:moseguros_api/src/model/product_response.dart';
@@ -243,6 +260,7 @@ import 'package:moseguros_api/src/model/reference_sms_response.dart';
 import 'package:moseguros_api/src/model/reference_status.dart';
 import 'package:moseguros_api/src/model/reference_value_response.dart';
 import 'package:moseguros_api/src/model/refresh_token_request.dart';
+import 'package:moseguros_api/src/model/register_device_request.dart';
 import 'package:moseguros_api/src/model/registration_doc_response.dart';
 import 'package:moseguros_api/src/model/registry_lookup_response.dart';
 import 'package:moseguros_api/src/model/reject_inspection_request.dart';
@@ -279,6 +297,7 @@ import 'package:moseguros_api/src/model/suitability_question.dart';
 import 'package:moseguros_api/src/model/suitability_reason.dart';
 import 'package:moseguros_api/src/model/suitability_result.dart';
 import 'package:moseguros_api/src/model/suspend_organization_request.dart';
+import 'package:moseguros_api/src/model/test_notification_template_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_request.dart';
 import 'package:moseguros_api/src/model/test_plate_format_response.dart';
 import 'package:moseguros_api/src/model/token_response.dart';
@@ -289,11 +308,14 @@ import 'package:moseguros_api/src/model/underwriting_inputs.dart';
 import 'package:moseguros_api/src/model/underwriting_outcome.dart';
 import 'package:moseguros_api/src/model/underwriting_result.dart';
 import 'package:moseguros_api/src/model/underwriting_rules_response.dart';
+import 'package:moseguros_api/src/model/unread_count_response.dart';
 import 'package:moseguros_api/src/model/update_broker_proposal_request.dart';
 import 'package:moseguros_api/src/model/update_driver_request.dart';
 import 'package:moseguros_api/src/model/update_insurer_rating_settings_request.dart';
 import 'package:moseguros_api/src/model/update_me_request.dart';
 import 'package:moseguros_api/src/model/update_my_profile_request.dart';
+import 'package:moseguros_api/src/model/update_notification_preferences_request.dart';
+import 'package:moseguros_api/src/model/update_notification_template_request.dart';
 import 'package:moseguros_api/src/model/update_organization_request.dart';
 import 'package:moseguros_api/src/model/update_otp_settings_request.dart';
 import 'package:moseguros_api/src/model/update_payment_method_request.dart';
@@ -365,6 +387,8 @@ part 'serializers.g.dart';
   DeclarationAnswerResponse,
   DeclarationQuestion,
   DeliveryReceiptRequest,
+  DevicePlatform,
+  DeviceResponse,
   DriverResponse,
   FailureCode,
   FieldError,
@@ -416,7 +440,19 @@ part 'serializers.g.dart';
   MeResponse,
   Money,
   MyKycResponse,
+  MyNotificationResponse,
   MyPolicySummaryResponse,
+  NotificationCategory,
+  NotificationCategoryPreferences,
+  NotificationCategoryPreferencesChange,
+  NotificationChannel,
+  NotificationChannelPreference,
+  NotificationChannelPreferenceChange,
+  NotificationPreferencesResponse,
+  NotificationTemplateDetail,
+  NotificationTemplatePreview,
+  NotificationTemplateSummary,
+  NotificationTemplateTestResult,
   OrganizationResponse,
   OrganizationSummaryResponse,
   OtpChallengeResponse,
@@ -436,7 +472,9 @@ part 'serializers.g.dart';
   PageResponseIntentView,
   PageResponseInvitationResponse,
   PageResponseKycCheckSummaryResponse,
+  PageResponseMyNotificationResponse,
   PageResponseMyPolicySummaryResponse,
+  PageResponseNotificationTemplateSummary,
   PageResponseOrganizationSummaryResponse,
   PageResponsePaymentExceptionSummary,
   PageResponsePaymentFileImport,
@@ -492,6 +530,7 @@ part 'serializers.g.dart';
   PolicyTimelineEvent,
   PolicyVehicleRef,
   PolicyholderSource,
+  PreviewNotificationTemplateRequest,
   ProblemDetail,
   ProductDocumentResponse,
   ProductResponse,
@@ -552,6 +591,7 @@ part 'serializers.g.dart';
   ReferenceStatus,
   ReferenceValueResponse,
   RefreshTokenRequest,
+  RegisterDeviceRequest,
   RegistrationDocResponse,
   RegistryLookupResponse,
   RejectInspectionRequest,
@@ -588,6 +628,7 @@ part 'serializers.g.dart';
   SuitabilityReason,
   SuitabilityResult,
   SuspendOrganizationRequest,
+  TestNotificationTemplateRequest,
   TestPlateFormatRequest,
   TestPlateFormatResponse,
   TokenResponse,
@@ -598,11 +639,14 @@ part 'serializers.g.dart';
   UnderwritingOutcome,
   UnderwritingResult,
   UnderwritingRulesResponse,
+  UnreadCountResponse,
   UpdateBrokerProposalRequest,
   UpdateDriverRequest,
   UpdateInsurerRatingSettingsRequest,
   UpdateMeRequest,
   UpdateMyProfileRequest,
+  UpdateNotificationPreferencesRequest,
+  UpdateNotificationTemplateRequest,
   UpdateOrganizationRequest,
   UpdateOtpSettingsRequest,
   UpdatePaymentMethodRequest,

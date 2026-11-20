@@ -148,7 +148,21 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyKycCheck**](doc/IdentityApi.md#verifykyccheck) | **POST** /api/v1/insurer/kyc/{id}/verify | Verifica uma identidade
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyOtp**](doc/IdentityApi.md#verifyotp) | **POST** /api/v1/auth/otp/verify | Valida o código e entra
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
+[*NotificationApi*](doc/NotificationApi.md) | [**countMyUnreadNotifications**](doc/NotificationApi.md#countmyunreadnotifications) | **GET** /api/v1/me/notifications/unread-count | Conta as notificações por ler
+[*NotificationApi*](doc/NotificationApi.md) | [**getMyNotificationPreferences**](doc/NotificationApi.md#getmynotificationpreferences) | **GET** /api/v1/me/notification-preferences | Consulta as preferências de notificação
+[*NotificationApi*](doc/NotificationApi.md) | [**getNotificationTemplate**](doc/NotificationApi.md#getnotificationtemplate) | **GET** /api/v1/admin/notification-templates/{id} | Consulta um modelo
+[*NotificationApi*](doc/NotificationApi.md) | [**listMyNotifications**](doc/NotificationApi.md#listmynotifications) | **GET** /api/v1/me/notifications | Lista as notificações do cliente
+[*NotificationApi*](doc/NotificationApi.md) | [**listNotificationTemplates**](doc/NotificationApi.md#listnotificationtemplates) | **GET** /api/v1/admin/notification-templates | Lista os modelos das notificações
+[*NotificationApi*](doc/NotificationApi.md) | [**markAllMyNotificationsRead**](doc/NotificationApi.md#markallmynotificationsread) | **POST** /api/v1/me/notifications/read-all | Marca todas as notificações como lidas
+[*NotificationApi*](doc/NotificationApi.md) | [**markMyNotificationRead**](doc/NotificationApi.md#markmynotificationread) | **POST** /api/v1/me/notifications/{id}/read | Marca uma notificação como lida
+[*NotificationApi*](doc/NotificationApi.md) | [**previewNotificationTemplate**](doc/NotificationApi.md#previewnotificationtemplate) | **POST** /api/v1/admin/notification-templates/{id}/preview | Pré-visualiza um texto
 [*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
+[*NotificationApi*](doc/NotificationApi.md) | [**registerMyDevice**](doc/NotificationApi.md#registermydevice) | **POST** /api/v1/me/devices | Regista o dispositivo para push
+[*NotificationApi*](doc/NotificationApi.md) | [**resetNotificationTemplate**](doc/NotificationApi.md#resetnotificationtemplate) | **POST** /api/v1/admin/notification-templates/{id}/reset | Repõe o texto do ficheiro
+[*NotificationApi*](doc/NotificationApi.md) | [**testNotificationTemplate**](doc/NotificationApi.md#testnotificationtemplate) | **POST** /api/v1/admin/notification-templates/{id}/test | Envia uma mensagem de teste
+[*NotificationApi*](doc/NotificationApi.md) | [**unregisterMyDevice**](doc/NotificationApi.md#unregistermydevice) | **DELETE** /api/v1/me/devices/{id} | Remove o dispositivo
+[*NotificationApi*](doc/NotificationApi.md) | [**updateMyNotificationPreferences**](doc/NotificationApi.md#updatemynotificationpreferences) | **PUT** /api/v1/me/notification-preferences | Altera as preferências de notificação
+[*NotificationApi*](doc/NotificationApi.md) | [**updateNotificationTemplate**](doc/NotificationApi.md#updatenotificationtemplate) | **PUT** /api/v1/admin/notification-templates/{id} | Altera o texto de um modelo
 [*OrganizationApi*](doc/OrganizationApi.md) | [**createOrganization**](doc/OrganizationApi.md#createorganization) | **POST** /api/v1/organizations | Cria uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**getInsurerRatingSettings**](doc/OrganizationApi.md#getinsurerratingsettings) | **GET** /api/v1/insurer/rating-settings | Consulta as definições de tarifação
 [*OrganizationApi*](doc/OrganizationApi.md) | [**getOrganization**](doc/OrganizationApi.md#getorganization) | **GET** /api/v1/organizations/{id} | Consulta uma organização
@@ -280,6 +294,8 @@ Class | Method | HTTP request | Description
  - [DeclarationAnswerResponse](doc/DeclarationAnswerResponse.md)
  - [DeclarationQuestion](doc/DeclarationQuestion.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
+ - [DevicePlatform](doc/DevicePlatform.md)
+ - [DeviceResponse](doc/DeviceResponse.md)
  - [DriverResponse](doc/DriverResponse.md)
  - [FailureCode](doc/FailureCode.md)
  - [FieldError](doc/FieldError.md)
@@ -331,7 +347,19 @@ Class | Method | HTTP request | Description
  - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
  - [MyKycResponse](doc/MyKycResponse.md)
+ - [MyNotificationResponse](doc/MyNotificationResponse.md)
  - [MyPolicySummaryResponse](doc/MyPolicySummaryResponse.md)
+ - [NotificationCategory](doc/NotificationCategory.md)
+ - [NotificationCategoryPreferences](doc/NotificationCategoryPreferences.md)
+ - [NotificationCategoryPreferencesChange](doc/NotificationCategoryPreferencesChange.md)
+ - [NotificationChannel](doc/NotificationChannel.md)
+ - [NotificationChannelPreference](doc/NotificationChannelPreference.md)
+ - [NotificationChannelPreferenceChange](doc/NotificationChannelPreferenceChange.md)
+ - [NotificationPreferencesResponse](doc/NotificationPreferencesResponse.md)
+ - [NotificationTemplateDetail](doc/NotificationTemplateDetail.md)
+ - [NotificationTemplatePreview](doc/NotificationTemplatePreview.md)
+ - [NotificationTemplateSummary](doc/NotificationTemplateSummary.md)
+ - [NotificationTemplateTestResult](doc/NotificationTemplateTestResult.md)
  - [OrganizationResponse](doc/OrganizationResponse.md)
  - [OrganizationSummaryResponse](doc/OrganizationSummaryResponse.md)
  - [OtpChallengeResponse](doc/OtpChallengeResponse.md)
@@ -351,7 +379,9 @@ Class | Method | HTTP request | Description
  - [PageResponseIntentView](doc/PageResponseIntentView.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
+ - [PageResponseMyNotificationResponse](doc/PageResponseMyNotificationResponse.md)
  - [PageResponseMyPolicySummaryResponse](doc/PageResponseMyPolicySummaryResponse.md)
+ - [PageResponseNotificationTemplateSummary](doc/PageResponseNotificationTemplateSummary.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponsePaymentExceptionSummary](doc/PageResponsePaymentExceptionSummary.md)
  - [PageResponsePaymentFileImport](doc/PageResponsePaymentFileImport.md)
@@ -407,6 +437,7 @@ Class | Method | HTTP request | Description
  - [PolicyTimelineEvent](doc/PolicyTimelineEvent.md)
  - [PolicyVehicleRef](doc/PolicyVehicleRef.md)
  - [PolicyholderSource](doc/PolicyholderSource.md)
+ - [PreviewNotificationTemplateRequest](doc/PreviewNotificationTemplateRequest.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [ProductDocumentResponse](doc/ProductDocumentResponse.md)
  - [ProductResponse](doc/ProductResponse.md)
@@ -467,6 +498,7 @@ Class | Method | HTTP request | Description
  - [ReferenceStatus](doc/ReferenceStatus.md)
  - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
+ - [RegisterDeviceRequest](doc/RegisterDeviceRequest.md)
  - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
  - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
  - [RejectInspectionRequest](doc/RejectInspectionRequest.md)
@@ -503,6 +535,7 @@ Class | Method | HTTP request | Description
  - [SuitabilityReason](doc/SuitabilityReason.md)
  - [SuitabilityResult](doc/SuitabilityResult.md)
  - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
+ - [TestNotificationTemplateRequest](doc/TestNotificationTemplateRequest.md)
  - [TestPlateFormatRequest](doc/TestPlateFormatRequest.md)
  - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
  - [TokenResponse](doc/TokenResponse.md)
@@ -513,11 +546,14 @@ Class | Method | HTTP request | Description
  - [UnderwritingOutcome](doc/UnderwritingOutcome.md)
  - [UnderwritingResult](doc/UnderwritingResult.md)
  - [UnderwritingRulesResponse](doc/UnderwritingRulesResponse.md)
+ - [UnreadCountResponse](doc/UnreadCountResponse.md)
  - [UpdateBrokerProposalRequest](doc/UpdateBrokerProposalRequest.md)
  - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
  - [UpdateInsurerRatingSettingsRequest](doc/UpdateInsurerRatingSettingsRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
+ - [UpdateNotificationPreferencesRequest](doc/UpdateNotificationPreferencesRequest.md)
+ - [UpdateNotificationTemplateRequest](doc/UpdateNotificationTemplateRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
  - [UpdatePaymentMethodRequest](doc/UpdatePaymentMethodRequest.md)
