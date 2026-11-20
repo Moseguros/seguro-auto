@@ -13,6 +13,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // O flutter_local_notifications (S6-07) usa APIs java.time.
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -57,4 +59,24 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+}
+
+// Push (S6-07 §4): o google-services.json de cada flavor fica em
+// src/{dev,staging,prod}/ e fora do Git. Sem nenhum, o plugin não se aplica e a
+// app usa o NoopPushService; um flavor sem o seu ficheiro não corre a tarefa.
+val firebaseFlavors = listOf("dev", "staging", "prod").filter {
+    file("src/$it/google-services.json").exists()
+}
+if (firebaseFlavors.isNotEmpty()) {
+    apply(plugin = "com.google.gms.google-services")
+    tasks.configureEach {
+        if (name.startsWith("process") && name.endsWith("GoogleServices")) {
+            val variant = name.removePrefix("process").removeSuffix("GoogleServices")
+            enabled = firebaseFlavors.any { variant.lowercase().startsWith(it) }
+        }
+    }
 }
