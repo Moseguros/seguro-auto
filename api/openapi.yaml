@@ -22,8 +22,6 @@ tags:
   name: Rating
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
-- description: Envio de mensagens e recibos de entrega
-  name: Notification
 - description: "Apólices: emitidas automaticamente quando o pagamento da proposta\
     \ é confirmado, com as prestações e o certificado"
   name: Policy
