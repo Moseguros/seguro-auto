@@ -153,6 +153,18 @@ class ProfileScreen extends ConsumerWidget {
                 onTap: () => context.go('/payments'),
               ),
             ),
+            const SizedBox(height: 16),
+            // Preferências das notificações (S6-07 §5).
+            Card(
+              child: ListTile(
+                key: const Key('profile-notifications'),
+                leading: const Icon(Icons.notifications_outlined),
+                title: Text(l10n.notificationsTitle),
+                subtitle: Text(l10n.profileNotificationsText),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.go('/notifications/preferences'),
+              ),
+            ),
             const SizedBox(height: 24),
             OutlinedButton.icon(
               key: const Key('logout'),

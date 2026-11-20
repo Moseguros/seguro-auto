@@ -6,6 +6,7 @@ import 'package:moseguros_api/moseguros_api.dart';
 
 import '../api/api_client.dart';
 import '../db/app_database.dart';
+import '../push/device_registration.dart';
 import 'auth_interceptor.dart';
 import 'token_storage.dart';
 
@@ -105,11 +106,14 @@ class SessionController extends AsyncNotifier<Session?>
     _set(current.copyWith(me: me, isNewUser: false));
   }
 
-  /// Termina a sessão: avisa a API (ignora erros), apaga o refresh token e os
-  /// dados locais do utilizador (fila da vistoria, S4-09 §5). Quem chama confirma
-  /// antes se houver fotografias por enviar.
+  /// Termina a sessão: anula o registo do dispositivo para push enquanto o
+  /// token de acesso ainda vale (S6-07 §2), avisa a API (ignora erros), apaga o
+  /// refresh token e os dados locais do utilizador (fila da vistoria, S4-09 §5;
+  /// apólices e certificados guardados, S6-07). Quem chama confirma antes se
+  /// houver fotografias por enviar.
   Future<void> logout() async {
     final refreshToken = _current?.refreshToken;
+    await ref.read(deviceRegistrationProvider).unregister();
     _set(null);
     await _storage.deleteRefreshToken();
     try {
