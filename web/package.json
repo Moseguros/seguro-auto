@@ -16,6 +16,7 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e-stack": "playwright test --config e2e-stack/playwright.config.ts",
     "api:generate": "orval --config orval.config.ts && prettier --write src/api/generated.ts"
   },
   "dependencies": {
@@ -59,6 +60,7 @@
     "globals": "^15.15.0",
     "jsdom": "^25.0.1",
     "orval": "^7.21.0",
+    "otpauth": "^9.3.6",
     "prettier": "^3.9.10",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.72.1",
