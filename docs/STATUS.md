@@ -103,14 +103,16 @@ As onze tarefas entraram juntas no `main` pelo PR de integração #62 (`task/S5-
 
 | Tarefa | Depende de | Estado |
 | --- | --- | --- |
-| S6-01 Emissão da apólice, prestações e certificado (dados) | S5 | em revisão (branch `task/S6-01-emissao-apolice`) |
-| S6-02 PDF do certificado com QR e documentos da apólice | S6-01, S6-04 | em revisão (branch `task/S6-02-certificado-pdf`, empilhado sobre `task/S6-04-notificacoes`) |
-| S6-03 Verificação pública e área da polícia (API, CAPTCHA, registo) | S6-01 | em revisão (branch `task/S6-03-verificacao-publica`) |
-| S6-04 Notificações: modelos, mensagens, preferências, dispositivos, push; aviso de cotação a expirar (`QuoteExpiryNotifierJob` no `rating`) | S5 | em revisão (branch `task/S6-04-notificacoes`, empilhado sobre `task/S6-01-emissao-apolice`) |
-| S6-05 Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-02, S6-03, S6-04 | em revisão (branch `task/S6-05-web-verificacao-apolices`, empilhado sobre `task/S6-02-certificado-pdf` com `task/S6-03-verificacao-publica`) |
-| S6-06 Web cliente: apólices, certificado, notificações e preferências | S6-02, S6-04 | em revisão (branch `task/S6-06-web-cliente-apolices`, empilhado sobre `task/S6-02-certificado-pdf`) |
-| S6-07 Mobile: apólices offline, "mostrar à polícia", push e deep links | S6-02, S6-04 | em revisão (branch `task/S6-07-mobile-apolices-push`, empilhado sobre `task/S6-02-certificado-pdf`) |
-| S6-08 Release 1: staging, observabilidade, carga (k6), ASVS nível 1, distribuição do APK | S6-05, S6-06, S6-07 | em revisão (branch `task/S6-08-release-1`, empilhado sobre `task/S6-05-correcoes-revisao` com `task/S6-06-web-cliente-apolices` e `task/S6-07-mobile-apolices-push`) — deploy em staging, carga oficial e APK pelo Firebase bloqueados (alojamento e projecto Firebase por decidir); vulnerabilidades das dependências sem correcção no Spring Boot 3.3 aceites até 31/01/2027 no `osv-scanner.toml` (Q-ASVS-4 em `docs/releases/R1.md`); `test:e2e-stack` e IT por correr (Docker parado) |
+| S6-01 Emissão da apólice, prestações e certificado (dados) | S5 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-02 PDF do certificado com QR e documentos da apólice | S6-01, S6-04 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-03 Verificação pública e área da polícia (API, CAPTCHA, registo) | S6-01 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-04 Notificações: modelos, mensagens, preferências, dispositivos, push; aviso de cotação a expirar (`QuoteExpiryNotifierJob` no `rating`) | S5 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-05 Web: `/verificar` público, área PRM, `/seguradora/apolices`, `/admin/notificacoes` | S6-02, S6-03, S6-04 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-06 Web cliente: apólices, certificado, notificações e preferências | S6-02, S6-04 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-07 Mobile: apólices offline, "mostrar à polícia", push e deep links | S6-02, S6-04 | em revisão (branch de integração `task/S6-integracao`) |
+| S6-08 Release 1: staging, observabilidade, carga (k6), ASVS nível 1, distribuição do APK | S6-05, S6-06, S6-07 | em revisão (branch de integração `task/S6-integracao`) — deploy em staging, carga oficial e APK pelo Firebase bloqueados (alojamento e projecto Firebase por decidir); vulnerabilidades das dependências sem correcção no Spring Boot 3.3 aceites até 31/01/2027 no `osv-scanner.toml` (Q-ASVS-4 em `docs/releases/R1.md`) |
+
+As oito tarefas estão juntas no branch de integração `task/S6-integracao` (a partir de `task/S6-08-release-1-correcoes`, que já contém S6-01 a S6-07 e as correcções da revisão do S6-05 e do S6-08), com os ficheiros gerados regenerados e a verificação completa (backend com IT, worker, web com e2e, app e `test:e2e-stack` contra o compose).
 
 ### Sprint 7 — Ciclo de vida da apólice e frotas
 
