@@ -215,7 +215,7 @@ moseguros:
     quote-validity: P15D
     global-timeout: PT3S
     max-start-days-ahead: 60
-    max-requests-per-hour: 30
+    max-requests-per-hour: ${MOSEGUROS_RATING_MAX_REQUESTS_PER_HOUR:30}
     # Aviso de simulação a expirar (S6-04 §9.1, QuoteExpiryNotifierJob às 09:00): dias antes do fim da validade.
     quote-expiry-notice-days: 2
     executor:

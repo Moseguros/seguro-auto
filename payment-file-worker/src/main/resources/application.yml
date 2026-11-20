@@ -43,6 +43,10 @@ management:
   endpoint:
     health:
       show-details: always
+  metrics:
+    tags:
+      application: payment-file-worker
+      environment: ${MOSEGUROS_ENVIRONMENT:local}
 
 moseguros:
   worker:

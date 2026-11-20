@@ -1,0 +1,707 @@
+{
+  "uid": "moseguros-business",
+  "title": "MoSeguros — Negócio",
+  "tags": [
+    "moseguros",
+    "negocio"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "refresh": "30s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "label": "Ambiente",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "moseguros-prometheus"
+        },
+        "query": {
+          "query": "label_values(process_uptime_seconds{application=\"moseguros-backend\"}, environment)",
+          "refId": "env"
+        },
+        "definition": "label_values(process_uptime_seconds{application=\"moseguros-backend\"}, environment)",
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "refresh": 2,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Apólices emitidas/h por productType",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (productType) (increase(moseguros_policy_issued_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{productType}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Falhas de emissão por reason",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (reason) (increase(moseguros_policy_issuance_failures_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{reason}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "p95 da emissão (pagamento → apólice)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(moseguros_policy_issuance_latency_seconds_bucket{environment=~\"$environment\"}[15m])))",
+          "legendFormat": "p95",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Falhas a gerar documentos",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(increase(moseguros_policy_documents_failures_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "falhas/h",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Verificações/min por result e checker_type",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (result, checker_type) (rate(moseguros_verification_checks_total{environment=~\"$environment\"}[5m])) * 60",
+          "legendFormat": "{{checker_type}} {{result}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Pedidos recusados por limite",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (checker_type) (rate(moseguros_verification_rate_limited_total{environment=~\"$environment\"}[5m])) * 60",
+          "legendFormat": "{{checker_type}}/min",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Resultados do CAPTCHA",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (result) (rate(moseguros_captcha_results_total{environment=~\"$environment\"}[5m])) * 60",
+          "legendFormat": "{{result}}/min",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Mensagens por channel e status",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (channel, status) (increase(moseguros_notification_messages_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{channel}} {{status}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Alternativas de canal",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (from, to) (increase(moseguros_notification_fallback_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{from}} → {{to}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Não entregáveis e SMS cortados",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (category) (increase(moseguros_notification_undeliverable_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "não entregável {{category}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (templateCode) (increase(moseguros_notification_sms_truncated_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "SMS cortado {{templateCode}}",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Pagamentos por method e status",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (method, status) (increase(moseguros_payment_intents_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{method}} {{status}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Referências confirmadas",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(increase(moseguros_payment_reference_confirmed_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "confirmadas/h",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Excepções de pagamento por type",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (type) (increase(moseguros_payment_exceptions_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{type}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Avisos de pagamento sem destinatário",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 48,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (group) (increase(moseguros_payment_notifications_no_recipient_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{group}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Publicações de eventos incompletas",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 56,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "moseguros_events_incomplete{environment=~\"$environment\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}

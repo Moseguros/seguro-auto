@@ -18,3 +18,9 @@ eclipse-temurin:17-jdk                    infra    # build do backend, do paymen
 eclipse-temurin:17-jre                    infra    # execução do backend, do payment-file-worker e dos mocks (sms-mock, mpesa-mock, ponto24-mock)
 node:22-alpine                            infra    # build da web
 nginxinc/nginx-unprivileged:1.27-alpine   infra    # servidor da web
+prom/prometheus:v2.53.2                   infra    # métricas e alertas (perfil observability, S6-08)
+prom/alertmanager:v0.27.0                 infra    # envio dos alertas por e-mail (perfil observability, S6-08)
+grafana/grafana:11.2.2                    infra    # painéis (perfil observability, S6-08)
+quay.io/prometheuscommunity/postgres-exporter:v0.15.0  infra  # métricas do PostgreSQL (perfil observability, S6-08; sem espelho mirror.gcr.io)
+grafana/k6:0.54.0                         infra    # testes de carga (perf/, S6-08)
+ghcr.io/zaproxy/zaproxy:2.15.0            infra    # varrimento ZAP (scripts/security-scan.sh, S6-08)

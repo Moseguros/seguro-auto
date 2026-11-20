@@ -1,0 +1,56 @@
+# Prometheus do perfil observability do compose (S6-08 §2; modelo transversal §7).
+# Recolhe o backend (/api/v1/prometheus, só na rede interna), o payment-file-worker (porta de gestão 8081),
+# o RabbitMQ (plugin rabbitmq_prometheus), o PostgreSQL (postgres-exporter) e ele próprio e o Alertmanager.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    environment: local
+
+rule_files:
+  - alerts.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+scrape_configs:
+  - job_name: backend
+    metrics_path: /api/v1/prometheus
+    static_configs:
+      - targets: ["backend:8080"]
+        labels:
+          service: backend
+
+  - job_name: payment-file-worker
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["payment-file-worker:8081"]
+        labels:
+          service: payment-file-worker
+
+  - job_name: rabbitmq
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["rabbitmq:15692"]
+        labels:
+          service: rabbitmq
+
+  - job_name: postgres
+    static_configs:
+      - targets: ["postgres-exporter:9187"]
+        labels:
+          service: postgres
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels:
+          service: prometheus
+
+  - job_name: alertmanager
+    static_configs:
+      - targets: ["alertmanager:9093"]
+        labels:
+          service: alertmanager

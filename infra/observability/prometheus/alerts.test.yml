@@ -1,0 +1,105 @@
+# Testes dos alertas (S6-08 §3): docker compose exec prometheus promtool test rules /etc/prometheus/alerts.test.yml
+rule_files:
+  - alerts.yml
+
+evaluation_interval: 15s
+
+tests:
+  # BackendDown: dispara ao fim de 2 minutos em baixo; não dispara antes nem com o backend em cima.
+  - interval: 15s
+    input_series:
+      - series: 'up{job="backend", instance="backend:8080", service="backend"}'
+        values: "1x4 0x20"
+      - series: 'up{job="payment-file-worker", instance="payment-file-worker:8081", service="payment-file-worker"}'
+        values: "1x24"
+    alert_rule_test:
+      - eval_time: 1m
+        alertname: BackendDown
+        exp_alerts: []
+      - eval_time: 2m
+        alertname: BackendDown
+        exp_alerts: []
+      - eval_time: 4m
+        alertname: BackendDown
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: backend
+              job: backend
+              instance: backend:8080
+            exp_annotations:
+              summary: "Backend em baixo (backend:8080)"
+              description: "O Prometheus não consegue ler /api/v1/prometheus do backend há mais de 2 minutos."
+      - eval_time: 4m
+        alertname: WorkerDown
+        exp_alerts: []
+
+  # PolicyIssuanceFailures: um aumento do contador dispara logo; sem aumento não dispara.
+  - interval: 1m
+    input_series:
+      - series: 'moseguros_policy_issuance_failures_total{job="backend", reason="AMOUNT_MISMATCH"}'
+        values: "0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+      - series: 'moseguros_policy_issuance_failures_total{job="backend", reason="NOT_PAID"}'
+        values: "2x24"
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: PolicyIssuanceFailures
+        exp_alerts: []
+      - eval_time: 6m
+        alertname: PolicyIssuanceFailures
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: backend
+              job: backend
+              reason: AMOUNT_MISMATCH
+            exp_annotations:
+              summary: "Falhas na emissão de apólices (AMOUNT_MISMATCH)"
+              description: "Houve emissões automáticas de apólice que falharam nos últimos 10 minutos (motivo AMOUNT_MISMATCH): há clientes que pagaram sem apólice."
+      - eval_time: 20m
+        alertname: PolicyIssuanceFailures
+        exp_alerts: []
+
+  # RabbitMqDeadLetters: DLQ com mensagens há 5 minutos dispara; a fila normal com mensagens e a DLQ vazia não.
+  - interval: 1m
+    input_series:
+      - series: 'rabbitmq_queue_messages{job="rabbitmq", vhost="/", queue="core.reference-payments.dlq"}'
+        values: "0 0 0 2 2 2 2 2 2 2 2 2"
+      - series: 'rabbitmq_queue_messages{job="rabbitmq", vhost="/", queue="core.reference-payments"}'
+        values: "50x11"
+      - series: 'rabbitmq_queue_messages{job="rabbitmq", vhost="/", queue="core.payment-file-events.dlq"}'
+        values: "0x11"
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: RabbitMqDeadLetters
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: RabbitMqDeadLetters
+        exp_alerts: []
+      - eval_time: 9m
+        alertname: RabbitMqDeadLetters
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: rabbitmq
+              queue: core.reference-payments.dlq
+            exp_annotations:
+              summary: "Mensagens na DLQ core.reference-payments.dlq"
+              description: "A fila core.reference-payments.dlq tem 2 mensagens há mais de 5 minutos: pagamentos ou ficheiros que o backend não conseguiu processar (ver /admin/pagamentos)."
+
+  # RabbitMqDeadLetters pela métrica do backend (alternativa da secção 2).
+  - interval: 1m
+    input_series:
+      - series: 'moseguros_payment_queue_messages{job="backend", queue="core.payment-file-events.dlq"}'
+        values: "1x10"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: RabbitMqDeadLetters
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              service: rabbitmq
+              queue: core.payment-file-events.dlq
+            exp_annotations:
+              summary: "Mensagens na DLQ core.payment-file-events.dlq"
+              description: "A fila core.payment-file-events.dlq tem 1 mensagens há mais de 5 minutos: pagamentos ou ficheiros que o backend não conseguiu processar (ver /admin/pagamentos)."

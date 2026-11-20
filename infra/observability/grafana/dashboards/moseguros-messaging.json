@@ -1,0 +1,617 @@
+{
+  "uid": "moseguros-messaging",
+  "title": "MoSeguros — Mensageria e pagamentos",
+  "tags": [
+    "moseguros",
+    "pagamentos"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "refresh": "30s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "label": "Ambiente",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "moseguros-prometheus"
+        },
+        "query": {
+          "query": "label_values(process_uptime_seconds{application=\"moseguros-backend\"}, environment)",
+          "refId": "env"
+        },
+        "definition": "label_values(process_uptime_seconds{application=\"moseguros-backend\"}, environment)",
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "refresh": 2,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Mensagens por fila (RabbitMQ)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (queue) (rabbitmq_queue_messages{job=\"rabbitmq\"})",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (queue) (moseguros_payment_queue_messages{environment=~\"$environment\"})",
+          "legendFormat": "{{queue}} (backend)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "DLQ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (queue) (rabbitmq_queue_messages{job=\"rabbitmq\",queue=~\".*\\\\.dlq\"})",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (queue) (moseguros_payment_queue_messages{environment=~\"$environment\",queue=~\".*\\\\.dlq\"})",
+          "legendFormat": "{{queue}} (backend)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Consumidores por fila",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (queue) (rabbitmq_queue_consumers{job=\"rabbitmq\"})",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Publicações e confirmações/s",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(rate(rabbitmq_channel_messages_published_total{job=\"rabbitmq\"}[5m]))",
+          "legendFormat": "publicadas",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(rate(rabbitmq_channel_messages_confirmed_total{job=\"rabbitmq\"}[5m]))",
+          "legendFormat": "confirmadas",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(rate(rabbitmq_channel_messages_delivered_ack_total{job=\"rabbitmq\"}[5m]))",
+          "legendFormat": "entregues (ack)",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Alertas de pagamento por code",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (code, method) (increase(moseguros_payment_alerts_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "{{code}} {{method}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Ficheiros rejeitados e duplicados",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(increase(moseguros_payment_files_rejected_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "ficheiros rejeitados",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum(increase(moseguros_payment_inbound_duplicates_total{environment=~\"$environment\"}[1h]))",
+          "legendFormat": "pagamentos duplicados",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Worker: ficheiros por outcome",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (source, outcome) (increase(worker_files_total[1h]))",
+          "legendFormat": "{{source}} {{outcome}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Worker: registos publicados",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (source) (increase(worker_records_published_total[1h]))",
+          "legendFormat": "{{source}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Worker: leituras com erro",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "sum by (source) (increase(worker_polls_total{outcome=\"ERROR\"}[1h]))",
+          "legendFormat": "{{source}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Worker: segundos desde a última leitura OK",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "time() - worker_last_success",
+          "legendFormat": "{{source}}",
+          "refId": "A"
+        }
+      ],
+      "description": "Alerta PaymentSourceStale acima de 120 s (2× o poll-interval de 60 s)."
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Worker em cima (up)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 12,
+        "h": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "up{job=\"payment-file-worker\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "RabbitMQ em cima (up)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "moseguros-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 40,
+        "w": 12,
+        "h": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "moseguros-prometheus"
+          },
+          "expr": "up{job=\"rabbitmq\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}

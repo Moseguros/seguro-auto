@@ -1,0 +1,198 @@
+# Alertas da Release 1 (S6-08 §3). Cada alerta tem severity, service, summary e description (pt).
+# Testes: promtool test rules /etc/prometheus/alerts.test.yml (dentro do contentor do Prometheus).
+# Dos alertas de pagamento do S5 (PaymentAlerts) só PAYMENT_SOURCE_STALE e as DLQ chegam ao Alertmanager;
+# PAYMENT_CONFIG_ERROR e PAYMENT_FILE_REJECTED aparecem no painel "Mensageria e pagamentos" (S12-08).
+groups:
+  - name: moseguros-availability
+    rules:
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: backend
+        annotations:
+          summary: "Backend em baixo ({{ $labels.instance }})"
+          description: "O Prometheus não consegue ler /api/v1/prometheus do backend há mais de 2 minutos."
+
+      - alert: WorkerDown
+        expr: up{job="payment-file-worker"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: payment-file-worker
+        annotations:
+          summary: "payment-file-worker em baixo ({{ $labels.instance }})"
+          description: "O worker dos ficheiros de pagamento não responde há mais de 5 minutos: os pagamentos por referência não estão a ser lidos."
+
+      - alert: RabbitMqDown
+        expr: up{job="rabbitmq"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: rabbitmq
+        annotations:
+          summary: "RabbitMQ em baixo ({{ $labels.instance }})"
+          description: "As métricas do RabbitMQ não respondem há mais de 2 minutos: o worker não consegue publicar os pagamentos."
+
+      - alert: PostgresDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: postgres
+        annotations:
+          summary: "PostgreSQL em baixo"
+          description: "O postgres-exporter não consegue ligar-se à base de dados há mais de 1 minuto."
+
+  - name: moseguros-api
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{job="backend", status=~"5.."}[5m]))
+            / sum(rate(http_server_requests_seconds_count{job="backend"}[5m])) > 0.02
+        for: 5m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "Mais de 2% de erros 5xx na API"
+          description: "{{ $value | humanizePercentage }} dos pedidos ao backend terminaram com 5xx nos últimos 5 minutos."
+
+      - alert: SlowApi
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(http_server_requests_seconds_bucket{job="backend", uri!~"/api/v1/(prometheus|health.*)"}[5m]))
+          ) > 1
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "API lenta (p95 acima de 1 s)"
+          description: "O p95 dos pedidos ao backend está em {{ $value | humanizeDuration }} há mais de 10 minutos (meta da R1: 1 s)."
+
+      - alert: DbPoolSaturated
+        expr: hikaricp_connections_pending{job="backend"} > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "Pool de ligações à BD saturado"
+          description: "Há {{ $value }} pedidos à espera de uma ligação do Hikari ({{ $labels.pool }}) há mais de 5 minutos."
+
+      - alert: JvmHeapHigh
+        expr: |
+          sum by (job, instance) (jvm_memory_used_bytes{area="heap"})
+            / sum by (job, instance) (jvm_memory_max_bytes{area="heap"} > 0) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "Heap da JVM acima de 90% ({{ $labels.job }})"
+          description: "A memória heap usada de {{ $labels.instance }} está em {{ $value | humanizePercentage }} da máxima há mais de 10 minutos."
+
+  - name: moseguros-policy
+    rules:
+      - alert: PolicyIssuanceFailures
+        expr: increase(moseguros_policy_issuance_failures_total[10m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          service: backend
+        annotations:
+          summary: "Falhas na emissão de apólices ({{ $labels.reason }})"
+          description: "Houve emissões automáticas de apólice que falharam nos últimos 10 minutos (motivo {{ $labels.reason }}): há clientes que pagaram sem apólice."
+
+      - alert: PolicyIssuanceSlow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(moseguros_policy_issuance_latency_seconds_bucket[15m]))) > 60
+        for: 15m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "Emissão de apólices lenta (p95 acima de 60 s)"
+          description: "O p95 do tempo entre o pagamento e a apólice emitida está em {{ $value | humanizeDuration }}."
+
+      - alert: PolicyDocumentsFailing
+        expr: increase(moseguros_policy_documents_failures_total[30m]) > 3
+        for: 0m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "Falhas a gerar os PDF das apólices"
+          description: "Mais de 3 falhas a gerar o certificado ou as condições particulares nos últimos 30 minutos."
+
+      - alert: IncompleteEventPublications
+        expr: moseguros_events_incomplete > 0
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "Eventos por entregar há mais de 10 minutos"
+          description: "Há {{ $value }} publicações de eventos do Spring Modulith incompletas (IncompletePublicationsJob)."
+
+  - name: moseguros-notifications
+    rules:
+      - alert: NotificationsFailing
+        expr: |
+          sum(increase(moseguros_notification_messages_total{status="FAILED"}[15m]))
+            / sum(increase(moseguros_notification_messages_total[15m])) > 0.2
+        for: 15m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "Mais de 20% das mensagens falharam"
+          description: "{{ $value | humanizePercentage }} das mensagens (SMS, WhatsApp, e-mail, push) dos últimos 15 minutos falharam."
+
+      - alert: NotificationsUndeliverable
+        expr: increase(moseguros_notification_undeliverable_total[30m]) > 0
+        for: 0m
+        labels:
+          severity: info
+          service: backend
+        annotations:
+          summary: "Notificações sem canal de entrega ({{ $labels.category }})"
+          description: "Há notificações da categoria {{ $labels.category }} que não chegaram a nenhum canal nos últimos 30 minutos."
+
+      - alert: CaptchaUnavailable
+        expr: increase(moseguros_captcha_results_total{result="UNAVAILABLE"}[10m]) > 0
+        for: 10m
+        labels:
+          severity: warning
+          service: backend
+        annotations:
+          summary: "CAPTCHA indisponível"
+          description: "O fornecedor do CAPTCHA não responde: a verificação por matrícula está a recusar pedidos (falha fechada)."
+
+  - name: moseguros-payments
+    rules:
+      - alert: RabbitMqDeadLetters
+        expr: |
+          (sum by (queue) (rabbitmq_queue_messages{queue=~".*\\.dlq"}) > 0)
+            or (sum by (queue) (moseguros_payment_queue_messages{queue=~".*\\.dlq"}) > 0)
+        for: 5m
+        labels:
+          severity: critical
+          service: rabbitmq
+        annotations:
+          summary: "Mensagens na DLQ {{ $labels.queue }}"
+          description: "A fila {{ $labels.queue }} tem {{ $value }} mensagens há mais de 5 minutos: pagamentos ou ficheiros que o backend não conseguiu processar (ver /admin/pagamentos)."
+
+      - alert: PaymentSourceStale
+        expr: |
+          (time() - worker_last_success > 120)
+            or (sum by (code) (increase(moseguros_payment_alerts_total{code="PAYMENT_SOURCE_STALE"}[10m])) > 0)
+        for: 5m
+        labels:
+          severity: critical
+          service: payment-file-worker
+        annotations:
+          summary: "Fonte de ficheiros de pagamento sem leitura ({{ $labels.source }})"
+          description: "Uma fonte SFTP de ficheiros de pagamento não tem uma leitura OK há mais de 2 minutos (worker) ou o PaymentSourceHealthJob do backend deu PAYMENT_SOURCE_STALE."
