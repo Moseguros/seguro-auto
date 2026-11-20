@@ -18,9 +18,15 @@ public class PdfTemplates {
     public static final String PROPOSAL = "proposal";
     /** Entidade e referência para pagar (S5-02 §7). */
     public static final String PAYMENT_REFERENCE = "payment-reference";
+    /** Certificado de seguro da apólice, com o código QR da verificação (S6-02 §2). */
+    public static final String POLICY_CERTIFICATE = "policy-certificate";
+    /** Condições particulares da apólice (S6-02 §3). */
+    public static final String POLICY_SCHEDULE = "policy-schedule";
 
     private static final Map<String, String> TEMPLATES = Map.of(PROPOSAL, "proposal",
-            PAYMENT_REFERENCE, "payment-reference");
+            PAYMENT_REFERENCE, "payment-reference",
+            POLICY_CERTIFICATE, "policy-certificate",
+            POLICY_SCHEDULE, "policy-schedule");
 
     /**
      * Nome do modelo (sem prefixo nem extensão) do código indicado.

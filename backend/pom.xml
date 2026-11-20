@@ -42,6 +42,8 @@
          versão publicada do artefacto flying-saucer-pdf-openpdf. O PDFBox só lê PDFs nos testes. -->
     <flying-saucer.version>9.4.0</flying-saucer.version>
     <pdfbox.version>3.0.5</pdfbox.version>
+    <!-- Código QR do certificado (S6-02): ZXing (QRCodeWriter, MatrixToImageWriter) -->
+    <zxing.version>3.5.3</zxing.version>
     <!-- Mensagens RabbitMQ partilhadas com o payment-file-worker (S5-06): módulo do reactor da raiz.
          "cd backend && ./mvnw" resolve-o do repositório Maven local depois de
          "./mvnw -B -pl payment-contracts install" na raiz (decisão D18). -->
@@ -128,6 +130,17 @@
       <groupId>org.xhtmlrenderer</groupId>
       <artifactId>flying-saucer-pdf-openpdf</artifactId>
       <version>${flying-saucer.version}</version>
+    </dependency>
+    <!-- Código QR do certificado da apólice (S6-02) -->
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>${zxing.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>${zxing.version}</version>
     </dependency>
 
     <!-- E-mail (SMTP; localmente o Mailpit) -->
