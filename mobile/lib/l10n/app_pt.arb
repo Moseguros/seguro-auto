@@ -1456,5 +1456,205 @@
   "paymentsLinkNoMsisdn": "O cliente não tem telemóvel registado.",
   "paymentsProposalPaid": "Pagamento recebido. A sua apólice vai ser emitida em breve.",
   "paymentsReferenceCopyButton": "Copiar",
-  "paymentsMenu": "Pagamentos"
+  "paymentsMenu": "Pagamentos",
+  "policiesTitle": "As minhas apólices",
+  "policiesTabActive": "Em vigor",
+  "policiesTabAll": "Todas",
+  "policiesEmpty": "Ainda não tem apólices.",
+  "policiesValidUntil": "Válida até {date}",
+  "@policiesValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "policiesNumber": "Apólice n.º {number}",
+  "@policiesNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "policiesOffline": "Sem ligação. Dados de {date}.",
+  "@policiesOffline": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "policyStatusActive": "Activa",
+  "policyStatusSuspended": "Suspensa",
+  "policyStatusCancelled": "Anulada",
+  "policyStatusExpired": "Expirada",
+  "policyStatusLapsed": "Caducada",
+  "coverStatusCovered": "Em vigor",
+  "coverStatusNotStarted": "Ainda não começou",
+  "coverStatusEnded": "Terminou",
+  "coverStatusSuspended": "Suspensa",
+  "coverStatusCancelled": "Anulada",
+  "coverStatusLapsed": "Caducada",
+  "coverageTypeMtplOnly": "Responsabilidade civil",
+  "coverageTypeComprehensive": "Responsabilidade civil e danos próprios",
+  "coverageTypeTemporary": "Seguro temporário",
+  "coverageTypeBorder": "Seguro de fronteira",
+  "paymentPlanFull": "Pagamento único",
+  "paymentPlanSemiannual": "Semestral",
+  "paymentPlanQuarterly": "Trimestral",
+  "paymentPlanMonthly": "Mensal",
+  "renewalTypeAnnualRenewable": "Anual renovável",
+  "renewalTypeFixedTerm": "Prazo fixo",
+  "instalmentStatusDue": "Por pagar",
+  "instalmentStatusPaid": "Paga",
+  "instalmentStatusOverdue": "Em atraso",
+  "instalmentStatusCancelled": "Anulada",
+  "documentTypeCertificate": "Certificado de seguro",
+  "documentTypeSchedule": "Condições particulares",
+  "documentTypeGeneralConditions": "Condições gerais",
+  "documentTypePreContractInfo": "Informação pré-contratual",
+  "documentTypeProposal": "Proposta assinada",
+  "notificationCategoryPayment": "Pagamentos",
+  "notificationCategoryPolicy": "Apólices",
+  "notificationCategoryLegal": "Avisos legais",
+  "notificationCategoryProposal": "Propostas",
+  "notificationCategoryQuote": "Simulações",
+  "channelPush": "Notificação na app",
+  "policyCertificateNumber": "Certificado n.º {number}",
+  "@policyCertificateNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "policyValidFromTo": "Válido de {validFrom} a {validTo}",
+  "@policyValidFromTo": {
+    "placeholders": {
+      "validFrom": {
+        "type": "String"
+      },
+      "validTo": {
+        "type": "String"
+      }
+    }
+  },
+  "policyShowToPolice": "Mostrar à polícia",
+  "policyViewCertificate": "Ver certificado (PDF)",
+  "policyCertificatePending": "A preparar o certificado…",
+  "policyCertificateRevoked": "Este certificado foi substituído.",
+  "policyDocumentsSlow": "Os documentos estão a demorar. Volte a abrir este ecrã dentro de alguns minutos.",
+  "policyPeriodTitle": "Período e prémio",
+  "policyStart": "Início",
+  "policyEnd": "Fim",
+  "policyRenewal": "Renovação",
+  "policyPaymentPlan": "Plano de pagamento",
+  "policyTotalPremium": "Prémio total",
+  "policyCoveragesTitle": "Coberturas",
+  "policyCoverageCapital": "Capital: {value}",
+  "@policyCoverageCapital": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "policyCoveragePremium": "Prémio: {value}",
+  "@policyCoveragePremium": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "policyInstalmentsTitle": "Prestações",
+  "policyInstalment": "Prestação {seq} · vence a {date}",
+  "@policyInstalment": {
+    "placeholders": {
+      "seq": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "policyDocumentsTitle": "Documentos",
+  "policyDocumentPending": "Em preparação",
+  "policyDocumentOpenFailed": "Não foi possível abrir o documento. Tente de novo com ligação.",
+  "policeQrHint": "O agente pode ler este código para confirmar o seguro.",
+  "policeStatusAt": "Estado em {date}: {status}",
+  "@policeStatusAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "policeStale": "Dados com mais de um dia. O agente confirma o estado actual ao ler o código.",
+  "policeNoCertificate": "O certificado ainda não está disponível neste telemóvel.",
+  "homePoliceText": "Abra o certificado mesmo sem rede.",
+  "homePoliceChoose": "Escolha a apólice",
+  "homePoliciesText": "Apólices, certificados e documentos.",
+  "notificationsBell": "{count, plural, =0{Notificações} other{Notificações, {count} por ler}}",
+  "@notificationsBell": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pushPromptTitle": "Receber avisos no telemóvel",
+  "pushPromptText": "Avisamos quando a apólice é emitida e quando há pagamentos por fazer.",
+  "pushPromptEnable": "Activar",
+  "pushPromptLater": "Agora não",
+  "pushChannelName": "Avisos MoSeguros",
+  "notificationsTitle": "Notificações",
+  "notificationsTabAll": "Todas",
+  "notificationsTabUnread": "Por ler",
+  "notificationsMarkAll": "Marcar todas como lidas",
+  "notificationsPreferences": "Preferências",
+  "notificationsEmpty": "Não tem notificações.",
+  "notificationsOffline": "Sem ligação.",
+  "timeJustNow": "agora",
+  "timeMinutesAgo": "há {count} min",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeHoursAgo": "há {count} h",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeDaysAgo": "{count, plural, =1{há 1 dia} other{há {count} dias}}",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "preferencesTitle": "Preferências de notificações",
+  "preferencesMandatory": "Obrigatório",
+  "preferencesMandatoryText": "Estes avisos são obrigatórios: escolha pelo menos SMS, WhatsApp ou e-mail.",
+  "preferencesNeedsPhone": "Precisa de um telemóvel verificado.",
+  "preferencesNeedsEmail": "Precisa de um e-mail verificado.",
+  "preferencesAddInProfile": "Acrescentar no perfil",
+  "preferencesPushUnavailable": "Active as notificações para receber avisos no telemóvel.",
+  "preferencesSaved": "Preferências guardadas",
+  "preferencesDiscardTitle": "Sair sem guardar?",
+  "preferencesDiscardText": "As alterações às preferências perdem-se.",
+  "preferencesDiscard": "Sair",
+  "profileNotificationsText": "Escolher como recebo os avisos"
 }
