@@ -13,6 +13,7 @@ import 'package:moseguros/core/network/connectivity.dart';
 import 'package:moseguros/core/router.dart';
 import 'package:moseguros/features/inspection/inspection_screen.dart'
     show locationRationaleKey;
+import 'package:moseguros/features/policies/screen_keeper.dart';
 import 'package:moseguros/features/quote/quote_labels.dart';
 
 import 'mock_api.dart';
@@ -32,6 +33,8 @@ Future<(ProviderContainer, GoRouter)> openAt(
   LocationService? location,
   Directory? filesDirectory,
   bool locationAsked = true,
+  ScreenKeeper? screenKeeper,
+  Map<String, Object> preferencesValues = const {},
   List<Map<String, Object?>> proposals = const [],
 }) async {
   stubCustomerSession(api);
@@ -45,7 +48,11 @@ Future<(ProviderContainer, GoRouter)> openAt(
     connectivity: connectivity,
     location: location,
     filesDirectory: filesDirectory,
-    preferencesValues: {if (locationAsked) locationRationaleKey: true},
+    screenKeeper: screenKeeper,
+    preferencesValues: {
+      if (locationAsked) locationRationaleKey: true,
+      ...preferencesValues,
+    },
     overrides: [
       clockProvider.overrideWithValue(() => proposalToday),
       quoteTodayProvider.overrideWithValue(() => proposalToday),

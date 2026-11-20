@@ -14,9 +14,13 @@ import 'package:moseguros/core/config/env.dart';
 import 'package:moseguros/core/db/app_database.dart';
 import 'package:moseguros/core/location/location_service.dart';
 import 'package:moseguros/core/network/connectivity.dart';
+import 'package:moseguros/core/push/device_registration.dart';
 import 'package:moseguros/features/inspection/upload_queue_runner.dart';
 import 'package:moseguros/features/onboarding/onboarding_controller.dart';
+import 'package:moseguros/features/policies/screen_keeper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'policies.dart' show RecordingScreenKeeper;
 
 const testEnv = Env(apiBaseUrl: 'http://localhost:8080', name: 'test');
 
@@ -228,6 +232,8 @@ Future<ProviderContainer> pumpMoSeguros(
   LocationService? location,
   Directory? filesDirectory,
   Map<String, Object> preferencesValues = const {},
+  DeviceIdStorage? deviceIds,
+  ScreenKeeper? screenKeeper,
 }) async {
   useSmallPhone(tester);
   SharedPreferences.setMockInitialValues({
@@ -253,6 +259,13 @@ Future<ProviderContainer> pumpMoSeguros(
       ),
       locationServiceProvider.overrideWithValue(location ?? const NoLocation()),
       uploadQueueTickProvider.overrideWithValue(null),
+      deviceIdStorageProvider.overrideWithValue(
+        deviceIds ?? MemoryDeviceIdStorage(),
+      ),
+      appVersionProvider.overrideWith((ref) async => '0.1.0+1'),
+      screenKeeperProvider.overrideWithValue(
+        screenKeeper ?? RecordingScreenKeeper(),
+      ),
       ...overrides,
     ],
   );

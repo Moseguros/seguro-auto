@@ -1,11 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moseguros/core/auth/session_controller.dart';
+import 'package:moseguros/core/deeplinks/deep_link_handler.dart';
+import 'package:moseguros/core/deeplinks/deep_link_mapper.dart';
 import 'package:moseguros/core/router.dart';
 import 'package:moseguros/features/inspection/inspection_screen.dart';
+import 'package:moseguros/features/policies/policy_detail_screen.dart';
 
 import '../../support/mock_api.dart';
+import '../../support/payments.dart';
+import '../../support/policies.dart';
 import '../../support/proposals.dart';
+import '../../support/quotes.dart' show requestId;
 import '../../support/vehicles.dart';
 
 const _link = 'moseguros://proposal/$proposalId/inspection';
@@ -26,18 +32,42 @@ const _anonymous = AsyncData<Session?>(null);
 
 void main() {
   group('deepLinkLocation', () {
-    test(
-      'moseguros://proposal/{id}/inspection e moseguros://proposal/{id}',
-      () {
-        expect(deepLinkLocation(Uri.parse(_link)), _inspection);
-        expect(
-          deepLinkLocation(Uri.parse('moseguros://proposal/$proposalId')),
-          '/proposals/$proposalId',
-        );
-        expect(deepLinkLocation(Uri.parse('moseguros://outra/coisa')), '/');
-        expect(deepLinkLocation(Uri.parse('/proposals')), isNull);
-      },
-    );
+    String? map(String link) => deepLinkLocation(Uri.parse(link));
+
+    test('as sete linhas da tabela (S6-07 §6)', () {
+      expect(map('moseguros://policy/$policyId'), '/policies/$policyId');
+      expect(map('moseguros://proposal/$proposalId'), '/proposals/$proposalId');
+      expect(map(_link), _inspection);
+      expect(
+        map('moseguros://payment/$paymentIntentId'),
+        '/payments/$paymentIntentId',
+      );
+      expect(map('moseguros://quote/$requestId'), '/quote/results/$requestId');
+      expect(map('moseguros://notifications'), '/notifications');
+      // Outro host, uuid inválido ou partes a mais.
+      expect(map('moseguros://outra/coisa'), '/');
+      expect(map('moseguros://claim/$policyId'), '/');
+      expect(map('moseguros://policy/nao-e-um-uuid'), '/');
+      expect(map('moseguros://policy/$policyId/extra'), '/');
+      expect(map('moseguros://proposal/$proposalId/inspection/x'), '/');
+      expect(map('moseguros://policy'), '/');
+      expect(map('moseguros://notifications/x'), '/');
+    });
+
+    test('sem o esquema moseguros: null', () {
+      expect(map('/proposals'), isNull);
+      expect(map('https://moseguros.co.mz/policy/$policyId'), isNull);
+    });
+
+    test('DeepLinkMapper.map recebe texto', () {
+      expect(
+        DeepLinkMapper.map('moseguros://policy/$policyId'),
+        '/policies/$policyId',
+      );
+      expect(DeepLinkMapper.map(null), isNull);
+      expect(DeepLinkMapper.map('  '), isNull);
+      expect(DeepLinkMapper.map('/policies'), isNull);
+    });
 
     test('safeReturnPath: só caminhos internos', () {
       expect(
@@ -150,4 +180,42 @@ void main() {
     expect(find.byType(InspectionScreen), findsOneWidget);
     expect(_location(container), _inspection);
   });
+
+  testWidgets(
+    'DeepLinkHandler: moseguros://policy/{id} sem sessão → login → apólice',
+    (tester) async {
+      final api = MockApi()
+        ..on('GET', '/api/v1/auth/otp/options', 200, Fixtures.otpOptions())
+        ..on('GET', policyPath, 200, PolicyFixtures.detail())
+        ..on(
+          'GET',
+          myPoliciesPath,
+          200,
+          PolicyFixtures.page([PolicyFixtures.summary()]),
+        );
+      stubCustomerSession(api);
+      final container = await pumpMoSeguros(tester, api);
+      final handler = container.read(deepLinkHandlerProvider);
+
+      // Vazio: não faz nada.
+      handler.open(null);
+      handler.open('');
+      await settle(tester);
+      expect(_location(container), '/login');
+
+      handler.open('moseguros://policy/$policyId');
+      await settle(tester);
+      expect(_location(container), '/login?from=%2Fpolicies%2F$policyId');
+
+      final login = container
+          .read(sessionControllerProvider.notifier)
+          .login(accessToken: 'access-1', refreshToken: 'refresh-1');
+      await settle(tester);
+      await login;
+      await settle(tester);
+
+      expect(find.byType(PolicyDetailScreen), findsOneWidget);
+      expect(_location(container), '/policies/$policyId');
+    },
+  );
 }
