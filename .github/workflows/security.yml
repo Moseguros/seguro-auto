@@ -1,8 +1,8 @@
 name: security
 
-# Vulnerabilidades conhecidas nas dependências (S6-08 §6, ASVS V14.2.1): OSV-Scanner sobre os ficheiros de
-# dependências do backend, do worker, da web e da app. Falha com vulnerabilidades HIGH ou CRITICAL
-# (CVSS >= 7.0) que não estejam no osv-scanner.toml (cada excepção com justificação e data de revisão).
+# Vulnerabilidades conhecidas nas dependências (S6-08 §6, ASVS V14.2.1): OSV-Scanner sobre as dependências do
+# backend e do worker (SBOM CycloneDX gerado dos pom.xml), da web (pnpm-lock.yaml) e da app (pubspec.lock).
+# Falha com vulnerabilidades HIGH ou CRITICAL (CVSS >= 7.0) que não estejam no osv-scanner.toml (cada excepção com justificação e data de revisão).
 on:
   schedule:
     - cron: "17 5 * * 1" # segundas às 05:17 UTC
@@ -23,6 +23,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # O OSV-Scanner não resolve o backend/pom.xml sozinho (o payment-contracts é um módulo do reactor, fora
+      # do Maven Central): o SBOM CycloneDX de cada módulo dá-lhe a árvore completa de dependências.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: SBOM do backend e do payment-file-worker
+        run: |
+          ./mvnw -B -q -pl backend,payment-file-worker -am org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeBom -DoutputFormat=json -DoutputName=bom
+
       - name: OSV-Scanner
         uses: google/osv-scanner-action/osv-scanner-action@v1.9.0
         continue-on-error: true # o resultado é avaliado no passo seguinte (só HIGH/CRITICAL falham)
@@ -31,8 +43,8 @@ jobs:
             --config=osv-scanner.toml
             --format=json
             --output=osv-results.json
-            --lockfile=backend/pom.xml
-            --lockfile=payment-file-worker/pom.xml
+            --sbom=backend/target/bom.json
+            --sbom=payment-file-worker/target/bom.json
             --lockfile=web/pnpm-lock.yaml
             --lockfile=mobile/pubspec.lock
 

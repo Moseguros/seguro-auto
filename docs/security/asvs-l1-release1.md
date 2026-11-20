@@ -180,7 +180,7 @@ palavra-passe e TOTP (S1-05). Os requisitos de palavra-passe aplicam-se ao staff
 
 | ID | Requisito (resumo) | Onde | Como se verifica | Estado | Notas |
 | --- | --- | --- | --- | --- | --- |
-| 14.2.1 | Componentes actualizados, sem vulnerabilidades conhecidas | dependências | `.github/workflows/security.yml` (OSV-Scanner; HIGH/CRITICAL falham) | OK | Excepções em `osv-scanner.toml` (nenhuma na R1) |
+| 14.2.1 | Componentes actualizados, sem vulnerabilidades conhecidas | dependências | `.github/workflows/security.yml` (OSV-Scanner; HIGH/CRITICAL falham); corrida local de 20/11/2026 | FALHA | Há vulnerabilidades HIGH/CRITICAL conhecidas no Spring Boot 3.3.13 (Tomcat 10.1.42, Spring Framework 6.1.21, Spring Security 6.3.10, Jackson 2.17.3, Thymeleaf 3.1.3, PostgreSQL JDBC 42.7.7, amqp-client 5.21.0, Bouncy Castle 1.78.1, Netty) e na web (orval 7.21.0, vite 5.4.21, vitest 2.1.9, zod 3.25.76, js-yaml 4.1.1); sem excepções inventadas no `osv-scanner.toml`. Q-ASVS-4 |
 | 14.2.2 | Funcionalidades, documentação e amostras desnecessárias removidas | API, imagens | Swagger UI desligado em `prod`; imagens de execução JRE/nginx sem ferramentas de build; *mocks* não publicados (`release.yml`) | OK | |
 | 14.2.3 | Recursos externos com SRI | web | revisão manual (agente) | OK | Só a folha do Google Fonts (dinâmica, sem SRI possível; regra 90003 aceite) e o script do Turnstile (versão sem SRI publicado); ambos limitados pela CSP |
 | 14.3.2 | Modo de depuração desligado em produção | API | `X-Debug-Otp` só no perfil `local` (não arranca com `prod`); `show-details: never` no health | OK | |
@@ -200,9 +200,9 @@ palavra-passe e TOTP (S1-05). Os requisitos de palavra-passe aplicam-se ao staff
 
 | Estado | Linhas |
 | --- | --- |
-| OK | 90 |
+| OK | 89 |
 | N/A | 17 (com justificação) |
-| FALHA | 5 (2.1.8, 2.1.12, 2.2.3, 2.5.5, 12.4.2): questões Q-ASVS-1 a Q-ASVS-3 com prazo em `docs/releases/R1.md` |
+| FALHA | 6 (2.1.8, 2.1.12, 2.2.3, 2.5.5, 12.4.2, 14.2.1): questões Q-ASVS-1 a Q-ASVS-4 com prazo em `docs/releases/R1.md` |
 | BLOQUEADO | 6 (8.3.2, 8.3.3, 9.1.1, 9.1.2, 9.1.3, 14.4.5) |
 
 Total: 118 linhas, todas com estado (contagem conferida com o CSV oficial: V2 27, V3 11, V4 8, V5 27, V7 3,
