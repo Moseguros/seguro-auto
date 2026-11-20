@@ -56,7 +56,9 @@ export const templatesKey = ['notification-templates'] as const;
 
 /** Atraso da pré-visualização depois da última alteração. */
 export const previewDelayMs = 500;
-const maxSubject = 200;
+/** Máximo do assunto (`EMAIL`) e do título (`PUSH`), iguais ao `NotificationTemplate` do backend. */
+export const maxSubject = 200;
+export const maxPushTitle = 65;
 
 type Field = 'subject' | 'body' | 'whatsappTemplateName' | 'whatsappParams';
 const fields: readonly Field[] = ['subject', 'body', 'whatsappTemplateName', 'whatsappParams'];
@@ -231,6 +233,8 @@ function EditorForm({
   const initial = useRef(valuesOf(template)).current;
   const [values, setValues] = useState<TemplateValues>(initial);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
+  // Erros da pré-visualização à parte: a pré-visualização só limpa os seus, nunca os do Guardar.
+  const [previewErrors, setPreviewErrors] = useState<Partial<Record<TextKey, string>>>({});
   const [conflict, setConflict] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [preview, setPreview] = useState<NotificationTemplatePreview | null>(null);
@@ -241,14 +245,20 @@ function EditorForm({
   const lastFocused = useRef<TextKey>('body');
   const hasSubject = template.channel === 'EMAIL' || template.channel === 'PUSH';
   const whatsapp = template.channel === 'WHATSAPP';
+  const subjectMax = template.channel === 'PUSH' ? maxPushTitle : maxSubject;
   const dirty = !sameValues(values, initial);
 
   const setError = (field: Field, error: { message: string }) =>
     setErrors((current) => ({ ...current, [field]: error.message }));
   const change = <K extends keyof TemplateValues>(key: K, value: TemplateValues[K]) => {
     setValues((current) => ({ ...current, [key]: value }));
-    if (key !== 'active') setErrors((current) => ({ ...current, [key]: undefined }));
+    if (key !== 'active') {
+      setErrors((current) => ({ ...current, [key]: undefined }));
+      setPreviewErrors((current) => ({ ...current, [key]: undefined }));
+    }
   };
+  const fieldError = (field: Field) =>
+    errors[field] ?? (field === 'subject' || field === 'body' ? previewErrors[field] : undefined);
 
   // Pré-visualização 500 ms depois da última alteração do assunto ou do texto.
   useEffect(() => {
@@ -263,12 +273,14 @@ function EditorForm({
       )
         .then((result) => {
           setPreview(result);
-          setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
+          setPreviewErrors({});
         })
         .catch((error: unknown) => {
           if (controller.signal.aborted) return;
           const problem = getProblem(error);
-          applyFieldErrors(problem, ['subject', 'body'] as const, setError);
+          applyFieldErrors(problem, ['subject', 'body'] as const, (field, fieldError) =>
+            setPreviewErrors((current) => ({ ...current, [field]: fieldError.message })),
+          );
         })
         .finally(() => {
           if (!controller.signal.aborted) setPreviewing(false);
@@ -321,7 +333,7 @@ function EditorForm({
     const local: Partial<Record<Field, string>> = {};
     if (hasSubject) {
       if (!values.subject.trim()) local.subject = 'REQUIRED';
-      else if (values.subject.length > maxSubject) local.subject = 'TOO_LONG';
+      else if (values.subject.length > subjectMax) local.subject = 'TOO_LONG';
     }
     if (!values.body.trim()) local.body = 'REQUIRED';
     if (whatsapp && !values.whatsappTemplateName.trim()) local.whatsappTemplateName = 'REQUIRED';
@@ -418,8 +430,9 @@ function EditorForm({
                 onChange={(event) => change('subject', event.target.value)}
                 required
                 fullWidth
-                error={!!errors.subject}
-                helperText={fieldText(errors.subject)}
+                error={!!fieldError('subject')}
+                helperText={fieldText(fieldError('subject'))}
+                slotProps={{ htmlInput: { maxLength: subjectMax } }}
                 {...textInput('subject')}
               />
             )}
@@ -431,8 +444,8 @@ function EditorForm({
               fullWidth
               multiline
               minRows={6}
-              error={!!errors.body}
-              helperText={fieldText(errors.body)}
+              error={!!fieldError('body')}
+              helperText={fieldText(fieldError('body'))}
               slotProps={{ htmlInput: { sx: { fontFamily: 'monospace' } } }}
               {...textInput('body')}
             />

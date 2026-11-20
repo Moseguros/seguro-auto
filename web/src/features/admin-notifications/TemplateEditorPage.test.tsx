@@ -62,12 +62,14 @@ describe('TemplateEditorPage', { timeout: 30_000 }, () => {
       };
     }
     if (is(c, 'POST', '/api/v1/admin/notification-templates/t1/preview')) {
-      previews.push(JSON.parse(c.data as string));
+      const request = JSON.parse(c.data as string) as { body: string };
+      previews.push(request);
+      const suffix = request.body.endsWith(' xx') ? ' xx' : '';
       return {
         status: 200,
         data: {
-          body: 'Apólice AP-2027-000001 emitida.',
-          smsText: 'Apolice AP-2027-000001 emitida.',
+          body: `Apólice AP-2027-000001 emitida.${suffix}`,
+          smsText: `Apolice AP-2027-000001 emitida.${suffix}`,
           length: 170,
           limit: 160,
           fits: false,
@@ -146,10 +148,53 @@ describe('TemplateEditorPage', { timeout: 30_000 }, () => {
       await screen.findByText('Variável desconhecida. Use só as variáveis indicadas.'),
     ).toBeInTheDocument();
     expect(puts[0]).toMatchObject({ version: 3, active: true });
+    // A pré-visualização pendente (200) chega depois do PUT e não apaga o erro do Guardar.
+    await waitFor(
+      () =>
+        expect(screen.getByTestId('preview-sms')).toHaveTextContent(
+          'Apolice AP-2027-000001 emitida. xx',
+        ),
+      slow,
+    );
+    expect(
+      screen.getByText('Variável desconhecida. Use só as variáveis indicadas.'),
+    ).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
     expect(await screen.findByText('Outra pessoa alterou este modelo')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Recarregar' })).toBeInTheDocument();
+  });
+
+  it('título PUSH tem no máximo 65 caracteres', async () => {
+    const push: NotificationTemplateDetail = {
+      ...template,
+      id: 'p1',
+      channel: 'PUSH',
+      subject: 'x'.repeat(70),
+    };
+    restore = signInStaff(admin, (c) => {
+      if (is(c, 'GET', '/api/v1/admin/notification-templates/p1')) {
+        return { status: 200, data: push };
+      }
+      if (is(c, 'GET', '/api/v1/admin/notification-templates')) {
+        return { status: 200, data: { content: [push], page: 0, size: 50, totalElements: 1 } };
+      }
+      if (is(c, 'POST', '/api/v1/admin/notification-templates/p1/preview')) {
+        return { status: 200, data: { subject: 'x', body: 'y' } };
+      }
+      if (is(c, 'PUT', '/api/v1/admin/notification-templates/p1')) {
+        puts.push(JSON.parse(c.data as string));
+        return { status: 200, data: { ...push, version: 4 } };
+      }
+      return null;
+    });
+    renderRoute('/admin/notificacoes/p1');
+    const title = await screen.findByLabelText(/Título/, undefined, slow);
+    expect(title).toHaveAttribute('maxLength', '65');
+    await userEvent.type(screen.getByLabelText(/Texto/), '!');
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
+    expect(await screen.findByText('Texto demasiado longo.')).toBeInTheDocument();
+    expect(puts).toHaveLength(0);
   });
 
   it('guardar mostra "Modelo guardado"; repor pede confirmação', async () => {
