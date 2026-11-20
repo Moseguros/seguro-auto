@@ -3,21 +3,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/env.dart';
+import 'core/push/firebase_push_service.dart';
+import 'core/push/push_service.dart';
+import 'core/push/push_startup.dart';
 import 'core/router.dart';
 import 'core/theme.dart';
 import 'features/inspection/upload_queue_runner.dart';
 import 'features/onboarding/onboarding_controller.dart';
+import 'features/policies/policies_controller.dart';
 import 'l10n/app_localizations.dart';
 
 /// Arranque comum aos três flavors.
 Future<void> runMoSeguros(Env env) async {
   WidgetsFlutterBinding.ensureInitialized();
   final preferences = await SharedPreferences.getInstance();
+  // Firebase só com `--dart-define=PUSH_ENABLED=true` (S6-07 §4).
+  final push = await createPushService();
   runApp(
     ProviderScope(
       overrides: [
         envProvider.overrideWithValue(env),
         sharedPreferencesProvider.overrideWithValue(preferences),
+        pushServiceProvider.overrideWithValue(push),
       ],
       child: const MoSegurosApp(),
     ),
@@ -37,6 +44,9 @@ class MoSegurosApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // O executor da fila da vistoria vive enquanto a app vive (S4-09 §5).
     ref.watch(uploadQueueRunnerProvider);
+    // Push, registo do dispositivo e sincronização das apólices (S6-07 §2, §4).
+    ref.watch(pushStartupProvider);
+    ref.watch(policySyncProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       debugShowCheckedModeBanner: false,

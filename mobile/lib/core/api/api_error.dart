@@ -373,7 +373,8 @@ String fieldErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'TEMPLATE_SYNTAX' => l10n.validationTemplateSyntax,
   'TEMPLATE_UNKNOWN_VARIABLE' => l10n.validationTemplateUnknownVariable,
   'SMS_TOO_LONG' => l10n.validationSmsTooLong,
-  'MANDATORY_CATEGORY_NEEDS_CHANNEL' => l10n.validationMandatoryCategoryNeedsChannel,
+  'MANDATORY_CATEGORY_NEEDS_CHANNEL' =>
+    l10n.validationMandatoryCategoryNeedsChannel,
   // Só nos ecrãs (MoneyField); a API não o devolve.
   'INVALID_MONEY' => l10n.validationInvalidMoney,
   _ => l10n.errorUnknown,
