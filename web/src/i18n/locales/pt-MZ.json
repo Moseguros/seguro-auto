@@ -129,6 +129,8 @@
     "UNAUTHORIZED": "Precisa de iniciar sessão.",
     "FORBIDDEN": "Não tem permissão para esta operação.",
     "INTERNAL_ERROR": "Erro interno do servidor. Tente mais tarde.",
+    "METHOD_NOT_ALLOWED": "Operação não suportada.",
+    "UNSUPPORTED_MEDIA_TYPE": "Formato do pedido não suportado.",
     "INVALID_CURRENCY": "Moeda inválida.",
     "INVALID_MSISDN": "Número de telemóvel inválido.",
     "INVALID_NUIT": "NUIT inválido.",

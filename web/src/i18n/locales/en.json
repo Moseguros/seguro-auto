@@ -129,6 +129,8 @@
     "UNAUTHORIZED": "You need to sign in.",
     "FORBIDDEN": "You do not have permission for this operation.",
     "INTERNAL_ERROR": "Internal server error. Please try again later.",
+    "METHOD_NOT_ALLOWED": "Operation not supported.",
+    "UNSUPPORTED_MEDIA_TYPE": "Unsupported request format.",
     "INVALID_CURRENCY": "Invalid currency.",
     "INVALID_MSISDN": "Invalid mobile number.",
     "INVALID_NUIT": "Invalid NUIT.",

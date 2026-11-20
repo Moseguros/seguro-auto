@@ -63,6 +63,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Internal server error. Please try again later.';
 
   @override
+  String get errorMethodNotAllowed => 'Operation not supported.';
+
+  @override
+  String get errorUnsupportedMediaType => 'Unsupported request format.';
+
+  @override
   String get errorInvalidCurrency => 'Invalid currency.';
 
   @override

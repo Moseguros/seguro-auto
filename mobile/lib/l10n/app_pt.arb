@@ -23,6 +23,8 @@
   "errorUnauthorized": "Precisa de iniciar sessão.",
   "errorForbidden": "Não tem permissão para esta operação.",
   "errorInternalError": "Erro interno do servidor. Tente mais tarde.",
+  "errorMethodNotAllowed": "Operação não suportada.",
+  "errorUnsupportedMediaType": "Formato do pedido não suportado.",
   "errorInvalidCurrency": "Moeda inválida.",
   "errorInvalidMsisdn": "Número de telemóvel inválido.",
   "errorInvalidNuit": "NUIT inválido.",

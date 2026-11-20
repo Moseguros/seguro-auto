@@ -62,6 +62,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Erro interno do servidor. Tente mais tarde.';
 
   @override
+  String get errorMethodNotAllowed => 'Operação não suportada.';
+
+  @override
+  String get errorUnsupportedMediaType => 'Formato do pedido não suportado.';
+
+  @override
   String get errorInvalidCurrency => 'Moeda inválida.';
 
   @override

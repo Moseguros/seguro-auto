@@ -23,6 +23,10 @@ public final class ErrorCodes {
     public static final String UNAUTHORIZED = "UNAUTHORIZED";
     public static final String FORBIDDEN = "FORBIDDEN";
     public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
+    /** Método HTTP que o caminho não aceita (405, S6-08 §6: antes caía no 500). */
+    public static final String METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED";
+    /** {@code Content-Type} do pedido que o endpoint não aceita (415, S6-08 §6). */
+    public static final String UNSUPPORTED_MEDIA_TYPE = "UNSUPPORTED_MEDIA_TYPE";
 
     // Value objects partilhados (400). Ao ler um pedido aparecem em errors[].code.
     public static final String INVALID_CURRENCY = "INVALID_CURRENCY";
@@ -359,6 +363,8 @@ public final class ErrorCodes {
             Map.entry(UNAUTHORIZED, 401),
             Map.entry(FORBIDDEN, 403),
             Map.entry(INTERNAL_ERROR, 500),
+            Map.entry(METHOD_NOT_ALLOWED, 405),
+            Map.entry(UNSUPPORTED_MEDIA_TYPE, 415),
             Map.entry(INVALID_CURRENCY, 400),
             Map.entry(INVALID_MSISDN, 400),
             Map.entry(INVALID_NUIT, 400),

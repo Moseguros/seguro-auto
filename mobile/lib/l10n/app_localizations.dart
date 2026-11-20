@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'Erro interno do servidor. Tente mais tarde.'**
   String get errorInternalError;
 
+  /// No description provided for @errorMethodNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Operação não suportada.'**
+  String get errorMethodNotAllowed;
+
+  /// No description provided for @errorUnsupportedMediaType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato do pedido não suportado.'**
+  String get errorUnsupportedMediaType;
+
   /// No description provided for @errorInvalidCurrency.
   ///
   /// In pt, this message translates to:

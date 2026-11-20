@@ -217,6 +217,10 @@
       "status" : 400
     },
     {
+      "code" : "METHOD_NOT_ALLOWED",
+      "status" : 405
+    },
+    {
       "code" : "NOTIFICATION_NOT_FOUND",
       "status" : 404
     },
@@ -551,6 +555,10 @@
     {
       "code" : "UNAUTHORIZED",
       "status" : 401
+    },
+    {
+      "code" : "UNSUPPORTED_MEDIA_TYPE",
+      "status" : 415
     },
     {
       "code" : "USER_NOT_FOUND",

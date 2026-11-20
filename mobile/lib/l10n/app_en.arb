@@ -17,6 +17,8 @@
   "errorUnauthorized": "You need to sign in.",
   "errorForbidden": "You do not have permission for this operation.",
   "errorInternalError": "Internal server error. Please try again later.",
+  "errorMethodNotAllowed": "Operation not supported.",
+  "errorUnsupportedMediaType": "Unsupported request format.",
   "errorInvalidCurrency": "Invalid currency.",
   "errorInvalidMsisdn": "Invalid mobile number.",
   "errorInvalidNuit": "Invalid NUIT.",

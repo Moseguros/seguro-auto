@@ -1,0 +1,36 @@
+# Endpoints que respondem sem token (S6-08 §6; PublicEndpointsInventoryTest).
+# Formato: MÉTODO caminho | justificação. Um endpoint público novo obriga a acrescentá-lo aqui, com a
+# justificação, e o revisor do PR confirma-o (docs/security/asvs-l1-release1.md, V4.1.1 e V14.5).
+# Os da autenticação têm limites próprios (OTP, S1-03; login de staff, S1-05).
+
+GET /.well-known/jwks.json | Chave pública dos JWT (S1-02); só a parte pública da chave RSA.
+GET /api/v1/health | Actuator health para o healthcheck do Docker e do balanceador; show-details: never.
+GET /api/v1/meta/version | Nome, versão e commit da aplicação (S0-02); sem dados de negócio.
+GET /api/v1/prometheus | Métricas (S6-08 §1): sem token, mas só para endereços remotos em moseguros.observability.allowed-cidrs (404 fora deles; o nginx também bloqueia).
+
+GET /api/v1/auth/invitations/{token} | Ecrã de activação do convite de staff (S1-04); o token do convite é o segredo.
+POST /api/v1/auth/invitations/{token}/accept | Aceitação do convite com palavra-passe (S1-04); o token do convite é o segredo.
+POST /api/v1/auth/invitations/{token}/activate | Confirmação do TOTP do convite (S1-04); o token do convite é o segredo.
+GET /api/v1/auth/otp/options | Tipos de identificador e canais activos do login por código (S1-03); configuração pública.
+POST /api/v1/auth/otp/request | Pedido do código do cliente (S1-03), com limites por identificador e por IP.
+GET /api/v1/auth/otp/challenges/{challengeId} | Estado do desafio OTP (S1-03); o id é aleatório e não revela o código.
+POST /api/v1/auth/otp/verify | Verificação do código do cliente (S1-03), com tentativas limitadas.
+POST /api/v1/auth/login | Login de staff com palavra-passe e TOTP (S1-05), com bloqueio por tentativas.
+POST /api/v1/auth/logout | Revoga o refresh token enviado no corpo (S1-02); sem ele não faz nada.
+POST /api/v1/auth/refresh | Renovação da sessão com o refresh token (S1-02), com rotação e detecção de reutilização.
+POST /api/v1/auth/password/forgot | Pedido de reposição da palavra-passe de staff (S1-05); resposta igual exista ou não a conta.
+POST /api/v1/auth/password/reset | Reposição com o token de uso único enviado por e-mail (S1-05).
+
+GET /api/v1/reference-domains/{domain}/values | Listas de referência dos formulários (S2-02); dados públicos.
+GET /api/v1/platform-settings | Parâmetros públicos da plataforma (S2-02); nunca segredos.
+GET /api/v1/plate-formats | Formatos de matrícula activos (S2-02); dados públicos.
+GET /api/v1/catalog/products | Catálogo público de produtos publicados (S2-04); nunca rascunhos.
+GET /api/v1/catalog/product-versions/{id} | Versão publicada de um produto (S2-04); nunca rascunhos.
+
+GET /api/v1/public/verifications/config | Configuração do ecrã de verificação (S6-03): chave pública do CAPTCHA.
+GET /api/v1/public/verifications/{token} | Verificação pelo código do QR (S6-03): sem dados do tomador, limite por IP, no-store.
+GET /api/v1/public/verifications | Verificação por matrícula (S6-03): CAPTCHA, limite por IP, sem dados do tomador, no-store.
+
+GET /api/v1/files/{id} | Download (S2-01): autenticação opcional; cada ownerType decide pela FileAccessPolicy (os outros 404).
+POST /api/v1/integrations/delivery-receipts/{provider} | Recibos de entrega dos fornecedores de SMS/WhatsApp (S1-03): assinatura HMAC com MOSEGUROS_NOTIFICATION_WEBHOOK_SECRET.
+POST /internal/v1/auth/token | Token do cliente de serviço do worker (S5-09): autenticação Basic do cliente; /internal/** nunca é exposto pelo nginx.
