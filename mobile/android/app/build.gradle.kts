@@ -49,10 +49,29 @@ android {
         }
     }
 
+    // Assinatura "internal" (S6-08 §8) para o APK distribuído pelo Firebase App Distribution: lida das
+    // variáveis ANDROID_KEYSTORE_PATH, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS e ANDROID_KEY_PASSWORD
+    // (segredos do CI, nunca no Git). Sem elas o release continua com a chave de debug, aceite pelo App
+    // Distribution para testes internos. A chave de publicação nas lojas é do S12-10.
+    val internalKeystore = System.getenv("ANDROID_KEYSTORE_PATH")?.takeIf { it.isNotBlank() }
+    signingConfigs {
+        if (internalKeystore != null) {
+            create("internal") {
+                storeFile = file(internalKeystore)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // A assinatura das builds de loja é do Sprint 12; por agora usa a chave de debug.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (internalKeystore != null) {
+                signingConfigs.getByName("internal")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }

@@ -1,0 +1,10 @@
+# Excepções do OSV-Scanner (.github/workflows/security.yml, S6-08 §6). Cada excepção tem justificação e
+# data de revisão (ignoreUntil): passada a data, a vulnerabilidade volta a falhar o workflow.
+#
+# Formato:
+# [[IgnoredVulns]]
+# id = "GHSA-xxxx-xxxx-xxxx"
+# ignoreUntil = 2027-02-01
+# reason = "Porque não se aplica / quando se corrige (quem reviu)."
+#
+# Sem excepções na R1.
