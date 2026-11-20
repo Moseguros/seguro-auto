@@ -190,6 +190,9 @@ import 'package:moseguros_api/src/model/platform_settings_response.dart';
 import 'package:moseguros_api/src/model/policy_certificate.dart';
 import 'package:moseguros_api/src/model/policy_coverage.dart';
 import 'package:moseguros_api/src/model/policy_detail_response.dart';
+import 'package:moseguros_api/src/model/policy_document.dart';
+import 'package:moseguros_api/src/model/policy_document_status.dart';
+import 'package:moseguros_api/src/model/policy_document_type.dart';
 import 'package:moseguros_api/src/model/policy_event_type.dart';
 import 'package:moseguros_api/src/model/policy_instalment.dart';
 import 'package:moseguros_api/src/model/policy_insurer_ref.dart';
@@ -521,6 +524,9 @@ part 'serializers.g.dart';
   PolicyCertificate,
   PolicyCoverage,
   PolicyDetailResponse,
+  PolicyDocument,
+  PolicyDocumentStatus,
+  PolicyDocumentType,
   PolicyEventType,
   PolicyInstalment,
   PolicyInsurerRef,

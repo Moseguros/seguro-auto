@@ -256,6 +256,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PolicyCoverage.serializer)
       ..add(PolicyCoverageDeductibleTypeEnum.serializer)
       ..add(PolicyDetailResponse.serializer)
+      ..add(PolicyDocument.serializer)
+      ..add(PolicyDocumentStatus.serializer)
+      ..add(PolicyDocumentType.serializer)
       ..add(PolicyEventType.serializer)
       ..add(PolicyInstalment.serializer)
       ..add(PolicyInsurerRef.serializer)
@@ -699,6 +702,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(PolicyCoverage)]),
           () => ListBuilder<PolicyCoverage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PolicyDocument)]),
+          () => ListBuilder<PolicyDocument>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PolicyTimelineEvent)]),

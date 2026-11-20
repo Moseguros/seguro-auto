@@ -2903,6 +2903,8 @@ export interface PolicyDetailResponse {
   coverStatus: CoverStatus;
   coverageType: CoverageType;
   coverages: PolicyCoverage[];
+  /** Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId} */
+  documents: PolicyDocument[];
   endAt: string;
   /** Só no detalhe da seguradora */
   events?: PolicyTimelineEvent[];
@@ -2921,6 +2923,35 @@ export interface PolicyDetailResponse {
   totalPremium: Money;
   vehicle: PolicyVehicleRef;
 }
+
+/**
+ * Documento da apólice; PENDING (sem fileId) enquanto não foi gerado
+ */
+export interface PolicyDocument {
+  fileId?: string;
+  fileName?: string;
+  status: PolicyDocumentStatus;
+  type: PolicyDocumentType;
+}
+
+export type PolicyDocumentStatus = (typeof PolicyDocumentStatus)[keyof typeof PolicyDocumentStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyDocumentStatus = {
+  READY: 'READY',
+  PENDING: 'PENDING',
+} as const;
+
+export type PolicyDocumentType = (typeof PolicyDocumentType)[keyof typeof PolicyDocumentType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyDocumentType = {
+  CERTIFICATE: 'CERTIFICATE',
+  SCHEDULE: 'SCHEDULE',
+  GENERAL_CONDITIONS: 'GENERAL_CONDITIONS',
+  PRE_CONTRACT_INFO: 'PRE_CONTRACT_INFO',
+  PROPOSAL: 'PROPOSAL',
+} as const;
 
 export type PolicyEventType = (typeof PolicyEventType)[keyof typeof PolicyEventType];
 

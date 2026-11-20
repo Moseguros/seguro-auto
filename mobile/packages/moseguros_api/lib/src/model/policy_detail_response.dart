@@ -17,6 +17,7 @@ import 'package:moseguros_api/src/model/cover_status.dart';
 import 'package:moseguros_api/src/model/policy_timeline_event.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:moseguros_api/src/model/policy_coverage.dart';
+import 'package:moseguros_api/src/model/policy_document.dart';
 import 'package:moseguros_api/src/model/money.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
@@ -30,6 +31,7 @@ part 'policy_detail_response.g.dart';
 /// * [coverStatus] 
 /// * [coverageType] 
 /// * [coverages] 
+/// * [documents] - Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId}
 /// * [endAt] 
 /// * [events] - Só no detalhe da seguradora
 /// * [id] 
@@ -61,6 +63,10 @@ abstract class PolicyDetailResponse implements Built<PolicyDetailResponse, Polic
 
   @BuiltValueField(wireName: r'coverages')
   BuiltList<PolicyCoverage> get coverages;
+
+  /// Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId}
+  @BuiltValueField(wireName: r'documents')
+  BuiltList<PolicyDocument> get documents;
 
   @BuiltValueField(wireName: r'endAt')
   DateTime get endAt;
@@ -158,6 +164,11 @@ class _$PolicyDetailResponseSerializer implements PrimitiveSerializer<PolicyDeta
     yield serializers.serialize(
       object.coverages,
       specifiedType: const FullType(BuiltList, [FullType(PolicyCoverage)]),
+    );
+    yield r'documents';
+    yield serializers.serialize(
+      object.documents,
+      specifiedType: const FullType(BuiltList, [FullType(PolicyDocument)]),
     );
     yield r'endAt';
     yield serializers.serialize(
@@ -293,6 +304,13 @@ class _$PolicyDetailResponseSerializer implements PrimitiveSerializer<PolicyDeta
             specifiedType: const FullType(BuiltList, [FullType(PolicyCoverage)]),
           ) as BuiltList<PolicyCoverage>;
           result.coverages.replace(valueDes);
+          break;
+        case r'documents':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(BuiltList, [FullType(PolicyDocument)]),
+          ) as BuiltList<PolicyDocument>;
+          result.documents.replace(valueDes);
           break;
         case r'endAt':
           final valueDes = serializers.deserialize(

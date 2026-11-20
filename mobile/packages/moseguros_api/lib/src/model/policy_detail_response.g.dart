@@ -16,6 +16,8 @@ class _$PolicyDetailResponse extends PolicyDetailResponse {
   @override
   final BuiltList<PolicyCoverage> coverages;
   @override
+  final BuiltList<PolicyDocument> documents;
+  @override
   final DateTime endAt;
   @override
   final BuiltList<PolicyTimelineEvent>? events;
@@ -57,6 +59,7 @@ class _$PolicyDetailResponse extends PolicyDetailResponse {
       required this.coverStatus,
       required this.coverageType,
       required this.coverages,
+      required this.documents,
       required this.endAt,
       this.events,
       required this.id,
@@ -91,6 +94,7 @@ class _$PolicyDetailResponse extends PolicyDetailResponse {
         coverStatus == other.coverStatus &&
         coverageType == other.coverageType &&
         coverages == other.coverages &&
+        documents == other.documents &&
         endAt == other.endAt &&
         events == other.events &&
         id == other.id &&
@@ -116,6 +120,7 @@ class _$PolicyDetailResponse extends PolicyDetailResponse {
     _$hash = $jc(_$hash, coverStatus.hashCode);
     _$hash = $jc(_$hash, coverageType.hashCode);
     _$hash = $jc(_$hash, coverages.hashCode);
+    _$hash = $jc(_$hash, documents.hashCode);
     _$hash = $jc(_$hash, endAt.hashCode);
     _$hash = $jc(_$hash, events.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
@@ -143,6 +148,7 @@ class _$PolicyDetailResponse extends PolicyDetailResponse {
           ..add('coverStatus', coverStatus)
           ..add('coverageType', coverageType)
           ..add('coverages', coverages)
+          ..add('documents', documents)
           ..add('endAt', endAt)
           ..add('events', events)
           ..add('id', id)
@@ -188,6 +194,12 @@ class PolicyDetailResponseBuilder
       _$this._coverages ??= ListBuilder<PolicyCoverage>();
   set coverages(ListBuilder<PolicyCoverage>? coverages) =>
       _$this._coverages = coverages;
+
+  ListBuilder<PolicyDocument>? _documents;
+  ListBuilder<PolicyDocument> get documents =>
+      _$this._documents ??= ListBuilder<PolicyDocument>();
+  set documents(ListBuilder<PolicyDocument>? documents) =>
+      _$this._documents = documents;
 
   DateTime? _endAt;
   DateTime? get endAt => _$this._endAt;
@@ -277,6 +289,7 @@ class PolicyDetailResponseBuilder
       _coverStatus = $v.coverStatus;
       _coverageType = $v.coverageType;
       _coverages = $v.coverages.toBuilder();
+      _documents = $v.documents.toBuilder();
       _endAt = $v.endAt;
       _events = $v.events?.toBuilder();
       _id = $v.id;
@@ -322,6 +335,7 @@ class PolicyDetailResponseBuilder
             coverageType: BuiltValueNullFieldError.checkNotNull(
                 coverageType, r'PolicyDetailResponse', 'coverageType'),
             coverages: coverages.build(),
+            documents: documents.build(),
             endAt: BuiltValueNullFieldError.checkNotNull(
                 endAt, r'PolicyDetailResponse', 'endAt'),
             events: _events?.build(),
@@ -356,6 +370,8 @@ class PolicyDetailResponseBuilder
 
         _$failedField = 'coverages';
         coverages.build();
+        _$failedField = 'documents';
+        documents.build();
 
         _$failedField = 'events';
         _events?.build();
