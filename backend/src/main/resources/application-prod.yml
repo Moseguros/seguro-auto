@@ -10,6 +10,10 @@ moseguros:
   notification:
     push:
       provider: ${MOSEGUROS_NOTIFICATION_PUSH_PROVIDER:fcm}
+  # CAPTCHA (S6-03): obrigatório em produção (none não arranca); site-key e allowed-hostnames por variáveis
+  # de ambiente, segredo no cofre (secret/platform/captcha/turnstile).
+  captcha:
+    provider: turnstile
   files:
     storage: ${MOSEGUROS_FILES_STORAGE:s3}
     s3:

@@ -270,7 +270,11 @@
     "POLICY_NOT_FOUND": "Policy not found.",
     "NOTIFICATION_NOT_FOUND": "Notification not found.",
     "TEMPLATE_NOT_FOUND": "Template not found.",
-    "DEVICE_NOT_FOUND": "Device not found."
+    "DEVICE_NOT_FOUND": "Device not found.",
+    "CAPTCHA_REQUIRED": "Please confirm you are not a robot.",
+    "CAPTCHA_INVALID": "The check expired or failed. Please try again.",
+    "CAPTCHA_UNAVAILABLE": "Verification is temporarily unavailable. Please try again shortly.",
+    "RATE_LIMITED": "Too many requests. Please try again shortly."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",

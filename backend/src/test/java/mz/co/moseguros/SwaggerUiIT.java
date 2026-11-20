@@ -38,9 +38,12 @@ class SwaggerUiIT {
     }
 
     @Nested
-    // o perfil prod exige S3 (S2-01); aqui basta o disco do perfil test
+    // o perfil prod exige S3 (S2-01); aqui basta o disco do perfil test. O prod exige o Turnstile (S6-03):
+    // chave do site e anfitriões de teste
     @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-            properties = "moseguros.files.storage=filesystem")
+            properties = {"moseguros.files.storage=filesystem",
+                "moseguros.captcha.turnstile.site-key=test-site-key",
+                "moseguros.captcha.turnstile.allowed-hostnames=verificar.moseguros.test"})
     @Import(TestcontainersConfiguration.class)
     @ActiveProfiles({"test", "prod"})
     class Prod {

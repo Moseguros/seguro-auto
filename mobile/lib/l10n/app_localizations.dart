@@ -3660,6 +3660,30 @@ abstract class AppLocalizations {
   /// **'Dispositivo não encontrado.'**
   String get errorDeviceNotFound;
 
+  /// No description provided for @errorCaptchaRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirme que não é um robô.'**
+  String get errorCaptchaRequired;
+
+  /// No description provided for @errorCaptchaInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'A confirmação expirou ou falhou. Tente de novo.'**
+  String get errorCaptchaInvalid;
+
+  /// No description provided for @errorCaptchaUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'A verificação está temporariamente indisponível. Tente dentro de momentos.'**
+  String get errorCaptchaUnavailable;
+
+  /// No description provided for @errorRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Demasiados pedidos. Tente de novo dentro de momentos.'**
+  String get errorRateLimited;
+
   /// No description provided for @validationMsisdnNotMpesa.
   ///
   /// In pt, this message translates to:

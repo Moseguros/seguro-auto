@@ -6,6 +6,9 @@ springdoc:
 # Ficheiros em S3 (ADR-005). Credenciais pela cadeia por defeito do SDK (AWS_ACCESS_KEY_ID/
 # AWS_SECRET_ACCESS_KEY ou papel da máquina), nunca aqui.
 moseguros:
+  # CAPTCHA (S6-03): sem conta Turnstile ainda (Questões da ficha); none regista um WARN no arranque.
+  captcha:
+    provider: ${MOSEGUROS_CAPTCHA_PROVIDER:none}
   files:
     storage: ${MOSEGUROS_FILES_STORAGE:s3}
     s3:

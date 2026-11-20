@@ -270,7 +270,11 @@
     "POLICY_NOT_FOUND": "Apólice não encontrada.",
     "NOTIFICATION_NOT_FOUND": "Notificação não encontrada.",
     "TEMPLATE_NOT_FOUND": "Modelo não encontrado.",
-    "DEVICE_NOT_FOUND": "Dispositivo não encontrado."
+    "DEVICE_NOT_FOUND": "Dispositivo não encontrado.",
+    "CAPTCHA_REQUIRED": "Confirme que não é um robô.",
+    "CAPTCHA_INVALID": "A confirmação expirou ou falhou. Tente de novo.",
+    "CAPTCHA_UNAVAILABLE": "A verificação está temporariamente indisponível. Tente dentro de momentos.",
+    "RATE_LIMITED": "Demasiados pedidos. Tente de novo dentro de momentos."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",

@@ -15,6 +15,7 @@ lib/src/api/policy_api.dart
 lib/src/api/proposal_api.dart
 lib/src/api/rating_api.dart
 lib/src/api/vehicle_api.dart
+lib/src/api/verification_api.dart
 lib/src/api_util.dart
 lib/src/auth/api_key_auth.dart
 lib/src/auth/auth.dart
@@ -36,8 +37,10 @@ lib/src/model/broker_proposal_driver_request.dart
 lib/src/model/broker_proposal_summary_response.dart
 lib/src/model/broker_proposal_vehicle_request.dart
 lib/src/model/broker_vehicle_request.dart
+lib/src/model/captcha_provider.dart
 lib/src/model/catalog_insurer_response.dart
 lib/src/model/catalog_product_response.dart
+lib/src/model/certificate_check_status.dart
 lib/src/model/certificate_status.dart
 lib/src/model/charge.dart
 lib/src/model/charge_value.dart
@@ -156,6 +159,7 @@ lib/src/model/page_response_notification_template_summary.dart
 lib/src/model/page_response_organization_summary_response.dart
 lib/src/model/page_response_payment_exception_summary.dart
 lib/src/model/page_response_payment_file_import.dart
+lib/src/model/page_response_police_check_response.dart
 lib/src/model/page_response_product_summary_response.dart
 lib/src/model/page_response_proposal_summary_response.dart
 lib/src/model/page_response_quote_request_summary_response.dart
@@ -196,6 +200,8 @@ lib/src/model/plate_format_response.dart
 lib/src/model/plate_formats_response.dart
 lib/src/model/platform_setting_response.dart
 lib/src/model/platform_settings_response.dart
+lib/src/model/police_check_response.dart
+lib/src/model/police_verification_response.dart
 lib/src/model/policy_certificate.dart
 lib/src/model/policy_coverage.dart
 lib/src/model/policy_detail_response.dart
@@ -248,6 +254,7 @@ lib/src/model/public_platform_setting_response.dart
 lib/src/model/public_platform_settings_response.dart
 lib/src/model/public_reference_value_response.dart
 lib/src/model/public_reference_values_response.dart
+lib/src/model/public_verification_response.dart
 lib/src/model/publish_product_version_request.dart
 lib/src/model/quote_charge_response.dart
 lib/src/model/quote_coverage_response.dart
@@ -301,6 +308,7 @@ lib/src/model/sla_status.dart
 lib/src/model/staff_login_request.dart
 lib/src/model/staff_user_response.dart
 lib/src/model/start_contact_verification_request.dart
+lib/src/model/subject_type.dart
 lib/src/model/submit_inspection_request.dart
 lib/src/model/submit_proposal_request.dart
 lib/src/model/suitability_answer_request.dart
@@ -349,6 +357,8 @@ lib/src/model/vehicle_driver_assignment.dart
 lib/src/model/vehicle_driver_response.dart
 lib/src/model/vehicle_response.dart
 lib/src/model/vehicle_usage.dart
+lib/src/model/verification_config_response.dart
+lib/src/model/verification_result.dart
 lib/src/model/verify_contact_request.dart
 lib/src/model/verify_kyc_check_request.dart
 lib/src/model/verify_otp_request.dart

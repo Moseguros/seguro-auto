@@ -158,6 +158,10 @@ String apiErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   'NOTIFICATION_NOT_FOUND' => l10n.errorNotificationNotFound,
   'TEMPLATE_NOT_FOUND' => l10n.errorTemplateNotFound,
   'DEVICE_NOT_FOUND' => l10n.errorDeviceNotFound,
+  'CAPTCHA_REQUIRED' => l10n.errorCaptchaRequired,
+  'CAPTCHA_INVALID' => l10n.errorCaptchaInvalid,
+  'CAPTCHA_UNAVAILABLE' => l10n.errorCaptchaUnavailable,
+  'RATE_LIMITED' => l10n.errorRateLimited,
   _ => l10n.errorUnknown,
 };
 

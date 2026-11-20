@@ -281,6 +281,14 @@ export interface BrokerVehicleRequest {
   year: number;
 }
 
+export type CaptchaProvider = (typeof CaptchaProvider)[keyof typeof CaptchaProvider];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CaptchaProvider = {
+  TURNSTILE: 'TURNSTILE',
+  NONE: 'NONE',
+} as const;
+
 export interface CatalogInsurerResponse {
   displayName: string;
   id: string;
@@ -325,6 +333,18 @@ export interface CatalogProductResponse {
   vehicleCategories: VehicleCategory[];
   versionNo: number;
 }
+
+/**
+ * Só nas consultas por código: se o certificado mostrado ainda é o actual
+ */
+export type CertificateCheckStatus =
+  (typeof CertificateCheckStatus)[keyof typeof CertificateCheckStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CertificateCheckStatus = {
+  CURRENT: 'CURRENT',
+  REVOKED: 'REVOKED',
+} as const;
 
 export type CertificateStatus = (typeof CertificateStatus)[keyof typeof CertificateStatus];
 
@@ -2335,6 +2355,13 @@ export interface PageResponsePaymentFileImport {
   totalElements: number;
 }
 
+export interface PageResponsePoliceCheckResponse {
+  content: PoliceCheckResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseProductSummaryResponse {
   content: ProductSummaryResponse[];
   page: number;
@@ -2866,6 +2893,35 @@ export interface PlatformSettingResponse {
 
 export interface PlatformSettingsResponse {
   settings: PlatformSettingResponse[];
+}
+
+export interface PoliceCheckResponse {
+  checkedAt: string;
+  id: string;
+  /** Vazio quando um código não correspondeu a nenhuma apólice */
+  plateMasked?: string;
+  result: VerificationResult;
+  subjectType: SubjectType;
+}
+
+/**
+ * Resultado da verificação para um agente da polícia; sem dados pessoais do tomador
+ */
+export interface PoliceVerificationResponse {
+  /** Certificado do código ou, por matrícula, o certificado em vigor */
+  certificateNumber?: string;
+  certificateStatus?: CertificateCheckStatus;
+  checkedAt: string;
+  coverageType?: CoverageType;
+  insurerName?: string;
+  plateMasked?: string;
+  policyNumber?: string;
+  status: VerificationResult;
+  validFrom?: string;
+  /** Fim da cobertura (exclusivo) */
+  validTo?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
 }
 
 export interface PolicyCertificate {
@@ -3681,6 +3737,22 @@ export interface PublicReferenceValueResponse {
 
 export interface PublicReferenceValuesResponse {
   values: PublicReferenceValueResponse[];
+}
+
+/**
+ * Resultado da verificação pública; sem dados pessoais do tomador
+ */
+export interface PublicVerificationResponse {
+  certificateStatus?: CertificateCheckStatus;
+  checkedAt: string;
+  coverageType?: CoverageType;
+  insurerName?: string;
+  /** Matrícula com os dígitos trocados por * */
+  plateMasked?: string;
+  status: VerificationResult;
+  validFrom?: string;
+  /** Fim da cobertura (exclusivo) */
+  validTo?: string;
 }
 
 export interface PublishProductVersionRequest {
@@ -4588,6 +4660,14 @@ export interface StartContactVerificationRequest {
   value: string;
 }
 
+export type SubjectType = (typeof SubjectType)[keyof typeof SubjectType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SubjectType = {
+  PLATE: 'PLATE',
+  TOKEN: 'TOKEN',
+} as const;
+
 export interface SubmitInspectionRequest {
   /**
    * Quilometragem; fora de 0–2 000 000 → OUT_OF_RANGE
@@ -5340,6 +5420,24 @@ export const VehicleUsage = {
   DRIVING_SCHOOL: 'DRIVING_SCHOOL',
 } as const;
 
+export interface VerificationConfigResponse {
+  captchaProvider: CaptchaProvider;
+  /** Chave pública do widget; omitida com NONE */
+  captchaSiteKey?: string;
+}
+
+export type VerificationResult = (typeof VerificationResult)[keyof typeof VerificationResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const VerificationResult = {
+  VALID: 'VALID',
+  NOT_YET_VALID: 'NOT_YET_VALID',
+  EXPIRED: 'EXPIRED',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED',
+  NOT_FOUND: 'NOT_FOUND',
+} as const;
+
 export interface VerifyContactRequest {
   /** challengeId devolvido no pedido */
   challengeId: string;
@@ -5852,6 +5950,24 @@ export const ListOrganizationUsersStatus = {
   DISABLED: 'DISABLED',
 } as const;
 
+export type ListMyPoliceChecksParams = {
+  from?: string;
+  to?: string;
+  page?: number;
+  size?: number;
+  /**
+   * checkedAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type VerifyPlateAsPoliceParams = {
+  /**
+   * Matrícula
+   */
+  plate?: string;
+};
+
 export type UploadInspectionPhotoBody = {
   /** Gerado pelo cliente; torna o envio idempotente */
   clientPhotoId?: string;
@@ -5862,6 +5978,13 @@ export type UploadInspectionPhotoBody = {
   source?: PhotoSource;
   /** Hora da fotografia (ISO 8601) */
   takenAt?: string;
+};
+
+export type VerifyPlateParams = {
+  /**
+   * Matrícula
+   */
+  plate?: string;
 };
 
 export type ListReferenceValuesParams = {
@@ -22270,6 +22393,398 @@ export function useListPublicPlatformSettings<
 }
 
 /**
+ * Permissão verification:police. Só as consultas do agente; from e to em datas de Africa/Maputo, inclusivas (por defeito os últimos 30 dias; from depois de to → 400 VALIDATION_ERROR from OUT_OF_RANGE). Ordenação checkedAt (desc).
+ * @summary Lista as consultas do próprio agente
+ */
+export const listMyPoliceChecks = (
+  params?: ListMyPoliceChecksParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponsePoliceCheckResponse>(
+    { url: `/api/v1/police/check-history`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyPoliceChecksQueryKey = (params?: ListMyPoliceChecksParams) => {
+  return [`/api/v1/police/check-history`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyPoliceChecksQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyPoliceChecksQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPoliceChecks>>> = ({ signal }) =>
+    listMyPoliceChecks(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyPoliceChecks>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyPoliceChecksQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyPoliceChecks>>
+>;
+export type ListMyPoliceChecksQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyPoliceChecksParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPoliceChecks>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPoliceChecks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPoliceChecks>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPoliceChecks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as consultas do próprio agente
+ */
+
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyPoliceChecksQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão verification:police; sem CAPTCHA. A resposta pública mais policyNumber, certificateNumber, vehicleMake e vehicleModel; sem dados pessoais do tomador. Matrícula inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE). 300 pedidos por minuto → 429 RATE_LIMITED (Retry-After).
+ * @summary Verifica o seguro pela matrícula (polícia)
+ */
+export const verifyPlateAsPolice = (
+  params?: VerifyPlateAsPoliceParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PoliceVerificationResponse>(
+    { url: `/api/v1/police/verifications`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getVerifyPlateAsPoliceQueryKey = (params?: VerifyPlateAsPoliceParams) => {
+  return [`/api/v1/police/verifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getVerifyPlateAsPoliceQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyPlateAsPoliceQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyPlateAsPolice>>> = ({ signal }) =>
+    verifyPlateAsPolice(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyPlateAsPoliceQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyPlateAsPolice>>
+>;
+export type VerifyPlateAsPoliceQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | VerifyPlateAsPoliceParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pela matrícula (polícia)
+ */
+
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyPlateAsPoliceQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão verification:police. Como verifyCertificateToken, mais policyNumber, certificateNumber, vehicleMake e vehicleModel. 300 pedidos por minuto → 429 RATE_LIMITED.
+ * @summary Verifica o seguro pelo código do QR (polícia)
+ */
+export const verifyCertificateTokenAsPolice = (
+  token: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PoliceVerificationResponse>(
+    { url: `/api/v1/police/verifications/${token}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getVerifyCertificateTokenAsPoliceQueryKey = (token?: string) => {
+  return [`/api/v1/police/verifications/${token}`] as const;
+};
+
+export const getVerifyCertificateTokenAsPoliceQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyCertificateTokenAsPoliceQueryKey(token);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>> = ({
+    signal,
+  }) => verifyCertificateTokenAsPolice(token, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!token, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyCertificateTokenAsPoliceQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>
+>;
+export type VerifyCertificateTokenAsPoliceQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pelo código do QR (polícia)
+ */
+
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyCertificateTokenAsPoliceQueryOptions(token, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão self:proposals. Proposta DRAFT numerada (PR-AAAA-NNNNNN) com os dados da cotação congelados e o tomador do perfil; a cotação passa a USED. Cotação não visível ou de mediador → 404 QUOTE_NOT_FOUND; já usada numa proposta → 409 PROPOSAL_ALREADY_EXISTS (proposalId); QUOTE_NOT_AVAILABLE, QUOTE_ALREADY_USED, QUOTE_EXPIRED (409); seguradora não activa → 409 INSURER_NOT_ACTIVE; perfil incompleto → 409 PROFILE_INCOMPLETE; veículo ou condutor mudados desde a cotação → 409 QUOTE_DATA_CHANGED (fields); removidos → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND.
  * @summary Cria uma proposta a partir de uma cotação
  */
@@ -23690,6 +24205,385 @@ export const useAcknowledgeProposalSuitability = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Público, com CAPTCHA: cabeçalho X-Captcha-Token obrigatório quando o fornecedor não é NONE (sem ele → 400 CAPTCHA_REQUIRED; recusado → 400 CAPTCHA_INVALID; fornecedor indisponível → 503 CAPTCHA_UNAVAILABLE). Matrícula em falta ou inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE); aceita espaços, hífenes e minúsculas. 60 pedidos por minuto e por IP → 429 RATE_LIMITED (Retry-After).
+ * @summary Verifica o seguro pela matrícula
+ */
+export const verifyPlate = (
+  params?: VerifyPlateParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicVerificationResponse>(
+    { url: `/api/v1/public/verifications`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getVerifyPlateQueryKey = (params?: VerifyPlateParams) => {
+  return [`/api/v1/public/verifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getVerifyPlateQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyPlateQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyPlate>>> = ({ signal }) =>
+    verifyPlate(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyPlate>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyPlateQueryResult = NonNullable<Awaited<ReturnType<typeof verifyPlate>>>;
+export type VerifyPlateQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | VerifyPlateParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlate>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlate>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pela matrícula
+ */
+
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyPlateQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Público, sem limite de pedidos. captchaProvider TURNSTILE (com captchaSiteKey) ou NONE (sem CAPTCHA; o cabeçalho X-Captcha-Token deixa de ser exigido).
+ * @summary CAPTCHA da verificação por matrícula
+ */
+export const getVerificationConfig = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<VerificationConfigResponse>(
+    { url: `/api/v1/public/verifications/config`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetVerificationConfigQueryKey = () => {
+  return [`/api/v1/public/verifications/config`] as const;
+};
+
+export const getGetVerificationConfigQueryOptions = <
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetVerificationConfigQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getVerificationConfig>>> = ({ signal }) =>
+    getVerificationConfig(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getVerificationConfig>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetVerificationConfigQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getVerificationConfig>>
+>;
+export type GetVerificationConfigQueryError = ErrorType<ProblemDetail>;
+
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getVerificationConfig>>,
+          TError,
+          Awaited<ReturnType<typeof getVerificationConfig>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getVerificationConfig>>,
+          TError,
+          Awaited<ReturnType<typeof getVerificationConfig>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary CAPTCHA da verificação por matrícula
+ */
+
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetVerificationConfigQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Público, sem CAPTCHA. O status é o da apólice agora; certificateStatus diz se o certificado do código ainda é o actual. Código desconhecido ou com formato errado → 200 NOT_FOUND. Nunca devolve dados do tomador nem os números da apólice e do certificado. 60 pedidos por minuto e por IP → 429 RATE_LIMITED (Retry-After).
+ * @summary Verifica o seguro pelo código do QR
+ */
+export const verifyCertificateToken = (
+  token: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicVerificationResponse>(
+    { url: `/api/v1/public/verifications/${token}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getVerifyCertificateTokenQueryKey = (token?: string) => {
+  return [`/api/v1/public/verifications/${token}`] as const;
+};
+
+export const getVerifyCertificateTokenQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyCertificateTokenQueryKey(token);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyCertificateToken>>> = ({ signal }) =>
+    verifyCertificateToken(token, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!token, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyCertificateToken>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyCertificateTokenQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyCertificateToken>>
+>;
+export type VerifyCertificateTokenQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateToken>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateToken>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateToken>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateToken>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pelo código do QR
+ */
+
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyCertificateTokenQueryOptions(token, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão self:quotes. Uma cotação por produto publicado compatível de cada seguradora activa (OFFERED, ou NOT_AVAILABLE com unavailableReason), em menos de 3 s, ordenadas por preço; valem 15 dias. Veículo ou condutor de outro cliente → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND. Danos próprios sem valor comercial → 400 VEHICLE_VALUE_REQUIRED. Mais de 30 pedidos numa hora → 429 QUOTE_RATE_LIMITED (Retry-After). Sem produtos compatíveis → quotes: [].

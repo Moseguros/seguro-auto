@@ -145,6 +145,9 @@ services:
       # Convites de staff (S1-04): links para a web do compose e convite do primeiro
       # administrador da plataforma (o e-mail aparece no Mailpit, http://localhost:8025).
       MOSEGUROS_WEB_BASE_URL: http://localhost:3000
+      # Proxies de confiança (S6-03 §5, D15): o X-Forwarded-For do nginx da web (redes do Docker) dá o IP
+      # do cliente aos limites de pedidos, à auditoria e à assinatura das propostas.
+      MOSEGUROS_WEB_TRUSTED_PROXIES: 127.0.0.1/32,::1/128,172.16.0.0/12,10.0.0.0/8,192.168.0.0/16
       MOSEGUROS_BOOTSTRAP_PLATFORM_ADMIN_EMAIL: admin@moseguros.local
       # Ficheiros enviados (S2-01): disco, no volume "files" (apagado com "docker compose down -v").
       MOSEGUROS_FILES_DIR: /var/lib/moseguros/files

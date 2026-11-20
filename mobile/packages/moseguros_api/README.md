@@ -248,6 +248,12 @@ Class | Method | HTTP request | Description
 [*VehicleApi*](doc/VehicleApi.md) | [**updateMyVehicle**](doc/VehicleApi.md#updatemyvehicle) | **PUT** /api/v1/me/vehicles/{id} | Altera um veículo
 [*VehicleApi*](doc/VehicleApi.md) | [**updateMyVehicleDrivers**](doc/VehicleApi.md#updatemyvehicledrivers) | **PUT** /api/v1/me/vehicles/{id}/drivers | Substitui os condutores do veículo
 [*VehicleApi*](doc/VehicleApi.md) | [**uploadMyVehicleRegistrationDoc**](doc/VehicleApi.md#uploadmyvehicleregistrationdoc) | **POST** /api/v1/me/vehicles/{id}/registration-doc | Envia a foto ou o PDF do livrete
+[*VerificationApi*](doc/VerificationApi.md) | [**getVerificationConfig**](doc/VerificationApi.md#getverificationconfig) | **GET** /api/v1/public/verifications/config | CAPTCHA da verificação por matrícula
+[*VerificationApi*](doc/VerificationApi.md) | [**listMyPoliceChecks**](doc/VerificationApi.md#listmypolicechecks) | **GET** /api/v1/police/check-history | Lista as consultas do próprio agente
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyCertificateToken**](doc/VerificationApi.md#verifycertificatetoken) | **GET** /api/v1/public/verifications/{token} | Verifica o seguro pelo código do QR
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyCertificateTokenAsPolice**](doc/VerificationApi.md#verifycertificatetokenaspolice) | **GET** /api/v1/police/verifications/{token} | Verifica o seguro pelo código do QR (polícia)
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyPlate**](doc/VerificationApi.md#verifyplate) | **GET** /api/v1/public/verifications | Verifica o seguro pela matrícula
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyPlateAsPolice**](doc/VerificationApi.md#verifyplateaspolice) | **GET** /api/v1/police/verifications | Verifica o seguro pela matrícula (polícia)
 
 
 ## Documentation For Models
@@ -266,8 +272,10 @@ Class | Method | HTTP request | Description
  - [BrokerProposalSummaryResponse](doc/BrokerProposalSummaryResponse.md)
  - [BrokerProposalVehicleRequest](doc/BrokerProposalVehicleRequest.md)
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
+ - [CaptchaProvider](doc/CaptchaProvider.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
+ - [CertificateCheckStatus](doc/CertificateCheckStatus.md)
  - [CertificateStatus](doc/CertificateStatus.md)
  - [Charge](doc/Charge.md)
  - [ChargeValue](doc/ChargeValue.md)
@@ -385,6 +393,7 @@ Class | Method | HTTP request | Description
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponsePaymentExceptionSummary](doc/PageResponsePaymentExceptionSummary.md)
  - [PageResponsePaymentFileImport](doc/PageResponsePaymentFileImport.md)
+ - [PageResponsePoliceCheckResponse](doc/PageResponsePoliceCheckResponse.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
  - [PageResponseProposalSummaryResponse](doc/PageResponseProposalSummaryResponse.md)
  - [PageResponseQuoteRequestSummaryResponse](doc/PageResponseQuoteRequestSummaryResponse.md)
@@ -425,6 +434,8 @@ Class | Method | HTTP request | Description
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
  - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
+ - [PoliceCheckResponse](doc/PoliceCheckResponse.md)
+ - [PoliceVerificationResponse](doc/PoliceVerificationResponse.md)
  - [PolicyCertificate](doc/PolicyCertificate.md)
  - [PolicyCoverage](doc/PolicyCoverage.md)
  - [PolicyDetailResponse](doc/PolicyDetailResponse.md)
@@ -477,6 +488,7 @@ Class | Method | HTTP request | Description
  - [PublicPlatformSettingsResponse](doc/PublicPlatformSettingsResponse.md)
  - [PublicReferenceValueResponse](doc/PublicReferenceValueResponse.md)
  - [PublicReferenceValuesResponse](doc/PublicReferenceValuesResponse.md)
+ - [PublicVerificationResponse](doc/PublicVerificationResponse.md)
  - [PublishProductVersionRequest](doc/PublishProductVersionRequest.md)
  - [QuoteChargeResponse](doc/QuoteChargeResponse.md)
  - [QuoteCoverageResponse](doc/QuoteCoverageResponse.md)
@@ -530,6 +542,7 @@ Class | Method | HTTP request | Description
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
+ - [SubjectType](doc/SubjectType.md)
  - [SubmitInspectionRequest](doc/SubmitInspectionRequest.md)
  - [SubmitProposalRequest](doc/SubmitProposalRequest.md)
  - [SuitabilityAnswerRequest](doc/SuitabilityAnswerRequest.md)
@@ -578,6 +591,8 @@ Class | Method | HTTP request | Description
  - [VehicleDriverResponse](doc/VehicleDriverResponse.md)
  - [VehicleResponse](doc/VehicleResponse.md)
  - [VehicleUsage](doc/VehicleUsage.md)
+ - [VerificationConfigResponse](doc/VerificationConfigResponse.md)
+ - [VerificationResult](doc/VerificationResult.md)
  - [VerifyContactRequest](doc/VerifyContactRequest.md)
  - [VerifyKycCheckRequest](doc/VerifyKycCheckRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)

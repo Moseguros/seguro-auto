@@ -2089,6 +2089,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorDeviceNotFound => 'Device not found.';
 
   @override
+  String get errorCaptchaRequired => 'Please confirm you are not a robot.';
+
+  @override
+  String get errorCaptchaInvalid =>
+      'The check expired or failed. Please try again.';
+
+  @override
+  String get errorCaptchaUnavailable =>
+      'Verification is temporarily unavailable. Please try again shortly.';
+
+  @override
+  String get errorRateLimited => 'Too many requests. Please try again shortly.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Use a Vodacom number (starting with 84 or 85).';
 

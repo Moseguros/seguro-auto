@@ -51,6 +51,8 @@ public class SecurityConfig {
         "/api/v1/plate-formats",
         // catálogo público de produtos (S2-04); a gestão fica em /api/v1/insurer/**
         "/api/v1/catalog/**",
+        // verificação pública do seguro (S6-03); a da polícia fica em /api/v1/police/**
+        "/api/v1/public/**",
         "/.well-known/jwks.json",
         "/v3/api-docs/**",
         "/v3/api-docs.yaml",
