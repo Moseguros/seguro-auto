@@ -44,6 +44,8 @@ import {
   PaymentIntentPage,
   ProposalPaymentPage,
 } from './features/payments/lazyPages';
+import { MyPolicyDetailPage, MyPolicyListPage } from './features/customer-policies/lazyPages';
+import { NotificationsPage, PreferencesPage } from './features/customer-notifications/lazyPages';
 import { ProductListPage } from './features/products/ProductListPage';
 import { ProductVersionEditorPage } from './features/products/ProductVersionEditorPage';
 import { BrokerQuotesPage } from './features/quotes/BrokerQuotesPage';
@@ -302,6 +304,11 @@ const customerRoutes: RouteObject = {
     { path: 'propostas/:id/pagar', element: <ProposalPaymentPage /> },
     { path: 'pagamentos', element: <MyPaymentsPage /> },
     { path: 'pagamentos/:intentId', element: <PaymentIntentPage /> },
+    // Apólices e notificações (S6-06).
+    { path: 'apolices', element: <MyPolicyListPage /> },
+    { path: 'apolices/:id', element: <MyPolicyDetailPage /> },
+    { path: 'notificacoes', element: <NotificationsPage /> },
+    { path: 'notificacoes/preferencias', element: <PreferencesPage /> },
     { path: '*', element: <UnderConstructionPage /> },
   ],
 };

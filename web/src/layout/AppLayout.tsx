@@ -23,6 +23,7 @@ import { hasPermission } from '../auth/permissions';
 import { useAuth } from '../auth/useAuth';
 import { Brand } from '../components/Brand';
 import { LanguageSelector } from '../components/LanguageSelector';
+import { NotificationBell } from '../features/customer-notifications/NotificationBell';
 import { aliasedMenuKey, menus, type Area, type MenuItem } from './menus';
 
 const drawerWidth = 260;
@@ -91,6 +92,7 @@ export function AppLayout({ area }: { area: Area }) {
           <Brand />
           <Box sx={{ flexGrow: 1 }} />
           <LanguageSelector />
+          {area === 'cliente' && <NotificationBell />}
           <UserMenu />
         </Toolbar>
       </AppBar>
