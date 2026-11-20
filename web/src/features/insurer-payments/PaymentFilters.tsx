@@ -217,24 +217,26 @@ export function SingleSelectFilter({
   );
 }
 
-/** Campo de pesquisa que só actualiza o filtro 300 ms depois de se parar de escrever. */
+/** Campo de pesquisa que só actualiza o filtro `delayMs` (300) ms depois de se parar de escrever. */
 export function SearchFilter({
   label,
   value,
   onChange,
   fullWidth,
+  delayMs = 300,
 }: {
   label: string;
   value: string;
   onChange(value: string): void;
   fullWidth?: boolean;
+  delayMs?: number;
 }) {
   const [text, setText] = useState(value);
   useEffect(() => setText(value), [value]);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (text.trim() !== value) onChange(text.trim());
-    }, 300);
+    }, delayMs);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
