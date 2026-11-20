@@ -60,6 +60,8 @@ export const menuAliases: Record<string, string> = {
   '/cliente/condutores': 'vehicles',
   '/cliente/cotacoes': 'quote',
   '/cliente/identidade': 'profile',
+  // S6-06: o centro e as preferências abrem-se pelo sino e pelo perfil (decisão a validar).
+  '/cliente/notificacoes': 'profile',
 };
 
 /** Item marcado por um alias para o caminho, se houver. */

@@ -3387,5 +3387,98 @@
       "sent": "Sent",
       "failed": "Failed: {{reason}}"
     }
+  },
+  "policyCommon": {
+    "coverages": {
+      "name": "Cover",
+      "capital": "Sum insured",
+      "deductible": "Excess",
+      "premium": "Premium",
+      "percent": "{{value}}%"
+    },
+    "instalments": {
+      "seq": "No.",
+      "dueDate": "Due date",
+      "amount": "Amount",
+      "status": "Status",
+      "paidAt": "Paid on",
+      "empty": "No instalments."
+    },
+    "documents": {
+      "preparing": "Preparing…",
+      "empty": "There are no documents yet."
+    }
+  },
+  "customerPolicies": {
+    "title": "My policies",
+    "tabs": {
+      "active": "In force",
+      "all": "All"
+    },
+    "validUntil": "Valid until {{date}}",
+    "number": "Policy {{number}}",
+    "empty": "You have no policies yet.",
+    "emptyActive": "You have no policies in force.",
+    "simulate": "Get a quote",
+    "loadMore": "Load more",
+    "notFound": "Policy not found",
+    "backToList": "See my policies",
+    "documentsSlow": "The documents are taking a while. Open this page again in a few minutes.",
+    "period": {
+      "title": "Period and premium",
+      "start": "Start",
+      "end": "End",
+      "renewalType": "Renewal type",
+      "paymentPlan": "Payment plan",
+      "totalPremium": "Total premium"
+    },
+    "coverages": "Covers",
+    "instalments": "Instalments",
+    "documents": "Documents"
+  },
+  "certificate": {
+    "title": "Insurance certificate",
+    "number": "Certificate no. {{number}}",
+    "validity": "Valid from {{validFrom}} to {{validTo}}",
+    "showFullscreen": "Show full screen",
+    "download": "Download certificate",
+    "preparing": "Preparing the certificate…",
+    "revoked": "This certificate has been replaced.",
+    "validUntil": "Valid until {{date}}",
+    "agentHint": "The officer can scan this code to confirm the insurance.",
+    "qrLabel": "QR code to verify the insurance"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell": "Notifications, {{count}} unread",
+    "markAllRead": "Mark all as read",
+    "preferences": "Preferences",
+    "tabs": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "unread": "Unread",
+    "empty": "You have no notifications.",
+    "loadMore": "Load more"
+  },
+  "preferences": {
+    "title": "Notification preferences",
+    "mandatory": "Mandatory",
+    "mandatoryHelp": "These notices are mandatory: choose at least SMS, WhatsApp or e-mail.",
+    "needsMsisdn": "You need a verified mobile number.",
+    "needsEmail": "You need a verified e-mail address.",
+    "addInProfile": "Add it in your profile",
+    "needsApp": "Install the MoSeguros app and turn on notifications.",
+    "saved": "Preferences saved",
+    "unsaved": {
+      "title": "Leave without saving?",
+      "text": "Your changes to the preferences have not been saved and will be lost.",
+      "stay": "Keep editing",
+      "leave": "Leave without saving"
+    },
+    "profileRow": {
+      "title": "Notifications",
+      "link": "Choose how I receive notices"
+    }
   }
 }

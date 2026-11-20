@@ -3387,5 +3387,98 @@
       "sent": "Enviado",
       "failed": "Falhou: {{reason}}"
     }
+  },
+  "policyCommon": {
+    "coverages": {
+      "name": "Cobertura",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "premium": "Prémio",
+      "percent": "{{value}} %"
+    },
+    "instalments": {
+      "seq": "N.º",
+      "dueDate": "Vencimento",
+      "amount": "Montante",
+      "status": "Estado",
+      "paidAt": "Paga em",
+      "empty": "Sem prestações."
+    },
+    "documents": {
+      "preparing": "A preparar…",
+      "empty": "Ainda não há documentos."
+    }
+  },
+  "customerPolicies": {
+    "title": "As minhas apólices",
+    "tabs": {
+      "active": "Em vigor",
+      "all": "Todas"
+    },
+    "validUntil": "Válida até {{date}}",
+    "number": "Apólice {{number}}",
+    "empty": "Ainda não tem apólices.",
+    "emptyActive": "Não tem apólices em vigor.",
+    "simulate": "Simular seguro",
+    "loadMore": "Carregar mais",
+    "notFound": "Apólice não encontrada",
+    "backToList": "Ver as minhas apólices",
+    "documentsSlow": "Os documentos estão a demorar. Volte a abrir esta página dentro de alguns minutos.",
+    "period": {
+      "title": "Período e prémio",
+      "start": "Início",
+      "end": "Fim",
+      "renewalType": "Tipo de renovação",
+      "paymentPlan": "Plano de pagamento",
+      "totalPremium": "Prémio total"
+    },
+    "coverages": "Coberturas",
+    "instalments": "Prestações",
+    "documents": "Documentos"
+  },
+  "certificate": {
+    "title": "Certificado de seguro",
+    "number": "Certificado n.º {{number}}",
+    "validity": "Válido de {{validFrom}} a {{validTo}}",
+    "showFullscreen": "Mostrar em ecrã inteiro",
+    "download": "Descarregar certificado",
+    "preparing": "A preparar o certificado…",
+    "revoked": "Este certificado foi substituído.",
+    "validUntil": "Válido até {{date}}",
+    "agentHint": "O agente pode ler este código para confirmar o seguro.",
+    "qrLabel": "Código QR para verificar o seguro"
+  },
+  "notifications": {
+    "title": "Notificações",
+    "bell": "Notificações, {{count}} por ler",
+    "markAllRead": "Marcar todas como lidas",
+    "preferences": "Preferências",
+    "tabs": {
+      "all": "Todas",
+      "unread": "Por ler"
+    },
+    "unread": "Por ler",
+    "empty": "Não tem notificações.",
+    "loadMore": "Carregar mais"
+  },
+  "preferences": {
+    "title": "Preferências de notificação",
+    "mandatory": "Obrigatório",
+    "mandatoryHelp": "Estes avisos são obrigatórios: escolha pelo menos SMS, WhatsApp ou e-mail.",
+    "needsMsisdn": "Precisa de um telemóvel verificado.",
+    "needsEmail": "Precisa de um e-mail verificado.",
+    "addInProfile": "Acrescentar no perfil",
+    "needsApp": "Instale a app MoSeguros e active as notificações.",
+    "saved": "Preferências guardadas",
+    "unsaved": {
+      "title": "Sair sem guardar?",
+      "text": "As alterações às preferências ainda não foram guardadas e perdem-se.",
+      "stay": "Continuar a editar",
+      "leave": "Sair sem guardar"
+    },
+    "profileRow": {
+      "title": "Notificações",
+      "link": "Escolher como recebo os avisos"
+    }
   }
 }
