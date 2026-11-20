@@ -13,6 +13,8 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+# Variáveis de staging sem valores (S6-08 §9)
+!infra/staging/.env.staging.example
 *.pem
 *.p12
 *.jks
@@ -57,3 +59,10 @@ infra/data/
 
 # Ficheiros enviados no perfil local (MOSEGUROS_FILES_DIR, por defeito backend/var/files)
 backend/var/
+
+# Testes de carga e varrimentos de segurança (S6-08): dados gerados e relatórios ficam fora do Git
+perf/data/
+perf/results/*
+!perf/results/.gitkeep
+security/reports/
+infra/backup/dumps/
