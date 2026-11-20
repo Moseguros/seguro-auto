@@ -141,14 +141,19 @@ class ModularityTest {
     /**
      * S6-01: policy usa só proposal ({@code ProposalApi}, {@code ProposalPaid}), payment ({@code PaymentApi}),
      * catalog (nome do produto), organization (nome da seguradora), vehicle (o {@code VehicleRemovalGuard}) e
-     * shared, todos no grafo do modelo transversal §1. Nenhum destes depende do policy.
+     * shared. S6-02: também document (PDF e {@code PolicyFileAccessPolicy}), identity (língua do cliente) e
+     * notification ({@code POLICY_ISSUED}); todos no grafo do modelo transversal §1. Nenhum destes depende do
+     * policy.
      */
     @Test
-    void policyDependsOnProposalPaymentCatalogOrganizationAndVehicleOnly() {
+    void policyDependsOnTheModulesOfTheGraphOnly() {
         assertThat(dependenciesOf("policy"))
-                .contains("proposal", "payment", "catalog", "organization", "vehicle")
-                .isSubsetOf("shared", "proposal", "payment", "catalog", "organization", "vehicle");
-        for (String module : java.util.List.of("proposal", "payment", "catalog", "organization", "vehicle")) {
+                .contains("proposal", "payment", "catalog", "organization", "vehicle", "document", "identity",
+                        "notification")
+                .isSubsetOf("shared", "proposal", "payment", "catalog", "organization", "vehicle", "document",
+                        "identity", "notification");
+        for (String module : java.util.List.of("proposal", "payment", "catalog", "organization", "vehicle",
+                "document", "identity", "notification")) {
             assertThat(dependenciesOf(module)).as(module).doesNotContain("policy");
         }
     }

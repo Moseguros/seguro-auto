@@ -77,6 +77,7 @@ class MyPolicyControllerIT {
         a = support.payments().customer();
         b = support.payments().customer();
         issued = support.issued(a, insurer);
+        support.awaitDocuments(issued);
         Instant now = Instant.now();
         expired = support.insert(Row.of(insurer.id(), a.id(), PolicyTestSupport.plate(), "EXPIRED",
                 now.minus(Duration.ofDays(400)), now.minus(Duration.ofDays(35))));
@@ -110,7 +111,7 @@ class MyPolicyControllerIT {
         Map<String, Object> row = support.policyRow(issued);
         Map<String, Object> first = page.getMap("content.find { it.id == '" + issued + "' }");
         assertThat(first).containsEntry("number", row.get("number")).containsEntry("status", "ACTIVE")
-                .containsEntry("coverageType", "MTPL_ONLY").containsEntry("certificateReady", false)
+                .containsEntry("coverageType", "MTPL_ONLY").containsEntry("certificateReady", true)
                 .containsKey("coverStatus").containsKey("productName").containsKey("startAt").containsKey("endAt");
         assertThat(page.getString("content.find { it.id == '" + issued + "' }.insurer.id"))
                 .isEqualTo(insurer.id().toString());
@@ -154,7 +155,9 @@ class MyPolicyControllerIT {
         assertThat(detail.getString("certificate.status")).isEqualTo("VALID");
         assertThat(detail.getString("certificate.verificationUrl"))
                 .isEqualTo("https://verificar.moseguros.test/v/" + token);
-        assertThat(detail.getString("certificate.fileId")).isNull();
+        assertThat(detail.getString("certificate.fileId")).isEqualTo(support.owner().queryForObject(
+                "select pdf_file_id from policy.certificate where policy_id = ?", UUID.class, issued).toString());
+        assertThat(detail.getList("documents.type", String.class)).startsWith("CERTIFICATE", "SCHEDULE");
         assertThat(detail.getString("issuedAt")).isNotNull();
         // só a seguradora vê a linha temporal e a proposta; o código só vai no URL
         assertThat(detail.getList("events")).isNull();

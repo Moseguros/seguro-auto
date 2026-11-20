@@ -81,6 +81,7 @@ class InsurerPolicyControllerIT {
         b = support.insurer("Seguradora Apólices B");
         customer = support.payments().customer();
         issued = support.issued(customer, a);
+        support.awaitDocuments(issued);
         Instant now = Instant.now();
         activePlate = PolicyTestSupport.plate();
         active = support.insert(Row.of(a.id(), customer.id(), activePlate, "ACTIVE", now.minus(Duration.ofDays(2)),
@@ -164,7 +165,7 @@ class InsurerPolicyControllerIT {
         assertThat(detail.getString("id")).isEqualTo(issued.toString());
         assertThat(detail.getString("insurer.name")).isEqualTo(a.name());
         assertThat(detail.getList("events.type", String.class)).containsExactlyInAnyOrder("ISSUED",
-                "CERTIFICATE_ISSUED");
+                "CERTIFICATE_ISSUED", "DOCUMENTS_READY");
         assertThat(detail.getList("events.actorType", String.class)).containsOnly("SYSTEM");
         assertThat(detail.getString("proposal.id")).isEqualTo(proposal.get("id").toString());
         assertThat(detail.getString("proposal.number")).isEqualTo(proposal.get("number"));

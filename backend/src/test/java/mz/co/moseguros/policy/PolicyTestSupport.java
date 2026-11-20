@@ -96,6 +96,26 @@ public final class PolicyTestSupport {
         return owner().queryForObject("select id from policy.policy where proposal_id = ?", UUID.class, proposalId);
     }
 
+    /**
+     * Espera pelo certificado e pelas condições particulares da apólice (S6-02, até 10 s); devolve os ids
+     * {@code [certificado, condições particulares]}.
+     */
+    public UUID[] awaitDocuments(UUID policyId) {
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertThat(documentsReady(policyId)).isTrue());
+        return new UUID[] {
+            owner().queryForObject("select pdf_file_id from policy.certificate where policy_id = ? and status = 'VALID'",
+                    UUID.class, policyId),
+            owner().queryForObject("select schedule_file_id from policy.policy where id = ?", UUID.class, policyId)};
+    }
+
+    public boolean documentsReady(UUID policyId) {
+        Integer n = owner().queryForObject("""
+                select count(*) from policy.policy p join policy.certificate c on c.policy_id = p.id
+                 where p.id = ? and c.status = 'VALID' and c.pdf_file_id is not null
+                   and p.schedule_file_id is not null""", Integer.class, policyId);
+        return n != null && n > 0;
+    }
+
     public int policyCount(UUID proposalId) {
         Integer n = owner().queryForObject("select count(*) from policy.policy where proposal_id = ?", Integer.class,
                 proposalId);

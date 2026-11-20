@@ -164,7 +164,9 @@ class RunAsSystemUsageTest {
     /**
      * S6-01: a emissão (ouvinte do ProposalPaid) e as leituras da verificação e do guard da remoção do
      * veículo correm em SYSTEM; o PolicyVehicleRemovalGuard e o IncompletePublicationsJob não têm
-     * {@code @RunAsSystem}.
+     * {@code @RunAsSystem}. S6-02: os documentos (ouvinte do PolicyIssued e PolicyDocumentsJob) e os nomes
+     * dos ficheiros do detalhe ({@code PolicySystemLookups.fileNames}) correm em SYSTEM; o
+     * PolicyDocumentService e a PolicyFileAccessPolicy correm no âmbito de quem chama.
      */
     @Test
     void policyListenerAndSystemLookupsAreAllowed() {
@@ -172,6 +174,10 @@ class RunAsSystemUsageTest {
                 mz.co.moseguros.policy.application.ProposalPaidListener.class,
                 mz.co.moseguros.policy.application.PolicySystemLookups.class,
                 mz.co.moseguros.policy.application.PolicyVehicleRemovalGuard.class,
+                mz.co.moseguros.policy.application.PolicyDocumentsListener.class,
+                mz.co.moseguros.policy.application.PolicyDocumentsJob.class,
+                mz.co.moseguros.policy.application.PolicyDocumentService.class,
+                mz.co.moseguros.policy.application.PolicyFileAccessPolicy.class,
                 mz.co.moseguros.shared.events.IncompletePublicationsJob.class);
         RUN_AS_SYSTEM_OWNERS.check(classes);
         org.assertj.core.api.Assertions.assertThat(classes.stream()
@@ -180,7 +186,8 @@ class RunAsSystemUsageTest {
                         .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
                 .containsExactlyInAnyOrder("ProposalPaidListener.on", "PolicySystemLookups.findActiveByPlate",
                         "PolicySystemLookups.findLatestByPlate", "PolicySystemLookups.findByCertificateToken",
-                        "PolicySystemLookups.coverAt", "PolicySystemLookups.vehicleHasPolicyInForce");
+                        "PolicySystemLookups.coverAt", "PolicySystemLookups.vehicleHasPolicyInForce",
+                        "PolicySystemLookups.fileNames", "PolicyDocumentsListener.on", "PolicyDocumentsJob.run");
     }
 
     @Test

@@ -168,10 +168,13 @@ class PolicyIssuanceIT {
         assertThat(certificate.get("valid_from")).isEqualTo(policy.get("start_at"));
         assertThat(certificate.get("valid_to")).isEqualTo(policy.get("end_at"));
 
-        assertThat(owner().queryForList("select type from policy.policy_event where policy_id = ? order by type",
-                String.class, policyId)).containsExactly("CERTIFICATE_ISSUED", "ISSUED");
+        // DOCUMENTS_READY (S6-02) é gravado depois, pelo policy-documents
+        assertThat(owner().queryForList("select type from policy.policy_event where policy_id = ? "
+                + "and type <> 'DOCUMENTS_READY' order by type", String.class, policyId))
+                .containsExactly("CERTIFICATE_ISSUED", "ISSUED");
         assertThat(owner().queryForList("select distinct actor_type || ':' || actor_id from policy.policy_event "
-                + "where policy_id = ?", String.class, policyId)).containsExactly("SYSTEM:policy-issuance");
+                + "where policy_id = ? and type <> 'DOCUMENTS_READY'", String.class, policyId))
+                .containsExactly("SYSTEM:policy-issuance");
 
         Map<String, Object> converted = support.proposalRow(proposal);
         assertThat(converted).containsEntry("status", "CONVERTED").containsEntry("policy_id", policyId)
