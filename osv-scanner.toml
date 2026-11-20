@@ -7,4 +7,186 @@
 # ignoreUntil = 2027-02-01
 # reason = "Porque não se aplica / quando se corrige (quem reviu)."
 #
-# Sem excepções na R1.
+# 20/11/2026 — Decisão do agente (a validar no PR do S6-08; Q-ASVS-4 em docs/releases/R1.md): o que tem
+# correcção dentro das linhas geridas pelo Spring Boot 3.3 foi actualizado (Tomcat 10.1.62, Netty
+# 4.1.141.Final, PostgreSQL JDBC 42.7.14, Thymeleaf 3.1.7, amqp-client 5.34.0, Bouncy Castle 1.85.2,
+# Guava 33.7.2, js-yaml 4.3.2). O resto só se corrige com o Spring Boot 3.5+ (fora do "3.3.x" do AGENTS.md)
+# ou com versões maiores de ferramentas da web: fica aqui, com prazo de revisão, até essa actualização.
+# Lista conferida com a API do OSV (api.osv.dev) a 20/11/2026: HIGH/CRITICAL com CVSS >= 7.0 ou com a
+# classificação HIGH/CRITICAL do GitHub Advisory.
+
+# org.springframework:spring-webmvc 6.1.21
+[[IgnoredVulns]]
+id = "GHSA-3chg-m5w7-qfv5" # CVE-2026-41845; corrigida em 6.2.19, 7.0.8
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. A aplicação não usa XsltView nem JavaScriptUtils."
+[[IgnoredVulns]]
+id = "GHSA-pc63-qcmh-9cmg" # CVE-2026-47884; corrigida em 7.0.9
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. A aplicação não usa XsltView nem JavaScriptUtils."
+[[IgnoredVulns]]
+id = "GHSA-x23c-287f-qqv5" # CVE-2026-41842; corrigida em 6.2.19, 7.0.8
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. A aplicação não usa XsltView nem JavaScriptUtils."
+
+# org.springframework:spring-core 6.1.21
+[[IgnoredVulns]]
+id = "GHSA-jmp9-x22r-554x" # CVE-2025-41249; corrigida em 6.2.11
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026."
+
+# org.springframework:spring-expression 6.1.21
+[[IgnoredVulns]]
+id = "GHSA-r5w3-xv2f-j59q" # CVE-2026-41850; corrigida em 6.2.19, 7.0.8
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. A aplicação não avalia SpEL vindo de pedidos."
+
+# org.springframework.security:spring-security-web 6.3.10
+[[IgnoredVulns]]
+id = "GHSA-mf92-479x-3373" # CVE-2026-22732; corrigida em 6.5.9, 7.0.4
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. Os cabeçalhos de segurança são verificados pelo SecurityHeadersIT e pelo varrimento ZAP."
+
+# org.springframework.boot:spring-boot-starter-actuator 3.3.13
+[[IgnoredVulns]]
+id = "GHSA-mgvc-8q2h-5pgc" # CVE-2026-22733; corrigida em 3.5.12, 4.0.4
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. Os endpoints CloudFoundry do Actuator não estão activos (não corre em Cloud Foundry)."
+
+# org.springframework.boot:spring-boot 3.3.13
+[[IgnoredVulns]]
+id = "GHSA-wwpq-f5c3-7hvx" # CVE-2026-40973; corrigida em 3.5.14, 4.0.6
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026."
+
+# org.springframework.data:spring-data-commons 3.3.13
+[[IgnoredVulns]]
+id = "GHSA-9fw2-h3hf-293r" # CVE-2026-41716; corrigida em 3.5.12, 4.0.6
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026."
+
+# org.springframework.integration:spring-integration-file 6.3.11
+[[IgnoredVulns]]
+id = "GHSA-792x-6vq6-j8r9" # CVE-2026-40987; corrigida em 6.5.9, 7.0.5
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026. O worker só se liga ao SFTP da InterBancos (servidor de confiança)."
+
+# io.micrometer:micrometer-core 1.13.15
+[[IgnoredVulns]]
+id = "GHSA-g3pr-3p32-fp23" # CVE-2026-40984; corrigida em 1.15.12, 1.16.6
+ignoreUntil = 2027-01-31
+reason = "Corrigida só numa linha posterior ao Spring Boot 3.3 (o AGENTS.md fixa 3.3.x; a linha 3.3 já não recebe correcções públicas). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4, decisão do proprietário do produto). Revisto em 20/11/2026."
+
+# com.fasterxml.jackson.core:jackson-databind 2.17.3
+[[IgnoredVulns]]
+id = "GHSA-cxp5-3px4-pw24" # CVE-2026-91777; corrigida em 2.18.11, 2.21.7, 2.22.3
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17; a 2.18 muda a introspecção de records e só se adopta com a actualização do Spring Boot e a bateria completa de IT). A aplicação não activa default typing. Risco aceite temporariamente (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-j3rv-43j4-c7qm" # CVE-2026-54512; corrigida em 2.18.8, 2.21.4, 3.1.4
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17; a 2.18 muda a introspecção de records e só se adopta com a actualização do Spring Boot e a bateria completa de IT). A aplicação não activa default typing. Risco aceite temporariamente (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-q4xh-88c3-wmh7" # CVE-2026-68497; corrigida em 2.18.10, 2.21.6, 2.22.2
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17; a 2.18 muda a introspecção de records e só se adopta com a actualização do Spring Boot e a bateria completa de IT). A aplicação não activa default typing. Risco aceite temporariamente (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-rmj7-2vxq-3g9f" # CVE-2026-54513; corrigida em 2.18.8, 2.21.4, 3.1.4
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17; a 2.18 muda a introspecção de records e só se adopta com a actualização do Spring Boot e a bateria completa de IT). A aplicação não activa default typing. Risco aceite temporariamente (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-wv8q-qhhj-9h54" # CVE-2026-91776; corrigida em 2.18.11, 2.21.7, 2.22.3
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17; a 2.18 muda a introspecção de records e só se adopta com a actualização do Spring Boot e a bateria completa de IT). A aplicação não activa default typing. Risco aceite temporariamente (Q-ASVS-4). Revisto em 20/11/2026."
+
+# com.fasterxml.jackson.core:jackson-core 2.17.3
+[[IgnoredVulns]]
+id = "GHSA-7hhh-6rmp-j9qf" # CVE-2026-89425; corrigida em 2.18.11, 2.21.7, 2.22.3
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-p6pp-m3f8-5c89" # CVE-2026-89407; corrigida em 2.18.11, 2.21.7, 2.22.3
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-r7wm-3cxj-wff9" # CVE-2026-68494; corrigida em 2.18.8, 2.21.4
+ignoreUntil = 2027-01-31
+reason = "Corrigida só no Jackson 2.18+ (o Boot 3.3 gere a 2.17). Risco aceite temporariamente até à actualização do Spring Boot (Q-ASVS-4). Revisto em 20/11/2026."
+
+# orval 7.21.0
+[[IgnoredVulns]]
+id = "GHSA-2h9g-j24r-h63g" # CVE-2026-71869; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-2w86-xfrc-g85r" # CVE-2026-71867; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-3575-w9fc-c2j6" # CVE-2026-71868; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-6437-gxhq-pqv8" # CVE-2026-71864; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-653q-5476-x79g" # CVE-2026-71865; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-6mr6-jvcr-2f25" # CVE-2026-71866; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-88f2-fpv8-89q2" # CVE-2026-62682; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-8j6p-r8jg-mxqh" # CVE-2026-71871; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-cxq5-97v7-87j8" # CVE-2026-62680; corrigida em 8.22.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-fg9p-mrxr-hvq7" # CVE-2026-62681; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-p4cg-3328-rvfg" # CVE-2026-72716; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-w727-8j6c-2rj4" # CVE-2026-72717; corrigida em 8.21.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento: o orval gera o cliente a partir do api/openapi.yaml do próprio repositório (gerado pelo backend), nunca de uma especificação externa; não vai para a imagem da web. Correcção só no orval 8 (com regeneração do cliente, Q-ASVS-4). Revisto em 20/11/2026."
+
+# vitest 2.1.9
+[[IgnoredVulns]]
+id = "GHSA-5xrq-8626-4rwp" # CVE-2026-47429; corrigida em 3.2.6, 4.1.0
+ignoreUntil = 2027-01-31
+reason = "Só em desenvolvimento e CI: corre-se com 'vitest run', sem o servidor da UI do Vitest. Correcção só no Vitest 3.2+ (Q-ASVS-4). Revisto em 20/11/2026."
+
+# tinypool 1.1.1
+[[IgnoredVulns]]
+id = "GHSA-5gmw-xhrv-c9v3" # CVE-2026-104848; corrigida em 2.1.1
+ignoreUntil = 2027-01-31
+reason = "Dependência do Vitest 2 (só testes; as opções dos workers vêm da configuração do repositório). Corrigida só no tinypool 2, que exige o Vitest 3+ (Q-ASVS-4). Revisto em 20/11/2026."
+[[IgnoredVulns]]
+id = "GHSA-85c8-ppgw-ccpr" # CVE-2026-104849; corrigida em 2.1.2
+ignoreUntil = 2027-01-31
+reason = "Dependência do Vitest 2 (só testes; as opções dos workers vêm da configuração do repositório). Corrigida só no tinypool 2, que exige o Vitest 3+ (Q-ASVS-4). Revisto em 20/11/2026."
+
+# vite 5.4.21
+[[IgnoredVulns]]
+id = "GHSA-587h-7wmj-h5pm" # CVE-2026-112942; corrigida em 6.4.4, 7.3.7, 8.1.6, 8.2.4, 8.3.3
+ignoreUntil = 2027-01-31
+reason = "Só no servidor de desenvolvimento em Windows (launch-editor); a imagem da web serve pelo nginx os ficheiros estáticos do 'vite build'. Correcção só no Vite 6.4.4+ (Q-ASVS-4). Revisto em 20/11/2026."
+
+# zod 3.25.76
+[[IgnoredVulns]]
+id = "GHSA-mrhx-c7xc-m3w5" # CVE-2023-54404; corrigida em 4.6.6
+ignoreUntil = 2027-01-31
+reason = "O zod valida formulários no browser do próprio utilizador (o backend volta a validar tudo); o esgotamento de memória só afecta quem envia os dados. Correcção só no zod 4 (Q-ASVS-4). Revisto em 20/11/2026."
