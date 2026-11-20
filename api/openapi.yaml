@@ -12081,6 +12081,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PolicyCoverage"
+        documents:
+          type: array
+          description: "Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId}"
+          items:
+            $ref: "#/components/schemas/PolicyDocument"
         endAt:
           type: string
           format: date-time
@@ -12128,6 +12133,7 @@ components:
       - coverStatus
       - coverageType
       - coverages
+      - documents
       - endAt
       - id
       - instalments
@@ -12142,6 +12148,36 @@ components:
       - status
       - totalPremium
       - vehicle
+    PolicyDocument:
+      type: object
+      description: Documento da apólice; PENDING (sem fileId) enquanto não foi gerado
+      properties:
+        fileId:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+          example: CT-2027-0001234.pdf
+        status:
+          $ref: "#/components/schemas/PolicyDocumentStatus"
+        type:
+          $ref: "#/components/schemas/PolicyDocumentType"
+      required:
+      - status
+      - type
+    PolicyDocumentStatus:
+      type: string
+      enum:
+      - READY
+      - PENDING
+    PolicyDocumentType:
+      type: string
+      enum:
+      - CERTIFICATE
+      - SCHEDULE
+      - GENERAL_CONDITIONS
+      - PRE_CONTRACT_INFO
+      - PROPOSAL
     PolicyEventType:
       type: string
       enum:
