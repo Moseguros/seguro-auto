@@ -127,7 +127,9 @@ describe('NotificationItem', () => {
       return null;
     });
     renderRoute('/cliente/notificacoes');
-    expect(await screen.findByText('Apólice emitida', undefined, { timeout: 10_000 })).toBeVisible();
+    expect(
+      await screen.findByText('Apólice emitida', undefined, { timeout: 10_000 }),
+    ).toBeVisible();
     expect(screen.getByRole('link', { name: 'Preferências' })).toHaveAttribute(
       'href',
       '/cliente/notificacoes/preferencias',
@@ -245,9 +247,7 @@ describe('PreferencesPage', () => {
           status: 400,
           data: {
             code: 'VALIDATION_ERROR',
-            errors: [
-              { field: 'categories[0].channels', code: 'MANDATORY_CATEGORY_NEEDS_CHANNEL' },
-            ],
+            errors: [{ field: 'categories[0].channels', code: 'MANDATORY_CATEGORY_NEEDS_CHANNEL' }],
           },
         };
       }

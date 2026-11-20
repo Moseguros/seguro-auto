@@ -83,7 +83,11 @@ describe('MyPolicyListPage', () => {
         : { status: 200, data: page([policySummaryFixture()]) };
     });
     renderRoute('/cliente/apolices');
-    const retry = await screen.findByRole('button', { name: 'Tentar de novo' }, { timeout: 10_000 });
+    const retry = await screen.findByRole(
+      'button',
+      { name: 'Tentar de novo' },
+      { timeout: 10_000 },
+    );
     fail = false;
     await userEvent.click(retry);
     expect(await screen.findByTestId('policy-card')).toBeVisible();
@@ -141,10 +145,7 @@ describe('MyPolicyDetailPage', () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const pending = policyDetailFixture({ documents: documentsFixture('PENDING') });
     const counter = { calls: 0 };
-    restore = signInCustomer(
-      me,
-      detailHandler([pending, pending, policyDetailFixture()], counter),
-    );
+    restore = signInCustomer(me, detailHandler([pending, pending, policyDetailFixture()], counter));
     renderRoute('/cliente/apolices/pol-1');
     expect(
       await screen.findByText('A preparar o certificado…', undefined, { timeout: 10_000 }),
