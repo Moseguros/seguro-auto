@@ -16,7 +16,7 @@ COPY payment-contracts/ payment-contracts/
 # O pom.xml da raiz lista também o payment-file-worker (S5-09): só o pom, não é construído com -pl.
 COPY payment-file-worker/pom.xml payment-file-worker/pom.xml
 COPY backend/ backend/
-RUN --mount=type=cache,target=/root/.m2 \
+RUN --mount=type=cache,target=/root/.m2,sharing=locked \
     ./mvnw -B -pl backend -am -DskipTests package \
     && cp backend/target/backend-*.jar app.jar
 

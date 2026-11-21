@@ -144,10 +144,14 @@ class VerificationRateLimitIT {
         String token = identityApi.issueTokens(officer, null).accessToken();
         Exhausted e = exhaust(300, () -> mvc.perform(from(get(POLICE + "/{token}", "x" + UUID.randomUUID())
                 .header("Authorization", "Bearer " + token), PROXY, "9.9.9.9")).andReturn().getResponse());
+        long refusedAt = System.nanoTime();
         assertRefused(e, 300, 300);
-        // o histórico conta para o mesmo limite
-        assertThat(mvc.perform(from(get("/api/v1/police/check-history").header("Authorization", "Bearer " + token),
-                PROXY, "9.9.9.9")).andReturn().getResponse().getStatus()).isEqualTo(429);
+        // o histórico conta para o mesmo limite: só passam as fichas repostas desde o 429 (uma a cada 200 ms, mais uma de margem),
+        // nunca um balde novo de 300
+        Exhausted history = exhaust(300, () -> mvc.perform(from(get("/api/v1/police/check-history")
+                .header("Authorization", "Bearer " + token), PROXY, "9.9.9.9")).andReturn().getResponse());
+        long elapsedMillis = (System.nanoTime() - refusedAt) / 1_000_000;
+        assertThat(history.accepted()).isLessThanOrEqualTo((int) (elapsedMillis * 300 / 60_000 + 2));
 
         // outro agente (do mesmo IP) continua a funcionar
         String other = identityApi.issueTokens(fixtures.staff("Agente Outro", police, "POLICE_OFFICER"), null)
