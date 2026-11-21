@@ -112,7 +112,7 @@ class OtpFlowIT {
 
         clock.advance(Duration.ofSeconds(61));
         String second = requestOtp(msisdn, "MSISDN").then().statusCode(202).extract().path("challengeId");
-        verifyOtp(second, channels.lastTo(e164(msisdn)).code()).then().statusCode(200)
+        verifyOtp(second, channels.lastCodeTo(e164(msisdn)).code()).then().statusCode(200)
                 .body("isNewUser", equalTo(false));
         assertThat(owner.queryForObject("select last_login_at is not null from identity.user_account where id = ?::uuid",
                 Boolean.class, userId)).isTrue();
@@ -136,7 +136,7 @@ class OtpFlowIT {
 
         clock.advance(Duration.ofSeconds(61));
         String second = requestOtp(email, "EMAIL").then().statusCode(202).extract().path("challengeId");
-        verifyOtp(second, channels.lastTo(email).code()).then().statusCode(200).body("isNewUser", equalTo(false));
+        verifyOtp(second, channels.lastCodeTo(email).code()).then().statusCode(200).body("isNewUser", equalTo(false));
     }
 
     @Test
@@ -155,7 +155,7 @@ class OtpFlowIT {
     void expiredCodeIsRejected() {
         String msisdn = randomMsisdn();
         String challengeId = requestOtp(msisdn, "MSISDN").path("challengeId");
-        String code = channels.lastTo(e164(msisdn)).code();
+        String code = channels.lastCodeTo(e164(msisdn)).code();
 
         clock.advance(Duration.ofSeconds(301));
 
@@ -166,7 +166,7 @@ class OtpFlowIT {
     void tooManyWrongAttemptsBlockTheCode() {
         String msisdn = randomMsisdn();
         String challengeId = requestOtp(msisdn, "MSISDN").path("challengeId");
-        String code = channels.lastTo(e164(msisdn)).code();
+        String code = channels.lastCodeTo(e164(msisdn)).code();
 
         verifyOtp(challengeId, wrong(code)).then().statusCode(400)
                 .body("code", equalTo("OTP_INVALID")).body("attemptsRemaining", equalTo(2));
@@ -183,7 +183,7 @@ class OtpFlowIT {
     void codeCannotBeUsedTwice() {
         String msisdn = randomMsisdn();
         String challengeId = requestOtp(msisdn, "MSISDN").path("challengeId");
-        String code = channels.lastTo(e164(msisdn)).code();
+        String code = channels.lastCodeTo(e164(msisdn)).code();
 
         verifyOtp(challengeId, code).then().statusCode(200);
         verifyOtp(challengeId, code).then().statusCode(400).body("code", equalTo("OTP_ALREADY_USED"));
@@ -193,12 +193,12 @@ class OtpFlowIT {
     void codeOfAnEarlierRequestIsSuperseded() {
         String msisdn = randomMsisdn();
         String first = requestOtp(msisdn, "MSISDN").path("challengeId");
-        String firstCode = channels.lastTo(e164(msisdn)).code();
+        String firstCode = channels.lastCodeTo(e164(msisdn)).code();
         clock.advance(Duration.ofSeconds(61));
         String second = requestOtp(msisdn, "MSISDN").then().statusCode(202).extract().path("challengeId");
 
         verifyOtp(first, firstCode).then().statusCode(400).body("code", equalTo("OTP_SUPERSEDED"));
-        verifyOtp(second, channels.lastTo(e164(msisdn)).code()).then().statusCode(200);
+        verifyOtp(second, channels.lastCodeTo(e164(msisdn)).code()).then().statusCode(200);
     }
 
     @Test
@@ -265,7 +265,7 @@ class OtpFlowIT {
         String national = customer.getMsisdn().national();
 
         String challengeId = requestOtp(national, "MSISDN").then().statusCode(202).extract().path("challengeId");
-        verifyOtp(challengeId, channels.lastTo(e164(national)).code()).then().statusCode(403)
+        verifyOtp(challengeId, channels.lastCodeTo(e164(national)).code()).then().statusCode(403)
                 .body("code", equalTo("ACCOUNT_DISABLED"));
     }
 
@@ -273,7 +273,7 @@ class OtpFlowIT {
     void outboundMessageNeverStoresTheCodeOrTheFullNumber() {
         String msisdn = randomMsisdn();
         String challengeId = requestOtp(msisdn, "MSISDN").path("challengeId");
-        String code = channels.lastTo(e164(msisdn)).code();
+        String code = channels.lastCodeTo(e164(msisdn)).code();
 
         Map<String, Object> row = owner.queryForMap(
                 "select * from notification.outbound_message where correlation_id = ?::uuid", challengeId);
@@ -289,7 +289,7 @@ class OtpFlowIT {
         owner.update("update identity.otp_settings set code_length = 8");
         String msisdn = randomMsisdn();
         String challengeId = requestOtp(msisdn, "MSISDN").then().statusCode(202).extract().path("challengeId");
-        String code = channels.lastTo(e164(msisdn)).code();
+        String code = channels.lastCodeTo(e164(msisdn)).code();
         verifyOtp(challengeId, wrong(code)).then().statusCode(400);
         verifyOtp(challengeId, code).then().statusCode(200);
 

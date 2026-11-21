@@ -14,7 +14,13 @@ import '../features/onboarding/onboarding_controller.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/payments/payment_intent_screen.dart';
 import '../features/payments/payment_screen.dart';
+import '../features/notifications/notifications_screen.dart';
+import '../features/notifications/preferences_screen.dart';
 import '../features/payments/payments_list_screen.dart';
+import '../features/policies/certificate_viewer_screen.dart';
+import '../features/policies/policy_detail_screen.dart';
+import '../features/policies/policy_list_screen.dart';
+import '../features/policies/show_to_police_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/proposals/new_proposal_screen.dart';
 import '../features/proposals/proposal_screen.dart';
@@ -34,8 +40,11 @@ import '../features/vehicles/vehicle_detail_screen.dart';
 import '../features/vehicles/vehicle_form_screen.dart';
 import '../features/vehicles/vehicles_screen.dart';
 import 'auth/session_controller.dart';
+import 'deeplinks/deep_link_mapper.dart';
 import 'not_found_screen.dart';
 import 'widgets/app_shell.dart';
+
+export 'deeplinks/deep_link_mapper.dart' show deepLinkLocation, deepLinkScheme;
 
 /// Ecrã enquanto a sessão guardada é renovada ao arrancar.
 const splashPath = '/splash';
@@ -47,33 +56,6 @@ bool _isEntry(String location) =>
     location == splashPath ||
     location == '/login' ||
     location.startsWith('/login/');
-
-/// Esquema das ligações profundas da app.
-const deepLinkScheme = 'moseguros';
-
-/// Caminho interno de uma ligação profunda (S4-09 §1, formato do S6-07):
-///
-/// | Ligação | Rota |
-/// | --- | --- |
-/// | `moseguros://proposal/{id}/inspection` | `/proposals/{id}/inspection` |
-/// | `moseguros://proposal/{id}` | `/proposals/{id}` |
-///
-/// `null` se [uri] não for uma ligação `moseguros://`; `/` se for desconhecida.
-String? deepLinkLocation(Uri uri) {
-  if (uri.scheme != deepLinkScheme) return null;
-  final segments = [
-    if (uri.host.isNotEmpty) uri.host,
-    ...uri.pathSegments.where((segment) => segment.isNotEmpty),
-  ];
-  if (segments.length >= 2 && segments.first == 'proposal') {
-    final id = Uri.encodeComponent(segments[1]);
-    if (segments.length == 2) return '/proposals/$id';
-    if (segments.length == 3 && segments[2] == 'inspection') {
-      return '/proposals/$id/inspection';
-    }
-  }
-  return '/';
-}
 
 /// Um destino de regresso só vale se for um caminho interno (começa por `/`, sem
 /// esquema nem anfitrião) e não for um ecrã de entrada.
@@ -154,7 +136,7 @@ String? appRedirect({
 }
 
 /// Navegador da raiz: ecrãs de entrada e ecrãs inteiros sem a barra inferior
-/// (câmara do livrete).
+/// (câmaras, "Mostrar à polícia" e o PDF do certificado).
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 /// Rotas da app. Ligações `moseguros://` em [deepLinkLocation].
@@ -174,6 +156,10 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// | `/identity` | verificação de identidade (barra: Início) |
 /// | `/proposals/:id/pay` | pagar uma proposta aceite (barra: Início) |
 /// | `/payments`, `/payments/:id` | os meus pagamentos e o acompanhamento (barra: Início; entrada no perfil) |
+/// | `/policies`, `/policies/:id` | as minhas apólices e o detalhe (barra: Início; entrada no início) |
+/// | `/policies/:id/police` | "Mostrar à polícia", sem a barra |
+/// | `/policies/:id/certificate` (`?fileId=`) | PDF do certificado (ou de outro documento), sem a barra |
+/// | `/notifications`, `/notifications/preferences` | centro de notificações e preferências (barra: Início; sino do início e perfil) |
 /// | `/profile` (`?complete=1&from=`) | perfil (barra: Perfil) |
 final routerProvider = Provider<GoRouter>((ref) {
   // Volta a avaliar a redirecção quando a sessão ou a apresentação mudam.
@@ -296,7 +282,8 @@ final routerProvider = Provider<GoRouter>((ref) {
   return router;
 });
 
-/// Propostas, vistoria e identidade (S4-09 §1), no ramo do início. A câmara
+/// Propostas, vistoria e identidade (S4-09 §1), pagamentos (S5-11), apólices e
+/// notificações (S6-07), no ramo do início. A câmara
 /// guiada abre-se em ecrã inteiro, sem a barra inferior.
 final _proposalRoutes = <RouteBase>[
   GoRoute(
@@ -354,6 +341,45 @@ final _proposalRoutes = <RouteBase>[
         path: ':id',
         builder: (context, state) =>
             PaymentIntentScreen(intentId: state.pathParameters['id']!),
+      ),
+    ],
+  ),
+  // Apólices (S6-07 §1). "Mostrar à polícia" e o PDF abrem-se em ecrã inteiro.
+  GoRoute(
+    path: '/policies',
+    builder: (context, state) => const PolicyListScreen(),
+    routes: [
+      GoRoute(
+        path: ':id',
+        builder: (context, state) =>
+            PolicyDetailScreen(policyId: state.pathParameters['id']!),
+        routes: [
+          GoRoute(
+            path: 'police',
+            parentNavigatorKey: _rootNavigatorKey,
+            builder: (context, state) =>
+                ShowToPoliceScreen(policyId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: 'certificate',
+            parentNavigatorKey: _rootNavigatorKey,
+            builder: (context, state) => CertificateViewerScreen(
+              policyId: state.pathParameters['id']!,
+              fileId: state.uri.queryParameters['fileId'],
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+  // Centro de notificações e preferências (S6-07 §5).
+  GoRoute(
+    path: '/notifications',
+    builder: (context, state) => const NotificationsScreen(),
+    routes: [
+      GoRoute(
+        path: 'preferences',
+        builder: (context, state) => const PreferencesScreen(),
       ),
     ],
   ),

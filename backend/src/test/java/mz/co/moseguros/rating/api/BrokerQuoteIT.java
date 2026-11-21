@@ -303,7 +303,7 @@ class BrokerQuoteIT {
         String challengeId = given().contentType(ContentType.JSON)
                 .body(Map.of("identifier", national, "identifierType", "MSISDN"))
                 .post("/api/v1/auth/otp/request").then().statusCode(202).extract().path("challengeId");
-        String code = channels.lastTo("+258" + national).code();
+        String code = channels.lastCodeTo("+258" + national).code();
         Response login = given().contentType(ContentType.JSON).body(Map.of("challengeId", challengeId, "code", code))
                 .post("/api/v1/auth/otp/verify");
         login.then().statusCode(200).body("isNewUser", equalTo(false));

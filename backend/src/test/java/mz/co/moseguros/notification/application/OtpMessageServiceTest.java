@@ -26,7 +26,9 @@ import mz.co.moseguros.notification.domain.Destinations;
 import mz.co.moseguros.notification.domain.OutboundMessage;
 import mz.co.moseguros.notification.domain.OutboundMessageRepository;
 import mz.co.moseguros.notification.infrastructure.NotificationProperties;
-import mz.co.moseguros.notification.infrastructure.OtpDeliveryChannel;
+import mz.co.moseguros.notification.FakeOtpDeliveryChannels;
+import mz.co.moseguros.notification.infrastructure.ChannelSender;
+import mz.co.moseguros.notification.infrastructure.OutboundContent;
 import mz.co.moseguros.notification.infrastructure.ProviderResult;
 import mz.co.moseguros.shared.domain.Channel;
 import mz.co.moseguros.shared.error.DomainException;
@@ -77,8 +79,8 @@ class OtpMessageServiceTest {
         Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
         service = new OtpMessageService(List.of(sms, email), messages, texts,
                 new TransactionTemplate(mock(PlatformTransactionManager.class)), clock);
-        NotificationProperties properties = new NotificationProperties("secret", null, null, null, null);
-        receipts = new DeliveryReceiptService(messages, service, properties, events, clock);
+        NotificationProperties properties = new NotificationProperties("secret", null, null, null, null, null, null);
+        receipts = new DeliveryReceiptService(messages, service, properties, events, clock, null);
     }
 
     @Test
@@ -216,7 +218,7 @@ class OtpMessageServiceTest {
     }
 
     /** Canal que guarda o último envio e devolve ids {@code p-1}, {@code p-2}… */
-    static final class Recording implements OtpDeliveryChannel {
+    static final class Recording implements ChannelSender {
 
         final Channel channel;
         final String provider;
@@ -248,13 +250,13 @@ class OtpMessageServiceTest {
         }
 
         @Override
-        public ProviderResult send(String destination, String text, Map<String, String> templateParams) {
+        public ProviderResult send(OutboundContent content) {
             if (error != null) {
                 throw error;
             }
-            this.text = text;
-            this.params = templateParams;
-            return ProviderResult.accepted("p-" + (++count));
+            this.text = content.text();
+            this.params = FakeOtpDeliveryChannels.params(content);
+            return ProviderResult.accepted(provider, "p-" + (++count));
         }
     }
 }

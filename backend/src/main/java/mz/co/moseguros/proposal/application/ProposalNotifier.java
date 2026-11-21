@@ -23,11 +23,11 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * E-mails da proposta (S4-05 §9): ao cliente na submissão, na aceitação, na recusa e no pedido de
- * informação, e aos subscritores no alerta de SLA; ao cliente quando um mediador lhe prepara uma
- * proposta (S4-06 §8). Nesta fase só há e-mail
- * ({@code NotificationApi.sendEmail}, {@code purpose = PROPOSAL}, {@code correlationId} = id da
- * proposta); o S6-04 passa a usar {@code NotificationApi.notify} com SMS e push.
+ * E-mails da proposta (S4-05 §9): ao cliente na submissão e aos subscritores no alerta de SLA; ao cliente
+ * quando um mediador lhe prepara uma proposta (S4-06 §8) ({@code NotificationApi.sendEmail},
+ * {@code purpose = PROPOSAL}, {@code correlationId} = id da proposta). Desde o S6-04 a aceitação, a recusa,
+ * o pedido de informação e a expiração chegam ao cliente pelo {@link ProposalNotificationsListener}
+ * ({@code NotificationApi.notify}: centro de notificações, push, WhatsApp, SMS ou e-mail).
  *
  * <p>O cliente só recebe se tiver e-mail verificado, na sua língua; sem ele vê o estado na app e na
  * web. Os dados da mensagem são lidos já, na transacção de quem chama; o envio fica para depois do
@@ -40,9 +40,6 @@ public class ProposalNotifier {
     /** {@code outbound_message.purpose}. */
     static final String PURPOSE = "PROPOSAL";
     static final String SUBMITTED = "proposal.submitted.email";
-    static final String ACCEPTED = "proposal.accepted.email";
-    static final String REJECTED = "proposal.rejected.email";
-    static final String INFO_REQUESTED = "proposal.info-requested.email";
     static final String SLA_ALERT = "proposal.sla-alert.email";
     static final String CREATED_BY_BROKER = "proposal.created-by-broker.email";
 
@@ -83,25 +80,6 @@ public class ProposalNotifier {
     public void submitted(Proposal p) {
         toCustomer(p, SUBMITTED, (language, firstName) -> new Object[] {p.getNumber(), p.getInsurerName(), firstName,
                 date(p.getSlaDueAt()), customerLink(p), date(p.getExpiresAt())});
-    }
-
-    /** Proposta aceite, automaticamente ou pelo subscritor ({@code proposal.accepted}). */
-    public void accepted(Proposal p) {
-        toCustomer(p, ACCEPTED, (language, firstName) -> new Object[] {p.getNumber(), p.getInsurerName(), firstName,
-                MoneyFormat.format(Money.ofCentavos(p.getTotalAmount()), language), customerLink(p),
-                date(p.getExpiresAt())});
-    }
-
-    /** Proposta recusada, com o motivo escrito pelo subscritor ({@code proposal.rejected}). */
-    public void rejected(Proposal p) {
-        toCustomer(p, REJECTED, (language, firstName) -> new Object[] {p.getNumber(), p.getInsurerName(), firstName,
-                p.getDecisionReason(), customerLink(p), date(p.getExpiresAt())});
-    }
-
-    /** Pedido de informação, com a mensagem do subscritor ({@code proposal.info-requested}). */
-    public void infoRequested(Proposal p) {
-        toCustomer(p, INFO_REQUESTED, (language, firstName) -> new Object[] {p.getNumber(), p.getInsurerName(),
-                firstName, p.getInfoRequestMessage(), customerLink(p), date(p.getExpiresAt())});
     }
 
     /**

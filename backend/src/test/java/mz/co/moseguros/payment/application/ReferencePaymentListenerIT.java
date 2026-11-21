@@ -211,7 +211,7 @@ class ReferencePaymentListenerIT {
         assertThat(support.owner().queryForObject("select count(*) from payment.payment_event where intent_id = ? "
                 + "and type = 'REFERENCE_PAID'", Long.class, i.intentId())).isEqualTo(1);
         await().atMost(PaymentMessagesSupport.WAIT).untilAsserted(() ->
-                assertThat(support.proposalRow(i.proposalId()).get("status")).isEqualTo("PAID"));
+                assertThat(support.proposalRow(i.proposalId()).get("status")).isIn("PAID", "CONVERTED")); // S6-01
         await().atMost(PaymentMessagesSupport.WAIT).untilAsserted(() ->
                 assertThat(events.of(ProposalPaid.class, e -> e.proposalId().equals(i.proposalId()))).hasSize(1));
     }

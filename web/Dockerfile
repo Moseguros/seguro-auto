@@ -19,6 +19,7 @@ RUN pnpm build
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY security-headers.inc /etc/nginx/security-headers.inc
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # A imagem já corre como o utilizador nginx (uid 101) e escuta na 8080.

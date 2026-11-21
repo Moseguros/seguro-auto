@@ -34,7 +34,7 @@ class SmsControllerTest {
     void clear() throws Exception {
         mvc.perform(delete("/sms")).andExpect(status().isNoContent());
         mvc.perform(put("/config").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"sms\":\"OK\",\"whatsapp\":\"OK\"}"))
+                        .content("{\"sms\":\"OK\",\"whatsapp\":\"OK\",\"push\":\"OK\"}"))
                 .andExpect(status().isOk());
     }
 
@@ -122,6 +122,51 @@ class SmsControllerTest {
 
         mvc.perform(post("/whatsapp").contentType(MediaType.APPLICATION_JSON).content(WHATSAPP_BODY))
                 .andExpect(status().isAccepted());
+    }
+
+    @Test
+    void acceptsTheNotificationTemplatesWithPositionalParameters() throws Exception {
+        mvc.perform(post("/whatsapp").contentType(MediaType.APPLICATION_JSON).content(
+                        "{\"to\":\"+258841234567\",\"template\":\"moseguros_policy_issued\",\"params\":"
+                                + "{\"p1\":\"AP-2027-000123\",\"p2\":\"ABC-123-MC\",\"p3\":\"10/02/2028 10:31\"}}"))
+                .andExpect(status().isAccepted());
+        mvc.perform(post("/whatsapp").contentType(MediaType.APPLICATION_JSON).content(
+                        "{\"to\":\"+258841234567\",\"template\":\"moseguros_payment_reference\",\"params\":"
+                                + "{\"p1\":\"1\",\"p2\":\"2\",\"p3\":\"3\"}}"))
+                .andExpect(status().isBadRequest());
+        for (String template : WhatsAppTemplates.PARAMS.keySet()) {
+            org.assertj.core.api.Assertions.assertThat(template).startsWith("moseguros_");
+        }
+        org.assertj.core.api.Assertions.assertThat(WhatsAppTemplates.PARAMS).hasSize(11)
+                .containsEntry("moseguros_payment_reference", java.util.List.of("p1", "p2", "p3", "p4"))
+                .containsEntry("moseguros_proposal_expired", java.util.List.of("p1"));
+
+        mvc.perform(get("/sms")).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].params.p2").value("ABC-123-MC"));
+    }
+
+    @Test
+    void storesPushInTheSameListWithoutReceipts() throws Exception {
+        mvc.perform(post("/push").contentType(MediaType.APPLICATION_JSON).content(
+                        "{\"token\":\"...abcd1234\",\"title\":\"Apolice emitida\",\"body\":\"A apolice AP-1 esta activa.\","
+                                + "\"data\":{\"notificationId\":\"n-1\",\"deepLink\":\"moseguros://policy/1\"}}"))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.id", notNullValue()));
+
+        mvc.perform(get("/sms"))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].channel").value("PUSH"))
+                .andExpect(jsonPath("$[0].to").value("...abcd1234"))
+                .andExpect(jsonPath("$[0].text").value("Apolice emitida: A apolice AP-1 esta activa."))
+                .andExpect(jsonPath("$[0].params.deepLink").value("moseguros://policy/1"));
+
+        mvc.perform(put("/config").contentType(MediaType.APPLICATION_JSON).content("{\"push\":\"FAIL\"}"))
+                .andExpect(jsonPath("$.push").value("FAIL")).andExpect(jsonPath("$.sms").value("OK"));
+        mvc.perform(post("/push").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"token\":\"t\",\"title\":\"x\",\"body\":\"y\"}"))
+                .andExpect(status().isServiceUnavailable());
+        mvc.perform(post("/push").contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"x\"}"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

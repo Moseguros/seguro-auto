@@ -133,8 +133,9 @@ class ProposalPaymentListenerIT {
         UUID proposal = support.accepted(c.id(), insurer);
         UUID intentId = paidIntent(c, proposal);
 
+        // desde o S6-01 a proposta paga passa logo a CONVERTED (apólice emitida automaticamente)
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
-                assertThat(support.proposalRow(proposal).get("status")).isEqualTo("PAID"));
+                assertThat(support.proposalRow(proposal).get("status")).isIn("PAID", "CONVERTED"));
         Map<String, Object> audit = support.owner().queryForMap("""
                 select actor_type, actor_id, after_state::text as after from audit.audit_event
                  where action = 'PROPOSAL.PAID' and entity_id = ?""", proposal.toString());
@@ -198,7 +199,7 @@ class ProposalPaymentListenerIT {
         UUID paid = support.accepted(c.id(), insurer);
         paidIntent(c, paid);
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
-                assertThat(support.proposalRow(paid).get("status")).isEqualTo("PAID"));
+                assertThat(support.proposalRow(paid).get("status")).isIn("PAID", "CONVERTED"));
         UUID withMpesa = support.accepted(c.id(), insurer);
         UUID mpesa = id(payMpesa(c.token(), withMpesa, "841234567"));
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
@@ -212,7 +213,7 @@ class ProposalPaymentListenerIT {
 
         expiryJob.expire();
 
-        assertThat(support.proposalRow(paid).get("status")).isEqualTo("PAID");
+        assertThat(support.proposalRow(paid).get("status")).isIn("PAID", "CONVERTED");
         assertThat(support.proposalRow(withMpesa).get("status")).isEqualTo("ACCEPTED");
         assertThat(support.proposalRow(withMpesa).get("expires_at")).as("unchanged").isNotNull();
         assertThat(support.proposalRow(withReference).get("status")).isEqualTo("EXPIRED");

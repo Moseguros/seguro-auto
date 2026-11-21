@@ -1,0 +1,35 @@
+# Alertmanager do perfil observability (S6-08 §2): todos os alertas por e-mail para alertas@moseguros.local,
+# entregues no Mailpit do compose (http://localhost:8025). Em staging, os destinatários reais da equipa e um
+# SMTP autenticado (Questões do S6-08: destinatários e horário de resposta por decidir).
+global:
+  smtp_smarthost: mailpit:1025
+  smtp_from: alertmanager@moseguros.local
+  smtp_require_tls: false
+  resolve_timeout: 5m
+
+route:
+  receiver: equipa-email
+  group_by: [alertname, service]
+  group_wait: 30s
+  group_interval: 2m
+  repeat_interval: 4h
+  routes:
+    # info (ex.: NotificationsUndeliverable) agrupa mais e repete menos
+    - matchers: ['severity="info"']
+      receiver: equipa-email
+      group_wait: 2m
+      repeat_interval: 24h
+
+receivers:
+  - name: equipa-email
+    email_configs:
+      - to: alertas@moseguros.local
+        send_resolved: true
+        headers:
+          Subject: '[MoSeguros {{ .CommonLabels.severity }}] {{ .CommonLabels.alertname }} ({{ .Status }})'
+
+# Um alerta critical silencia o warning do mesmo serviço (ex.: BackendDown cala o SlowApi).
+inhibit_rules:
+  - source_matchers: ['severity="critical"']
+    target_matchers: ['severity=~"warning|info"']
+    equal: [service]

@@ -1,0 +1,90 @@
+name: security
+
+# Vulnerabilidades conhecidas nas dependências (S6-08 §6, ASVS V14.2.1): OSV-Scanner sobre as dependências do
+# backend e do worker (SBOM CycloneDX gerado dos pom.xml), da web (pnpm-lock.yaml) e da app (pubspec.lock).
+# Falha com vulnerabilidades HIGH ou CRITICAL (CVSS >= 7.0) que não estejam no osv-scanner.toml (cada excepção com justificação e data de revisão).
+on:
+  schedule:
+    - cron: "17 5 * * 1" # segundas às 05:17 UTC
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  osv-scanner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # O OSV-Scanner não resolve o backend/pom.xml sozinho (o payment-contracts é um módulo do reactor, fora
+      # do Maven Central): o SBOM CycloneDX de cada módulo dá-lhe a árvore completa de dependências.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: SBOM do backend e do payment-file-worker
+        run: |
+          ./mvnw -B -q -pl backend,payment-file-worker -am org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeBom -DoutputFormat=json -DoutputName=bom
+
+      - name: OSV-Scanner
+        uses: google/osv-scanner-action/osv-scanner-action@v1.9.0
+        continue-on-error: true # o resultado é avaliado no passo seguinte (só HIGH/CRITICAL falham)
+        with:
+          scan-args: |-
+            --config=osv-scanner.toml
+            --format=json
+            --output=osv-results.json
+            --sbom=backend/target/bom.json
+            --sbom=payment-file-worker/target/bom.json
+            --lockfile=web/pnpm-lock.yaml
+            --lockfile=mobile/pubspec.lock
+
+      - name: Falhar com HIGH ou CRITICAL
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          try:
+              data = json.load(open("osv-results.json"))
+          except FileNotFoundError:
+              print("::error::O OSV-Scanner não produziu resultados.")
+              sys.exit(1)
+          blocking = []
+          for result in data.get("results", []):
+              source = result.get("source", {}).get("path", "?")
+              for package in result.get("packages", []):
+                  name = package.get("package", {}).get("name", "?")
+                  version = package.get("package", {}).get("version", "?")
+                  for group in package.get("groups", []):
+                      try:
+                          severity = float(group.get("max_severity") or 0)
+                      except ValueError:
+                          severity = 0.0
+                      line = f"{source}: {name} {version} {','.join(group.get('ids', []))} (CVSS {severity})"
+                      print(line)
+                      if severity >= 7.0:
+                          blocking.append(line)
+          if blocking:
+              print("::error::Vulnerabilidades HIGH/CRITICAL sem excepção no osv-scanner.toml:")
+              print("\n".join(blocking))
+              sys.exit(1)
+          print("Sem vulnerabilidades HIGH ou CRITICAL por tratar.")
+          PY
+
+      - name: Resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          retention-days: 14
+          name: osv-results
+          path: osv-results.json
+          if-no-files-found: ignore

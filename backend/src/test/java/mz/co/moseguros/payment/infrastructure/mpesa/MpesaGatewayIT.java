@@ -172,8 +172,8 @@ class MpesaGatewayIT {
         }
         if ("SUCCEEDED".equals(status)) {
             await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
-                    assertThat(support.proposalRow(proposal)).containsEntry("status", "PAID")
-                            .containsEntry("payment_intent_id", intentId));
+                    assertThat(support.proposalRow(proposal)).containsEntry("payment_intent_id", intentId)
+                            .extractingByKey("status").isIn("PAID", "CONVERTED")); // CONVERTED: S6-01
         } else {
             assertThat(support.proposalRow(proposal)).containsEntry("status", "ACCEPTED");
         }

@@ -54,7 +54,7 @@ describe('rotas', () => {
         ['org-user:read', 'product:read', 'payment:read', 'payment:configure'],
       ),
     );
-    renderRoute('/seguradora/apolices');
+    renderRoute('/seguradora/sinistros');
     expect(await screen.findByRole('heading', { name: 'Em construção' })).toBeInTheDocument();
     // Sem matchMedia (jsdom) o layout é o de ecrã estreito: o menu abre-se como gaveta.
     await userEvent.click(screen.getByRole('button', { name: 'Abrir menu' }));
@@ -96,9 +96,23 @@ describe('rotas', () => {
     await waitFor(() => expect(router.state.location.pathname).toBe('/sem-acesso'));
   });
 
-  it.each(['/verificar', '/v/abc'])('%s mostra a página em construção', (path) => {
-    renderRoute(path);
-    expect(screen.getByRole('heading', { name: 'Em construção' })).toBeInTheDocument();
+  it('/verificar mostra a verificação pública (S6-05)', async () => {
+    restore = mockApi((config) =>
+      config.url === '/api/v1/public/verifications/config'
+        ? { status: 200, data: { captchaProvider: 'NONE' } }
+        : { status: 404, data: { code: 'NOT_FOUND' } },
+    );
+    renderRoute('/verificar');
+    expect(
+      await screen.findByRole('heading', { name: 'Verificar seguro automóvel' }),
+    ).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'Verificar' })).toBeEnabled();
+  });
+
+  it('/verificar/historico sem sessão vai para a entrada do staff', async () => {
+    const { router } = renderRoute('/verificar/historico');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/entrar'));
+    expect(router.state.location.search).toBe('?voltar=%2Fverificar%2Fhistorico');
   });
 
   it('um caminho desconhecido mostra 404', () => {

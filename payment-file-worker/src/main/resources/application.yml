@@ -1,4 +1,4 @@
-# payment-file-worker (S5-09). Sem endpoints de negócio: só o Actuator (health, metrics) na 8081.
+# payment-file-worker (S5-09). Sem endpoints de negócio: só o Actuator (health, metrics, prometheus) na 8081.
 spring:
   application:
     name: payment-file-worker
@@ -37,10 +37,16 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics
+        # prometheus (S6-08 §1): worker_files_total, worker_polls_total, worker_last_success… A porta de
+        # gestão fica só na rede interna (infra/staging/README.md).
+        include: health,metrics,prometheus
   endpoint:
     health:
       show-details: always
+  metrics:
+    tags:
+      application: payment-file-worker
+      environment: ${MOSEGUROS_ENVIRONMENT:local}
 
 moseguros:
   worker:

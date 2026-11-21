@@ -10,7 +10,7 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaymentStatus, type ListInsurerPaymentsParams } from '../../api/generated';
 import { todayInMaputo } from '../../format/dates';
@@ -217,27 +217,35 @@ export function SingleSelectFilter({
   );
 }
 
-/** Campo de pesquisa que só actualiza o filtro 300 ms depois de se parar de escrever. */
+/** Campo de pesquisa que só actualiza o filtro `delayMs` (300) ms depois de se parar de escrever. */
 export function SearchFilter({
   label,
   value,
   onChange,
   fullWidth,
+  delayMs = 300,
 }: {
   label: string;
   value: string;
   onChange(value: string): void;
   fullWidth?: boolean;
+  delayMs?: number;
 }) {
   const [text, setText] = useState(value);
   useEffect(() => setText(value), [value]);
+  // O `onChange` e o `value` mais recentes: com as transições do router, o texto pode mudar antes de
+  // a página voltar a desenhar com os outros filtros (ex.: o estado acabado de escolher), e o
+  // `onChange` dessa altura ainda não os tem (S6-05).
+  const latest = useRef({ onChange, value });
+  useEffect(() => {
+    latest.current = { onChange, value };
+  });
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (text.trim() !== value) onChange(text.trim());
-    }, 300);
+      if (text.trim() !== latest.current.value) latest.current.onChange(text.trim());
+    }, delayMs);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
+  }, [text, delayMs]);
   return (
     <TextField
       size="small"

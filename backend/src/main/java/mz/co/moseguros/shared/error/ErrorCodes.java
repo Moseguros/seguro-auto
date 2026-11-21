@@ -23,6 +23,10 @@ public final class ErrorCodes {
     public static final String UNAUTHORIZED = "UNAUTHORIZED";
     public static final String FORBIDDEN = "FORBIDDEN";
     public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
+    /** Método HTTP que o caminho não aceita (405, S6-08 §6: antes caía no 500). */
+    public static final String METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED";
+    /** {@code Content-Type} do pedido que o endpoint não aceita (415, S6-08 §6). */
+    public static final String UNSUPPORTED_MEDIA_TYPE = "UNSUPPORTED_MEDIA_TYPE";
 
     // Value objects partilhados (400). Ao ler um pedido aparecem em errors[].code.
     public static final String INVALID_CURRENCY = "INVALID_CURRENCY";
@@ -328,6 +332,30 @@ public final class ErrorCodes {
     /** O montante recebido é menor do que o da intenção a associar (400). */
     public static final String LINK_AMOUNT_INSUFFICIENT = "LINK_AMOUNT_INSUFFICIENT";
 
+    // Apólices (S6-01)
+    /** Apólice inexistente ou fora do âmbito de quem pede (404). */
+    public static final String POLICY_NOT_FOUND = "POLICY_NOT_FOUND";
+
+    // Notificações (S6-04 §12)
+    /** Notificação inexistente ou de outro cliente. */
+    public static final String NOTIFICATION_NOT_FOUND = "NOTIFICATION_NOT_FOUND";
+    /** Modelo de notificação inexistente. */
+    public static final String TEMPLATE_NOT_FOUND = "TEMPLATE_NOT_FOUND";
+    /** Dispositivo inexistente ou de outro cliente. */
+    public static final String DEVICE_NOT_FOUND = "DEVICE_NOT_FOUND";
+    // Verificação pública e CAPTCHA (S6-03)
+    /** Falta o cabeçalho {@code X-Captcha-Token} (400). */
+    public static final String CAPTCHA_REQUIRED = "CAPTCHA_REQUIRED";
+    /** O fornecedor recusou o token do CAPTCHA (expirado, repetido ou de outro anfitrião) (400). */
+    public static final String CAPTCHA_INVALID = "CAPTCHA_INVALID";
+    /** O fornecedor do CAPTCHA não respondeu; a consulta não foi feita (503). */
+    public static final String CAPTCHA_UNAVAILABLE = "CAPTCHA_UNAVAILABLE";
+    /**
+     * Limite genérico de pedidos (429, com {@code retryAfterSeconds} e {@code Retry-After}); o S12-06
+     * reutiliza-o. Os limites anteriores mantêm os seus códigos ({@code OTP_RATE_LIMITED}…).
+     */
+    public static final String RATE_LIMITED = "RATE_LIMITED";
+
     /** Estado HTTP de cada código. */
     private static final Map<String, Integer> STATUS = Map.ofEntries(
             Map.entry(VALIDATION_ERROR, 400),
@@ -335,6 +363,8 @@ public final class ErrorCodes {
             Map.entry(UNAUTHORIZED, 401),
             Map.entry(FORBIDDEN, 403),
             Map.entry(INTERNAL_ERROR, 500),
+            Map.entry(METHOD_NOT_ALLOWED, 405),
+            Map.entry(UNSUPPORTED_MEDIA_TYPE, 415),
             Map.entry(INVALID_CURRENCY, 400),
             Map.entry(INVALID_MSISDN, 400),
             Map.entry(INVALID_NUIT, 400),
@@ -468,7 +498,15 @@ public final class ErrorCodes {
             Map.entry(PAYMENT_EXCEPTION_NOT_FOUND, 404),
             Map.entry(RESOLUTION_NOT_ALLOWED, 400),
             Map.entry(LINK_INTENT_INVALID, 400),
-            Map.entry(LINK_AMOUNT_INSUFFICIENT, 400));
+            Map.entry(LINK_AMOUNT_INSUFFICIENT, 400),
+            Map.entry(POLICY_NOT_FOUND, 404),
+            Map.entry(NOTIFICATION_NOT_FOUND, 404),
+            Map.entry(TEMPLATE_NOT_FOUND, 404),
+            Map.entry(DEVICE_NOT_FOUND, 404),
+            Map.entry(CAPTCHA_REQUIRED, 400),
+            Map.entry(CAPTCHA_INVALID, 400),
+            Map.entry(CAPTCHA_UNAVAILABLE, 503),
+            Map.entry(RATE_LIMITED, 429));
 
     private ErrorCodes() {
     }

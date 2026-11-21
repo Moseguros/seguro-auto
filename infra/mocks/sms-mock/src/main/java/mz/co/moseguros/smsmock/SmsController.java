@@ -18,8 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * API do simulador: recebe SMS ({@code POST /sms}) e mensagens de WhatsApp com modelo
- * ({@code POST /whatsapp}; só os modelos de {@link WhatsAppTemplates}), lista-as e limpa-as ({@code /sms}, os dois canais), e muda o modo de
- * cada canal ({@code /config}). A página {@code GET /} é o {@code static/index.html}.
+ * ({@code POST /whatsapp}; só os modelos de {@link WhatsAppTemplates}) e push ({@code POST /push}, S6-04, sem
+ * recibos), lista-as e limpa-as ({@code /sms}, os três canais), e muda o modo de cada canal ({@code /config}). A página {@code GET /} é o {@code static/index.html}.
  */
 @RestController
 public class SmsController {
@@ -53,6 +53,15 @@ public class SmsController {
         Mode mode = accept(modes.whatsapp());
         SmsMessage message = store.addWhatsApp(request.to(), request.template(), request.params());
         receipts.schedule(WHATSAPP_PROVIDER, message.id(), receiptStatus(mode));
+        return new SendResponse(message.id());
+    }
+
+    /** Push simulado (S6-04 §7): {@code {token, title, body, data}} → 202 {@code {id}}; sem recibo. */
+    @PostMapping("/push")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public SendResponse sendPush(@Valid @RequestBody PushRequest request) {
+        accept(modes.push());
+        SmsMessage message = store.addPush(request.token(), request.title(), request.body(), request.data());
         return new SendResponse(message.id());
     }
 
@@ -93,6 +102,10 @@ public class SmsController {
     }
 
     public record WhatsAppRequest(@NotBlank String to, @NotBlank String template, Map<String, String> params) {
+    }
+
+    public record PushRequest(@NotBlank String token, @NotBlank String title, @NotBlank String body,
+                              Map<String, String> data) {
     }
 
     public record SendResponse(String id) {

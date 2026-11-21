@@ -119,6 +119,15 @@ class ProposalDecisionIT {
         InspectionTestSupport.approve(underwriter, inspectionId, null, null, v).then().statusCode(200);
     }
 
+    /** Notificação ao cliente (S6-04): a linha INBOX com o deepLink da proposta e uma linha de envio. */
+    void awaitNotification(UUID customerId, String code, UUID proposalId) {
+        org.awaitility.Awaitility.await().atMost(java.time.Duration.ofSeconds(10)).untilAsserted(() ->
+                assertThat(support.owner().queryForList("""
+                        select channel from notification.message where user_id = ? and template_code = ?
+                           and data->>'deepLink' = ?""", String.class, customerId, code,
+                        "moseguros://proposal/" + proposalId)).contains("INBOX").hasSizeGreaterThan(1));
+    }
+
     Map<String, Object> audit(String action, UUID id) {
         return support.owner().queryForMap("""
                 select actor_type, actor_id, insurer_id, after_state->>'status' as status
@@ -195,9 +204,10 @@ class ProposalDecisionIT {
                 .body("expiresAt", nullValue())
                 .body("decision.rejectionReasonCode", equalTo("RISK_NOT_ACCEPTED"))
                 .body("decision.reason", equalTo("Histórico de sinistros acima do aceitável."));
-        FakeOtpDeliveryChannels.Sent mail = channels.lastTo(email);
-        assertThat(mail.params().get("subject")).contains("não aceite");
-        assertThat(mail.text()).contains("Histórico de sinistros acima do aceitável.");
+        // S6-04: a recusa chega por notify (PROPOSAL_REJECTED); o motivo vê-se no detalhe, pelo link.
+        awaitNotification(c.id(), "PROPOSAL_REJECTED", id);
+        assertThat(channels.sentTo(email)).extracting(FakeOtpDeliveryChannels.Sent::subject)
+                .noneMatch(subject -> subject.contains("não aceite")); // só o proposal.submitted do S4-05
         List<ProposalRejected> rejected = events.of(ProposalRejected.class).stream()
                 .filter(e -> e.proposalId().equals(id)).toList();
         assertThat(rejected).hasSize(1);
@@ -240,8 +250,7 @@ class ProposalDecisionIT {
                 .containsEntry("invalidated_reason", "INFO_REQUESTED");
         assertThat(support.owner().queryForObject("select status from proposal.inspection where proposal_id = ?",
                 String.class, id)).isEqualTo("PENDING");
-        FakeOtpDeliveryChannels.Sent mail = channels.lastTo(email);
-        assertThat(mail.text()).contains("Envie de novo a fotografia do chassis.");
+        awaitNotification(c.id(), "PROPOSAL_INFO_REQUESTED", id);
         assertThat(events.of(ProposalInfoRequested.class).stream().filter(e -> e.proposalId().equals(id))
                 .map(ProposalInfoRequested::items).toList()).containsExactly(List.of("INSPECTION"));
         assertThat(audit("PROPOSAL.REQUEST_INFO", id)).containsEntry("status", "INFO_REQUESTED");

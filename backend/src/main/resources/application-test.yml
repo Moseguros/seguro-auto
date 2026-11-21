@@ -30,6 +30,9 @@ moseguros:
       provider: fake
     email:
       provider: fake
+    # Push falso (FakeOtpDeliveryChannels.FakePush, S6-04).
+    push:
+      provider: fake
   # Cofre em memória (InMemorySecretStore); o VaultSecretStoreIT usa um Vault real (Testcontainers).
   secrets:
     store: in-memory
@@ -37,9 +40,18 @@ moseguros:
     storage: filesystem
     filesystem:
       base-dir: ${java.io.tmpdir}/moseguros-test-files
-  # Sem @Scheduled nos testes: chamam o job directamente.
+  # Sem @Scheduled nos testes: chamam o job directamente (o LockProvider do ShedLock existe na mesma).
   jobs:
     enabled: false
+  # Verificação (S6-03): o CaptchaVerifier falso do perfil test (FakeCaptchaVerifier, @Primary) responde
+  # INVALID a "invalid", UNAVAILABLE a "down" e VALID aos outros.
+  captcha:
+    provider: none
+  verification:
+    hash-key: JiuLN5j9gMeb/1s8kw017+EAiOBpOe4bKVTwdZSC468= # chave só para desenvolvimento
+  # URL de verificação dos certificados nos testes (S6-01 regra 6).
+  web:
+    public-base-url: https://verificar.moseguros.test
   # Pagamentos (S5-04 §9): o mpesa-mock dos testes (MpesaGatewayIT) responde depressa; o calendário das
   # consultas é curto para o PaymentStatusQueryJobIT.
   payment:

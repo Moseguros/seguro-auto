@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Certificado de seguro automóvel (S6-02 §2): A4 retrato, uma página. Montado pelo PolicyDocumentService
+  (módulo policy) com o PolicyPdfModelFactory; textos em messages/pdf_{pt,en}.properties (chaves
+  pdf.certificate.*). Só o nome do tomador (sem documento, NUIT, telefone nem morada). O código QR abre
+  {public-base-url}/v/{código} (S6-03). Classificado PERSONAL, dono POLICY. Os textos legais são provisórios
+  (Questões do S6-02).
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="${fmt.language()}">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title th:text="#{pdf.certificate.title} + ' ' + ${certificateNumber}">Certificado de seguro automóvel</title>
+  <style th:replace="~{_layout :: styles}"></style>
+  <style th:replace="~{_layout :: footer(${certificateNumber})}"></style>
+  <style type="text/css">
+    .insurer-name { font-size: 13pt; font-weight: 600; color: #142D4E; }
+    .numbers { text-align: right; font-size: 8.5pt; color: #4A5D75; }
+    .plate { font-size: 20pt; font-weight: 600; color: #142D4E; letter-spacing: 1pt; margin: 2pt 0 4pt 0; }
+    .validity { font-size: 11pt; font-weight: 600; color: #142D4E; }
+    table.verify { width: 100%; border-collapse: collapse; margin-top: 4pt; }
+    table.verify td { vertical-align: middle; padding: 0; }
+    table.verify td.qr-cell { width: 38mm; }
+    img.qr { width: 35mm; height: 35mm; }
+    .url { font-size: 8pt; color: #142D4E; word-wrap: break-word; }
+    .legal { margin-top: 10pt; font-size: 7.5pt; color: #4A5D75; }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho: logótipo da seguradora (máx. 40 × 15 mm) ou o nome em texto -->
+  <div class="header">
+    <table>
+      <tr>
+        <td>
+          <img th:if="${logo != null}" th:src="${logo.src}"
+               th:style="'width: ' + ${logo.width} + '; height: ' + ${logo.height} + ';'" alt=""/>
+          <span th:if="${logo == null}" class="insurer-name" th:text="${insurerName}">Seguradora Demo</span>
+        </td>
+        <td class="numbers">
+          <div><span th:text="#{pdf.certificate.number}">N.º do certificado</span>: <span th:text="${certificateNumber}">CT-2027-0001234</span></div>
+          <div><span th:text="#{pdf.certificate.policyNumber}">N.º da apólice</span>: <span th:text="${policyNumber}">AP-2027-000123</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <h1 th:text="#{pdf.certificate.title}">Certificado de seguro automóvel</h1>
+
+  <table class="fields">
+    <tr><td class="label" th:text="#{pdf.certificate.number}">N.º do certificado</td><td th:text="${certificateNumber}">CT-2027-0001234</td></tr>
+    <tr><td class="label" th:text="#{pdf.certificate.policyNumber}">N.º da apólice</td><td th:text="${policyNumber}">AP-2027-000123</td></tr>
+    <tr><td class="label" th:text="#{pdf.certificate.insurer}">Seguradora</td><td th:text="${fmt.text(insurerName)}">Seguradora Demo</td></tr>
+    <tr><td class="label" th:text="#{pdf.certificate.policyholder}">Tomador</td><td th:text="${policyholderName}">Ana Maria Mussa</td></tr>
+  </table>
+
+  <h2 th:text="#{pdf.certificate.section.vehicle}">Veículo seguro</h2>
+  <div class="plate" th:text="${vehicle.plate}">ABC-123-MC</div>
+  <table class="fields">
+    <tr><td class="label" th:text="#{pdf.vehicle.makeModel}">Marca e modelo</td><td th:text="${fmt.text(vehicle.make)} + ' ' + ${fmt.text(vehicle.model)}">Toyota Corolla</td></tr>
+    <tr><td class="label" th:text="#{pdf.vehicle.year}">Ano</td><td th:text="${fmt.text(vehicle.year)}">2018</td></tr>
+    <tr><td class="label" th:text="#{pdf.vehicle.chassis}">Número do chassis</td><td th:text="${fmt.text(vehicle.chassisNumber)}">x</td></tr>
+    <tr><td class="label" th:text="#{pdf.vehicle.category}">Categoria</td>
+        <td><span th:if="${vehicle.category != null}" th:text="#{pdf.vehicleCategory.__${vehicle.category}__}">Ligeiro</span><span th:if="${vehicle.category == null}">—</span></td></tr>
+    <tr><td class="label" th:text="#{pdf.vehicle.usage}">Uso</td>
+        <td><span th:if="${vehicle.usage != null}" th:text="#{pdf.vehicleUsage.__${vehicle.usage}__}">Particular</span><span th:if="${vehicle.usage == null}">—</span></td></tr>
+  </table>
+
+  <h2 th:text="#{pdf.certificate.section.validity}">Validade</h2>
+  <p class="validity" th:text="#{pdf.period.range(${fmt.dateTime(validFrom)}, ${fmt.dateTime(validTo)})}">De 10/02/2027 10:31 a 10/02/2028 10:31</p>
+
+  <h2 th:text="#{pdf.certificate.section.cover}">Cobertura</h2>
+  <table class="fields">
+    <tr><td class="label" th:text="#{pdf.certificate.coverageType}">Tipo de cobertura</td><td th:text="#{pdf.coverageType.__${coverageType}__}">Responsabilidade civil obrigatória</td></tr>
+    <tr th:if="${territorialScope != null}"><td class="label" th:text="#{pdf.certificate.territorialScope}">Âmbito territorial</td><td th:text="${territorialScope}">MZ</td></tr>
+  </table>
+
+  <h2 th:text="#{pdf.certificate.section.verification}">Verificação</h2>
+  <table class="verify">
+    <tr>
+      <td class="qr-cell"><img class="qr" th:src="${qrCode}" alt="QR"/></td>
+      <td>
+        <p th:text="#{pdf.certificate.verifyHint}">Leia o código QR para confirmar que este certificado é válido.</p>
+        <p class="url" th:text="${verificationUrl}">https://moseguros.co.mz/v/…</p>
+      </td>
+    </tr>
+  </table>
+
+  <div class="legal">
+    <p th:text="#{pdf.certificate.issuedBy(${fmt.text(insurerName)}, ${fmt.dateTime(generatedAt)})}">Documento emitido electronicamente pela MoSeguros por conta de Seguradora Demo em 10/02/2027 10:31.</p>
+    <p th:text="#{pdf.certificate.legalNotice}">TEXTO PROVISÓRIO — a validar pelo proprietário do produto.</p>
+  </div>
+</body>
+</html>

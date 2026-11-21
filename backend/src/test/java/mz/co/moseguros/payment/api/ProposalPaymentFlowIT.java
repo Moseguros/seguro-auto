@@ -282,8 +282,10 @@ class ProposalPaymentFlowIT {
                     states.markSucceeded(intentId, null, ConfirmedBy.REFERENCE_FILE, null, "test");
                 })
                 .andWaitAtMost(Duration.ofSeconds(10))
-                .andWaitForStateChange(() -> support.proposalRow(proposal).get("status"), "PAID"::equals)
-                .andVerify(status -> assertThat(status).isEqualTo("PAID")));
+                // desde o S6-01 a proposta paga passa logo a CONVERTED (apólice emitida automaticamente)
+                .andWaitForStateChange(() -> support.proposalRow(proposal).get("status"),
+                        s -> "PAID".equals(s) || "CONVERTED".equals(s))
+                .andVerify(status -> assertThat(status).isIn("PAID", "CONVERTED")));
 
         Map<String, Object> row = support.proposalRow(proposal);
         assertThat(row.get("payment_intent_id")).isEqualTo(intentId);

@@ -1271,6 +1271,832 @@ class InspectionSubmissionsCompanion
   }
 }
 
+class $CachedPoliciesTable extends CachedPolicies
+    with TableInfo<$CachedPoliciesTable, CachedPolicy> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedPoliciesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _jsonMeta = const VerificationMeta('json');
+  @override
+  late final GeneratedColumn<String> json = GeneratedColumn<String>(
+    'json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _summaryJsonMeta = const VerificationMeta(
+    'summaryJson',
+  );
+  @override
+  late final GeneratedColumn<String> summaryJson = GeneratedColumn<String>(
+    'summary_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endAtMeta = const VerificationMeta('endAt');
+  @override
+  late final GeneratedColumn<DateTime> endAt = GeneratedColumn<DateTime>(
+    'end_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    json,
+    summaryJson,
+    status,
+    endAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_policies';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedPolicy> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('json')) {
+      context.handle(
+        _jsonMeta,
+        json.isAcceptableOrUnknown(data['json']!, _jsonMeta),
+      );
+    }
+    if (data.containsKey('summary_json')) {
+      context.handle(
+        _summaryJsonMeta,
+        summaryJson.isAcceptableOrUnknown(
+          data['summary_json']!,
+          _summaryJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('end_at')) {
+      context.handle(
+        _endAtMeta,
+        endAt.isAcceptableOrUnknown(data['end_at']!, _endAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_syncedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CachedPolicy map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedPolicy(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      json: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}json'],
+      ),
+      summaryJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary_json'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      endAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedPoliciesTable createAlias(String alias) {
+    return $CachedPoliciesTable(attachedDatabase, alias);
+  }
+}
+
+class CachedPolicy extends DataClass implements Insertable<CachedPolicy> {
+  final String id;
+  final String? json;
+  final String? summaryJson;
+  final String status;
+  final DateTime endAt;
+  final DateTime syncedAt;
+  const CachedPolicy({
+    required this.id,
+    this.json,
+    this.summaryJson,
+    required this.status,
+    required this.endAt,
+    required this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || json != null) {
+      map['json'] = Variable<String>(json);
+    }
+    if (!nullToAbsent || summaryJson != null) {
+      map['summary_json'] = Variable<String>(summaryJson);
+    }
+    map['status'] = Variable<String>(status);
+    map['end_at'] = Variable<DateTime>(endAt);
+    map['synced_at'] = Variable<DateTime>(syncedAt);
+    return map;
+  }
+
+  CachedPoliciesCompanion toCompanion(bool nullToAbsent) {
+    return CachedPoliciesCompanion(
+      id: Value(id),
+      json: json == null && nullToAbsent ? const Value.absent() : Value(json),
+      summaryJson: summaryJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(summaryJson),
+      status: Value(status),
+      endAt: Value(endAt),
+      syncedAt: Value(syncedAt),
+    );
+  }
+
+  factory CachedPolicy.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedPolicy(
+      id: serializer.fromJson<String>(json['id']),
+      json: serializer.fromJson<String?>(json['json']),
+      summaryJson: serializer.fromJson<String?>(json['summaryJson']),
+      status: serializer.fromJson<String>(json['status']),
+      endAt: serializer.fromJson<DateTime>(json['endAt']),
+      syncedAt: serializer.fromJson<DateTime>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'json': serializer.toJson<String?>(json),
+      'summaryJson': serializer.toJson<String?>(summaryJson),
+      'status': serializer.toJson<String>(status),
+      'endAt': serializer.toJson<DateTime>(endAt),
+      'syncedAt': serializer.toJson<DateTime>(syncedAt),
+    };
+  }
+
+  CachedPolicy copyWith({
+    String? id,
+    Value<String?> json = const Value.absent(),
+    Value<String?> summaryJson = const Value.absent(),
+    String? status,
+    DateTime? endAt,
+    DateTime? syncedAt,
+  }) => CachedPolicy(
+    id: id ?? this.id,
+    json: json.present ? json.value : this.json,
+    summaryJson: summaryJson.present ? summaryJson.value : this.summaryJson,
+    status: status ?? this.status,
+    endAt: endAt ?? this.endAt,
+    syncedAt: syncedAt ?? this.syncedAt,
+  );
+  CachedPolicy copyWithCompanion(CachedPoliciesCompanion data) {
+    return CachedPolicy(
+      id: data.id.present ? data.id.value : this.id,
+      json: data.json.present ? data.json.value : this.json,
+      summaryJson: data.summaryJson.present
+          ? data.summaryJson.value
+          : this.summaryJson,
+      status: data.status.present ? data.status.value : this.status,
+      endAt: data.endAt.present ? data.endAt.value : this.endAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedPolicy(')
+          ..write('id: $id, ')
+          ..write('json: $json, ')
+          ..write('summaryJson: $summaryJson, ')
+          ..write('status: $status, ')
+          ..write('endAt: $endAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, json, summaryJson, status, endAt, syncedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedPolicy &&
+          other.id == this.id &&
+          other.json == this.json &&
+          other.summaryJson == this.summaryJson &&
+          other.status == this.status &&
+          other.endAt == this.endAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class CachedPoliciesCompanion extends UpdateCompanion<CachedPolicy> {
+  final Value<String> id;
+  final Value<String?> json;
+  final Value<String?> summaryJson;
+  final Value<String> status;
+  final Value<DateTime> endAt;
+  final Value<DateTime> syncedAt;
+  final Value<int> rowid;
+  const CachedPoliciesCompanion({
+    this.id = const Value.absent(),
+    this.json = const Value.absent(),
+    this.summaryJson = const Value.absent(),
+    this.status = const Value.absent(),
+    this.endAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedPoliciesCompanion.insert({
+    required String id,
+    this.json = const Value.absent(),
+    this.summaryJson = const Value.absent(),
+    required String status,
+    required DateTime endAt,
+    required DateTime syncedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       status = Value(status),
+       endAt = Value(endAt),
+       syncedAt = Value(syncedAt);
+  static Insertable<CachedPolicy> custom({
+    Expression<String>? id,
+    Expression<String>? json,
+    Expression<String>? summaryJson,
+    Expression<String>? status,
+    Expression<DateTime>? endAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (json != null) 'json': json,
+      if (summaryJson != null) 'summary_json': summaryJson,
+      if (status != null) 'status': status,
+      if (endAt != null) 'end_at': endAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedPoliciesCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? json,
+    Value<String?>? summaryJson,
+    Value<String>? status,
+    Value<DateTime>? endAt,
+    Value<DateTime>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return CachedPoliciesCompanion(
+      id: id ?? this.id,
+      json: json ?? this.json,
+      summaryJson: summaryJson ?? this.summaryJson,
+      status: status ?? this.status,
+      endAt: endAt ?? this.endAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (json.present) {
+      map['json'] = Variable<String>(json.value);
+    }
+    if (summaryJson.present) {
+      map['summary_json'] = Variable<String>(summaryJson.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (endAt.present) {
+      map['end_at'] = Variable<DateTime>(endAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedPoliciesCompanion(')
+          ..write('id: $id, ')
+          ..write('json: $json, ')
+          ..write('summaryJson: $summaryJson, ')
+          ..write('status: $status, ')
+          ..write('endAt: $endAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CachedDocumentsTable extends CachedDocuments
+    with TableInfo<$CachedDocumentsTable, CachedDocument> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedDocumentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _fileIdMeta = const VerificationMeta('fileId');
+  @override
+  late final GeneratedColumn<String> fileId = GeneratedColumn<String>(
+    'file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _policyIdMeta = const VerificationMeta(
+    'policyId',
+  );
+  @override
+  late final GeneratedColumn<String> policyId = GeneratedColumn<String>(
+    'policy_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileNameMeta = const VerificationMeta(
+    'fileName',
+  );
+  @override
+  late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
+    'file_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _localPathMeta = const VerificationMeta(
+    'localPath',
+  );
+  @override
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
+    'local_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _downloadedAtMeta = const VerificationMeta(
+    'downloadedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> downloadedAt = GeneratedColumn<DateTime>(
+    'downloaded_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    fileId,
+    policyId,
+    type,
+    fileName,
+    localPath,
+    downloadedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_documents';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedDocument> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('file_id')) {
+      context.handle(
+        _fileIdMeta,
+        fileId.isAcceptableOrUnknown(data['file_id']!, _fileIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileIdMeta);
+    }
+    if (data.containsKey('policy_id')) {
+      context.handle(
+        _policyIdMeta,
+        policyId.isAcceptableOrUnknown(data['policy_id']!, _policyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_policyIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('file_name')) {
+      context.handle(
+        _fileNameMeta,
+        fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta),
+      );
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(
+        _localPathMeta,
+        localPath.isAcceptableOrUnknown(data['local_path']!, _localPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localPathMeta);
+    }
+    if (data.containsKey('downloaded_at')) {
+      context.handle(
+        _downloadedAtMeta,
+        downloadedAt.isAcceptableOrUnknown(
+          data['downloaded_at']!,
+          _downloadedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_downloadedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {fileId};
+  @override
+  CachedDocument map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedDocument(
+      fileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_id'],
+      )!,
+      policyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}policy_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      fileName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_name'],
+      ),
+      localPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_path'],
+      )!,
+      downloadedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}downloaded_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedDocumentsTable createAlias(String alias) {
+    return $CachedDocumentsTable(attachedDatabase, alias);
+  }
+}
+
+class CachedDocument extends DataClass implements Insertable<CachedDocument> {
+  final String fileId;
+  final String policyId;
+  final String type;
+  final String? fileName;
+  final String localPath;
+  final DateTime downloadedAt;
+  const CachedDocument({
+    required this.fileId,
+    required this.policyId,
+    required this.type,
+    this.fileName,
+    required this.localPath,
+    required this.downloadedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['file_id'] = Variable<String>(fileId);
+    map['policy_id'] = Variable<String>(policyId);
+    map['type'] = Variable<String>(type);
+    if (!nullToAbsent || fileName != null) {
+      map['file_name'] = Variable<String>(fileName);
+    }
+    map['local_path'] = Variable<String>(localPath);
+    map['downloaded_at'] = Variable<DateTime>(downloadedAt);
+    return map;
+  }
+
+  CachedDocumentsCompanion toCompanion(bool nullToAbsent) {
+    return CachedDocumentsCompanion(
+      fileId: Value(fileId),
+      policyId: Value(policyId),
+      type: Value(type),
+      fileName: fileName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fileName),
+      localPath: Value(localPath),
+      downloadedAt: Value(downloadedAt),
+    );
+  }
+
+  factory CachedDocument.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedDocument(
+      fileId: serializer.fromJson<String>(json['fileId']),
+      policyId: serializer.fromJson<String>(json['policyId']),
+      type: serializer.fromJson<String>(json['type']),
+      fileName: serializer.fromJson<String?>(json['fileName']),
+      localPath: serializer.fromJson<String>(json['localPath']),
+      downloadedAt: serializer.fromJson<DateTime>(json['downloadedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'fileId': serializer.toJson<String>(fileId),
+      'policyId': serializer.toJson<String>(policyId),
+      'type': serializer.toJson<String>(type),
+      'fileName': serializer.toJson<String?>(fileName),
+      'localPath': serializer.toJson<String>(localPath),
+      'downloadedAt': serializer.toJson<DateTime>(downloadedAt),
+    };
+  }
+
+  CachedDocument copyWith({
+    String? fileId,
+    String? policyId,
+    String? type,
+    Value<String?> fileName = const Value.absent(),
+    String? localPath,
+    DateTime? downloadedAt,
+  }) => CachedDocument(
+    fileId: fileId ?? this.fileId,
+    policyId: policyId ?? this.policyId,
+    type: type ?? this.type,
+    fileName: fileName.present ? fileName.value : this.fileName,
+    localPath: localPath ?? this.localPath,
+    downloadedAt: downloadedAt ?? this.downloadedAt,
+  );
+  CachedDocument copyWithCompanion(CachedDocumentsCompanion data) {
+    return CachedDocument(
+      fileId: data.fileId.present ? data.fileId.value : this.fileId,
+      policyId: data.policyId.present ? data.policyId.value : this.policyId,
+      type: data.type.present ? data.type.value : this.type,
+      fileName: data.fileName.present ? data.fileName.value : this.fileName,
+      localPath: data.localPath.present ? data.localPath.value : this.localPath,
+      downloadedAt: data.downloadedAt.present
+          ? data.downloadedAt.value
+          : this.downloadedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedDocument(')
+          ..write('fileId: $fileId, ')
+          ..write('policyId: $policyId, ')
+          ..write('type: $type, ')
+          ..write('fileName: $fileName, ')
+          ..write('localPath: $localPath, ')
+          ..write('downloadedAt: $downloadedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(fileId, policyId, type, fileName, localPath, downloadedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedDocument &&
+          other.fileId == this.fileId &&
+          other.policyId == this.policyId &&
+          other.type == this.type &&
+          other.fileName == this.fileName &&
+          other.localPath == this.localPath &&
+          other.downloadedAt == this.downloadedAt);
+}
+
+class CachedDocumentsCompanion extends UpdateCompanion<CachedDocument> {
+  final Value<String> fileId;
+  final Value<String> policyId;
+  final Value<String> type;
+  final Value<String?> fileName;
+  final Value<String> localPath;
+  final Value<DateTime> downloadedAt;
+  final Value<int> rowid;
+  const CachedDocumentsCompanion({
+    this.fileId = const Value.absent(),
+    this.policyId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.fileName = const Value.absent(),
+    this.localPath = const Value.absent(),
+    this.downloadedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedDocumentsCompanion.insert({
+    required String fileId,
+    required String policyId,
+    required String type,
+    this.fileName = const Value.absent(),
+    required String localPath,
+    required DateTime downloadedAt,
+    this.rowid = const Value.absent(),
+  }) : fileId = Value(fileId),
+       policyId = Value(policyId),
+       type = Value(type),
+       localPath = Value(localPath),
+       downloadedAt = Value(downloadedAt);
+  static Insertable<CachedDocument> custom({
+    Expression<String>? fileId,
+    Expression<String>? policyId,
+    Expression<String>? type,
+    Expression<String>? fileName,
+    Expression<String>? localPath,
+    Expression<DateTime>? downloadedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (fileId != null) 'file_id': fileId,
+      if (policyId != null) 'policy_id': policyId,
+      if (type != null) 'type': type,
+      if (fileName != null) 'file_name': fileName,
+      if (localPath != null) 'local_path': localPath,
+      if (downloadedAt != null) 'downloaded_at': downloadedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedDocumentsCompanion copyWith({
+    Value<String>? fileId,
+    Value<String>? policyId,
+    Value<String>? type,
+    Value<String?>? fileName,
+    Value<String>? localPath,
+    Value<DateTime>? downloadedAt,
+    Value<int>? rowid,
+  }) {
+    return CachedDocumentsCompanion(
+      fileId: fileId ?? this.fileId,
+      policyId: policyId ?? this.policyId,
+      type: type ?? this.type,
+      fileName: fileName ?? this.fileName,
+      localPath: localPath ?? this.localPath,
+      downloadedAt: downloadedAt ?? this.downloadedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (fileId.present) {
+      map['file_id'] = Variable<String>(fileId.value);
+    }
+    if (policyId.present) {
+      map['policy_id'] = Variable<String>(policyId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (fileName.present) {
+      map['file_name'] = Variable<String>(fileName.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (downloadedAt.present) {
+      map['downloaded_at'] = Variable<DateTime>(downloadedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedDocumentsCompanion(')
+          ..write('fileId: $fileId, ')
+          ..write('policyId: $policyId, ')
+          ..write('type: $type, ')
+          ..write('fileName: $fileName, ')
+          ..write('localPath: $localPath, ')
+          ..write('downloadedAt: $downloadedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1278,6 +2104,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $InspectionUploadsTable(this);
   late final $InspectionSubmissionsTable inspectionSubmissions =
       $InspectionSubmissionsTable(this);
+  late final $CachedPoliciesTable cachedPolicies = $CachedPoliciesTable(this);
+  late final $CachedDocumentsTable cachedDocuments = $CachedDocumentsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1285,6 +2115,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     inspectionUploads,
     inspectionSubmissions,
+    cachedPolicies,
+    cachedDocuments,
   ];
 }
 
@@ -1928,6 +2760,456 @@ typedef $$InspectionSubmissionsTableProcessedTableManager =
       InspectionSubmission,
       PrefetchHooks Function()
     >;
+typedef $$CachedPoliciesTableCreateCompanionBuilder =
+    CachedPoliciesCompanion Function({
+      required String id,
+      Value<String?> json,
+      Value<String?> summaryJson,
+      required String status,
+      required DateTime endAt,
+      required DateTime syncedAt,
+      Value<int> rowid,
+    });
+typedef $$CachedPoliciesTableUpdateCompanionBuilder =
+    CachedPoliciesCompanion Function({
+      Value<String> id,
+      Value<String?> json,
+      Value<String?> summaryJson,
+      Value<String> status,
+      Value<DateTime> endAt,
+      Value<DateTime> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$CachedPoliciesTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedPoliciesTable> {
+  $$CachedPoliciesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedPoliciesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedPoliciesTable> {
+  $$CachedPoliciesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedPoliciesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedPoliciesTable> {
+  $$CachedPoliciesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get json =>
+      $composableBuilder(column: $table.json, builder: (column) => column);
+
+  GeneratedColumn<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endAt =>
+      $composableBuilder(column: $table.endAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$CachedPoliciesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedPoliciesTable,
+          CachedPolicy,
+          $$CachedPoliciesTableFilterComposer,
+          $$CachedPoliciesTableOrderingComposer,
+          $$CachedPoliciesTableAnnotationComposer,
+          $$CachedPoliciesTableCreateCompanionBuilder,
+          $$CachedPoliciesTableUpdateCompanionBuilder,
+          (
+            CachedPolicy,
+            BaseReferences<_$AppDatabase, $CachedPoliciesTable, CachedPolicy>,
+          ),
+          CachedPolicy,
+          PrefetchHooks Function()
+        > {
+  $$CachedPoliciesTableTableManager(
+    _$AppDatabase db,
+    $CachedPoliciesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedPoliciesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedPoliciesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedPoliciesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> json = const Value.absent(),
+                Value<String?> summaryJson = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> endAt = const Value.absent(),
+                Value<DateTime> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedPoliciesCompanion(
+                id: id,
+                json: json,
+                summaryJson: summaryJson,
+                status: status,
+                endAt: endAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> json = const Value.absent(),
+                Value<String?> summaryJson = const Value.absent(),
+                required String status,
+                required DateTime endAt,
+                required DateTime syncedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CachedPoliciesCompanion.insert(
+                id: id,
+                json: json,
+                summaryJson: summaryJson,
+                status: status,
+                endAt: endAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedPoliciesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedPoliciesTable,
+      CachedPolicy,
+      $$CachedPoliciesTableFilterComposer,
+      $$CachedPoliciesTableOrderingComposer,
+      $$CachedPoliciesTableAnnotationComposer,
+      $$CachedPoliciesTableCreateCompanionBuilder,
+      $$CachedPoliciesTableUpdateCompanionBuilder,
+      (
+        CachedPolicy,
+        BaseReferences<_$AppDatabase, $CachedPoliciesTable, CachedPolicy>,
+      ),
+      CachedPolicy,
+      PrefetchHooks Function()
+    >;
+typedef $$CachedDocumentsTableCreateCompanionBuilder =
+    CachedDocumentsCompanion Function({
+      required String fileId,
+      required String policyId,
+      required String type,
+      Value<String?> fileName,
+      required String localPath,
+      required DateTime downloadedAt,
+      Value<int> rowid,
+    });
+typedef $$CachedDocumentsTableUpdateCompanionBuilder =
+    CachedDocumentsCompanion Function({
+      Value<String> fileId,
+      Value<String> policyId,
+      Value<String> type,
+      Value<String?> fileName,
+      Value<String> localPath,
+      Value<DateTime> downloadedAt,
+      Value<int> rowid,
+    });
+
+class $$CachedDocumentsTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedDocumentsTable> {
+  $$CachedDocumentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get fileId => $composableBuilder(
+    column: $table.fileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get policyId => $composableBuilder(
+    column: $table.policyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get downloadedAt => $composableBuilder(
+    column: $table.downloadedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedDocumentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedDocumentsTable> {
+  $$CachedDocumentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get fileId => $composableBuilder(
+    column: $table.fileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get policyId => $composableBuilder(
+    column: $table.policyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get downloadedAt => $composableBuilder(
+    column: $table.downloadedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedDocumentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedDocumentsTable> {
+  $$CachedDocumentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get fileId =>
+      $composableBuilder(column: $table.fileId, builder: (column) => column);
+
+  GeneratedColumn<String> get policyId =>
+      $composableBuilder(column: $table.policyId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get fileName =>
+      $composableBuilder(column: $table.fileName, builder: (column) => column);
+
+  GeneratedColumn<String> get localPath =>
+      $composableBuilder(column: $table.localPath, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get downloadedAt => $composableBuilder(
+    column: $table.downloadedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$CachedDocumentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedDocumentsTable,
+          CachedDocument,
+          $$CachedDocumentsTableFilterComposer,
+          $$CachedDocumentsTableOrderingComposer,
+          $$CachedDocumentsTableAnnotationComposer,
+          $$CachedDocumentsTableCreateCompanionBuilder,
+          $$CachedDocumentsTableUpdateCompanionBuilder,
+          (
+            CachedDocument,
+            BaseReferences<
+              _$AppDatabase,
+              $CachedDocumentsTable,
+              CachedDocument
+            >,
+          ),
+          CachedDocument,
+          PrefetchHooks Function()
+        > {
+  $$CachedDocumentsTableTableManager(
+    _$AppDatabase db,
+    $CachedDocumentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedDocumentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedDocumentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedDocumentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> fileId = const Value.absent(),
+                Value<String> policyId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String?> fileName = const Value.absent(),
+                Value<String> localPath = const Value.absent(),
+                Value<DateTime> downloadedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedDocumentsCompanion(
+                fileId: fileId,
+                policyId: policyId,
+                type: type,
+                fileName: fileName,
+                localPath: localPath,
+                downloadedAt: downloadedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String fileId,
+                required String policyId,
+                required String type,
+                Value<String?> fileName = const Value.absent(),
+                required String localPath,
+                required DateTime downloadedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CachedDocumentsCompanion.insert(
+                fileId: fileId,
+                policyId: policyId,
+                type: type,
+                fileName: fileName,
+                localPath: localPath,
+                downloadedAt: downloadedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedDocumentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedDocumentsTable,
+      CachedDocument,
+      $$CachedDocumentsTableFilterComposer,
+      $$CachedDocumentsTableOrderingComposer,
+      $$CachedDocumentsTableAnnotationComposer,
+      $$CachedDocumentsTableCreateCompanionBuilder,
+      $$CachedDocumentsTableUpdateCompanionBuilder,
+      (
+        CachedDocument,
+        BaseReferences<_$AppDatabase, $CachedDocumentsTable, CachedDocument>,
+      ),
+      CachedDocument,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1936,4 +3218,8 @@ class $AppDatabaseManager {
       $$InspectionUploadsTableTableManager(_db, _db.inspectionUploads);
   $$InspectionSubmissionsTableTableManager get inspectionSubmissions =>
       $$InspectionSubmissionsTableTableManager(_db, _db.inspectionSubmissions);
+  $$CachedPoliciesTableTableManager get cachedPolicies =>
+      $$CachedPoliciesTableTableManager(_db, _db.cachedPolicies);
+  $$CachedDocumentsTableTableManager get cachedDocuments =>
+      $$CachedDocumentsTableTableManager(_db, _db.cachedDocuments);
 }

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
  *   <li>NUIT a seguir à palavra {@code nuit} → {@code *****6789}.</li>
  *   <li>Tokens {@code Bearer ...} → {@code Bearer ***}.</li>
  *   <li>Campos JSON {@code "refreshToken":"..."} → {@code "refreshToken":"***"}.</li>
+ *   <li>Campos JSON {@code "token":"..."} (tokens push, S6-04 §6) → {@code "token":"***"}.</li>
  * </ul>
  */
 public final class SensitiveDataMasker {
@@ -19,6 +20,7 @@ public final class SensitiveDataMasker {
     private static final Pattern NUIT = Pattern.compile("(?i)(nuit\\W{0,3})(\\d{5})(\\d{4})(?!\\d)");
     private static final Pattern BEARER = Pattern.compile("(?i)(bearer\\s+)[A-Za-z0-9\\-._~+/]+=*");
     private static final Pattern REFRESH_TOKEN = Pattern.compile("\"refreshToken\"\\s*:\\s*\"[^\"]+\"");
+    private static final Pattern TOKEN = Pattern.compile("\"token\"\\s*:\\s*\"[^\"]+\"");
 
     private SensitiveDataMasker() {
     }
@@ -32,6 +34,7 @@ public final class SensitiveDataMasker {
         out = replace(NUIT, out, m -> m.group(1) + "*****" + m.group(3));
         out = replace(BEARER, out, m -> m.group(1) + "***");
         out = replace(REFRESH_TOKEN, out, m -> "\"refreshToken\":\"***\"");
+        out = replace(TOKEN, out, m -> "\"token\":\"***\"");
         return out;
     }
 

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Condições particulares da apólice (S6-02 §3): A4, uma ou mais páginas. Montado pelo PolicyDocumentService
+  (módulo policy) com o PolicyPdfModelFactory; textos em messages/pdf_{pt,en}.properties (chaves
+  pdf.schedule.*). Só o nome do tomador; do condutor só o número da carta mascarado. Sem meios de pagamento
+  nem devoluções (ADR-007). Classificado PERSONAL, dono POLICY. Texto contratual provisório (Questões do
+  S6-02).
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="${fmt.language()}">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title th:text="#{pdf.schedule.title} + ' ' + ${policyNumber}">Condições particulares</title>
+  <style th:replace="~{_layout :: styles}"></style>
+  <style th:replace="~{_layout :: footer(${policyNumber})}"></style>
+  <style type="text/css">
+    .insurer-name { font-size: 13pt; font-weight: 600; color: #142D4E; }
+    .numbers { text-align: right; font-size: 8.5pt; color: #4A5D75; }
+    .legal { margin-top: 10pt; font-size: 7.5pt; color: #4A5D75; }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho: logótipo da seguradora (máx. 40 × 15 mm) ou o nome em texto -->
+  <div class="header">
+    <table>
+      <tr>
+        <td>
+          <img th:if="${logo != null}" th:src="${logo.src}"
+               th:style="'width: ' + ${logo.width} + '; height: ' + ${logo.height} + ';'" alt=""/>
+          <span th:if="${logo == null}" class="insurer-name" th:text="${insurerName}">Seguradora Demo</span>
+        </td>
+        <td class="numbers">
+          <div><span th:text="#{pdf.schedule.policyNumber}">N.º da apólice</span>: <span th:text="${policyNumber}">AP-2027-000123</span></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <h1 th:text="#{pdf.schedule.title}">Condições particulares</h1>
+
+  <!-- Contrato -->
+  <h2 th:text="#{pdf.schedule.section.contract}">Contrato</h2>
+  <table class="fields">
+    <tr><td class="label" th:text="#{pdf.schedule.policyNumber}">N.º da apólice</td><td th:text="${policyNumber}">AP-2027-000123</td></tr>
+    <tr><td class="label" th:text="#{pdf.schedule.product}">Produto</td><td th:text="${productName}">RC Automóvel</td></tr>
+    <tr><td class="label" th:text="#{pdf.schedule.productVersion}">Versão do produto</td><td th:text="${fmt.text(productVersionNo)}">3</td></tr>
+    <tr><td class="label" th:text="#{pdf.schedule.insurer}">Seguradora</td><td th:text="${fmt.text(insurerName)}">Seguradora Demo</td></tr>
+    <tr><td class="label" th:text="#{pdf.schedule.channel}">Canal</td><td th:text="#{pdf.channel.__${channel}__}">Aplicação MoSeguros</td></tr>
+    <tr><td class="label" th:text="#{pdf.schedule.period}">Período do seguro</td><td th:text="#{pdf.period.range(${fmt.dateTime(validFrom)}, ${fmt.dateTime(validTo)})}">De 10/02/2027 10:31 a 10/02/2028 10:31</td></tr>
+    <tr><td class="label" th:text="#{pdf.schedule.renewalType}">Renovação</td><td th:text="#{pdf.renewalType.__${renewalType}__}">Anual, renovável</td></tr>
+  </table>
+
+  <!-- Tomador -->
+  <h2 th:text="#{pdf.schedule.section.policyholder}">Tomador do seguro</h2>
+  <table class="fields">
+    <tr><td class="label" th:text="#{pdf.schedule.policyholderName}">Nome</td><td th:text="${policyholderName}">Ana Maria Mussa</td></tr>
+  </table>
+
+  <!-- Veículo -->
+  <div class="block">
+    <h2 th:text="#{pdf.schedule.section.vehicle}">Veículo seguro</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.vehicle.plate}">Matrícula</td><td th:text="${vehicle.plate}">ABC-123-MC</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.makeModel}">Marca e modelo</td><td th:text="${fmt.text(vehicle.make)} + ' ' + ${fmt.text(vehicle.model)}">Toyota Corolla</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.year}">Ano</td><td th:text="${fmt.text(vehicle.year)}">2018</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.chassis}">Número do chassis</td><td th:text="${fmt.text(vehicle.chassisNumber)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.category}">Categoria</td>
+          <td><span th:if="${vehicle.category != null}" th:text="#{pdf.vehicleCategory.__${vehicle.category}__}">Ligeiro</span><span th:if="${vehicle.category == null}">—</span></td></tr>
+      <tr><td class="label" th:text="#{pdf.vehicle.usage}">Uso</td>
+          <td><span th:if="${vehicle.usage != null}" th:text="#{pdf.vehicleUsage.__${vehicle.usage}__}">Particular</span><span th:if="${vehicle.usage == null}">—</span></td></tr>
+    </table>
+  </div>
+
+  <!-- Condutor habitual (omitido sem condutor) -->
+  <div class="block" th:if="${driver != null}">
+    <h2 th:text="#{pdf.schedule.section.driver}">Condutor habitual</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.driver.fullName}">Nome</td><td th:text="${fmt.text(driver.fullName)}">x</td></tr>
+      <tr><td class="label" th:text="#{pdf.driver.licence}">Carta de condução</td><td th:text="${fmt.text(driver.licenceNumberMasked)}">****1234</td></tr>
+      <tr><td class="label" th:text="#{pdf.driver.categories}">Categorias</td><td th:text="${fmt.text(driver.licenceCategories)}">B</td></tr>
+    </table>
+  </div>
+
+  <!-- Coberturas -->
+  <h2 th:text="#{pdf.schedule.section.coverages}">Coberturas</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th th:text="#{pdf.coverages.name}">Cobertura</th>
+        <th class="num" th:text="#{pdf.coverages.capital}">Capital</th>
+        <th th:text="#{pdf.coverages.deductible}">Franquia</th>
+        <th class="num" th:text="#{pdf.coverages.premium}">Prémio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="c : ${coverages}">
+        <td th:text="#{pdf.coverage.__${c.code}__}">x</td>
+        <td class="num" th:text="${fmt.money(c.capital)}">x</td>
+        <td th:switch="${c.deductibleType}">
+          <span th:case="'FIXED'" th:text="${fmt.money(c.deductibleAmount)}">x</span>
+          <span th:case="'PERCENT'" th:text="${fmt.percent(c.deductiblePercent)}">x</span>
+          <span th:case="'NONE'" th:text="#{pdf.coverages.noDeductible}">Sem franquia</span>
+          <span th:case="*">—</span>
+        </td>
+        <td class="num" th:text="${fmt.money(c.premium)}">x</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Prémio e prestações -->
+  <div class="block">
+    <h2 th:text="#{pdf.schedule.section.premium}">Prémio</h2>
+    <table class="fields">
+      <tr><td class="label" th:text="#{pdf.schedule.total}">Prémio total</td><td class="answer" th:text="${fmt.money(total)}">2 999,00 MT</td></tr>
+      <tr><td class="label" th:text="#{pdf.schedule.paymentPlan}">Plano de pagamento</td><td th:text="#{pdf.paymentPlan.__${paymentPlan}__}">Pagamento único</td></tr>
+    </table>
+    <table class="grid">
+      <thead>
+        <tr>
+          <th th:text="#{pdf.schedule.instalments.seq}">Prestação</th>
+          <th th:text="#{pdf.schedule.instalments.dueDate}">Vencimento</th>
+          <th class="num" th:text="#{pdf.schedule.instalments.amount}">Montante</th>
+          <th th:text="#{pdf.schedule.instalments.status}">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="i : ${instalments}">
+          <td th:text="${i.seq}">1</td>
+          <td th:text="${fmt.date(i.dueDate)}">10/02/2027</td>
+          <td class="num" th:text="${fmt.money(i.amount)}">2 999,00 MT</td>
+          <td th:text="#{pdf.instalmentStatus.__${i.status}__}">Paga</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legal">
+    <p th:text="#{pdf.schedule.contractNotice(${fmt.text(productVersionNo)})}">Estas condições particulares completam as Condições Gerais da versão 3 do produto.</p>
+  </div>
+</body>
+</html>

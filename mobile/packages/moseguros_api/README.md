@@ -148,7 +148,21 @@ Class | Method | HTTP request | Description
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyKycCheck**](doc/IdentityApi.md#verifykyccheck) | **POST** /api/v1/insurer/kyc/{id}/verify | Verifica uma identidade
 [*IdentityApi*](doc/IdentityApi.md) | [**verifyOtp**](doc/IdentityApi.md#verifyotp) | **POST** /api/v1/auth/otp/verify | Valida o código e entra
 [*MetaApi*](doc/MetaApi.md) | [**getVersion**](doc/MetaApi.md#getversion) | **GET** /api/v1/meta/version | Versão da API
+[*NotificationApi*](doc/NotificationApi.md) | [**countMyUnreadNotifications**](doc/NotificationApi.md#countmyunreadnotifications) | **GET** /api/v1/me/notifications/unread-count | Conta as notificações por ler
+[*NotificationApi*](doc/NotificationApi.md) | [**getMyNotificationPreferences**](doc/NotificationApi.md#getmynotificationpreferences) | **GET** /api/v1/me/notification-preferences | Consulta as preferências de notificação
+[*NotificationApi*](doc/NotificationApi.md) | [**getNotificationTemplate**](doc/NotificationApi.md#getnotificationtemplate) | **GET** /api/v1/admin/notification-templates/{id} | Consulta um modelo
+[*NotificationApi*](doc/NotificationApi.md) | [**listMyNotifications**](doc/NotificationApi.md#listmynotifications) | **GET** /api/v1/me/notifications | Lista as notificações do cliente
+[*NotificationApi*](doc/NotificationApi.md) | [**listNotificationTemplates**](doc/NotificationApi.md#listnotificationtemplates) | **GET** /api/v1/admin/notification-templates | Lista os modelos das notificações
+[*NotificationApi*](doc/NotificationApi.md) | [**markAllMyNotificationsRead**](doc/NotificationApi.md#markallmynotificationsread) | **POST** /api/v1/me/notifications/read-all | Marca todas as notificações como lidas
+[*NotificationApi*](doc/NotificationApi.md) | [**markMyNotificationRead**](doc/NotificationApi.md#markmynotificationread) | **POST** /api/v1/me/notifications/{id}/read | Marca uma notificação como lida
+[*NotificationApi*](doc/NotificationApi.md) | [**previewNotificationTemplate**](doc/NotificationApi.md#previewnotificationtemplate) | **POST** /api/v1/admin/notification-templates/{id}/preview | Pré-visualiza um texto
 [*NotificationApi*](doc/NotificationApi.md) | [**receiveDeliveryReceipt**](doc/NotificationApi.md#receivedeliveryreceipt) | **POST** /api/v1/integrations/delivery-receipts/{provider} | Recibo de entrega de um fornecedor
+[*NotificationApi*](doc/NotificationApi.md) | [**registerMyDevice**](doc/NotificationApi.md#registermydevice) | **POST** /api/v1/me/devices | Regista o dispositivo para push
+[*NotificationApi*](doc/NotificationApi.md) | [**resetNotificationTemplate**](doc/NotificationApi.md#resetnotificationtemplate) | **POST** /api/v1/admin/notification-templates/{id}/reset | Repõe o texto do ficheiro
+[*NotificationApi*](doc/NotificationApi.md) | [**testNotificationTemplate**](doc/NotificationApi.md#testnotificationtemplate) | **POST** /api/v1/admin/notification-templates/{id}/test | Envia uma mensagem de teste
+[*NotificationApi*](doc/NotificationApi.md) | [**unregisterMyDevice**](doc/NotificationApi.md#unregistermydevice) | **DELETE** /api/v1/me/devices/{id} | Remove o dispositivo
+[*NotificationApi*](doc/NotificationApi.md) | [**updateMyNotificationPreferences**](doc/NotificationApi.md#updatemynotificationpreferences) | **PUT** /api/v1/me/notification-preferences | Altera as preferências de notificação
+[*NotificationApi*](doc/NotificationApi.md) | [**updateNotificationTemplate**](doc/NotificationApi.md#updatenotificationtemplate) | **PUT** /api/v1/admin/notification-templates/{id} | Altera o texto de um modelo
 [*OrganizationApi*](doc/OrganizationApi.md) | [**createOrganization**](doc/OrganizationApi.md#createorganization) | **POST** /api/v1/organizations | Cria uma organização
 [*OrganizationApi*](doc/OrganizationApi.md) | [**getInsurerRatingSettings**](doc/OrganizationApi.md#getinsurerratingsettings) | **GET** /api/v1/insurer/rating-settings | Consulta as definições de tarifação
 [*OrganizationApi*](doc/OrganizationApi.md) | [**getOrganization**](doc/OrganizationApi.md#getorganization) | **GET** /api/v1/organizations/{id} | Consulta uma organização
@@ -179,6 +193,10 @@ Class | Method | HTTP request | Description
 [*PaymentApi*](doc/PaymentApi.md) | [**sendReferenceSms**](doc/PaymentApi.md#sendreferencesms) | **POST** /api/v1/payment-intents/{id}/reference-sms | Envia a entidade e referência por SMS
 [*PaymentApi*](doc/PaymentApi.md) | [**testInsurerPaymentMethod**](doc/PaymentApi.md#testinsurerpaymentmethod) | **POST** /api/v1/insurer/payment-methods/{method}/test | Testa uma forma de pagamento
 [*PaymentApi*](doc/PaymentApi.md) | [**updateInsurerPaymentMethod**](doc/PaymentApi.md#updateinsurerpaymentmethod) | **PUT** /api/v1/insurer/payment-methods/{method} | Grava os dados de uma forma de pagamento
+[*PolicyApi*](doc/PolicyApi.md) | [**getInsurerPolicy**](doc/PolicyApi.md#getinsurerpolicy) | **GET** /api/v1/insurer/policies/{id} | Consulta uma apólice da seguradora
+[*PolicyApi*](doc/PolicyApi.md) | [**getMyPolicy**](doc/PolicyApi.md#getmypolicy) | **GET** /api/v1/me/policies/{id} | Consulta uma apólice do cliente
+[*PolicyApi*](doc/PolicyApi.md) | [**listInsurerPolicies**](doc/PolicyApi.md#listinsurerpolicies) | **GET** /api/v1/insurer/policies | Lista as apólices da seguradora
+[*PolicyApi*](doc/PolicyApi.md) | [**listMyPolicies**](doc/PolicyApi.md#listmypolicies) | **GET** /api/v1/me/policies | Lista as apólices do cliente
 [*ProposalApi*](doc/ProposalApi.md) | [**acceptProposal**](doc/ProposalApi.md#acceptproposal) | **POST** /api/v1/insurer/proposals/{id}/accept | Aceita uma proposta
 [*ProposalApi*](doc/ProposalApi.md) | [**acknowledgeProposalSuitability**](doc/ProposalApi.md#acknowledgeproposalsuitability) | **POST** /api/v1/proposals/{id}/suitability/acknowledge | Confirma os avisos de adequação
 [*ProposalApi*](doc/ProposalApi.md) | [**approveInspection**](doc/ProposalApi.md#approveinspection) | **POST** /api/v1/insurer/inspections/{id}/approve | Aprova uma vistoria
@@ -230,6 +248,12 @@ Class | Method | HTTP request | Description
 [*VehicleApi*](doc/VehicleApi.md) | [**updateMyVehicle**](doc/VehicleApi.md#updatemyvehicle) | **PUT** /api/v1/me/vehicles/{id} | Altera um veículo
 [*VehicleApi*](doc/VehicleApi.md) | [**updateMyVehicleDrivers**](doc/VehicleApi.md#updatemyvehicledrivers) | **PUT** /api/v1/me/vehicles/{id}/drivers | Substitui os condutores do veículo
 [*VehicleApi*](doc/VehicleApi.md) | [**uploadMyVehicleRegistrationDoc**](doc/VehicleApi.md#uploadmyvehicleregistrationdoc) | **POST** /api/v1/me/vehicles/{id}/registration-doc | Envia a foto ou o PDF do livrete
+[*VerificationApi*](doc/VerificationApi.md) | [**getVerificationConfig**](doc/VerificationApi.md#getverificationconfig) | **GET** /api/v1/public/verifications/config | CAPTCHA da verificação por matrícula
+[*VerificationApi*](doc/VerificationApi.md) | [**listMyPoliceChecks**](doc/VerificationApi.md#listmypolicechecks) | **GET** /api/v1/police/check-history | Lista as consultas do próprio agente
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyCertificateToken**](doc/VerificationApi.md#verifycertificatetoken) | **GET** /api/v1/public/verifications/{token} | Verifica o seguro pelo código do QR
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyCertificateTokenAsPolice**](doc/VerificationApi.md#verifycertificatetokenaspolice) | **GET** /api/v1/police/verifications/{token} | Verifica o seguro pelo código do QR (polícia)
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyPlate**](doc/VerificationApi.md#verifyplate) | **GET** /api/v1/public/verifications | Verifica o seguro pela matrícula
+[*VerificationApi*](doc/VerificationApi.md) | [**verifyPlateAsPolice**](doc/VerificationApi.md#verifyplateaspolice) | **GET** /api/v1/police/verifications | Verifica o seguro pela matrícula (polícia)
 
 
 ## Documentation For Models
@@ -248,15 +272,20 @@ Class | Method | HTTP request | Description
  - [BrokerProposalSummaryResponse](doc/BrokerProposalSummaryResponse.md)
  - [BrokerProposalVehicleRequest](doc/BrokerProposalVehicleRequest.md)
  - [BrokerVehicleRequest](doc/BrokerVehicleRequest.md)
+ - [CaptchaProvider](doc/CaptchaProvider.md)
  - [CatalogInsurerResponse](doc/CatalogInsurerResponse.md)
  - [CatalogProductResponse](doc/CatalogProductResponse.md)
+ - [CertificateCheckStatus](doc/CertificateCheckStatus.md)
+ - [CertificateStatus](doc/CertificateStatus.md)
  - [Charge](doc/Charge.md)
  - [ChargeValue](doc/ChargeValue.md)
  - [ConfirmSignatureRequest](doc/ConfirmSignatureRequest.md)
  - [ContactResponse](doc/ContactResponse.md)
  - [ContactsResponse](doc/ContactsResponse.md)
+ - [CoverStatus](doc/CoverStatus.md)
  - [CoverageRequest](doc/CoverageRequest.md)
  - [CoverageResponse](doc/CoverageResponse.md)
+ - [CoverageType](doc/CoverageType.md)
  - [CreateBrokerProposalRequest](doc/CreateBrokerProposalRequest.md)
  - [CreateBrokerQuoteRequest](doc/CreateBrokerQuoteRequest.md)
  - [CreateDriverRequest](doc/CreateDriverRequest.md)
@@ -273,6 +302,8 @@ Class | Method | HTTP request | Description
  - [DeclarationAnswerResponse](doc/DeclarationAnswerResponse.md)
  - [DeclarationQuestion](doc/DeclarationQuestion.md)
  - [DeliveryReceiptRequest](doc/DeliveryReceiptRequest.md)
+ - [DevicePlatform](doc/DevicePlatform.md)
+ - [DeviceResponse](doc/DeviceResponse.md)
  - [DriverResponse](doc/DriverResponse.md)
  - [FailureCode](doc/FailureCode.md)
  - [FieldError](doc/FieldError.md)
@@ -283,6 +314,7 @@ Class | Method | HTTP request | Description
  - [InspectionResponse](doc/InspectionResponse.md)
  - [InspectionReview](doc/InspectionReview.md)
  - [InspectionStatus](doc/InspectionStatus.md)
+ - [InstalmentStatus](doc/InstalmentStatus.md)
  - [InsurerBrandingResponse](doc/InsurerBrandingResponse.md)
  - [InsurerInspectionSummaryResponse](doc/InsurerInspectionSummaryResponse.md)
  - [InsurerKycCheckResponse](doc/InsurerKycCheckResponse.md)
@@ -290,6 +322,7 @@ Class | Method | HTTP request | Description
  - [InsurerPaymentDetail](doc/InsurerPaymentDetail.md)
  - [InsurerPaymentEvent](doc/InsurerPaymentEvent.md)
  - [InsurerPaymentSummary](doc/InsurerPaymentSummary.md)
+ - [InsurerPolicySummaryResponse](doc/InsurerPolicySummaryResponse.md)
  - [InsurerProfileRequest](doc/InsurerProfileRequest.md)
  - [InsurerProfileResponse](doc/InsurerProfileResponse.md)
  - [InsurerProposalDriver](doc/InsurerProposalDriver.md)
@@ -322,6 +355,19 @@ Class | Method | HTTP request | Description
  - [MeResponse](doc/MeResponse.md)
  - [Money](doc/Money.md)
  - [MyKycResponse](doc/MyKycResponse.md)
+ - [MyNotificationResponse](doc/MyNotificationResponse.md)
+ - [MyPolicySummaryResponse](doc/MyPolicySummaryResponse.md)
+ - [NotificationCategory](doc/NotificationCategory.md)
+ - [NotificationCategoryPreferences](doc/NotificationCategoryPreferences.md)
+ - [NotificationCategoryPreferencesChange](doc/NotificationCategoryPreferencesChange.md)
+ - [NotificationChannel](doc/NotificationChannel.md)
+ - [NotificationChannelPreference](doc/NotificationChannelPreference.md)
+ - [NotificationChannelPreferenceChange](doc/NotificationChannelPreferenceChange.md)
+ - [NotificationPreferencesResponse](doc/NotificationPreferencesResponse.md)
+ - [NotificationTemplateDetail](doc/NotificationTemplateDetail.md)
+ - [NotificationTemplatePreview](doc/NotificationTemplatePreview.md)
+ - [NotificationTemplateSummary](doc/NotificationTemplateSummary.md)
+ - [NotificationTemplateTestResult](doc/NotificationTemplateTestResult.md)
  - [OrganizationResponse](doc/OrganizationResponse.md)
  - [OrganizationSummaryResponse](doc/OrganizationSummaryResponse.md)
  - [OtpChallengeResponse](doc/OtpChallengeResponse.md)
@@ -336,13 +382,18 @@ Class | Method | HTTP request | Description
  - [PageResponseDriverResponse](doc/PageResponseDriverResponse.md)
  - [PageResponseInsurerInspectionSummaryResponse](doc/PageResponseInsurerInspectionSummaryResponse.md)
  - [PageResponseInsurerPaymentSummary](doc/PageResponseInsurerPaymentSummary.md)
+ - [PageResponseInsurerPolicySummaryResponse](doc/PageResponseInsurerPolicySummaryResponse.md)
  - [PageResponseInsurerProposalSummaryResponse](doc/PageResponseInsurerProposalSummaryResponse.md)
  - [PageResponseIntentView](doc/PageResponseIntentView.md)
  - [PageResponseInvitationResponse](doc/PageResponseInvitationResponse.md)
  - [PageResponseKycCheckSummaryResponse](doc/PageResponseKycCheckSummaryResponse.md)
+ - [PageResponseMyNotificationResponse](doc/PageResponseMyNotificationResponse.md)
+ - [PageResponseMyPolicySummaryResponse](doc/PageResponseMyPolicySummaryResponse.md)
+ - [PageResponseNotificationTemplateSummary](doc/PageResponseNotificationTemplateSummary.md)
  - [PageResponseOrganizationSummaryResponse](doc/PageResponseOrganizationSummaryResponse.md)
  - [PageResponsePaymentExceptionSummary](doc/PageResponsePaymentExceptionSummary.md)
  - [PageResponsePaymentFileImport](doc/PageResponsePaymentFileImport.md)
+ - [PageResponsePoliceCheckResponse](doc/PageResponsePoliceCheckResponse.md)
  - [PageResponseProductSummaryResponse](doc/PageResponseProductSummaryResponse.md)
  - [PageResponseProposalSummaryResponse](doc/PageResponseProposalSummaryResponse.md)
  - [PageResponseQuoteRequestSummaryResponse](doc/PageResponseQuoteRequestSummaryResponse.md)
@@ -369,6 +420,7 @@ Class | Method | HTTP request | Description
  - [PaymentMethodsResponse](doc/PaymentMethodsResponse.md)
  - [PaymentNextAction](doc/PaymentNextAction.md)
  - [PaymentNextActionType](doc/PaymentNextActionType.md)
+ - [PaymentPlan](doc/PaymentPlan.md)
  - [PaymentPurpose](doc/PaymentPurpose.md)
  - [PaymentQueueStatus](doc/PaymentQueueStatus.md)
  - [PaymentResolution](doc/PaymentResolution.md)
@@ -382,7 +434,24 @@ Class | Method | HTTP request | Description
  - [PlateFormatsResponse](doc/PlateFormatsResponse.md)
  - [PlatformSettingResponse](doc/PlatformSettingResponse.md)
  - [PlatformSettingsResponse](doc/PlatformSettingsResponse.md)
+ - [PoliceCheckResponse](doc/PoliceCheckResponse.md)
+ - [PoliceVerificationResponse](doc/PoliceVerificationResponse.md)
+ - [PolicyCertificate](doc/PolicyCertificate.md)
+ - [PolicyCoverage](doc/PolicyCoverage.md)
+ - [PolicyDetailResponse](doc/PolicyDetailResponse.md)
+ - [PolicyDocument](doc/PolicyDocument.md)
+ - [PolicyDocumentStatus](doc/PolicyDocumentStatus.md)
+ - [PolicyDocumentType](doc/PolicyDocumentType.md)
+ - [PolicyEventType](doc/PolicyEventType.md)
+ - [PolicyInstalment](doc/PolicyInstalment.md)
+ - [PolicyInsurerRef](doc/PolicyInsurerRef.md)
+ - [PolicyProductRef](doc/PolicyProductRef.md)
+ - [PolicyProposalRef](doc/PolicyProposalRef.md)
+ - [PolicyStatus](doc/PolicyStatus.md)
+ - [PolicyTimelineEvent](doc/PolicyTimelineEvent.md)
+ - [PolicyVehicleRef](doc/PolicyVehicleRef.md)
  - [PolicyholderSource](doc/PolicyholderSource.md)
+ - [PreviewNotificationTemplateRequest](doc/PreviewNotificationTemplateRequest.md)
  - [ProblemDetail](doc/ProblemDetail.md)
  - [ProductDocumentResponse](doc/ProductDocumentResponse.md)
  - [ProductResponse](doc/ProductResponse.md)
@@ -419,6 +488,7 @@ Class | Method | HTTP request | Description
  - [PublicPlatformSettingsResponse](doc/PublicPlatformSettingsResponse.md)
  - [PublicReferenceValueResponse](doc/PublicReferenceValueResponse.md)
  - [PublicReferenceValuesResponse](doc/PublicReferenceValuesResponse.md)
+ - [PublicVerificationResponse](doc/PublicVerificationResponse.md)
  - [PublishProductVersionRequest](doc/PublishProductVersionRequest.md)
  - [QuoteChargeResponse](doc/QuoteChargeResponse.md)
  - [QuoteCoverageResponse](doc/QuoteCoverageResponse.md)
@@ -443,12 +513,14 @@ Class | Method | HTTP request | Description
  - [ReferenceStatus](doc/ReferenceStatus.md)
  - [ReferenceValueResponse](doc/ReferenceValueResponse.md)
  - [RefreshTokenRequest](doc/RefreshTokenRequest.md)
+ - [RegisterDeviceRequest](doc/RegisterDeviceRequest.md)
  - [RegistrationDocResponse](doc/RegistrationDocResponse.md)
  - [RegistryLookupResponse](doc/RegistryLookupResponse.md)
  - [RejectInspectionRequest](doc/RejectInspectionRequest.md)
  - [RejectKycCheckRequest](doc/RejectKycCheckRequest.md)
  - [RejectProposalRequest](doc/RejectProposalRequest.md)
  - [RejectionReasonCode](doc/RejectionReasonCode.md)
+ - [RenewalType](doc/RenewalType.md)
  - [ReplaceCoveragesRequest](doc/ReplaceCoveragesRequest.md)
  - [RequestOnSiteInspectionRequest](doc/RequestOnSiteInspectionRequest.md)
  - [RequestOtpRequest](doc/RequestOtpRequest.md)
@@ -470,6 +542,7 @@ Class | Method | HTTP request | Description
  - [StaffLoginRequest](doc/StaffLoginRequest.md)
  - [StaffUserResponse](doc/StaffUserResponse.md)
  - [StartContactVerificationRequest](doc/StartContactVerificationRequest.md)
+ - [SubjectType](doc/SubjectType.md)
  - [SubmitInspectionRequest](doc/SubmitInspectionRequest.md)
  - [SubmitProposalRequest](doc/SubmitProposalRequest.md)
  - [SuitabilityAnswerRequest](doc/SuitabilityAnswerRequest.md)
@@ -478,6 +551,7 @@ Class | Method | HTTP request | Description
  - [SuitabilityReason](doc/SuitabilityReason.md)
  - [SuitabilityResult](doc/SuitabilityResult.md)
  - [SuspendOrganizationRequest](doc/SuspendOrganizationRequest.md)
+ - [TestNotificationTemplateRequest](doc/TestNotificationTemplateRequest.md)
  - [TestPlateFormatRequest](doc/TestPlateFormatRequest.md)
  - [TestPlateFormatResponse](doc/TestPlateFormatResponse.md)
  - [TokenResponse](doc/TokenResponse.md)
@@ -488,11 +562,14 @@ Class | Method | HTTP request | Description
  - [UnderwritingOutcome](doc/UnderwritingOutcome.md)
  - [UnderwritingResult](doc/UnderwritingResult.md)
  - [UnderwritingRulesResponse](doc/UnderwritingRulesResponse.md)
+ - [UnreadCountResponse](doc/UnreadCountResponse.md)
  - [UpdateBrokerProposalRequest](doc/UpdateBrokerProposalRequest.md)
  - [UpdateDriverRequest](doc/UpdateDriverRequest.md)
  - [UpdateInsurerRatingSettingsRequest](doc/UpdateInsurerRatingSettingsRequest.md)
  - [UpdateMeRequest](doc/UpdateMeRequest.md)
  - [UpdateMyProfileRequest](doc/UpdateMyProfileRequest.md)
+ - [UpdateNotificationPreferencesRequest](doc/UpdateNotificationPreferencesRequest.md)
+ - [UpdateNotificationTemplateRequest](doc/UpdateNotificationTemplateRequest.md)
  - [UpdateOrganizationRequest](doc/UpdateOrganizationRequest.md)
  - [UpdateOtpSettingsRequest](doc/UpdateOtpSettingsRequest.md)
  - [UpdatePaymentMethodRequest](doc/UpdatePaymentMethodRequest.md)
@@ -514,6 +591,8 @@ Class | Method | HTTP request | Description
  - [VehicleDriverResponse](doc/VehicleDriverResponse.md)
  - [VehicleResponse](doc/VehicleResponse.md)
  - [VehicleUsage](doc/VehicleUsage.md)
+ - [VerificationConfigResponse](doc/VerificationConfigResponse.md)
+ - [VerificationResult](doc/VerificationResult.md)
  - [VerifyContactRequest](doc/VerifyContactRequest.md)
  - [VerifyKycCheckRequest](doc/VerifyKycCheckRequest.md)
  - [VerifyOtpRequest](doc/VerifyOtpRequest.md)

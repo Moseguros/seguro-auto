@@ -3,7 +3,6 @@ package mz.co.moseguros.notification.application;
 import java.time.Clock;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 import mz.co.moseguros.notification.DeliveryResult;
@@ -12,7 +11,9 @@ import mz.co.moseguros.notification.domain.Destinations;
 import mz.co.moseguros.notification.domain.OutboundMessage;
 import mz.co.moseguros.notification.domain.OutboundMessageRepository;
 import mz.co.moseguros.notification.infrastructure.NotificationConfig;
-import mz.co.moseguros.notification.infrastructure.OtpDeliveryChannel;
+import mz.co.moseguros.notification.infrastructure.ChannelSender;
+import mz.co.moseguros.notification.infrastructure.OutboundContent;
+import mz.co.moseguros.notification.infrastructure.ProviderErrors;
 import mz.co.moseguros.notification.infrastructure.ProviderResult;
 import mz.co.moseguros.shared.domain.Channel;
 import mz.co.moseguros.shared.tenant.RunAsSystem;
@@ -36,13 +37,13 @@ public class SmsMessageService {
 
     private static final Logger log = LoggerFactory.getLogger(SmsMessageService.class);
 
-    private final OtpDeliveryChannel sms;
+    private final ChannelSender sms;
     private final OutboundMessageRepository messages;
     private final MessageSource texts;
     private final TransactionTemplate tx;
     private final Clock clock;
 
-    public SmsMessageService(List<OtpDeliveryChannel> channels, OutboundMessageRepository messages,
+    public SmsMessageService(List<ChannelSender> channels, OutboundMessageRepository messages,
                              @Qualifier("notificationMessageSource") MessageSource texts, TransactionTemplate tx,
                              Clock clock) {
         this.sms = channels.stream().filter(c -> c.channel() == Channel.SMS).findFirst().orElse(null);
@@ -66,28 +67,27 @@ public class SmsMessageService {
 
         tx.executeWithoutResult(status -> {
             OutboundMessage message = messages.findById(messageId).orElseThrow();
-            if (result.accepted()) {
+            if (result.success()) {
                 message.markSent(result.providerMessageId(), clock.instant());
             } else {
-                message.markFailed(result.failureReason());
+                message.markFailed(result.reason());
             }
         });
-        DeliveryStatus status = result.accepted() ? DeliveryStatus.SENT : DeliveryStatus.FAILED;
+        DeliveryStatus status = result.success() ? DeliveryStatus.SENT : DeliveryStatus.FAILED;
         log.info("SMS {} ({}, {}) via {} to {} for {}: {}{}", messageId, messagePurpose, templateKey, provider, masked,
-                correlationId, status, result.accepted() ? "" : " (" + result.failureReason() + ")");
-        return new DeliveryResult(messageId, status, result.accepted() ? null : result.failureReason());
+                correlationId, status, result.success() ? "" : " (" + result.reason() + ")");
+        return new DeliveryResult(messageId, status, result.success() ? null : result.reason());
     }
 
     private ProviderResult deliver(String to, String templateKey, Object[] args, Locale locale) {
         if (sms == null) {
-            return ProviderResult.failed("channel not configured");
+            return ProviderResult.temporary("none", "channel not configured");
         }
         try {
             String text = texts.getMessage(templateKey, args, locale);
-            return sms.send(to, text, Map.of());
+            return sms.send(new OutboundContent(to, null, text, null, null));
         } catch (RuntimeException e) {
-            log.warn("Unexpected error from provider {} ({})", sms.provider(), e.getClass().getName());
-            return ProviderResult.failed("provider error: " + e.getClass().getSimpleName());
+            return ProviderErrors.classify(sms.provider(), e);
         }
     }
 

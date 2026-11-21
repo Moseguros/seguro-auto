@@ -7,3 +7,7 @@ pnpm-lock.yaml
 public
 # Cópias exactas dos casos de referência (docs/tasks/S3-rating-cases.md)
 src/features/tariffs/fixtures
+playwright-report-stack
+test-results-stack
+# nginx (S6-08)
+security-headers.inc

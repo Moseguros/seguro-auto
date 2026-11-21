@@ -20,7 +20,6 @@ import mz.co.moseguros.TestcontainersConfiguration;
 import mz.co.moseguros.identity.IdentityApi;
 import mz.co.moseguros.identity.domain.UserAccount;
 import mz.co.moseguros.notification.FakeOtpDeliveryChannels;
-import mz.co.moseguros.notification.infrastructure.OtpDeliveryChannel;
 import mz.co.moseguros.payment.PaymentEventsRecorder;
 import mz.co.moseguros.payment.PaymentFlowSupport;
 import mz.co.moseguros.payment.PaymentFlowSupport.Broker;
@@ -128,12 +127,12 @@ class ProposalPaymentNotifierIT {
         UUID intentId = id(payReference(c.token(), proposal));
         inSystem(tx, () -> states.markSucceeded(intentId, null, ConfirmedBy.REFERENCE_FILE, null, "test"));
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() ->
-                assertThat(support.proposalRow(proposal).get("status")).isEqualTo("PAID"));
+                assertThat(support.proposalRow(proposal).get("status")).isIn("PAID", "CONVERTED")); // S6-01
         return intentId;
     }
 
     String subject(FakeOtpDeliveryChannels.Sent sent) {
-        return sent.params().get(OtpDeliveryChannel.PARAM_SUBJECT);
+        return sent.subject();
     }
 
     @Test
@@ -171,7 +170,9 @@ class ProposalPaymentNotifierIT {
         assertThat(channels.sentTo(underwriterEmail)).isEmpty();
         assertThat(channels.sentTo(disabledFinanceEmail)).isEmpty();
         assertThat(channels.sentTo(disabledBroker.getEmail())).isEmpty();
-        assertThat(channels.sentTo(c.account().getMsisdn().e164())).as("e-mail, not SMS").isEmpty();
+        // S6-04: o WhatsApp das notificações (PAYMENT_REFERENCE_GENERATED, PAYMENT_SUCCEEDED) vai para o telemóvel
+        assertThat(channels.sentTo(c.account().getMsisdn().e164())).as("e-mail, not SMS")
+                .noneMatch(s -> s.channel() == mz.co.moseguros.shared.domain.Channel.SMS);
 
         List<String> purposes = support.owner().queryForList("""
                 select purpose from notification.outbound_message where correlation_id = ?""", String.class, intentId);
@@ -198,8 +199,8 @@ class ProposalPaymentNotifierIT {
         UUID intentId = pay(c, proposal);
 
         String msisdn = c.account().getMsisdn().e164();
-        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertThat(channels.sentTo(msisdn)).hasSize(1));
-        assertThat(channels.lastTo(msisdn).text()).startsWith("MoSeguros: recebemos o pagamento de 2 999,00 MT");
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertThat(smsTo(msisdn)).hasSize(1)); // S6-04: só o SMS (as notificações vão por WhatsApp)
+        assertThat(smsTo(msisdn).get(0).text()).startsWith("MoSeguros: recebemos o pagamento de 2 999,00 MT");
         await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> assertThat(support.owner().queryForList("""
                 select channel from notification.outbound_message where correlation_id = ?""", String.class, intentId))
                 .containsExactlyInAnyOrder("SMS", "EMAIL", "EMAIL", "EMAIL", "EMAIL"));
@@ -226,6 +227,11 @@ class ProposalPaymentNotifierIT {
         }
         assertThat(channels.sentTo(email)).isEmpty();
         assertThat(messagesFor(event.intentId())).isZero();
+    }
+
+    List<FakeOtpDeliveryChannels.Sent> smsTo(String msisdn) {
+        return channels.sentTo(msisdn).stream().filter(s -> s.channel() == mz.co.moseguros.shared.domain.Channel.SMS)
+                .toList();
     }
 
     /** Mensagens registadas com esta intenção como {@code correlationId}. */

@@ -281,6 +281,14 @@ export interface BrokerVehicleRequest {
   year: number;
 }
 
+export type CaptchaProvider = (typeof CaptchaProvider)[keyof typeof CaptchaProvider];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CaptchaProvider = {
+  TURNSTILE: 'TURNSTILE',
+  NONE: 'NONE',
+} as const;
+
 export interface CatalogInsurerResponse {
   displayName: string;
   id: string;
@@ -325,6 +333,26 @@ export interface CatalogProductResponse {
   vehicleCategories: VehicleCategory[];
   versionNo: number;
 }
+
+/**
+ * Só nas consultas por código: se o certificado mostrado ainda é o actual
+ */
+export type CertificateCheckStatus =
+  (typeof CertificateCheckStatus)[keyof typeof CertificateCheckStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CertificateCheckStatus = {
+  CURRENT: 'CURRENT',
+  REVOKED: 'REVOKED',
+} as const;
+
+export type CertificateStatus = (typeof CertificateStatus)[keyof typeof CertificateStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CertificateStatus = {
+  VALID: 'VALID',
+  REVOKED: 'REVOKED',
+} as const;
 
 export type ChargeType = (typeof ChargeType)[keyof typeof ChargeType];
 
@@ -383,6 +411,18 @@ export interface ContactResponse {
 export interface ContactsResponse {
   contacts: ContactResponse[];
 }
+
+export type CoverStatus = (typeof CoverStatus)[keyof typeof CoverStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CoverStatus = {
+  COVERED: 'COVERED',
+  NOT_STARTED: 'NOT_STARTED',
+  ENDED: 'ENDED',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED',
+  LAPSED: 'LAPSED',
+} as const;
 
 export type CoverageRequestCapitalType =
   (typeof CoverageRequestCapitalType)[keyof typeof CoverageRequestCapitalType];
@@ -548,6 +588,16 @@ export interface CoverageResponse {
   requiresCodes?: CoverageResponseRequiresCodesItem[];
   territorialScope?: string[];
 }
+
+export type CoverageType = (typeof CoverageType)[keyof typeof CoverageType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CoverageType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+} as const;
 
 export interface CreateBrokerProposalRequest {
   driver: BrokerProposalDriverRequest;
@@ -938,6 +988,20 @@ export interface DeliveryReceiptRequest {
   status: DeliveryReceiptRequestStatus;
 }
 
+export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const DevicePlatform = {
+  ANDROID: 'ANDROID',
+  IOS: 'IOS',
+} as const;
+
+export interface DeviceResponse {
+  active: boolean;
+  id: string;
+  platform: DevicePlatform;
+}
+
 export interface DriverResponse {
   birthDate: string;
   createdAt: string;
@@ -1066,6 +1130,16 @@ export const InspectionStatus = {
   REJECTED: 'REJECTED',
 } as const;
 
+export type InstalmentStatus = (typeof InstalmentStatus)[keyof typeof InstalmentStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const InstalmentStatus = {
+  DUE: 'DUE',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  CANCELLED: 'CANCELLED',
+} as const;
+
 export interface InsurerBrandingResponse {
   /** @nullable */
   logoFileId: string | null;
@@ -1164,6 +1238,21 @@ export interface InsurerPaymentSummary {
   status: PaymentStatus;
   succeededAt?: string;
   targetLabel: string;
+}
+
+export interface InsurerPolicySummaryResponse {
+  coverStatus: CoverStatus;
+  coverageType: CoverageType;
+  endAt: string;
+  id: string;
+  issuedAt: string;
+  number: string;
+  plate: string;
+  policyholderName: string;
+  productName: string;
+  startAt: string;
+  status: PolicyStatus;
+  totalPremium: Money;
 }
 
 export interface InsurerProfileRequest {
@@ -1711,6 +1800,131 @@ export interface MyKycResponse {
   state: KycState;
 }
 
+export interface MyNotificationResponse {
+  body: string;
+  category: string;
+  createdAt: string;
+  deepLink?: string;
+  id: string;
+  readAt?: string;
+  templateCode: string;
+  title: string;
+  webPath?: string;
+}
+
+export interface MyPolicySummaryResponse {
+  certificateReady: boolean;
+  coverStatus: CoverStatus;
+  coverageType: CoverageType;
+  endAt: string;
+  id: string;
+  insurer: PolicyInsurerRef;
+  number: string;
+  productName: string;
+  startAt: string;
+  status: PolicyStatus;
+  vehicle: PolicyVehicleRef;
+}
+
+export type NotificationCategory = (typeof NotificationCategory)[keyof typeof NotificationCategory];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const NotificationCategory = {
+  PAYMENT: 'PAYMENT',
+  POLICY: 'POLICY',
+  LEGAL: 'LEGAL',
+  PROPOSAL: 'PROPOSAL',
+  QUOTE: 'QUOTE',
+} as const;
+
+export interface NotificationCategoryPreferences {
+  category: NotificationCategory;
+  channels: NotificationChannelPreference[];
+  mandatory: boolean;
+}
+
+export interface NotificationCategoryPreferencesChange {
+  category: NotificationCategory;
+  /**
+   * @minItems 0
+   * @maxItems 4
+   */
+  channels: NotificationChannelPreferenceChange[];
+}
+
+export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const NotificationChannel = {
+  PUSH: 'PUSH',
+  WHATSAPP: 'WHATSAPP',
+  SMS: 'SMS',
+  EMAIL: 'EMAIL',
+} as const;
+
+export interface NotificationChannelPreference {
+  available: boolean;
+  channel: NotificationChannel;
+  enabled: boolean;
+}
+
+export interface NotificationChannelPreferenceChange {
+  channel: NotificationChannel;
+  enabled: boolean;
+}
+
+export interface NotificationPreferencesResponse {
+  categories: NotificationCategoryPreferences[];
+}
+
+export type NotificationTemplateDetailSampleParams = { [key: string]: string };
+
+export interface NotificationTemplateDetail {
+  active: boolean;
+  body: string;
+  channel: NotificationChannel;
+  code: string;
+  customized: boolean;
+  defaultBody?: string;
+  defaultSubject?: string;
+  id: string;
+  locale: string;
+  sampleParams: NotificationTemplateDetailSampleParams;
+  subject?: string;
+  updatedAt: string;
+  updatedBy: string;
+  variables: string[];
+  version: number;
+  whatsappParams?: string[];
+  whatsappTemplateName?: string;
+}
+
+export interface NotificationTemplatePreview {
+  body?: string;
+  fits?: boolean;
+  length?: number;
+  limit?: number;
+  smsText?: string;
+  subject?: string;
+}
+
+export interface NotificationTemplateSummary {
+  active: boolean;
+  channel: NotificationChannel;
+  code: string;
+  customized: boolean;
+  id: string;
+  locale: string;
+  subject?: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface NotificationTemplateTestResult {
+  reason?: string;
+  status: string;
+}
+
 /**
  * NUIT: 9 dígitos
  * @pattern ^\d{9}$
@@ -2064,6 +2278,13 @@ export interface PageResponseInsurerPaymentSummary {
   totalElements: number;
 }
 
+export interface PageResponseInsurerPolicySummaryResponse {
+  content: InsurerPolicySummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseInsurerProposalSummaryResponse {
   content: InsurerProposalSummaryResponse[];
   page: number;
@@ -2092,6 +2313,27 @@ export interface PageResponseKycCheckSummaryResponse {
   totalElements: number;
 }
 
+export interface PageResponseMyNotificationResponse {
+  content: MyNotificationResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseMyPolicySummaryResponse {
+  content: MyPolicySummaryResponse[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponseNotificationTemplateSummary {
+  content: NotificationTemplateSummary[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
 export interface PageResponseOrganizationSummaryResponse {
   content: OrganizationSummaryResponse[];
   page: number;
@@ -2108,6 +2350,13 @@ export interface PageResponsePaymentExceptionSummary {
 
 export interface PageResponsePaymentFileImport {
   content: PaymentFileImport[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface PageResponsePoliceCheckResponse {
+  content: PoliceCheckResponse[];
   page: number;
   size: number;
   totalElements: number;
@@ -2497,6 +2746,16 @@ export const PaymentNextActionType = {
   NONE: 'NONE',
 } as const;
 
+export type PaymentPlan = (typeof PaymentPlan)[keyof typeof PaymentPlan];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PaymentPlan = {
+  FULL: 'FULL',
+  SEMIANNUAL: 'SEMIANNUAL',
+  QUARTERLY: 'QUARTERLY',
+  MONTHLY: 'MONTHLY',
+} as const;
+
 export type PaymentPurpose = (typeof PaymentPurpose)[keyof typeof PaymentPurpose];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -2636,6 +2895,205 @@ export interface PlatformSettingsResponse {
   settings: PlatformSettingResponse[];
 }
 
+export interface PoliceCheckResponse {
+  checkedAt: string;
+  id: string;
+  /** Vazio quando um código não correspondeu a nenhuma apólice */
+  plateMasked?: string;
+  result: VerificationResult;
+  subjectType: SubjectType;
+}
+
+/**
+ * Resultado da verificação para um agente da polícia; sem dados pessoais do tomador
+ */
+export interface PoliceVerificationResponse {
+  /** Certificado do código ou, por matrícula, o certificado em vigor */
+  certificateNumber?: string;
+  certificateStatus?: CertificateCheckStatus;
+  checkedAt: string;
+  coverageType?: CoverageType;
+  insurerName?: string;
+  plateMasked?: string;
+  policyNumber?: string;
+  status: VerificationResult;
+  validFrom?: string;
+  /** Fim da cobertura (exclusivo) */
+  validTo?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+}
+
+export interface PolicyCertificate {
+  fileId?: string;
+  id: string;
+  number: string;
+  status: CertificateStatus;
+  validFrom: string;
+  validTo: string;
+  verificationUrl: string;
+}
+
+export type PolicyCoverageDeductibleType =
+  (typeof PolicyCoverageDeductibleType)[keyof typeof PolicyCoverageDeductibleType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyCoverageDeductibleType = {
+  NONE: 'NONE',
+  FIXED: 'FIXED',
+  PERCENT: 'PERCENT',
+} as const;
+
+export interface PolicyCoverage {
+  capital?: Money;
+  code: string;
+  deductibleAmount?: Money;
+  deductiblePercent?: number;
+  deductibleType: PolicyCoverageDeductibleType;
+  mandatory: boolean;
+  premium: Money;
+}
+
+export interface PolicyDetailResponse {
+  certificate?: PolicyCertificate;
+  coverStatus: CoverStatus;
+  coverageType: CoverageType;
+  coverages: PolicyCoverage[];
+  /** Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId} */
+  documents: PolicyDocument[];
+  endAt: string;
+  /** Só no detalhe da seguradora */
+  events?: PolicyTimelineEvent[];
+  id: string;
+  instalments: PolicyInstalment[];
+  insurer: PolicyInsurerRef;
+  issuedAt: string;
+  number: string;
+  paymentPlan: PaymentPlan;
+  policyholderName: string;
+  product: PolicyProductRef;
+  proposal?: PolicyProposalRef;
+  renewalType: RenewalType;
+  startAt: string;
+  status: PolicyStatus;
+  totalPremium: Money;
+  vehicle: PolicyVehicleRef;
+}
+
+/**
+ * Documento da apólice; PENDING (sem fileId) enquanto não foi gerado
+ */
+export interface PolicyDocument {
+  fileId?: string;
+  fileName?: string;
+  status: PolicyDocumentStatus;
+  type: PolicyDocumentType;
+}
+
+export type PolicyDocumentStatus = (typeof PolicyDocumentStatus)[keyof typeof PolicyDocumentStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyDocumentStatus = {
+  READY: 'READY',
+  PENDING: 'PENDING',
+} as const;
+
+export type PolicyDocumentType = (typeof PolicyDocumentType)[keyof typeof PolicyDocumentType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyDocumentType = {
+  CERTIFICATE: 'CERTIFICATE',
+  SCHEDULE: 'SCHEDULE',
+  GENERAL_CONDITIONS: 'GENERAL_CONDITIONS',
+  PRE_CONTRACT_INFO: 'PRE_CONTRACT_INFO',
+  PROPOSAL: 'PROPOSAL',
+} as const;
+
+export type PolicyEventType = (typeof PolicyEventType)[keyof typeof PolicyEventType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyEventType = {
+  ISSUED: 'ISSUED',
+  CERTIFICATE_ISSUED: 'CERTIFICATE_ISSUED',
+  DOCUMENTS_READY: 'DOCUMENTS_READY',
+} as const;
+
+export interface PolicyInstalment {
+  amount: Money;
+  dueDate: string;
+  paidAt?: string;
+  seq: number;
+  status: InstalmentStatus;
+}
+
+export interface PolicyInsurerRef {
+  id: string;
+  name?: string;
+}
+
+export type PolicyProductRefType = (typeof PolicyProductRefType)[keyof typeof PolicyProductRefType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyProductRefType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
+export interface PolicyProductRef {
+  name: string;
+  type: PolicyProductRefType;
+  versionId: string;
+}
+
+/**
+ * Só no detalhe da seguradora
+ */
+export interface PolicyProposalRef {
+  id: string;
+  number?: string;
+}
+
+export type PolicyStatus = (typeof PolicyStatus)[keyof typeof PolicyStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  LAPSED: 'LAPSED',
+} as const;
+
+export type PolicyTimelineEventActorType =
+  (typeof PolicyTimelineEventActorType)[keyof typeof PolicyTimelineEventActorType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PolicyTimelineEventActorType = {
+  CUSTOMER: 'CUSTOMER',
+  STAFF: 'STAFF',
+  SYSTEM: 'SYSTEM',
+} as const;
+
+/**
+ * Só no detalhe da seguradora
+ */
+export interface PolicyTimelineEvent {
+  actorType: PolicyTimelineEventActorType;
+  occurredAt: string;
+  type: PolicyEventType;
+}
+
+export interface PolicyVehicleRef {
+  id: string;
+  make?: string;
+  model?: string;
+  plate: string;
+  year?: number;
+}
+
 /**
  * PROFILE: tomador copiado do perfil do cliente; BROKER: preenchido pelo mediador porque o perfil estava incompleto (S4-06)
  */
@@ -2652,6 +3110,18 @@ export const PolicyholderSource = {
  */
 export interface PremiumBreakdown {
   [key: string]: unknown;
+}
+
+export type PreviewNotificationTemplateRequestParams = { [key: string]: string };
+
+export interface PreviewNotificationTemplateRequest {
+  body: string;
+  params?: PreviewNotificationTemplateRequestParams;
+  /**
+   * @minLength 0
+   * @maxLength 1000
+   */
+  subject?: string;
 }
 
 /**
@@ -3269,6 +3739,22 @@ export interface PublicReferenceValuesResponse {
   values: PublicReferenceValueResponse[];
 }
 
+/**
+ * Resultado da verificação pública; sem dados pessoais do tomador
+ */
+export interface PublicVerificationResponse {
+  certificateStatus?: CertificateCheckStatus;
+  checkedAt: string;
+  coverageType?: CoverageType;
+  insurerName?: string;
+  /** Matrícula com os dígitos trocados por * */
+  plateMasked?: string;
+  status: VerificationResult;
+  validFrom?: string;
+  /** Fim da cobertura (exclusivo) */
+  validTo?: string;
+}
+
 export interface PublishProductVersionRequest {
   version: number;
 }
@@ -3681,6 +4167,20 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
+export interface RegisterDeviceRequest {
+  /**
+   * @minLength 0
+   * @maxLength 30
+   */
+  appVersion?: string;
+  platform: DevicePlatform;
+  /**
+   * @minLength 0
+   * @maxLength 512
+   */
+  token: string;
+}
+
 export interface RegistrationDocResponse {
   contentType: string;
   /** Descarregar com GET /api/v1/files/{fileId} (downloadFile) */
@@ -3763,6 +4263,14 @@ export const RejectionReasonCode = {
   FALSE_DECLARATION: 'FALSE_DECLARATION',
   DOCUMENTS_INVALID: 'DOCUMENTS_INVALID',
   OTHER: 'OTHER',
+} as const;
+
+export type RenewalType = (typeof RenewalType)[keyof typeof RenewalType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const RenewalType = {
+  ANNUAL_RENEWABLE: 'ANNUAL_RENEWABLE',
+  FIXED_TERM: 'FIXED_TERM',
 } as const;
 
 export interface ReplaceCoveragesRequest {
@@ -4152,6 +4660,14 @@ export interface StartContactVerificationRequest {
   value: string;
 }
 
+export type SubjectType = (typeof SubjectType)[keyof typeof SubjectType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const SubjectType = {
+  PLATE: 'PLATE',
+  TOKEN: 'TOKEN',
+} as const;
+
 export interface SubmitInspectionRequest {
   /**
    * Quilometragem; fora de 0–2 000 000 → OUT_OF_RANGE
@@ -4222,6 +4738,14 @@ export interface SuspendOrganizationRequest {
    * @maxLength 500
    */
   reason: string;
+}
+
+export interface TestNotificationTemplateRequest {
+  /**
+   * @minLength 0
+   * @maxLength 512
+   */
+  destination: string;
 }
 
 export interface TestPlateFormatRequest {
@@ -4359,6 +4883,10 @@ export interface UnderwritingRulesResponse {
   version: number;
 }
 
+export interface UnreadCountResponse {
+  count: number;
+}
+
 export interface UpdateBrokerProposalRequest {
   policyholder?: BrokerPolicyholderRequest;
   /** Nova data de início (hoje a hoje + 60 dias, Africa/Maputo); omitida mantém a actual */
@@ -4456,6 +4984,35 @@ export interface UpdateMyProfileRequest {
   province: UpdateMyProfileRequestProvince;
   /** Versão lida; diferente da gravada → 409 CONCURRENT_MODIFICATION */
   version: number;
+}
+
+export interface UpdateNotificationPreferencesRequest {
+  /**
+   * @minItems 0
+   * @maxItems 20
+   */
+  categories: NotificationCategoryPreferencesChange[];
+}
+
+export interface UpdateNotificationTemplateRequest {
+  active?: boolean;
+  body: string;
+  /**
+   * @minLength 0
+   * @maxLength 1000
+   */
+  subject?: string;
+  version: number;
+  /**
+   * @minItems 0
+   * @maxItems 20
+   */
+  whatsappParams?: string[];
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  whatsappTemplateName?: string;
 }
 
 export type UpdateOrganizationRequestProvince =
@@ -4863,6 +5420,24 @@ export const VehicleUsage = {
   DRIVING_SCHOOL: 'DRIVING_SCHOOL',
 } as const;
 
+export interface VerificationConfigResponse {
+  captchaProvider: CaptchaProvider;
+  /** Chave pública do widget; omitida com NONE */
+  captchaSiteKey?: string;
+}
+
+export type VerificationResult = (typeof VerificationResult)[keyof typeof VerificationResult];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const VerificationResult = {
+  VALID: 'VALID',
+  NOT_YET_VALID: 'NOT_YET_VALID',
+  EXPIRED: 'EXPIRED',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED',
+  NOT_FOUND: 'NOT_FOUND',
+} as const;
+
 export interface VerifyContactRequest {
   /** challengeId devolvido no pedido */
   challengeId: string;
@@ -4903,6 +5478,15 @@ export const ListPlatformInvitationsStatus = {
   EXPIRED: 'EXPIRED',
   REVOKED: 'REVOKED',
 } as const;
+
+export type ListNotificationTemplatesParams = {
+  code?: string;
+  channel?: NotificationChannel;
+  locale?: string;
+  customized?: boolean;
+  page?: number;
+  size?: number;
+};
 
 export type ListAdminReferenceValuesParams = {
   active?: boolean;
@@ -5090,6 +5674,32 @@ export const ExportInsurerPaymentsMethod = {
   BANK_REFERENCE: 'BANK_REFERENCE',
 } as const;
 
+export type ListInsurerPoliciesParams = {
+  status?: PolicyStatus[];
+  productType?: ListInsurerPoliciesProductType;
+  issuedFrom?: string;
+  issuedTo?: string;
+  q?: string;
+  page?: number;
+  size?: number;
+  /**
+   * issuedAt, startAt ou endAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListInsurerPoliciesProductType =
+  (typeof ListInsurerPoliciesProductType)[keyof typeof ListInsurerPoliciesProductType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ListInsurerPoliciesProductType = {
+  MTPL_ONLY: 'MTPL_ONLY',
+  COMPREHENSIVE: 'COMPREHENSIVE',
+  TEMPORARY: 'TEMPORARY',
+  BORDER: 'BORDER',
+  FLEET: 'FLEET',
+} as const;
+
 export type UploadProductVersionDocumentBodyDocType =
   (typeof UploadProductVersionDocumentBodyDocType)[keyof typeof UploadProductVersionDocumentBodyDocType];
 
@@ -5197,12 +5807,28 @@ export type SubmitMyKycBody = {
   selfie?: Blob;
 };
 
+export type ListMyNotificationsParams = {
+  unreadOnly?: boolean;
+  page?: number;
+  size?: number;
+};
+
 export type ListMyPaymentsParams = {
   status?: PaymentStatus[];
   page?: number;
   size?: number;
   /**
    * createdAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type ListMyPoliciesParams = {
+  status?: PolicyStatus[];
+  page?: number;
+  size?: number;
+  /**
+   * issuedAt, startAt ou endAt, com ,asc ou ,desc
    */
   sort?: string;
 };
@@ -5324,6 +5950,24 @@ export const ListOrganizationUsersStatus = {
   DISABLED: 'DISABLED',
 } as const;
 
+export type ListMyPoliceChecksParams = {
+  from?: string;
+  to?: string;
+  page?: number;
+  size?: number;
+  /**
+   * checkedAt, com ,asc ou ,desc
+   */
+  sort?: string;
+};
+
+export type VerifyPlateAsPoliceParams = {
+  /**
+   * Matrícula
+   */
+  plate?: string;
+};
+
 export type UploadInspectionPhotoBody = {
   /** Gerado pelo cliente; torna o envio idempotente */
   clientPhotoId?: string;
@@ -5334,6 +5978,13 @@ export type UploadInspectionPhotoBody = {
   source?: PhotoSource;
   /** Hora da fotografia (ISO 8601) */
   takenAt?: string;
+};
+
+export type VerifyPlateParams = {
+  /**
+   * Matrícula
+   */
+  plate?: string;
 };
 
 export type ListReferenceValuesParams = {
@@ -5603,6 +6254,627 @@ export function useListPlatformInvitations<
 
   return query;
 }
+
+/**
+ * Permissão notification-template:manage. Filtros code (prefixo), channel, locale, customized; por code, channel e locale.
+ * @summary Lista os modelos das notificações
+ */
+export const listNotificationTemplates = (
+  params?: ListNotificationTemplatesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseNotificationTemplateSummary>(
+    { url: `/api/v1/admin/notification-templates`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListNotificationTemplatesQueryKey = (params?: ListNotificationTemplatesParams) => {
+  return [`/api/v1/admin/notification-templates`, ...(params ? [params] : [])] as const;
+};
+
+export const getListNotificationTemplatesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListNotificationTemplatesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listNotificationTemplates>>> = ({
+    signal,
+  }) => listNotificationTemplates(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listNotificationTemplates>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListNotificationTemplatesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listNotificationTemplates>>
+>;
+export type ListNotificationTemplatesQueryError = ErrorType<ProblemDetail>;
+
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListNotificationTemplatesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listNotificationTemplates>>,
+          TError,
+          Awaited<ReturnType<typeof listNotificationTemplates>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listNotificationTemplates>>,
+          TError,
+          Awaited<ReturnType<typeof listNotificationTemplates>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista os modelos das notificações
+ */
+
+export function useListNotificationTemplates<
+  TData = Awaited<ReturnType<typeof listNotificationTemplates>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListNotificationTemplatesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listNotificationTemplates>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListNotificationTemplatesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão notification-template:manage. defaultSubject e defaultBody são o texto do ficheiro de mensagens. Inexistente → 404 TEMPLATE_NOT_FOUND.
+ * @summary Consulta um modelo
+ */
+export const getNotificationTemplate = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplateDetail>(
+    { url: `/api/v1/admin/notification-templates/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetNotificationTemplateQueryKey = (id?: string) => {
+  return [`/api/v1/admin/notification-templates/${id}`] as const;
+};
+
+export const getGetNotificationTemplateQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNotificationTemplateQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotificationTemplate>>> = ({
+    signal,
+  }) => getNotificationTemplate(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationTemplate>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetNotificationTemplateQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNotificationTemplate>>
+>;
+export type GetNotificationTemplateQueryError = ErrorType<ProblemDetail>;
+
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getNotificationTemplate>>,
+          TError,
+          Awaited<ReturnType<typeof getNotificationTemplate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getNotificationTemplate>>,
+          TError,
+          Awaited<ReturnType<typeof getNotificationTemplate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta um modelo
+ */
+
+export function useGetNotificationTemplate<
+  TData = Awaited<ReturnType<typeof getNotificationTemplate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getNotificationTemplate>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetNotificationTemplateQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão notification-template:manage. Validação: TEMPLATE_SYNTAX, TEMPLATE_UNKNOWN_VARIABLE, REQUIRED, TOO_LONG, SMS_TOO_LONG (errors[] de 400 VALIDATION_ERROR); version diferente → 409 CONCURRENT_MODIFICATION. Fica customized.
+ * @summary Altera o texto de um modelo
+ */
+export const updateNotificationTemplate = (
+  id: string,
+  updateNotificationTemplateRequest: BodyType<UpdateNotificationTemplateRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<NotificationTemplateDetail>(
+    {
+      url: `/api/v1/admin/notification-templates/${id}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateNotificationTemplateRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotificationTemplate>>,
+    TError,
+    { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateNotificationTemplate>>,
+    { id: string; data: BodyType<UpdateNotificationTemplateRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateNotificationTemplate(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateNotificationTemplate>>
+>;
+export type UpdateNotificationTemplateMutationBody = BodyType<UpdateNotificationTemplateRequest>;
+export type UpdateNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera o texto de um modelo
+ */
+export const useUpdateNotificationTemplate = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateNotificationTemplate>>,
+      TError,
+      { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<UpdateNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão notification-template:manage. Não grava. Sem params usa os valores de exemplo. smsText, length, limit e fits só em SMS. Erros de validação como no PUT.
+ * @summary Pré-visualiza um texto
+ */
+export const previewNotificationTemplate = (
+  id: string,
+  previewNotificationTemplateRequest: BodyType<PreviewNotificationTemplateRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplatePreview>(
+    {
+      url: `/api/v1/admin/notification-templates/${id}/preview`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: previewNotificationTemplateRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getPreviewNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof previewNotificationTemplate>>,
+    TError,
+    { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof previewNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationKey = ['previewNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof previewNotificationTemplate>>,
+    { id: string; data: BodyType<PreviewNotificationTemplateRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return previewNotificationTemplate(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PreviewNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof previewNotificationTemplate>>
+>;
+export type PreviewNotificationTemplateMutationBody = BodyType<PreviewNotificationTemplateRequest>;
+export type PreviewNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Pré-visualiza um texto
+ */
+export const usePreviewNotificationTemplate = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof previewNotificationTemplate>>,
+      TError,
+      { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof previewNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<PreviewNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationOptions = getPreviewNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão notification-template:manage. customized passa a false.
+ * @summary Repõe o texto do ficheiro
+ */
+export const resetNotificationTemplate = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplateDetail>(
+    { url: `/api/v1/admin/notification-templates/${id}/reset`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getResetNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof resetNotificationTemplate>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof resetNotificationTemplate>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['resetNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof resetNotificationTemplate>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return resetNotificationTemplate(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ResetNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof resetNotificationTemplate>>
+>;
+
+export type ResetNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Repõe o texto do ficheiro
+ */
+export const useResetNotificationTemplate = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof resetNotificationTemplate>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof resetNotificationTemplate>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getResetNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão notification-template:manage. Envia já, com os valores de exemplo e o texto gravado, sem alternativa: telemóvel para SMS/WHATSAPP (INVALID_MSISDN), e-mail para EMAIL (INVALID_EMAIL), token FCM para PUSH.
+ * @summary Envia uma mensagem de teste
+ */
+export const testNotificationTemplate = (
+  id: string,
+  testNotificationTemplateRequest: BodyType<TestNotificationTemplateRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationTemplateTestResult>(
+    {
+      url: `/api/v1/admin/notification-templates/${id}/test`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: testNotificationTemplateRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getTestNotificationTemplateMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof testNotificationTemplate>>,
+    TError,
+    { id: string; data: BodyType<TestNotificationTemplateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof testNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<TestNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationKey = ['testNotificationTemplate'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof testNotificationTemplate>>,
+    { id: string; data: BodyType<TestNotificationTemplateRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return testNotificationTemplate(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TestNotificationTemplateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof testNotificationTemplate>>
+>;
+export type TestNotificationTemplateMutationBody = BodyType<TestNotificationTemplateRequest>;
+export type TestNotificationTemplateMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Envia uma mensagem de teste
+ */
+export const useTestNotificationTemplate = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof testNotificationTemplate>>,
+      TError,
+      { id: string; data: BodyType<TestNotificationTemplateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof testNotificationTemplate>>,
+  TError,
+  { id: string; data: BodyType<TestNotificationTemplateRequest> },
+  TContext
+> => {
+  const mutationOptions = getTestNotificationTemplateMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 
 /**
  * Permissão otp-settings:read.
@@ -12539,6 +13811,260 @@ export function useGetInsurerPayment<
 }
 
 /**
+ * Permissão policy:read. Filtros: status repetível; productType; issuedFrom e issuedTo em datas de Africa/Maputo (inclusivas, sobre issuedAt); q = número AP-… exacto, matrícula ou parte do nome do tomador. Ordenação issuedAt (defeito, desc), startAt ou endAt.
+ * @summary Lista as apólices da seguradora
+ */
+export const listInsurerPolicies = (
+  params?: ListInsurerPoliciesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseInsurerPolicySummaryResponse>(
+    { url: `/api/v1/insurer/policies`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListInsurerPoliciesQueryKey = (params?: ListInsurerPoliciesParams) => {
+  return [`/api/v1/insurer/policies`, ...(params ? [params] : [])] as const;
+};
+
+export const getListInsurerPoliciesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListInsurerPoliciesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listInsurerPolicies>>> = ({ signal }) =>
+    listInsurerPolicies(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listInsurerPolicies>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListInsurerPoliciesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listInsurerPolicies>>
+>;
+export type ListInsurerPoliciesQueryError = ErrorType<ProblemDetail>;
+
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListInsurerPoliciesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listInsurerPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listInsurerPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as apólices da seguradora
+ */
+
+export function useListInsurerPolicies<
+  TData = Awaited<ReturnType<typeof listInsurerPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListInsurerPoliciesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listInsurerPolicies>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListInsurerPoliciesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão policy:read. O detalhe da apólice com a linha temporal (events) e a proposta de origem. De outra seguradora → 404 POLICY_NOT_FOUND.
+ * @summary Consulta uma apólice da seguradora
+ */
+export const getInsurerPolicy = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PolicyDetailResponse>(
+    { url: `/api/v1/insurer/policies/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetInsurerPolicyQueryKey = (id?: string) => {
+  return [`/api/v1/insurer/policies/${id}`] as const;
+};
+
+export const getGetInsurerPolicyQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInsurerPolicyQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInsurerPolicy>>> = ({ signal }) =>
+    getInsurerPolicy(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInsurerPolicy>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetInsurerPolicyQueryResult = NonNullable<Awaited<ReturnType<typeof getInsurerPolicy>>>;
+export type GetInsurerPolicyQueryError = ErrorType<ProblemDetail>;
+
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getInsurerPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getInsurerPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma apólice da seguradora
+ */
+
+export function useGetInsurerPolicy<
+  TData = Awaited<ReturnType<typeof getInsurerPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInsurerPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetInsurerPolicyQueryOptions(id, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão product:read. Inclui as coberturas e os documentos.
  * @summary Consulta uma versão de um produto
  */
@@ -15930,6 +17456,169 @@ export const useRemoveMyContact = <TError = ErrorType<ProblemDetail>, TContext =
 };
 
 /**
+ * Permissão self:profile. Token já registado para este cliente → actualiza e reactiva; registado para outro cliente → esse fica inactivo e cria-se um novo para este.
+ * @summary Regista o dispositivo para push
+ */
+export const registerMyDevice = (
+  registerDeviceRequest: BodyType<RegisterDeviceRequest>,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<DeviceResponse>(
+    {
+      url: `/api/v1/me/devices`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: registerDeviceRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getRegisterMyDeviceMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof registerMyDevice>>,
+    TError,
+    { data: BodyType<RegisterDeviceRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof registerMyDevice>>,
+  TError,
+  { data: BodyType<RegisterDeviceRequest> },
+  TContext
+> => {
+  const mutationKey = ['registerMyDevice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof registerMyDevice>>,
+    { data: BodyType<RegisterDeviceRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return registerMyDevice(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RegisterMyDeviceMutationResult = NonNullable<
+  Awaited<ReturnType<typeof registerMyDevice>>
+>;
+export type RegisterMyDeviceMutationBody = BodyType<RegisterDeviceRequest>;
+export type RegisterMyDeviceMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Regista o dispositivo para push
+ */
+export const useRegisterMyDevice = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof registerMyDevice>>,
+      TError,
+      { data: BodyType<RegisterDeviceRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof registerMyDevice>>,
+  TError,
+  { data: BodyType<RegisterDeviceRequest> },
+  TContext
+> => {
+  const mutationOptions = getRegisterMyDeviceMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile. Remoção lógica (deixa de receber push). De outro cliente → 404 DEVICE_NOT_FOUND.
+ * @summary Remove o dispositivo
+ */
+export const unregisterMyDevice = (id: string, options?: SecondParameter<typeof http>) => {
+  return http<void>({ url: `/api/v1/me/devices/${id}`, method: 'DELETE' }, options);
+};
+
+export const getUnregisterMyDeviceMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unregisterMyDevice>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof unregisterMyDevice>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['unregisterMyDevice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof unregisterMyDevice>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return unregisterMyDevice(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UnregisterMyDeviceMutationResult = NonNullable<
+  Awaited<ReturnType<typeof unregisterMyDevice>>
+>;
+
+export type UnregisterMyDeviceMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Remove o dispositivo
+ */
+export const useUnregisterMyDevice = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof unregisterMyDevice>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof unregisterMyDevice>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getUnregisterMyDeviceMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Só os activos. Ordenação por createdAt (defeito, desc).
  * @summary Lista os condutores do cliente
  */
@@ -16618,6 +18307,642 @@ export const useSubmitMyKyc = <TError = ErrorType<ProblemDetail>, TContext = unk
 };
 
 /**
+ * Permissão self:profile. Todas as categorias, pela ordem do enum; canais pela ordem de envio (PUSH, WHATSAPP, SMS, EMAIL). available usa só os contactos verificados e os dispositivos activos.
+ * @summary Consulta as preferências de notificação
+ */
+export const getMyNotificationPreferences = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<NotificationPreferencesResponse>(
+    { url: `/api/v1/me/notification-preferences`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetMyNotificationPreferencesQueryKey = () => {
+  return [`/api/v1/me/notification-preferences`] as const;
+};
+
+export const getGetMyNotificationPreferencesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyNotificationPreferencesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyNotificationPreferences>>> = ({
+    signal,
+  }) => getMyNotificationPreferences(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyNotificationPreferencesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyNotificationPreferences>>
+>;
+export type GetMyNotificationPreferencesQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+          TError,
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+          TError,
+          Awaited<ReturnType<typeof getMyNotificationPreferences>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta as preferências de notificação
+ */
+
+export function useGetMyNotificationPreferences<
+  TData = Awaited<ReturnType<typeof getMyNotificationPreferences>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getMyNotificationPreferences>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyNotificationPreferencesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:profile. Só o que muda. Numa categoria obrigatória (PAYMENT, POLICY, LEGAL) não se desligam SMS, WhatsApp e e-mail ao mesmo tempo → 400 VALIDATION_ERROR com errors[0] = { field: categories[i].channels, code: MANDATORY_CATEGORY_NEEDS_CHANNEL } (o push não conta).
+ * @summary Altera as preferências de notificação
+ */
+export const updateMyNotificationPreferences = (
+  updateNotificationPreferencesRequest: BodyType<UpdateNotificationPreferencesRequest>,
+  options?: SecondParameter<typeof http>,
+) => {
+  return http<NotificationPreferencesResponse>(
+    {
+      url: `/api/v1/me/notification-preferences`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateNotificationPreferencesRequest,
+    },
+    options,
+  );
+};
+
+export const getUpdateMyNotificationPreferencesMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+    TError,
+    { data: BodyType<UpdateNotificationPreferencesRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+  TError,
+  { data: BodyType<UpdateNotificationPreferencesRequest> },
+  TContext
+> => {
+  const mutationKey = ['updateMyNotificationPreferences'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+    { data: BodyType<UpdateNotificationPreferencesRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateMyNotificationPreferences(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateMyNotificationPreferencesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateMyNotificationPreferences>>
+>;
+export type UpdateMyNotificationPreferencesMutationBody =
+  BodyType<UpdateNotificationPreferencesRequest>;
+export type UpdateMyNotificationPreferencesMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Altera as preferências de notificação
+ */
+export const useUpdateMyNotificationPreferences = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+      TError,
+      { data: BodyType<UpdateNotificationPreferencesRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateMyNotificationPreferences>>,
+  TError,
+  { data: BodyType<UpdateNotificationPreferencesRequest> },
+  TContext
+> => {
+  const mutationOptions = getUpdateMyNotificationPreferencesMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile. Só as do próprio cliente, por createdAt desc; unreadOnly=true mostra só as não lidas.
+ * @summary Lista as notificações do cliente
+ */
+export const listMyNotifications = (
+  params?: ListMyNotificationsParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseMyNotificationResponse>(
+    { url: `/api/v1/me/notifications`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyNotificationsQueryKey = (params?: ListMyNotificationsParams) => {
+  return [`/api/v1/me/notifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyNotificationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyNotifications>>> = ({ signal }) =>
+    listMyNotifications(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyNotificationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyNotifications>>
+>;
+export type ListMyNotificationsQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyNotificationsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof listMyNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof listMyNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as notificações do cliente
+ */
+
+export function useListMyNotifications<
+  TData = Awaited<ReturnType<typeof listMyNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyNotificationsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyNotificationsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:profile.
+ * @summary Marca todas as notificações como lidas
+ */
+export const markAllMyNotificationsRead = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>({ url: `/api/v1/me/notifications/read-all`, method: 'POST', signal }, options);
+};
+
+export const getMarkAllMyNotificationsReadMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['markAllMyNotificationsRead'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+    void
+  > = () => {
+    return markAllMyNotificationsRead(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MarkAllMyNotificationsReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof markAllMyNotificationsRead>>
+>;
+
+export type MarkAllMyNotificationsReadMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Marca todas as notificações como lidas
+ */
+export const useMarkAllMyNotificationsRead = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof markAllMyNotificationsRead>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getMarkAllMyNotificationsReadMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * Permissão self:profile.
+ * @summary Conta as notificações por ler
+ */
+export const countMyUnreadNotifications = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<UnreadCountResponse>(
+    { url: `/api/v1/me/notifications/unread-count`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getCountMyUnreadNotificationsQueryKey = () => {
+  return [`/api/v1/me/notifications/unread-count`] as const;
+};
+
+export const getCountMyUnreadNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getCountMyUnreadNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof countMyUnreadNotifications>>> = ({
+    signal,
+  }) => countMyUnreadNotifications(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type CountMyUnreadNotificationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof countMyUnreadNotifications>>
+>;
+export type CountMyUnreadNotificationsQueryError = ErrorType<ProblemDetail>;
+
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof countMyUnreadNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Conta as notificações por ler
+ */
+
+export function useCountMyUnreadNotifications<
+  TData = Awaited<ReturnType<typeof countMyUnreadNotifications>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof countMyUnreadNotifications>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getCountMyUnreadNotificationsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:profile. Idempotente; de outro cliente ou inexistente → 404 NOTIFICATION_NOT_FOUND.
+ * @summary Marca uma notificação como lida
+ */
+export const markMyNotificationRead = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<void>(
+    { url: `/api/v1/me/notifications/${id}/read`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getMarkMyNotificationReadMutationOptions = <
+  TError = ErrorType<ProblemDetail>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markMyNotificationRead>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof http>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof markMyNotificationRead>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['markMyNotificationRead'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof markMyNotificationRead>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return markMyNotificationRead(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MarkMyNotificationReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof markMyNotificationRead>>
+>;
+
+export type MarkMyNotificationReadMutationError = ErrorType<ProblemDetail>;
+
+/**
+ * @summary Marca uma notificação como lida
+ */
+export const useMarkMyNotificationRead = <TError = ErrorType<ProblemDetail>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof markMyNotificationRead>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof markMyNotificationRead>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions = getMarkMyNotificationReadMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * Permissão self:payments. As intenções do próprio cliente, as mais recentes primeiro; status repetível (vazio = todos).
  * @summary Lista os pagamentos do cliente
  */
@@ -16728,6 +19053,248 @@ export function useListMyPayments<
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getListMyPaymentsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:policies. As apólices do próprio cliente; status repetível (vazio = todas). Ordenação issuedAt (defeito, desc), startAt ou endAt.
+ * @summary Lista as apólices do cliente
+ */
+export const listMyPolicies = (
+  params?: ListMyPoliciesParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponseMyPolicySummaryResponse>(
+    { url: `/api/v1/me/policies`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyPoliciesQueryKey = (params?: ListMyPoliciesParams) => {
+  return [`/api/v1/me/policies`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyPoliciesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyPoliciesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPolicies>>> = ({ signal }) =>
+    listMyPolicies(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyPolicies>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyPoliciesQueryResult = NonNullable<Awaited<ReturnType<typeof listMyPolicies>>>;
+export type ListMyPoliciesQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyPoliciesParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPolicies>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPolicies>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as apólices do cliente
+ */
+
+export function useListMyPolicies<
+  TData = Awaited<ReturnType<typeof listMyPolicies>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliciesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPolicies>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyPoliciesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão self:policies. A apólice com as coberturas, as prestações e o certificado (o código de verificação só vai dentro de verificationUrl). De outro cliente → 404 POLICY_NOT_FOUND.
+ * @summary Consulta uma apólice do cliente
+ */
+export const getMyPolicy = (
+  id: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PolicyDetailResponse>(
+    { url: `/api/v1/me/policies/${id}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetMyPolicyQueryKey = (id?: string) => {
+  return [`/api/v1/me/policies/${id}`] as const;
+};
+
+export const getGetMyPolicyQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyPolicyQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPolicy>>> = ({ signal }) =>
+    getMyPolicy(id, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyPolicy>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyPolicyQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPolicy>>>;
+export type GetMyPolicyQueryError = ErrorType<ProblemDetail>;
+
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getMyPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyPolicy>>,
+          TError,
+          Awaited<ReturnType<typeof getMyPolicy>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Consulta uma apólice do cliente
+ */
+
+export function useGetMyPolicy<
+  TData = Awaited<ReturnType<typeof getMyPolicy>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  id: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPolicy>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyPolicyQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -19826,6 +22393,398 @@ export function useListPublicPlatformSettings<
 }
 
 /**
+ * Permissão verification:police. Só as consultas do agente; from e to em datas de Africa/Maputo, inclusivas (por defeito os últimos 30 dias; from depois de to → 400 VALIDATION_ERROR from OUT_OF_RANGE). Ordenação checkedAt (desc).
+ * @summary Lista as consultas do próprio agente
+ */
+export const listMyPoliceChecks = (
+  params?: ListMyPoliceChecksParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PageResponsePoliceCheckResponse>(
+    { url: `/api/v1/police/check-history`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListMyPoliceChecksQueryKey = (params?: ListMyPoliceChecksParams) => {
+  return [`/api/v1/police/check-history`, ...(params ? [params] : [])] as const;
+};
+
+export const getListMyPoliceChecksQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyPoliceChecksQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPoliceChecks>>> = ({ signal }) =>
+    listMyPoliceChecks(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyPoliceChecks>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListMyPoliceChecksQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyPoliceChecks>>
+>;
+export type ListMyPoliceChecksQueryError = ErrorType<ProblemDetail>;
+
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | ListMyPoliceChecksParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPoliceChecks>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPoliceChecks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPoliceChecks>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPoliceChecks>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Lista as consultas do próprio agente
+ */
+
+export function useListMyPoliceChecks<
+  TData = Awaited<ReturnType<typeof listMyPoliceChecks>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: ListMyPoliceChecksParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPoliceChecks>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListMyPoliceChecksQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão verification:police; sem CAPTCHA. A resposta pública mais policyNumber, certificateNumber, vehicleMake e vehicleModel; sem dados pessoais do tomador. Matrícula inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE). 300 pedidos por minuto → 429 RATE_LIMITED (Retry-After).
+ * @summary Verifica o seguro pela matrícula (polícia)
+ */
+export const verifyPlateAsPolice = (
+  params?: VerifyPlateAsPoliceParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PoliceVerificationResponse>(
+    { url: `/api/v1/police/verifications`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getVerifyPlateAsPoliceQueryKey = (params?: VerifyPlateAsPoliceParams) => {
+  return [`/api/v1/police/verifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getVerifyPlateAsPoliceQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyPlateAsPoliceQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyPlateAsPolice>>> = ({ signal }) =>
+    verifyPlateAsPolice(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyPlateAsPoliceQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyPlateAsPolice>>
+>;
+export type VerifyPlateAsPoliceQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | VerifyPlateAsPoliceParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlateAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pela matrícula (polícia)
+ */
+
+export function useVerifyPlateAsPolice<
+  TData = Awaited<ReturnType<typeof verifyPlateAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateAsPoliceParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyPlateAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyPlateAsPoliceQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Permissão verification:police. Como verifyCertificateToken, mais policyNumber, certificateNumber, vehicleMake e vehicleModel. 300 pedidos por minuto → 429 RATE_LIMITED.
+ * @summary Verifica o seguro pelo código do QR (polícia)
+ */
+export const verifyCertificateTokenAsPolice = (
+  token: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PoliceVerificationResponse>(
+    { url: `/api/v1/police/verifications/${token}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getVerifyCertificateTokenAsPoliceQueryKey = (token?: string) => {
+  return [`/api/v1/police/verifications/${token}`] as const;
+};
+
+export const getVerifyCertificateTokenAsPoliceQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyCertificateTokenAsPoliceQueryKey(token);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>> = ({
+    signal,
+  }) => verifyCertificateTokenAsPolice(token, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!token, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyCertificateTokenAsPoliceQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>
+>;
+export type VerifyCertificateTokenAsPoliceQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pelo código do QR (polícia)
+ */
+
+export function useVerifyCertificateTokenAsPolice<
+  TData = Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateTokenAsPolice>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyCertificateTokenAsPoliceQueryOptions(token, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * Permissão self:proposals. Proposta DRAFT numerada (PR-AAAA-NNNNNN) com os dados da cotação congelados e o tomador do perfil; a cotação passa a USED. Cotação não visível ou de mediador → 404 QUOTE_NOT_FOUND; já usada numa proposta → 409 PROPOSAL_ALREADY_EXISTS (proposalId); QUOTE_NOT_AVAILABLE, QUOTE_ALREADY_USED, QUOTE_EXPIRED (409); seguradora não activa → 409 INSURER_NOT_ACTIVE; perfil incompleto → 409 PROFILE_INCOMPLETE; veículo ou condutor mudados desde a cotação → 409 QUOTE_DATA_CHANGED (fields); removidos → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND.
  * @summary Cria uma proposta a partir de uma cotação
  */
@@ -21246,6 +24205,385 @@ export const useAcknowledgeProposalSuitability = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * Público, com CAPTCHA: cabeçalho X-Captcha-Token obrigatório quando o fornecedor não é NONE (sem ele → 400 CAPTCHA_REQUIRED; recusado → 400 CAPTCHA_INVALID; fornecedor indisponível → 503 CAPTCHA_UNAVAILABLE). Matrícula em falta ou inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE); aceita espaços, hífenes e minúsculas. 60 pedidos por minuto e por IP → 429 RATE_LIMITED (Retry-After).
+ * @summary Verifica o seguro pela matrícula
+ */
+export const verifyPlate = (
+  params?: VerifyPlateParams,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicVerificationResponse>(
+    { url: `/api/v1/public/verifications`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getVerifyPlateQueryKey = (params?: VerifyPlateParams) => {
+  return [`/api/v1/public/verifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getVerifyPlateQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyPlateQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyPlate>>> = ({ signal }) =>
+    verifyPlate(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyPlate>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyPlateQueryResult = NonNullable<Awaited<ReturnType<typeof verifyPlate>>>;
+export type VerifyPlateQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params: undefined | VerifyPlateParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlate>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyPlate>>,
+          TError,
+          Awaited<ReturnType<typeof verifyPlate>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pela matrícula
+ */
+
+export function useVerifyPlate<
+  TData = Awaited<ReturnType<typeof verifyPlate>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  params?: VerifyPlateParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyPlate>>, TError, TData>>;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyPlateQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Público, sem limite de pedidos. captchaProvider TURNSTILE (com captchaSiteKey) ou NONE (sem CAPTCHA; o cabeçalho X-Captcha-Token deixa de ser exigido).
+ * @summary CAPTCHA da verificação por matrícula
+ */
+export const getVerificationConfig = (
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<VerificationConfigResponse>(
+    { url: `/api/v1/public/verifications/config`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetVerificationConfigQueryKey = () => {
+  return [`/api/v1/public/verifications/config`] as const;
+};
+
+export const getGetVerificationConfigQueryOptions = <
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof http>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetVerificationConfigQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getVerificationConfig>>> = ({ signal }) =>
+    getVerificationConfig(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getVerificationConfig>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetVerificationConfigQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getVerificationConfig>>
+>;
+export type GetVerificationConfigQueryError = ErrorType<ProblemDetail>;
+
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getVerificationConfig>>,
+          TError,
+          Awaited<ReturnType<typeof getVerificationConfig>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getVerificationConfig>>,
+          TError,
+          Awaited<ReturnType<typeof getVerificationConfig>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary CAPTCHA da verificação por matrícula
+ */
+
+export function useGetVerificationConfig<
+  TData = Awaited<ReturnType<typeof getVerificationConfig>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getVerificationConfig>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetVerificationConfigQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * Público, sem CAPTCHA. O status é o da apólice agora; certificateStatus diz se o certificado do código ainda é o actual. Código desconhecido ou com formato errado → 200 NOT_FOUND. Nunca devolve dados do tomador nem os números da apólice e do certificado. 60 pedidos por minuto e por IP → 429 RATE_LIMITED (Retry-After).
+ * @summary Verifica o seguro pelo código do QR
+ */
+export const verifyCertificateToken = (
+  token: string,
+  options?: SecondParameter<typeof http>,
+  signal?: AbortSignal,
+) => {
+  return http<PublicVerificationResponse>(
+    { url: `/api/v1/public/verifications/${token}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getVerifyCertificateTokenQueryKey = (token?: string) => {
+  return [`/api/v1/public/verifications/${token}`] as const;
+};
+
+export const getVerifyCertificateTokenQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyCertificateTokenQueryKey(token);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyCertificateToken>>> = ({ signal }) =>
+    verifyCertificateToken(token, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!token, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyCertificateToken>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyCertificateTokenQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyCertificateToken>>
+>;
+export type VerifyCertificateTokenQueryError = ErrorType<ProblemDetail>;
+
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateToken>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateToken>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyCertificateToken>>,
+          TError,
+          Awaited<ReturnType<typeof verifyCertificateToken>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Verifica o seguro pelo código do QR
+ */
+
+export function useVerifyCertificateToken<
+  TData = Awaited<ReturnType<typeof verifyCertificateToken>>,
+  TError = ErrorType<ProblemDetail>,
+>(
+  token: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof verifyCertificateToken>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof http>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyCertificateTokenQueryOptions(token, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Permissão self:quotes. Uma cotação por produto publicado compatível de cada seguradora activa (OFFERED, ou NOT_AVAILABLE com unavailableReason), em menos de 3 s, ordenadas por preço; valem 15 dias. Veículo ou condutor de outro cliente → 404 VEHICLE_NOT_FOUND / DRIVER_NOT_FOUND. Danos próprios sem valor comercial → 400 VEHICLE_VALUE_REQUIRED. Mais de 30 pedidos numa hora → 429 QUOTE_RATE_LIMITED (Retry-After). Sem produtos compatíveis → quotes: [].

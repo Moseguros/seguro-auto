@@ -1,17 +1,21 @@
 package mz.co.moseguros.notification;
 
+import java.util.Map;
 import java.util.UUID;
 
 import mz.co.moseguros.notification.application.EmailMessageService;
+import mz.co.moseguros.notification.application.NotificationService;
 import mz.co.moseguros.notification.application.OtpMessageService;
 import mz.co.moseguros.notification.application.SmsMessageService;
 import mz.co.moseguros.shared.domain.Channel;
 import org.springframework.stereotype.Service;
 
 /**
- * Interface pública do módulo Notificações. Nesta fase envia códigos OTP (S1-03), códigos de assinatura
- * de propostas (S4-04) e e-mails
- * de modelos simples, como o convite de staff (S1-04); as notificações gerais chegam no Sprint 6.
+ * Interface pública do módulo Notificações: códigos OTP (S1-03), códigos de assinatura de propostas (S4-04),
+ * e-mails e SMS de modelos simples (convite de staff, S1-04; pagamentos, S5-02) e, desde o S6-04, as
+ * notificações ao cliente ({@link #notify}: centro de notificações, push, WhatsApp, SMS e e-mail com
+ * alternativa). O {@code notification} nunca ouve eventos de outros módulos: quem quer notificar chama
+ * {@link #notify} (modelo transversal §1.1).
  *
  * <p>Pode ser chamada de qualquer âmbito, dentro ou fora de uma transacção: os serviços em que
  * delega correm em {@code SYSTEM} ({@code outbound_message} só é visível nesse âmbito).
@@ -22,12 +26,34 @@ public class NotificationApi {
     private final OtpMessageService otpMessages;
     private final EmailMessageService emailMessages;
     private final SmsMessageService smsMessages;
+    private final NotificationService notifications;
 
     public NotificationApi(OtpMessageService otpMessages, EmailMessageService emailMessages,
-                           SmsMessageService smsMessages) {
+                           SmsMessageService smsMessages, NotificationService notifications) {
         this.otpMessages = otpMessages;
         this.emailMessages = emailMessages;
         this.smsMessages = smsMessages;
+        this.notifications = notifications;
+    }
+
+    /**
+     * Regista uma notificação ao cliente e agenda o envio (S6-04 §1 e §4). Junta-se à transacção de quem chama
+     * ({@code REQUIRED}): um rollback desfaz-a; o envio só começa depois do commit. Grava a linha do centro de
+     * notificações e envia pelo primeiro canal disponível e permitido ({@code PUSH, WHATSAPP, SMS, EMAIL}), com
+     * 3 tentativas e alternativa; nas categorias obrigatórias, push e um canal externo, mesmo com as
+     * preferências desligadas. Conta inexistente ou não activa → nada é gravado (devolve um id novo). Nunca
+     * lança por falha de um fornecedor.
+     *
+     * @param templateCode código do modelo ({@code POLICY_ISSUED}…)
+     * @param params       variáveis do modelo ({@code Money}, {@code Instant}, {@code LocalDate} formatados na
+     *                     língua do cliente; o resto por {@code toString()}) e, opcionais, {@code webPath}
+     *                     ({@code /cliente/…}, vai para {@code link}) e {@code deepLink} ({@code moseguros://…}).
+     *                     Nunca documentos, NUIT, códigos OTP, tokens nem segredos
+     * @return o {@code notificationId} (igual em todas as mensagens desta chamada)
+     * @throws IllegalArgumentException código de modelo desconhecido ou parâmetro em falta
+     */
+    public UUID notify(UUID userId, String templateCode, Map<String, Object> params, NotificationCategory category) {
+        return notifications.notify(userId, templateCode, params, category);
     }
 
     /**

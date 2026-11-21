@@ -48,6 +48,24 @@ class RunAsSystemUsageTest {
         RUN_AS_SYSTEM_OWNERS.check(MAIN_CLASSES);
     }
 
+    /**
+     * S6-03: o verification não usa {@code @RunAsSystem}; as leituras entre âmbitos correm nos módulos donos
+     * ({@code PolicySystemLookups}, {@code OrganizationSystemLookups}) e o RLS do {@code check_log} aceita
+     * inserções em qualquer âmbito.
+     */
+    @Test
+    void verificationHasNoRunAsSystem() {
+        org.assertj.core.api.Assertions.assertThat(MAIN_CLASSES.stream()
+                        .filter(c -> c.getPackageName().startsWith("mz.co.moseguros.verification"))
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .isEmpty();
+        org.assertj.core.api.Assertions.assertThat(MAIN_CLASSES.stream()
+                        .filter(c -> c.getPackageName().startsWith("mz.co.moseguros.verification")))
+                .isNotEmpty();
+    }
+
     /** S2-01: o download e a limpeza de órfãos do document correm em SYSTEM, em classes permitidas. */
     @Test
     void documentSystemLookupsAndOrphanCleanupJobAreAllowed() {
@@ -159,6 +177,35 @@ class RunAsSystemUsageTest {
                         .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
                 .containsExactlyInAnyOrder("MpesaC2bJob.run", "PaymentDispatchRecoveryJob.recover",
                         "PaymentStatusQueryJob.query", "PaymentExpiryJob.expire", "ProposalPaymentListener.on");
+    }
+
+    /**
+     * S6-01: a emissão (ouvinte do ProposalPaid) e as leituras da verificação e do guard da remoção do
+     * veículo correm em SYSTEM; o PolicyVehicleRemovalGuard e o IncompletePublicationsJob não têm
+     * {@code @RunAsSystem}. S6-02: os documentos (ouvinte do PolicyIssued e PolicyDocumentsJob) e os nomes
+     * dos ficheiros do detalhe ({@code PolicySystemLookups.fileNames}) correm em SYSTEM; o
+     * PolicyDocumentService e a PolicyFileAccessPolicy correm no âmbito de quem chama.
+     */
+    @Test
+    void policyListenerAndSystemLookupsAreAllowed() {
+        JavaClasses classes = new ClassFileImporter().importClasses(
+                mz.co.moseguros.policy.application.ProposalPaidListener.class,
+                mz.co.moseguros.policy.application.PolicySystemLookups.class,
+                mz.co.moseguros.policy.application.PolicyVehicleRemovalGuard.class,
+                mz.co.moseguros.policy.application.PolicyDocumentsListener.class,
+                mz.co.moseguros.policy.application.PolicyDocumentsJob.class,
+                mz.co.moseguros.policy.application.PolicyDocumentService.class,
+                mz.co.moseguros.policy.application.PolicyFileAccessPolicy.class,
+                mz.co.moseguros.shared.events.IncompletePublicationsJob.class);
+        RUN_AS_SYSTEM_OWNERS.check(classes);
+        org.assertj.core.api.Assertions.assertThat(classes.stream()
+                        .flatMap(c -> c.getMethods().stream())
+                        .filter(m -> m.isAnnotatedWith(RunAsSystem.class))
+                        .map(m -> m.getOwner().getSimpleName() + "." + m.getName()))
+                .containsExactlyInAnyOrder("ProposalPaidListener.on", "PolicySystemLookups.findActiveByPlate",
+                        "PolicySystemLookups.findLatestByPlate", "PolicySystemLookups.findByCertificateToken",
+                        "PolicySystemLookups.coverAt", "PolicySystemLookups.vehicleHasPolicyInForce",
+                        "PolicySystemLookups.fileNames", "PolicyDocumentsListener.on", "PolicyDocumentsJob.run");
     }
 
     @Test

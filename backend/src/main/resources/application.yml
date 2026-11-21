@@ -58,17 +58,31 @@ server:
   port: ${SERVER_PORT:8080}
   shutdown: graceful
 
+# Observabilidade (S6-08 §1, modelo transversal §7): /api/v1/prometheus só responde a endereços remotos em
+# moseguros.observability.allowed-cidrs (os outros têm 404; o nginx da web também o bloqueia).
 management:
   endpoints:
     web:
       base-path: /api/v1
       exposure:
-        include: health,info
+        include: health,info,prometheus
   endpoint:
     health:
       probes:
         enabled: true
       show-details: never
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: moseguros-backend
+      environment: ${MOSEGUROS_ENVIRONMENT:local}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        moseguros.policy.issuance.latency: true
+      slo:
+        http.server.requests: 100ms,250ms,500ms,1s,2s
 
 springdoc:
   api-docs:
@@ -85,6 +99,10 @@ springdoc:
   paths-to-exclude: /internal/**
 
 moseguros:
+  # Quem pode ler /api/v1/prometheus (S6-08 §1): endereço remoto do pedido (nunca o X-Forwarded-For) numa
+  # destas redes; fora delas 404. Em staging e produção, a rede interna do Prometheus.
+  observability:
+    allowed-cidrs: ${MOSEGUROS_OBSERVABILITY_ALLOWED_CIDRS:127.0.0.1/32,::1/128,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
   # Tokens JWT (ADR-003). Sem private-key, os perfis local e test geram um par RSA no
   # arranque; os outros perfis não arrancam (MOSEGUROS_JWT_PRIVATE_KEY, PEM PKCS#8, RSA 2048).
   security:
@@ -120,17 +138,29 @@ moseguros:
     sms:
       provider: mock
       mock-url: ${MOSEGUROS_NOTIFICATION_SMS_MOCK_URL:http://localhost:8090}
+      # S6-04 §5: tira os acentos dos SMS das notificações (160 caracteres GSM-7 em vez de 70)
+      ascii-fold: true
     whatsapp:
       provider: mock
       mock-url: ${MOSEGUROS_NOTIFICATION_WHATSAPP_MOCK_URL:http://localhost:8090}
     email:
       provider: smtp
       from: ${MOSEGUROS_NOTIFICATION_EMAIL_FROM:MoSeguros <nao-responder@moseguros.co.mz>}
+    # Notificações (S6-04 §4): o primeiro canal disponível e permitido, por esta ordem.
+    channel-order: [PUSH, WHATSAPP, SMS, EMAIL]
+    # Push (S6-04 §6): mock (MockPushSender; com mock-url, POST {mock-url}/push no sms-mock) ou fcm
+    # (FcmPushSender, credencial no cofre em secret/platform/fcm/service-account). mock não arranca em prod.
+    push:
+      provider: ${MOSEGUROS_NOTIFICATION_PUSH_PROVIDER:mock}
+      mock-url: ${MOSEGUROS_NOTIFICATION_PUSH_MOCK_URL:}
   # Endereço da web (links nos e-mails). Local: Vite em 5173; no compose: nginx em 3000.
   # trusted-proxies (ClientIpResolver, D15): IPs ou CIDR dos proxies cujo X-Forwarded-For é aceite
   # como IP do cliente (vazia = usa sempre o endereço remoto). Ex.: MOSEGUROS_WEB_TRUSTED_PROXIES=172.18.0.0/16.
+  # public-base-url (S6-01 regra 6): endereço público da verificação dos certificados
+  # ({public-base-url}/v/{código}, no QR); por defeito igual a base-url.
   web:
     base-url: ${MOSEGUROS_WEB_BASE_URL:http://localhost:5173}
+    public-base-url: ${MOSEGUROS_WEB_PUBLIC_BASE_URL:${moseguros.web.base-url}}
     trusted-proxies: ${MOSEGUROS_WEB_TRUSTED_PROXIES:}
   # Convites de staff (S1-04): link {web.base-url}/convite/{token}, válido 7 dias; 5 códigos TOTP
   # errados revogam o convite.
@@ -185,7 +215,9 @@ moseguros:
     quote-validity: P15D
     global-timeout: PT3S
     max-start-days-ahead: 60
-    max-requests-per-hour: 30
+    max-requests-per-hour: ${MOSEGUROS_RATING_MAX_REQUESTS_PER_HOUR:30}
+    # Aviso de simulação a expirar (S6-04 §9.1, QuoteExpiryNotifierJob às 09:00): dias antes do fim da validade.
+    quote-expiry-notice-days: 2
     executor:
       core-size: 8
       max-size: 32
@@ -235,6 +267,25 @@ moseguros:
       delays: PT30S,PT60S,PT120S,PT300S
       repeat-interval: PT15M
       give-up-after: PT24H
+  # CAPTCHA (S6-03 §7; modelo transversal §7) da verificação por matrícula: none | turnstile. Por defeito
+  # turnstile (esquecer a configuração nunca o desliga); none só em local e test (com prod não arranca, com
+  # staging regista WARN). O segredo do Turnstile está no cofre (secret/platform/captcha/turnstile), nunca aqui.
+  captcha:
+    provider: ${MOSEGUROS_CAPTCHA_PROVIDER:turnstile}
+    turnstile:
+      site-key: ${MOSEGUROS_CAPTCHA_SITE_KEY:}
+      allowed-hostnames: ${MOSEGUROS_CAPTCHA_ALLOWED_HOSTNAMES:}
+      secret-path: secret/platform/captcha/turnstile
+      timeout: PT3S
+  # Verificação pública e da polícia (S6-03). hash-key: HMAC-SHA256 do subject_hash do check_log (32 bytes
+  # em Base64, MOSEGUROS_VERIFICATION_HASH_KEY); sem ela a aplicação não arranca (local/test têm uma fixa).
+  # Limites por instância (com N instâncias o efectivo é N × o limite; revisão no S12).
+  verification:
+    hash-key: ${MOSEGUROS_VERIFICATION_HASH_KEY:}
+    cache-ttl: PT60S
+    rate-limit:
+      public-per-minute: ${MOSEGUROS_VERIFICATION_RATE_LIMIT_PUBLIC_PER_MINUTE:60}
+      police-per-minute: ${MOSEGUROS_VERIFICATION_RATE_LIMIT_POLICE_PER_MINUTE:300}
   # Propostas (S4-02 §2): dias de calendário sem acção do cliente até EXPIRED e janela da data de
   # início (hoje + max-start-days, Africa/Maputo). Validados no arranque (1–365).
   # Prazo de decisão da seguradora (S4-05 §5): dias de calendário contados em instantes desde a entrada

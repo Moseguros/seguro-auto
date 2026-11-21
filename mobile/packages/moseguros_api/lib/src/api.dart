@@ -16,9 +16,11 @@ import 'package:moseguros_api/src/api/meta_api.dart';
 import 'package:moseguros_api/src/api/notification_api.dart';
 import 'package:moseguros_api/src/api/organization_api.dart';
 import 'package:moseguros_api/src/api/payment_api.dart';
+import 'package:moseguros_api/src/api/policy_api.dart';
 import 'package:moseguros_api/src/api/proposal_api.dart';
 import 'package:moseguros_api/src/api/rating_api.dart';
 import 'package:moseguros_api/src/api/vehicle_api.dart';
+import 'package:moseguros_api/src/api/verification_api.dart';
 
 class MosegurosApi {
   static const String basePath = r'http://localhost';
@@ -116,6 +118,12 @@ class MosegurosApi {
     return PaymentApi(dio, serializers);
   }
 
+  /// Get PolicyApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  PolicyApi getPolicyApi() {
+    return PolicyApi(dio, serializers);
+  }
+
   /// Get ProposalApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   ProposalApi getProposalApi() {
@@ -132,5 +140,11 @@ class MosegurosApi {
   /// by doing that all interceptors will not be executed
   VehicleApi getVehicleApi() {
     return VehicleApi(dio, serializers);
+  }
+
+  /// Get VerificationApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  VerificationApi getVerificationApi() {
+    return VerificationApi(dio, serializers);
   }
 }

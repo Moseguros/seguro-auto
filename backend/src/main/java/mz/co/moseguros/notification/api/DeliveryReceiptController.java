@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/integrations/delivery-receipts")
-@Tag(name = "Notification", description = "Envio de mensagens e recibos de entrega")
+@Tag(name = NotificationTag.NAME, description = NotificationTag.DESCRIPTION)
 public class DeliveryReceiptController {
 
     static final String SECRET_HEADER = "X-Webhook-Secret";

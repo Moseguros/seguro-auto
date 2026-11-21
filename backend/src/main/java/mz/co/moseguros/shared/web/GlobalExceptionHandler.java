@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -110,6 +112,24 @@ public class GlobalExceptionHandler {
         String field = ex instanceof MissingServletRequestPartException missing ? missing.getRequestPartName() : "file";
         return Problems.validation("Request validation failed",
                 List.of(new FieldError(field, FieldErrorCodes.REQUIRED, "A file is required")));
+    }
+
+    /** Método não aceite pelo caminho (S6-08 §6): 405 com {@code Allow}, nunca 500. */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    ResponseEntity<ProblemDetail> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+        ResponseEntity.BodyBuilder response = ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED);
+        if (ex.getSupportedHttpMethods() != null && !ex.getSupportedHttpMethods().isEmpty()) {
+            response.allow(ex.getSupportedHttpMethods().toArray(org.springframework.http.HttpMethod[]::new));
+        }
+        return response.body(Problems.of(HttpStatus.METHOD_NOT_ALLOWED, ErrorCodes.METHOD_NOT_ALLOWED,
+                "Method not allowed"));
+    }
+
+    /** {@code Content-Type} não aceite pelo endpoint (S6-08 §6): 415, nunca 500. */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    ProblemDetail handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
+        return Problems.of(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.UNSUPPORTED_MEDIA_TYPE,
+                "Unsupported media type");
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

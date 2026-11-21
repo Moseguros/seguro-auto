@@ -5,7 +5,15 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'coverage', 'playwright-report', 'test-results', 'src/api/generated.ts'],
+    ignores: [
+      'dist',
+      'coverage',
+      'playwright-report',
+      'test-results',
+      'playwright-report-stack',
+      'test-results-stack',
+      'src/api/generated.ts',
+    ],
   },
   {
     files: ['**/*.{ts,tsx}'],

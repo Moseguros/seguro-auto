@@ -39,6 +39,7 @@
       "organizations": "Organizations",
       "users": "Users",
       "auth": "Authentication",
+      "notifications": "Notifications",
       "paymentOps": "Payment operations",
       "references": "Reference tables",
       "audit": "Audit"
@@ -128,6 +129,8 @@
     "UNAUTHORIZED": "You need to sign in.",
     "FORBIDDEN": "You do not have permission for this operation.",
     "INTERNAL_ERROR": "Internal server error. Please try again later.",
+    "METHOD_NOT_ALLOWED": "Operation not supported.",
+    "UNSUPPORTED_MEDIA_TYPE": "Unsupported request format.",
     "INVALID_CURRENCY": "Invalid currency.",
     "INVALID_MSISDN": "Invalid mobile number.",
     "INVALID_NUIT": "Invalid NUIT.",
@@ -266,7 +269,15 @@
     "PAYMENT_EXCEPTION_NOT_FOUND": "Payment exception not found.",
     "RESOLUTION_NOT_ALLOWED": "This resolution is not allowed for this type of exception.",
     "LINK_INTENT_INVALID": "This payment cannot be linked: it must be a pending, expired or cancelled reference of this insurer.",
-    "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link."
+    "LINK_AMOUNT_INSUFFICIENT": "The amount received is lower than the amount of the payment to link.",
+    "POLICY_NOT_FOUND": "Policy not found.",
+    "NOTIFICATION_NOT_FOUND": "Notification not found.",
+    "TEMPLATE_NOT_FOUND": "Template not found.",
+    "DEVICE_NOT_FOUND": "Device not found.",
+    "CAPTCHA_REQUIRED": "Please confirm you are not a robot.",
+    "CAPTCHA_INVALID": "The check expired or failed. Please try again.",
+    "CAPTCHA_UNAVAILABLE": "Verification is temporarily unavailable. Please try again shortly.",
+    "RATE_LIMITED": "Too many requests. Please try again shortly."
   },
   "validation": {
     "INVALID_CURRENCY": "Invalid currency.",
@@ -369,7 +380,11 @@
     "MIN_GREATER_THAN_MAX": "The minimum cannot be greater than the maximum.",
     "ENTITY_IN_USE": "This entity is already configured for another insurer.",
     "MSISDN_NOT_MPESA": "Use a Vodacom number (starting with 84 or 85).",
-    "INVALID_UUID": "Invalid identifier."
+    "INVALID_UUID": "Invalid identifier.",
+    "TEMPLATE_SYNTAX": "The text has a syntax error (check the braces).",
+    "TEMPLATE_UNKNOWN_VARIABLE": "Unknown variable. Use only the listed variables.",
+    "SMS_TOO_LONG": "The SMS is longer than 160 characters.",
+    "MANDATORY_CATEGORY_NEEDS_CHANNEL": "These notices are mandatory: keep at least SMS, WhatsApp or e-mail."
   },
   "paymentStatus": {
     "CREATED": "Created",
@@ -579,7 +594,8 @@
   "channel": {
     "SMS": "SMS",
     "WHATSAPP": "WhatsApp",
-    "EMAIL": "E-mail"
+    "EMAIL": "E-mail",
+    "PUSH": "App notification"
   },
   "staffAuth": {
     "login": {
@@ -3104,6 +3120,367 @@
       "files24h": "Files (24 h)",
       "rejected24h": "Rejected (24 h)",
       "empty": "No insurer has configured payment by entity and reference."
+    }
+  },
+  "verificationStatus": {
+    "VALID": "Valid insurance",
+    "NOT_YET_VALID": "The insurance has not started yet",
+    "EXPIRED": "Insurance expired",
+    "SUSPENDED": "Insurance suspended",
+    "CANCELLED": "Insurance cancelled",
+    "NOT_FOUND": "No insurance registered on MoSeguros"
+  },
+  "subjectType": {
+    "PLATE": "Plate",
+    "TOKEN": "QR"
+  },
+  "policyStatus": {
+    "ACTIVE": "Active",
+    "SUSPENDED": "Suspended",
+    "CANCELLED": "Cancelled",
+    "EXPIRED": "Expired",
+    "LAPSED": "Lapsed"
+  },
+  "coverStatus": {
+    "COVERED": "In force",
+    "NOT_STARTED": "Not started yet",
+    "ENDED": "Ended",
+    "SUSPENDED": "Suspended",
+    "CANCELLED": "Cancelled",
+    "LAPSED": "Lapsed"
+  },
+  "coverageType": {
+    "MTPL_ONLY": "Third-party liability",
+    "COMPREHENSIVE": "Third-party liability and own damage",
+    "TEMPORARY": "Temporary insurance",
+    "BORDER": "Border insurance"
+  },
+  "paymentPlan": {
+    "FULL": "Single payment",
+    "SEMIANNUAL": "Half-yearly",
+    "QUARTERLY": "Quarterly",
+    "MONTHLY": "Monthly"
+  },
+  "renewalType": {
+    "ANNUAL_RENEWABLE": "Annual, renewable",
+    "FIXED_TERM": "Fixed term"
+  },
+  "instalmentStatus": {
+    "DUE": "Due",
+    "PAID": "Paid",
+    "OVERDUE": "Overdue",
+    "CANCELLED": "Cancelled"
+  },
+  "documentType": {
+    "CERTIFICATE": "Insurance certificate",
+    "SCHEDULE": "Policy schedule",
+    "GENERAL_CONDITIONS": "General conditions",
+    "PRE_CONTRACT_INFO": "Pre-contractual information",
+    "PROPOSAL": "Signed proposal"
+  },
+  "policyEvent": {
+    "ISSUED": "Policy issued",
+    "CERTIFICATE_ISSUED": "Certificate issued",
+    "DOCUMENTS_READY": "Documents available"
+  },
+  "actorType": {
+    "CUSTOMER": "Customer",
+    "STAFF": "Staff member",
+    "SYSTEM": "System"
+  },
+  "notificationCategory": {
+    "PAYMENT": "Payments",
+    "POLICY": "Policies",
+    "LEGAL": "Legal notices",
+    "PROPOSAL": "Proposals",
+    "QUOTE": "Quotes"
+  },
+  "verify": {
+    "title": "Check car insurance",
+    "intro": "Check whether a vehicle has valid insurance with an insurer on MoSeguros.",
+    "plate": "Plate",
+    "submit": "Check",
+    "qrHint": "Have the certificate? Scan the QR code with your phone camera.",
+    "rateLimitedCountdown": "Too many requests. Try again in {{seconds}} seconds.",
+    "notFoundHint": "We found no insurance for this plate on MoSeguros. The vehicle may be insured with an insurer that does not use MoSeguros.",
+    "revoked": "This certificate was replaced by a newer one. The status above is the current one.",
+    "rowPlate": "Plate",
+    "rowInsurer": "Insurer",
+    "rowValidity": "Validity",
+    "validity": "Valid from {{validFrom}} to {{validTo}}",
+    "rowCoverage": "Type of cover",
+    "checkedAt": "Checked on {{checkedAt}}",
+    "newCheck": "New check",
+    "otherPlate": "Check another plate",
+    "loading": "Checking…",
+    "captchaLoadError": "The robot check could not be loaded. Please reload the page."
+  },
+  "police": {
+    "title": "Insurance check (police)",
+    "tabs": {
+      "plate": "Plate",
+      "qr": "Scan QR",
+      "history": "History"
+    },
+    "policyNumber": "Policy no.",
+    "certificateNumber": "Certificate no.",
+    "vehicle": "Make and model",
+    "confirmVehicle": "Confirm that the plate and the vehicle match.",
+    "historyLink": "See my check history",
+    "qr": {
+      "hint": "Point the camera at the certificate QR code.",
+      "notCertificate": "This code is not a MoSeguros certificate.",
+      "cameraError": "The camera could not be used. Check the browser permissions or search by plate.",
+      "starting": "Starting the camera…",
+      "video": "Camera image"
+    },
+    "history": {
+      "title": "Check history",
+      "from": "From",
+      "to": "To",
+      "empty": "You have not made any checks in this period.",
+      "loadMore": "Load more",
+      "back": "Back to checking"
+    }
+  },
+  "insurerPolicies": {
+    "title": "Policies",
+    "empty": "No policies have been issued yet.",
+    "columns": {
+      "number": "No.",
+      "policyholder": "Policyholder",
+      "plate": "Plate",
+      "product": "Product",
+      "coverageType": "Cover",
+      "status": "Status",
+      "startAt": "Start",
+      "endAt": "End",
+      "premium": "Premium",
+      "issuedAt": "Issued on"
+    },
+    "filters": {
+      "open": "Filters",
+      "status": "Status",
+      "productType": "Product type",
+      "issuedFrom": "Issued from",
+      "issuedTo": "Issued to",
+      "search": "Policy no., plate or name",
+      "all": "All"
+    },
+    "notFound": "Policy not found",
+    "notFoundText": "The policy does not exist or does not belong to this insurer.",
+    "backToList": "Back to policies",
+    "viewProposal": "See proposal {{number}}",
+    "proposal": "Proposal {{number}}",
+    "tabs": {
+      "summary": "Summary",
+      "instalments": "Instalments",
+      "documents": "Documents",
+      "history": "History"
+    },
+    "fields": {
+      "policyholder": "Policyholder",
+      "plate": "Plate",
+      "makeModel": "Make and model",
+      "year": "Year",
+      "period": "Period",
+      "periodValue": "{{from}} to {{to}}",
+      "renewalType": "Renewal type",
+      "paymentPlan": "Payment plan",
+      "totalPremium": "Total premium",
+      "insurer": "Insurer",
+      "product": "Product",
+      "coverageType": "Type of cover",
+      "coverages": "Covers"
+    },
+    "coverages": {
+      "name": "Cover",
+      "capital": "Sum insured",
+      "deductible": "Excess",
+      "premium": "Premium"
+    },
+    "instalments": {
+      "seq": "No.",
+      "dueDate": "Due date",
+      "amount": "Amount",
+      "status": "Status",
+      "paidAt": "Paid on",
+      "empty": "No instalments."
+    },
+    "documents": {
+      "preparing": "Preparing…",
+      "empty": "No documents yet."
+    },
+    "timeline": {
+      "empty": "No events.",
+      "by": "By: {{actor}}"
+    }
+  },
+  "notificationTemplates": {
+    "title": "Notification templates",
+    "empty": "No templates match these filters.",
+    "locale": {
+      "pt": "Portuguese",
+      "en": "English"
+    },
+    "columns": {
+      "code": "Code",
+      "channel": "Channel",
+      "locale": "Language",
+      "subject": "Subject/title",
+      "active": "Active",
+      "customized": "Customised",
+      "updatedAt": "Changed on",
+      "updatedBy": "Changed by"
+    },
+    "filters": {
+      "code": "Code",
+      "channel": "Channel",
+      "locale": "Language",
+      "customizedOnly": "Customised only",
+      "all": "All"
+    },
+    "customized": "Customised",
+    "active": "Active",
+    "inactive": "Inactive",
+    "notFound": "Template not found.",
+    "backToList": "Back to templates",
+    "variants": "Other channels and languages",
+    "editor": {
+      "subject": "Subject",
+      "pushTitle": "Title",
+      "body": "Text",
+      "whatsappTemplateName": "WhatsApp template name",
+      "whatsappParams": "Parameters (in order)",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "active": "Active",
+      "variables": "Variables",
+      "variablesNote": "You can only use these variables.",
+      "insertVariable": "Insert {{name}}",
+      "reset": "Restore original text",
+      "resetConfirmTitle": "Restore the original text?",
+      "resetConfirm": "The text goes back to the platform original. Your changes will be lost.",
+      "resetDone": "Original text restored",
+      "test": "Send test",
+      "saved": "Template saved",
+      "conflict": "Someone else changed this template",
+      "tooLong": "Text too long.",
+      "leaveTitle": "Leave without saving?",
+      "leaveText": "You have unsaved changes. If you leave, they will be lost.",
+      "leave": "Leave",
+      "stay": "Stay"
+    },
+    "preview": {
+      "title": "Preview",
+      "subject": "Subject",
+      "body": "Text",
+      "smsText": "Text sent (without accents)",
+      "smsCounter": "SMS characters",
+      "loading": "Updating…"
+    },
+    "testDialog": {
+      "title": "Send test",
+      "msisdn": "Mobile number",
+      "email": "E-mail",
+      "token": "Device token",
+      "tokenNote": "Copy the token from the development app.",
+      "send": "Send",
+      "sent": "Sent",
+      "failed": "Failed: {{reason}}"
+    }
+  },
+  "policyCommon": {
+    "coverages": {
+      "name": "Cover",
+      "capital": "Sum insured",
+      "deductible": "Excess",
+      "premium": "Premium",
+      "percent": "{{value}}%"
+    },
+    "instalments": {
+      "seq": "No.",
+      "dueDate": "Due date",
+      "amount": "Amount",
+      "status": "Status",
+      "paidAt": "Paid on",
+      "empty": "No instalments."
+    },
+    "documents": {
+      "preparing": "Preparing…",
+      "empty": "There are no documents yet."
+    }
+  },
+  "customerPolicies": {
+    "title": "My policies",
+    "tabs": {
+      "active": "In force",
+      "all": "All"
+    },
+    "validUntil": "Valid until {{date}}",
+    "number": "Policy {{number}}",
+    "empty": "You have no policies yet.",
+    "emptyActive": "You have no policies in force.",
+    "simulate": "Get a quote",
+    "loadMore": "Load more",
+    "notFound": "Policy not found",
+    "backToList": "See my policies",
+    "documentsSlow": "The documents are taking a while. Open this page again in a few minutes.",
+    "period": {
+      "title": "Period and premium",
+      "start": "Start",
+      "end": "End",
+      "renewalType": "Renewal type",
+      "paymentPlan": "Payment plan",
+      "totalPremium": "Total premium"
+    },
+    "coverages": "Covers",
+    "instalments": "Instalments",
+    "documents": "Documents"
+  },
+  "certificate": {
+    "title": "Insurance certificate",
+    "number": "Certificate no. {{number}}",
+    "validity": "Valid from {{validFrom}} to {{validTo}}",
+    "showFullscreen": "Show full screen",
+    "download": "Download certificate",
+    "preparing": "Preparing the certificate…",
+    "revoked": "This certificate has been replaced.",
+    "validUntil": "Valid until {{date}}",
+    "agentHint": "The officer can scan this code to confirm the insurance.",
+    "qrLabel": "QR code to verify the insurance"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell": "Notifications, {{count}} unread",
+    "markAllRead": "Mark all as read",
+    "preferences": "Preferences",
+    "tabs": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "unread": "Unread",
+    "empty": "You have no notifications.",
+    "loadMore": "Load more"
+  },
+  "preferences": {
+    "title": "Notification preferences",
+    "mandatory": "Mandatory",
+    "mandatoryHelp": "These notices are mandatory: choose at least SMS, WhatsApp or e-mail.",
+    "needsMsisdn": "You need a verified mobile number.",
+    "needsEmail": "You need a verified e-mail address.",
+    "addInProfile": "Add it in your profile",
+    "needsApp": "Install the MoSeguros app and turn on notifications.",
+    "saved": "Preferences saved",
+    "unsaved": {
+      "title": "Leave without saving?",
+      "text": "Your changes to the preferences have not been saved and will be lost.",
+      "stay": "Keep editing",
+      "leave": "Leave without saving"
+    },
+    "profileRow": {
+      "title": "Notifications",
+      "link": "Choose how I receive notices"
     }
   }
 }

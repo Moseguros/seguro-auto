@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'Erro interno do servidor. Tente mais tarde.'**
   String get errorInternalError;
 
+  /// No description provided for @errorMethodNotAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Operação não suportada.'**
+  String get errorMethodNotAllowed;
+
+  /// No description provided for @errorUnsupportedMediaType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato do pedido não suportado.'**
+  String get errorUnsupportedMediaType;
+
   /// No description provided for @errorInvalidCurrency.
   ///
   /// In pt, this message translates to:
@@ -3636,6 +3648,54 @@ abstract class AppLocalizations {
   /// **'O montante recebido é menor do que o do pagamento a associar.'**
   String get errorLinkAmountInsufficient;
 
+  /// No description provided for @errorPolicyNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólice não encontrada.'**
+  String get errorPolicyNotFound;
+
+  /// No description provided for @errorNotificationNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificação não encontrada.'**
+  String get errorNotificationNotFound;
+
+  /// No description provided for @errorTemplateNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modelo não encontrado.'**
+  String get errorTemplateNotFound;
+
+  /// No description provided for @errorDeviceNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dispositivo não encontrado.'**
+  String get errorDeviceNotFound;
+
+  /// No description provided for @errorCaptchaRequired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirme que não é um robô.'**
+  String get errorCaptchaRequired;
+
+  /// No description provided for @errorCaptchaInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'A confirmação expirou ou falhou. Tente de novo.'**
+  String get errorCaptchaInvalid;
+
+  /// No description provided for @errorCaptchaUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'A verificação está temporariamente indisponível. Tente dentro de momentos.'**
+  String get errorCaptchaUnavailable;
+
+  /// No description provided for @errorRateLimited.
+  ///
+  /// In pt, this message translates to:
+  /// **'Demasiados pedidos. Tente de novo dentro de momentos.'**
+  String get errorRateLimited;
+
   /// No description provided for @validationMsisdnNotMpesa.
   ///
   /// In pt, this message translates to:
@@ -3647,6 +3707,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Identificador inválido.'**
   String get validationInvalidUuid;
+
+  /// No description provided for @validationTemplateSyntax.
+  ///
+  /// In pt, this message translates to:
+  /// **'O texto tem um erro de sintaxe (verifique as chavetas).'**
+  String get validationTemplateSyntax;
+
+  /// No description provided for @validationTemplateUnknownVariable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Variável desconhecida. Use só as variáveis indicadas.'**
+  String get validationTemplateUnknownVariable;
+
+  /// No description provided for @validationSmsTooLong.
+  ///
+  /// In pt, this message translates to:
+  /// **'O SMS passa dos 160 caracteres.'**
+  String get validationSmsTooLong;
+
+  /// No description provided for @validationMandatoryCategoryNeedsChannel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estes avisos são obrigatórios: mantenha pelo menos SMS, WhatsApp ou e-mail.'**
+  String get validationMandatoryCategoryNeedsChannel;
 
   /// No description provided for @paymentStatusCreated.
   ///
@@ -5423,6 +5507,606 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Pagamentos'**
   String get paymentsMenu;
+
+  /// No description provided for @policiesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'As minhas apólices'**
+  String get policiesTitle;
+
+  /// No description provided for @policiesTabActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em vigor'**
+  String get policiesTabActive;
+
+  /// No description provided for @policiesTabAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas'**
+  String get policiesTabAll;
+
+  /// No description provided for @policiesEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não tem apólices.'**
+  String get policiesEmpty;
+
+  /// No description provided for @policiesValidUntil.
+  ///
+  /// In pt, this message translates to:
+  /// **'Válida até {date}'**
+  String policiesValidUntil(String date);
+
+  /// No description provided for @policiesNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólice n.º {number}'**
+  String policiesNumber(String number);
+
+  /// No description provided for @policiesOffline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ligação. Dados de {date}.'**
+  String policiesOffline(String date);
+
+  /// No description provided for @policyStatusActive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Activa'**
+  String get policyStatusActive;
+
+  /// No description provided for @policyStatusSuspended.
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspensa'**
+  String get policyStatusSuspended;
+
+  /// No description provided for @policyStatusCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anulada'**
+  String get policyStatusCancelled;
+
+  /// No description provided for @policyStatusExpired.
+  ///
+  /// In pt, this message translates to:
+  /// **'Expirada'**
+  String get policyStatusExpired;
+
+  /// No description provided for @policyStatusLapsed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Caducada'**
+  String get policyStatusLapsed;
+
+  /// No description provided for @coverStatusCovered.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em vigor'**
+  String get coverStatusCovered;
+
+  /// No description provided for @coverStatusNotStarted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não começou'**
+  String get coverStatusNotStarted;
+
+  /// No description provided for @coverStatusEnded.
+  ///
+  /// In pt, this message translates to:
+  /// **'Terminou'**
+  String get coverStatusEnded;
+
+  /// No description provided for @coverStatusSuspended.
+  ///
+  /// In pt, this message translates to:
+  /// **'Suspensa'**
+  String get coverStatusSuspended;
+
+  /// No description provided for @coverStatusCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anulada'**
+  String get coverStatusCancelled;
+
+  /// No description provided for @coverStatusLapsed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Caducada'**
+  String get coverStatusLapsed;
+
+  /// No description provided for @coverageTypeMtplOnly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsabilidade civil'**
+  String get coverageTypeMtplOnly;
+
+  /// No description provided for @coverageTypeComprehensive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsabilidade civil e danos próprios'**
+  String get coverageTypeComprehensive;
+
+  /// No description provided for @coverageTypeTemporary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguro temporário'**
+  String get coverageTypeTemporary;
+
+  /// No description provided for @coverageTypeBorder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seguro de fronteira'**
+  String get coverageTypeBorder;
+
+  /// No description provided for @paymentPlanFull.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamento único'**
+  String get paymentPlanFull;
+
+  /// No description provided for @paymentPlanSemiannual.
+  ///
+  /// In pt, this message translates to:
+  /// **'Semestral'**
+  String get paymentPlanSemiannual;
+
+  /// No description provided for @paymentPlanQuarterly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trimestral'**
+  String get paymentPlanQuarterly;
+
+  /// No description provided for @paymentPlanMonthly.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mensal'**
+  String get paymentPlanMonthly;
+
+  /// No description provided for @renewalTypeAnnualRenewable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anual renovável'**
+  String get renewalTypeAnnualRenewable;
+
+  /// No description provided for @renewalTypeFixedTerm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo fixo'**
+  String get renewalTypeFixedTerm;
+
+  /// No description provided for @instalmentStatusDue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por pagar'**
+  String get instalmentStatusDue;
+
+  /// No description provided for @instalmentStatusPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Paga'**
+  String get instalmentStatusPaid;
+
+  /// No description provided for @instalmentStatusOverdue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em atraso'**
+  String get instalmentStatusOverdue;
+
+  /// No description provided for @instalmentStatusCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anulada'**
+  String get instalmentStatusCancelled;
+
+  /// No description provided for @documentTypeCertificate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Certificado de seguro'**
+  String get documentTypeCertificate;
+
+  /// No description provided for @documentTypeSchedule.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condições particulares'**
+  String get documentTypeSchedule;
+
+  /// No description provided for @documentTypeGeneralConditions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Condições gerais'**
+  String get documentTypeGeneralConditions;
+
+  /// No description provided for @documentTypePreContractInfo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informação pré-contratual'**
+  String get documentTypePreContractInfo;
+
+  /// No description provided for @documentTypeProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Proposta assinada'**
+  String get documentTypeProposal;
+
+  /// No description provided for @notificationCategoryPayment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pagamentos'**
+  String get notificationCategoryPayment;
+
+  /// No description provided for @notificationCategoryPolicy.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólices'**
+  String get notificationCategoryPolicy;
+
+  /// No description provided for @notificationCategoryLegal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avisos legais'**
+  String get notificationCategoryLegal;
+
+  /// No description provided for @notificationCategoryProposal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Propostas'**
+  String get notificationCategoryProposal;
+
+  /// No description provided for @notificationCategoryQuote.
+  ///
+  /// In pt, this message translates to:
+  /// **'Simulações'**
+  String get notificationCategoryQuote;
+
+  /// No description provided for @channelPush.
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificação na app'**
+  String get channelPush;
+
+  /// No description provided for @policyCertificateNumber.
+  ///
+  /// In pt, this message translates to:
+  /// **'Certificado n.º {number}'**
+  String policyCertificateNumber(String number);
+
+  /// No description provided for @policyValidFromTo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Válido de {validFrom} a {validTo}'**
+  String policyValidFromTo(String validFrom, String validTo);
+
+  /// No description provided for @policyShowToPolice.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostrar à polícia'**
+  String get policyShowToPolice;
+
+  /// No description provided for @policyViewCertificate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ver certificado (PDF)'**
+  String get policyViewCertificate;
+
+  /// No description provided for @policyCertificatePending.
+  ///
+  /// In pt, this message translates to:
+  /// **'A preparar o certificado…'**
+  String get policyCertificatePending;
+
+  /// No description provided for @policyCertificateRevoked.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este certificado foi substituído.'**
+  String get policyCertificateRevoked;
+
+  /// No description provided for @policyDocumentsSlow.
+  ///
+  /// In pt, this message translates to:
+  /// **'Os documentos estão a demorar. Volte a abrir este ecrã dentro de alguns minutos.'**
+  String get policyDocumentsSlow;
+
+  /// No description provided for @policyPeriodTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Período e prémio'**
+  String get policyPeriodTitle;
+
+  /// No description provided for @policyStart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início'**
+  String get policyStart;
+
+  /// No description provided for @policyEnd.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fim'**
+  String get policyEnd;
+
+  /// No description provided for @policyRenewal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Renovação'**
+  String get policyRenewal;
+
+  /// No description provided for @policyPaymentPlan.
+  ///
+  /// In pt, this message translates to:
+  /// **'Plano de pagamento'**
+  String get policyPaymentPlan;
+
+  /// No description provided for @policyTotalPremium.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prémio total'**
+  String get policyTotalPremium;
+
+  /// No description provided for @policyCoveragesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Coberturas'**
+  String get policyCoveragesTitle;
+
+  /// No description provided for @policyCoverageCapital.
+  ///
+  /// In pt, this message translates to:
+  /// **'Capital: {value}'**
+  String policyCoverageCapital(String value);
+
+  /// No description provided for @policyCoveragePremium.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prémio: {value}'**
+  String policyCoveragePremium(String value);
+
+  /// No description provided for @policyInstalmentsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prestações'**
+  String get policyInstalmentsTitle;
+
+  /// No description provided for @policyInstalment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prestação {seq} · vence a {date}'**
+  String policyInstalment(int seq, String date);
+
+  /// No description provided for @policyDocumentsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Documentos'**
+  String get policyDocumentsTitle;
+
+  /// No description provided for @policyDocumentPending.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em preparação'**
+  String get policyDocumentPending;
+
+  /// No description provided for @policyDocumentOpenFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível abrir o documento. Tente de novo com ligação.'**
+  String get policyDocumentOpenFailed;
+
+  /// No description provided for @policeQrHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'O agente pode ler este código para confirmar o seguro.'**
+  String get policeQrHint;
+
+  /// No description provided for @policeStatusAt.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estado em {date}: {status}'**
+  String policeStatusAt(String date, String status);
+
+  /// No description provided for @policeStale.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dados com mais de um dia. O agente confirma o estado actual ao ler o código.'**
+  String get policeStale;
+
+  /// No description provided for @policeNoCertificate.
+  ///
+  /// In pt, this message translates to:
+  /// **'O certificado ainda não está disponível neste telemóvel.'**
+  String get policeNoCertificate;
+
+  /// No description provided for @homePoliceText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Abra o certificado mesmo sem rede.'**
+  String get homePoliceText;
+
+  /// No description provided for @homePoliceChoose.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha a apólice'**
+  String get homePoliceChoose;
+
+  /// No description provided for @homePoliciesText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apólices, certificados e documentos.'**
+  String get homePoliciesText;
+
+  /// No description provided for @notificationsBell.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =0{Notificações} other{Notificações, {count} por ler}}'**
+  String notificationsBell(int count);
+
+  /// No description provided for @pushPromptTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Receber avisos no telemóvel'**
+  String get pushPromptTitle;
+
+  /// No description provided for @pushPromptText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avisamos quando a apólice é emitida e quando há pagamentos por fazer.'**
+  String get pushPromptText;
+
+  /// No description provided for @pushPromptEnable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Activar'**
+  String get pushPromptEnable;
+
+  /// No description provided for @pushPromptLater.
+  ///
+  /// In pt, this message translates to:
+  /// **'Agora não'**
+  String get pushPromptLater;
+
+  /// No description provided for @pushChannelName.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avisos MoSeguros'**
+  String get pushChannelName;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificações'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsTabAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas'**
+  String get notificationsTabAll;
+
+  /// No description provided for @notificationsTabUnread.
+  ///
+  /// In pt, this message translates to:
+  /// **'Por ler'**
+  String get notificationsTabUnread;
+
+  /// No description provided for @notificationsMarkAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar todas como lidas'**
+  String get notificationsMarkAll;
+
+  /// No description provided for @notificationsPreferences.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferências'**
+  String get notificationsPreferences;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não tem notificações.'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsOffline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem ligação.'**
+  String get notificationsOffline;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In pt, this message translates to:
+  /// **'agora'**
+  String get timeJustNow;
+
+  /// No description provided for @timeMinutesAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'há {count} min'**
+  String timeMinutesAgo(int count);
+
+  /// No description provided for @timeHoursAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'há {count} h'**
+  String timeHoursAgo(int count);
+
+  /// No description provided for @timeDaysAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'{count, plural, =1{há 1 dia} other{há {count} dias}}'**
+  String timeDaysAgo(int count);
+
+  /// No description provided for @preferencesTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferências de notificações'**
+  String get preferencesTitle;
+
+  /// No description provided for @preferencesMandatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Obrigatório'**
+  String get preferencesMandatory;
+
+  /// No description provided for @preferencesMandatoryText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Estes avisos são obrigatórios: escolha pelo menos SMS, WhatsApp ou e-mail.'**
+  String get preferencesMandatoryText;
+
+  /// No description provided for @preferencesNeedsPhone.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisa de um telemóvel verificado.'**
+  String get preferencesNeedsPhone;
+
+  /// No description provided for @preferencesNeedsEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Precisa de um e-mail verificado.'**
+  String get preferencesNeedsEmail;
+
+  /// No description provided for @preferencesAddInProfile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acrescentar no perfil'**
+  String get preferencesAddInProfile;
+
+  /// No description provided for @preferencesPushUnavailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Active as notificações para receber avisos no telemóvel.'**
+  String get preferencesPushUnavailable;
+
+  /// No description provided for @preferencesSaved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferências guardadas'**
+  String get preferencesSaved;
+
+  /// No description provided for @preferencesDiscardTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair sem guardar?'**
+  String get preferencesDiscardTitle;
+
+  /// No description provided for @preferencesDiscardText.
+  ///
+  /// In pt, this message translates to:
+  /// **'As alterações às preferências perdem-se.'**
+  String get preferencesDiscardText;
+
+  /// No description provided for @preferencesDiscard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair'**
+  String get preferencesDiscard;
+
+  /// No description provided for @profileNotificationsText.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher como recebo os avisos'**
+  String get profileNotificationsText;
 }
 
 class _AppLocalizationsDelegate

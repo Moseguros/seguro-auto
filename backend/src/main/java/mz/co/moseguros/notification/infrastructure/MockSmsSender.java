@@ -15,7 +15,7 @@ import org.springframework.web.client.RestClient;
  */
 @Component
 @ConditionalOnProperty(name = "moseguros.notification.sms.provider", havingValue = "mock", matchIfMissing = true)
-public class MockSmsSender implements OtpDeliveryChannel {
+public class MockSmsSender implements ChannelSender {
 
     public static final String PROVIDER = "mock-sms";
 
@@ -43,14 +43,14 @@ public class MockSmsSender implements OtpDeliveryChannel {
     }
 
     @Override
-    public ProviderResult send(String destination, String text, Map<String, String> templateParams) {
+    public ProviderResult send(OutboundContent content) {
         MockResponse response = http.post()
                 .uri(baseUrl + "/sms")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("to", destination, "text", text))
+                .body(Map.of("to", content.destination(), "text", content.text()))
                 .retrieve()
                 .body(MockResponse.class);
-        return ProviderResult.accepted(response == null ? null : response.id());
+        return ProviderResult.accepted(PROVIDER, response == null ? null : response.id());
     }
 
     /** Resposta dos simuladores. */

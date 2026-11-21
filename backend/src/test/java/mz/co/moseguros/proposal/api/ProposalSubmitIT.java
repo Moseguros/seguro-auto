@@ -185,14 +185,22 @@ class ProposalSubmitIT {
                  where action = 'PROPOSAL.SUBMIT' and entity_id = ?""", String.class, id.toString()))
                 .isEqualTo("AUTOMATIC");
 
-        // E-mail "aceite" ao cliente com o e-mail verificado (canal falso).
-        FakeOtpDeliveryChannels.Sent mail = channels.lastTo(email);
-        assertThat(mail.params().get("subject")).contains("aceite");
+        // Desde o S6-04 a aceitação chega ao cliente por notify (PROPOSAL_ACCEPTED: centro de notificações e o
+        // primeiro canal, aqui o WhatsApp); o e-mail "aceite" do S4-05 deixou de existir (um só aviso).
         String number = get(c.token(), id).then().extract().path("number");
-        assertThat(mail.text()).contains(number).contains(insurer.name()).contains("/cliente/propostas/" + id);
+        org.awaitility.Awaitility.await().atMost(java.time.Duration.ofSeconds(10)).untilAsserted(() ->
+                assertThat(support.owner().queryForList("""
+                        select channel from notification.message where user_id = ? and template_code = 'PROPOSAL_ACCEPTED'
+                           and data->>'deepLink' = ?""", String.class, c.id(), "moseguros://proposal/" + id))
+                        .containsExactlyInAnyOrder("INBOX", "WHATSAPP"));
+        assertThat(support.owner().queryForObject("""
+                select body from notification.message where user_id = ? and template_code = 'PROPOSAL_ACCEPTED'
+                   and channel = 'INBOX' and data->>'deepLink' = ?""", String.class, c.id(), "moseguros://proposal/" + id))
+                .contains(number).contains(insurer.name());
+        assertThat(channels.sentTo(email)).isEmpty();
         assertThat(support.owner().queryForObject("""
                 select count(*) from notification.outbound_message where correlation_id = ? and purpose = 'PROPOSAL'""",
-                Integer.class, id)).isEqualTo(1);
+                Integer.class, id)).isZero();
 
         // Já não se submete nem se altera.
         submit(c.token(), id).then().statusCode(409).body("code", equalTo("INVALID_STATE_TRANSITION"));

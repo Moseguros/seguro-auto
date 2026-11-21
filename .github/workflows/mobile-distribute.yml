@@ -1,0 +1,109 @@
+name: mobile-distribute
+
+# APK interno pelo Firebase App Distribution (S6-08 §8). Só à mão (Actions → mobile-distribute → Run).
+# BLOQUEADO até haver projecto Firebase e URL de staging (modelo transversal §9): sem os segredos o primeiro
+# passo falha com a mensagem de bloqueio.
+#
+# Segredos: FIREBASE_SERVICE_ACCOUNT (JSON da conta de serviço), FIREBASE_APP_ID_ANDROID_<FLAVOR>,
+# FIREBASE_GOOGLE_SERVICES_<FLAVOR> (google-services.json em Base64); opcionais ANDROID_KEYSTORE_BASE64,
+# ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD (assinatura internal; sem eles, a chave
+# de debug). Variáveis: STAGING_API_BASE_URL (flavor staging), DEV_API_BASE_URL (flavor dev, opcional).
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: "Flavor (staging ou dev)"
+        type: choice
+        options: [staging, dev]
+        default: staging
+      release_notes:
+        description: "Notas de versão para os testadores"
+        type: string
+        default: "Build interna MoSeguros"
+
+permissions:
+  contents: read
+
+jobs:
+  distribute:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      FLAVOR: ${{ inputs.flavor }}
+    steps:
+      - name: Confirmar o projecto Firebase e o URL de staging
+        working-directory: .
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_APP_ID: ${{ inputs.flavor == 'dev' && secrets.FIREBASE_APP_ID_ANDROID_DEV || secrets.FIREBASE_APP_ID_ANDROID_STAGING }}
+          FIREBASE_GOOGLE_SERVICES: ${{ inputs.flavor == 'dev' && secrets.FIREBASE_GOOGLE_SERVICES_DEV || secrets.FIREBASE_GOOGLE_SERVICES_STAGING }}
+          API_BASE_URL: ${{ inputs.flavor == 'dev' && vars.DEV_API_BASE_URL || vars.STAGING_API_BASE_URL }}
+        run: |
+          missing=""
+          [ -n "$FIREBASE_SERVICE_ACCOUNT" ] || missing="$missing FIREBASE_SERVICE_ACCOUNT"
+          [ -n "$FIREBASE_APP_ID" ] || missing="$missing FIREBASE_APP_ID_ANDROID_${FLAVOR^^}"
+          [ -n "$FIREBASE_GOOGLE_SERVICES" ] || missing="$missing FIREBASE_GOOGLE_SERVICES_${FLAVOR^^}"
+          if [ "$FLAVOR" = "staging" ] && [ -z "$API_BASE_URL" ]; then missing="$missing STAGING_API_BASE_URL"; fi
+          if [ -n "$missing" ]; then
+            echo "::error::Distribuição bloqueada: falta o projecto Firebase ou o URL de staging (modelo §9)."
+            echo "Em falta:$missing"
+            exit 1
+          fi
+          echo "API_BASE_URL=$API_BASE_URL" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v4
+
+      # Versão do Flutter fixada em environment.flutter do mobile/pubspec.yaml (hoje 3.38.6).
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Cliente da API
+        run: ./tool/generate_api.sh
+
+      # O plugin com.google.gms.google-services só se aplica com o ficheiro presente (S6-07).
+      - name: google-services.json do flavor
+        env:
+          FIREBASE_GOOGLE_SERVICES: ${{ inputs.flavor == 'dev' && secrets.FIREBASE_GOOGLE_SERVICES_DEV || secrets.FIREBASE_GOOGLE_SERVICES_STAGING }}
+        run: |
+          mkdir -p "android/app/src/$FLAVOR"
+          printf '%s' "$FIREBASE_GOOGLE_SERVICES" | base64 -d > "android/app/src/$FLAVOR/google-services.json"
+
+      - name: Chave de assinatura internal (opcional)
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/internal.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/internal.jks" >> "$GITHUB_ENV"
+          else
+            echo "Sem ANDROID_KEYSTORE_BASE64: o APK fica assinado com a chave de debug."
+          fi
+
+      - name: Build do APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          flutter pub get
+          flutter build apk --flavor "$FLAVOR" -t "lib/main_$FLAVOR.dart" --release \
+            --dart-define=API_BASE_URL="$API_BASE_URL" --dart-define=PUSH_ENABLED=true
+
+      - name: Enviar para o Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        with:
+          appId: ${{ inputs.flavor == 'dev' && secrets.FIREBASE_APP_ID_ANDROID_DEV || secrets.FIREBASE_APP_ID_ANDROID_STAGING }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: moseguros-testers
+          releaseNotes: ${{ inputs.release_notes }}
+          file: mobile/build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk

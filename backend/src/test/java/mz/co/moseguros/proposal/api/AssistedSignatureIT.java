@@ -154,7 +154,7 @@ class AssistedSignatureIT {
         clock.advance(Duration.ofSeconds(61));
         Response request = requestSignature(broker.token(), r.id());
         request.then().statusCode(202);
-        String code = channels.lastTo(r.quote().e164()).code();
+        String code = channels.lastCodeTo(r.quote().e164()).code();
 
         confirmSignature(customer, r.id(), request.path("challengeId"), code).then().statusCode(200)
                 .body("signature.assisted", equalTo(false));

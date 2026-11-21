@@ -264,6 +264,9 @@ public class Proposal extends BaseEntity {
     @Column(name = "payment_intent_id")
     private UUID paymentIntentId;
 
+    @Column(name = "policy_id")
+    private UUID policyId;
+
     protected Proposal() {
     }
 
@@ -671,6 +674,29 @@ public class Proposal extends BaseEntity {
         this.paymentIntentId = intentId;
     }
 
+    /**
+     * Apólice emitida (S6-01, {@code ProposalApi.markConverted}): {@code PAID → CONVERTED} com a apólice;
+     * {@code paid_at} e {@code payment_intent_id} mantêm-se. Já {@code CONVERTED} com a mesma apólice →
+     * nada (devolve {@code false}).
+     *
+     * @return {@code true} se mudou de estado
+     * @throws DomainException 409 {@code INVALID_STATE_TRANSITION} fora de {@code PAID}, ou já
+     *                         {@code CONVERTED} com outra apólice
+     */
+    public boolean markConverted(UUID policyId, Instant now) {
+        Objects.requireNonNull(policyId, "policyId");
+        if (status == ProposalStatus.CONVERTED) {
+            if (policyId.equals(this.policyId)) {
+                return false;
+            }
+            throw DomainException.of(ErrorCodes.INVALID_STATE_TRANSITION,
+                    "The proposal was already converted into another policy");
+        }
+        transitionTo(ProposalStatus.CONVERTED, now, Duration.ZERO);
+        this.policyId = policyId;
+        return true;
+    }
+
     private void setPolicyholder(JsonNode json, String idDocNumber, String nuit) {
         this.policyholder = canonical(Objects.requireNonNull(json, "policyholder"));
         this.policyholderIdDocNumber = Objects.requireNonNull(idDocNumber, "idDocNumber");
@@ -941,6 +967,11 @@ public class Proposal extends BaseEntity {
 
     public UUID getPaymentIntentId() {
         return paymentIntentId;
+    }
+
+    /** Apólice emitida a partir da proposta; só em {@code CONVERTED} (S6-01). */
+    public UUID getPolicyId() {
+        return policyId;
     }
 
     public Instant getInfoRequestedAt() {

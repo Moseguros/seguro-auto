@@ -24,6 +24,13 @@ on:
       - "mvnw"
       - ".dockerignore"
       - "web/**"
+  # Teste ponta a ponta da R1 contra o compose completo (S6-08 §5): só à mão (Actions → infra → Run).
+  workflow_dispatch:
+    inputs:
+      e2e_stack:
+        description: "Correr o pnpm test:e2e-stack (passos 1–7 da R1) contra o compose"
+        type: boolean
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -95,6 +102,82 @@ jobs:
         run: |
           docker compose ps
           docker compose logs --no-color --tail 200
+
+      - name: Descer
+        if: always()
+        run: docker compose down -v
+
+  # Regras e testes dos alertas (S6-08 §3) e configuração do Alertmanager.
+  observability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validar o compose com o perfil observability
+        run: docker compose --profile observability config --quiet
+
+      - name: promtool check rules e test rules
+        run: |
+          docker run --rm -v "$PWD/infra/observability/prometheus:/etc/prometheus:ro" -w /etc/prometheus             --entrypoint promtool prom/prometheus:v2.53.2 check config prometheus.yml
+          docker run --rm -v "$PWD/infra/observability/prometheus:/etc/prometheus:ro" -w /etc/prometheus             --entrypoint promtool prom/prometheus:v2.53.2 test rules alerts.test.yml
+
+      - name: amtool check-config
+        run: |
+          docker run --rm -v "$PWD/infra/observability/alertmanager:/etc/alertmanager:ro"             --entrypoint amtool prom/alertmanager:v0.27.0 check-config /etc/alertmanager/alertmanager.yml
+
+  # Teste ponta a ponta da Release 1 (web/e2e-stack, S6-08 §5): base limpa, compose completo (mpesa-mock,
+  # ponto24-mock, sftp, vault, worker) e Playwright sem page.route. Só em workflow_dispatch.
+  e2e-stack:
+    if: github.event_name == 'workflow_dispatch' && inputs.e2e_stack
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Subir o compose com a base limpa
+        run: |
+          docker compose down -v
+          docker compose up -d --build --wait --wait-timeout 300
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.nvmrc
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Dependências e Chromium do Playwright
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          npx playwright install --with-deps chromium
+
+      - name: pnpm test:e2e-stack
+        working-directory: web
+        env:
+          STACK_BASE_URL: http://localhost:3000
+          MAILPIT_URL: http://localhost:8025
+          PONTO24_MOCK_URL: http://localhost:8092
+        run: pnpm test:e2e-stack
+
+      - name: Relatório Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          retention-days: 7
+          name: playwright-e2e-stack
+          path: |
+            web/playwright-report-stack/
+            web/test-results-stack/
+          if-no-files-found: ignore
+
+      - name: Registos do compose
+        if: failure()
+        run: docker compose logs --no-color --tail 300
 
       - name: Descer
         if: always()

@@ -2,13 +2,14 @@ import Alert from '@mui/material/Alert';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   getGetMyProfileQueryKey,
   getMyProfile,
@@ -77,6 +78,16 @@ export function ProfilePage() {
               {t('profile.personalData')}
             </Typography>
             {form}
+          </CardContent>
+        </Card>
+        <Card component="section" aria-labelledby="profile-notifications">
+          <CardContent>
+            <Typography variant="h6" component="h2" id="profile-notifications" sx={{ mb: 1 }}>
+              {t('preferences.profileRow.title')}
+            </Typography>
+            <Link component={RouterLink} to="/cliente/notificacoes/preferencias">
+              {t('preferences.profileRow.link')}
+            </Link>
           </CardContent>
         </Card>
         <ContactsSection />

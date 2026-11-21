@@ -171,13 +171,16 @@ class IdentityPersistenceIT {
             assertThat(roles.findPermissionsByRoleCodes(List.of("PLATFORM_ADMIN"))).containsExactlyInAnyOrder(
                     "otp-settings:read", "otp-settings:manage", "organization:read", "organization:manage",
                     "org-user:read", "org-user:manage", "reference:manage", // reference:manage: S2-01
-                    "platform:operations"); // S5-01
+                    "platform:operations", // S5-01
+                    "notification-template:manage"); // S6-01
             assertThat(roles.findPermissionsByRoleCodes(List.of("CUSTOMER")))
                     .containsExactlyInAnyOrder("self:profile", "self:vehicles", "self:quotes", // self:quotes: S3-01
                             "self:proposals", // S4-01
-                            "self:payments"); // S5-01
+                            "self:payments", // S5-01
+                            "self:policies"); // S6-01
             assertThat(roles.findPermissionsByRoleCodes(List.of("UNDERWRITER"))).containsExactlyInAnyOrder(
-                    "product:read", "proposal:read", "proposal:decide", "kyc:review", "inspection:review"); // S4-01
+                    "product:read", "proposal:read", "proposal:decide", "kyc:review", "inspection:review", // S4-01
+                    "policy:read"); // S6-01
             return null;
         });
     }

@@ -66,8 +66,10 @@ test('/seguradora mostra o menu da área (com sessão de staff)', async ({ page 
   await expect(nav.getByRole('link', { name: 'Tarifas' })).toBeVisible();
   // Sem proposal:read o item "Propostas" não aparece (S4-07).
   await expect(nav.getByRole('link', { name: 'Propostas' })).toHaveCount(0);
-  await nav.getByRole('link', { name: 'Apólices' }).click();
-  await expect(page).toHaveURL(/\/seguradora\/apolices$/);
+  // Sem policy:read o item "Apólices" também não aparece (S6-05).
+  await expect(nav.getByRole('link', { name: 'Apólices' })).toHaveCount(0);
+  await nav.getByRole('link', { name: 'Sinistros' }).click();
+  await expect(page).toHaveURL(/\/seguradora\/sinistros$/);
   await expect(nav).toBeHidden();
   await expectNoHorizontalScroll(page);
 });

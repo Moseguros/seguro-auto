@@ -30,7 +30,7 @@
     <uuid-creator.version>6.0.0</uuid-creator.version>
     <archunit.version>1.3.1</archunit.version>
     <totp.version>1.7.1</totp.version>
-    <bouncycastle.version>1.78.1</bouncycastle.version>
+    <bouncycastle.version>1.85.2</bouncycastle.version>
     <!-- Armazenamento S3 (ADR-005, S2-01) -->
     <awssdk.version>2.57.8</awssdk.version>
     <!-- JSON Schema da tarifa e dos encargos (S3-01) -->
@@ -42,12 +42,33 @@
          versão publicada do artefacto flying-saucer-pdf-openpdf. O PDFBox só lê PDFs nos testes. -->
     <flying-saucer.version>9.4.0</flying-saucer.version>
     <pdfbox.version>3.0.5</pdfbox.version>
+    <!-- Código QR do certificado (S6-02): ZXing (QRCodeWriter, MatrixToImageWriter) -->
+    <zxing.version>3.5.3</zxing.version>
     <!-- Mensagens RabbitMQ partilhadas com o payment-file-worker (S5-06): módulo do reactor da raiz.
          "cd backend && ./mvnw" resolve-o do repositório Maven local depois de
          "./mvnw -B -pl payment-contracts install" na raiz (decisão D18). -->
     <payment-contracts.version>1.0.0-SNAPSHOT</payment-contracts.version>
     <!-- Cofre de segredos (S5-01): HashiCorp Vault KV v2 -->
     <spring-vault.version>3.1.3</spring-vault.version>
+    <!-- Jobs agendados (S6-01 §2; modelo transversal §7): uma só execução entre instâncias -->
+    <shedlock.version>5.16.0</shedlock.version>
+    <!-- Notificações (S6-04): modelos Mustache e push pelo Firebase Cloud Messaging -->
+    <jmustache.version>1.16</jmustache.version>
+    <firebase-admin.version>9.3.0</firebase-admin.version>
+    <!-- Limites de pedidos da verificação pública (S6-03): buckets em memória. O bucket4j_jdk17-core só
+         existe a partir da 8.11.0; a 8.10.x publica-se como bucket4j-core (Java 8+, corre no 17) -->
+    <bucket4j.version>8.10.1</bucket4j.version>
+    <!-- Correcções de segurança dentro da mesma linha das versões geridas pelo Boot 3.3 (S6-08 §6,
+         osv-scanner.toml): só versões de correcção (patch). O que só se corrige noutra linha (Spring
+         Framework 6.2, Spring Security 6.5, Jackson 2.18, Micrometer 1.15…) fica como excepção até à
+         actualização do Spring Boot (Q-ASVS-4). -->
+    <tomcat.version>10.1.62</tomcat.version>
+    <netty.version>4.1.141.Final</netty.version>
+    <postgresql.version>42.7.14</postgresql.version>
+    <thymeleaf.version>3.1.7.RELEASE</thymeleaf.version>
+    <rabbit-amqp-client.version>5.34.0</rabbit-amqp-client.version>
+    <!-- Dependência transitiva do firebase-admin (33.1.0-jre) -->
+    <guava.version>33.7.2-jre</guava.version>
   </properties>
 
   <dependencyManagement>
@@ -66,6 +87,11 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -82,6 +108,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <!-- Métricas em /api/v1/prometheus, só na rede interna (S6-08 §1) -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
 
     <!-- Persistência -->
@@ -123,6 +154,17 @@
       <groupId>org.xhtmlrenderer</groupId>
       <artifactId>flying-saucer-pdf-openpdf</artifactId>
       <version>${flying-saucer.version}</version>
+    </dependency>
+    <!-- Código QR do certificado da apólice (S6-02) -->
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>${zxing.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>${zxing.version}</version>
     </dependency>
 
     <!-- E-mail (SMTP; localmente o Mailpit) -->
@@ -232,6 +274,22 @@
       <version>${resilience4j.version}</version>
     </dependency>
 
+    <!-- Verificação pública (S6-03): cache das consultas (Caffeine, versão do Boot) e limites de
+         pedidos por IP e por agente (Bucket4j) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.bucket4j</groupId>
+      <artifactId>bucket4j-core</artifactId>
+      <version>${bucket4j.version}</version>
+    </dependency>
+
     <!-- Mensageria (S5-06, ADR-004): RabbitMQ e os contratos das mensagens do worker -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -247,6 +305,39 @@
       <groupId>org.springframework.vault</groupId>
       <artifactId>spring-vault-core</artifactId>
       <version>${spring-vault.version}</version>
+    </dependency>
+    <!-- ShedLock (S6-01 §2): tabela shared.shedlock -->
+    <dependency>
+      <groupId>net.javacrumbs.shedlock</groupId>
+      <artifactId>shedlock-spring</artifactId>
+      <version>${shedlock.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.shedlock</groupId>
+      <artifactId>shedlock-provider-jdbc-template</artifactId>
+      <version>${shedlock.version}</version>
+    </dependency>
+    <!-- Notificações (S6-04): modelos Mustache (texto simples) -->
+    <dependency>
+      <groupId>com.samskivert</groupId>
+      <artifactId>jmustache</artifactId>
+      <version>${jmustache.version}</version>
+    </dependency>
+    <!-- Push (S6-04 §6; modelo transversal §7): só o FCM; sem Firestore nem Cloud Storage -->
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <version>${firebase-admin.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>google-cloud-firestore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.cloud</groupId>
+          <artifactId>google-cloud-storage</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Testes -->

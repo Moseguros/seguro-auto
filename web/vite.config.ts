@@ -10,6 +10,9 @@ export default defineConfig({
     },
   },
   build: {
+    // `dist/.vite/manifest.json`: o teste dos blocos (e2e/bundle.spec.ts) confirma que a
+    // verificação pública não carrega a grelha de dados nem o leitor de QR (S6-05).
+    manifest: true,
     rollupOptions: {
       output: {
         // Bibliotecas em blocos próprios: mudam pouco e ficam em cache entre versões.
@@ -19,6 +22,9 @@ export default defineConfig({
           if (!id.includes('node_modules')) return undefined;
           // A grelha de dados (MUI X) só é usada na administração: bloco à parte.
           if (/[\\/]node_modules[\\/]@mui[\\/]x-/.test(id)) return 'mui-x';
+          // O leitor de QR (S6-05) só é importado pelo `QrScanner` da polícia: bloco à parte (no
+          // `vendor`, carregado pela entrada, pesaria em todas as páginas).
+          if (/[\\/]node_modules[\\/]@zxing[\\/]/.test(id)) return 'zxing';
           if (/[\\/]node_modules[\\/](@mui|@emotion)[\\/]/.test(id)) return 'mui';
           if (
             /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|@remix-run)[\\/]/.test(

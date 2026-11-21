@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.location" android:required="false"/>
+    <!-- Avisos no telemóvel (S6-07 §4), pedidos no Android 13+. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <!-- O open_filex pede acesso a toda a galeria; a app só abre os seus próprios
          ficheiros temporários (FileProvider), por isso estas permissões saem. -->

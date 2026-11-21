@@ -39,6 +39,7 @@
       "organizations": "Organizações",
       "users": "Utilizadores",
       "auth": "Autenticação",
+      "notifications": "Notificações",
       "paymentOps": "Operações de pagamento",
       "references": "Tabelas de referência",
       "audit": "Auditoria"
@@ -128,6 +129,8 @@
     "UNAUTHORIZED": "Precisa de iniciar sessão.",
     "FORBIDDEN": "Não tem permissão para esta operação.",
     "INTERNAL_ERROR": "Erro interno do servidor. Tente mais tarde.",
+    "METHOD_NOT_ALLOWED": "Operação não suportada.",
+    "UNSUPPORTED_MEDIA_TYPE": "Formato do pedido não suportado.",
     "INVALID_CURRENCY": "Moeda inválida.",
     "INVALID_MSISDN": "Número de telemóvel inválido.",
     "INVALID_NUIT": "NUIT inválido.",
@@ -266,7 +269,15 @@
     "PAYMENT_EXCEPTION_NOT_FOUND": "Excepção de pagamento não encontrada.",
     "RESOLUTION_NOT_ALLOWED": "Esta resolução não é permitida para este tipo de excepção.",
     "LINK_INTENT_INVALID": "Este pagamento não pode ser associado: tem de ser uma referência desta seguradora pendente, expirada ou cancelada.",
-    "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar."
+    "LINK_AMOUNT_INSUFFICIENT": "O montante recebido é menor do que o do pagamento a associar.",
+    "POLICY_NOT_FOUND": "Apólice não encontrada.",
+    "NOTIFICATION_NOT_FOUND": "Notificação não encontrada.",
+    "TEMPLATE_NOT_FOUND": "Modelo não encontrado.",
+    "DEVICE_NOT_FOUND": "Dispositivo não encontrado.",
+    "CAPTCHA_REQUIRED": "Confirme que não é um robô.",
+    "CAPTCHA_INVALID": "A confirmação expirou ou falhou. Tente de novo.",
+    "CAPTCHA_UNAVAILABLE": "A verificação está temporariamente indisponível. Tente dentro de momentos.",
+    "RATE_LIMITED": "Demasiados pedidos. Tente de novo dentro de momentos."
   },
   "validation": {
     "INVALID_CURRENCY": "Moeda inválida.",
@@ -369,7 +380,11 @@
     "MIN_GREATER_THAN_MAX": "O valor mínimo não pode ser maior que o máximo.",
     "ENTITY_IN_USE": "Esta entidade já está configurada noutra seguradora.",
     "MSISDN_NOT_MPESA": "Use um número Vodacom (começado por 84 ou 85).",
-    "INVALID_UUID": "Identificador inválido."
+    "INVALID_UUID": "Identificador inválido.",
+    "TEMPLATE_SYNTAX": "O texto tem um erro de sintaxe (verifique as chavetas).",
+    "TEMPLATE_UNKNOWN_VARIABLE": "Variável desconhecida. Use só as variáveis indicadas.",
+    "SMS_TOO_LONG": "O SMS passa dos 160 caracteres.",
+    "MANDATORY_CATEGORY_NEEDS_CHANNEL": "Estes avisos são obrigatórios: mantenha pelo menos SMS, WhatsApp ou e-mail."
   },
   "paymentStatus": {
     "CREATED": "Criado",
@@ -579,7 +594,8 @@
   "channel": {
     "SMS": "SMS",
     "WHATSAPP": "WhatsApp",
-    "EMAIL": "E-mail"
+    "EMAIL": "E-mail",
+    "PUSH": "Notificação na app"
   },
   "staffAuth": {
     "login": {
@@ -3104,6 +3120,367 @@
       "files24h": "Ficheiros (24 h)",
       "rejected24h": "Rejeitados (24 h)",
       "empty": "Nenhuma seguradora configurou o pagamento por entidade e referência."
+    }
+  },
+  "verificationStatus": {
+    "VALID": "Seguro válido",
+    "NOT_YET_VALID": "O seguro ainda não começou",
+    "EXPIRED": "Seguro expirado",
+    "SUSPENDED": "Seguro suspenso",
+    "CANCELLED": "Seguro anulado",
+    "NOT_FOUND": "Sem seguro registado na MoSeguros"
+  },
+  "subjectType": {
+    "PLATE": "Matrícula",
+    "TOKEN": "QR"
+  },
+  "policyStatus": {
+    "ACTIVE": "Activa",
+    "SUSPENDED": "Suspensa",
+    "CANCELLED": "Anulada",
+    "EXPIRED": "Expirada",
+    "LAPSED": "Caducada"
+  },
+  "coverStatus": {
+    "COVERED": "Em vigor",
+    "NOT_STARTED": "Ainda não começou",
+    "ENDED": "Terminou",
+    "SUSPENDED": "Suspensa",
+    "CANCELLED": "Anulada",
+    "LAPSED": "Caducada"
+  },
+  "coverageType": {
+    "MTPL_ONLY": "Responsabilidade civil",
+    "COMPREHENSIVE": "Responsabilidade civil e danos próprios",
+    "TEMPORARY": "Seguro temporário",
+    "BORDER": "Seguro de fronteira"
+  },
+  "paymentPlan": {
+    "FULL": "Pagamento único",
+    "SEMIANNUAL": "Semestral",
+    "QUARTERLY": "Trimestral",
+    "MONTHLY": "Mensal"
+  },
+  "renewalType": {
+    "ANNUAL_RENEWABLE": "Anual renovável",
+    "FIXED_TERM": "Prazo fixo"
+  },
+  "instalmentStatus": {
+    "DUE": "Por pagar",
+    "PAID": "Paga",
+    "OVERDUE": "Em atraso",
+    "CANCELLED": "Anulada"
+  },
+  "documentType": {
+    "CERTIFICATE": "Certificado de seguro",
+    "SCHEDULE": "Condições particulares",
+    "GENERAL_CONDITIONS": "Condições gerais",
+    "PRE_CONTRACT_INFO": "Informação pré-contratual",
+    "PROPOSAL": "Proposta assinada"
+  },
+  "policyEvent": {
+    "ISSUED": "Apólice emitida",
+    "CERTIFICATE_ISSUED": "Certificado emitido",
+    "DOCUMENTS_READY": "Documentos disponíveis"
+  },
+  "actorType": {
+    "CUSTOMER": "Cliente",
+    "STAFF": "Colaborador",
+    "SYSTEM": "Sistema"
+  },
+  "notificationCategory": {
+    "PAYMENT": "Pagamentos",
+    "POLICY": "Apólices",
+    "LEGAL": "Avisos legais",
+    "PROPOSAL": "Propostas",
+    "QUOTE": "Simulações"
+  },
+  "verify": {
+    "title": "Verificar seguro automóvel",
+    "intro": "Confirme se um veículo tem seguro válido numa seguradora da MoSeguros.",
+    "plate": "Matrícula",
+    "submit": "Verificar",
+    "qrHint": "Tem o certificado? Leia o código QR com a câmara do telemóvel.",
+    "rateLimitedCountdown": "Demasiados pedidos. Tente de novo dentro de {{seconds}} segundos.",
+    "notFoundHint": "Não encontrámos nenhum seguro para esta matrícula na MoSeguros. O veículo pode estar seguro numa seguradora que não usa a MoSeguros.",
+    "revoked": "Este certificado foi substituído por um mais recente. O estado acima é o actual.",
+    "rowPlate": "Matrícula",
+    "rowInsurer": "Seguradora",
+    "rowValidity": "Validade",
+    "validity": "Válido de {{validFrom}} a {{validTo}}",
+    "rowCoverage": "Tipo de cobertura",
+    "checkedAt": "Verificado em {{checkedAt}}",
+    "newCheck": "Nova verificação",
+    "otherPlate": "Verificar outra matrícula",
+    "loading": "A verificar…",
+    "captchaLoadError": "Não foi possível carregar a confirmação de que não é um robô. Recarregue a página."
+  },
+  "police": {
+    "title": "Verificação de seguro (PRM)",
+    "tabs": {
+      "plate": "Matrícula",
+      "qr": "Ler QR",
+      "history": "Histórico"
+    },
+    "policyNumber": "N.º da apólice",
+    "certificateNumber": "N.º do certificado",
+    "vehicle": "Marca e modelo",
+    "confirmVehicle": "Confirme que a matrícula e o veículo correspondem.",
+    "historyLink": "Ver o meu histórico de verificações",
+    "qr": {
+      "hint": "Aponte a câmara para o código QR do certificado.",
+      "notCertificate": "Este código não é um certificado MoSeguros.",
+      "cameraError": "Não foi possível usar a câmara. Verifique as permissões do browser ou pesquise pela matrícula.",
+      "starting": "A ligar a câmara…",
+      "video": "Imagem da câmara"
+    },
+    "history": {
+      "title": "Histórico de verificações",
+      "from": "De",
+      "to": "Até",
+      "empty": "Ainda não fez verificações neste período.",
+      "loadMore": "Carregar mais",
+      "back": "Voltar à verificação"
+    }
+  },
+  "insurerPolicies": {
+    "title": "Apólices",
+    "empty": "Ainda não há apólices emitidas.",
+    "columns": {
+      "number": "N.º",
+      "policyholder": "Tomador",
+      "plate": "Matrícula",
+      "product": "Produto",
+      "coverageType": "Cobertura",
+      "status": "Estado",
+      "startAt": "Início",
+      "endAt": "Fim",
+      "premium": "Prémio",
+      "issuedAt": "Emitida em"
+    },
+    "filters": {
+      "open": "Filtros",
+      "status": "Estado",
+      "productType": "Tipo de produto",
+      "issuedFrom": "Emitida de",
+      "issuedTo": "Emitida até",
+      "search": "N.º da apólice, matrícula ou nome",
+      "all": "Todos"
+    },
+    "notFound": "Apólice não encontrada",
+    "notFoundText": "A apólice não existe ou não pertence a esta seguradora.",
+    "backToList": "Voltar às apólices",
+    "viewProposal": "Ver proposta {{number}}",
+    "proposal": "Proposta {{number}}",
+    "tabs": {
+      "summary": "Resumo",
+      "instalments": "Prestações",
+      "documents": "Documentos",
+      "history": "Histórico"
+    },
+    "fields": {
+      "policyholder": "Tomador",
+      "plate": "Matrícula",
+      "makeModel": "Marca e modelo",
+      "year": "Ano",
+      "period": "Período",
+      "periodValue": "{{from}} a {{to}}",
+      "renewalType": "Tipo de renovação",
+      "paymentPlan": "Plano de pagamento",
+      "totalPremium": "Prémio total",
+      "insurer": "Seguradora",
+      "product": "Produto",
+      "coverageType": "Tipo de cobertura",
+      "coverages": "Coberturas"
+    },
+    "coverages": {
+      "name": "Cobertura",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "premium": "Prémio"
+    },
+    "instalments": {
+      "seq": "N.º",
+      "dueDate": "Vencimento",
+      "amount": "Montante",
+      "status": "Estado",
+      "paidAt": "Paga em",
+      "empty": "Sem prestações."
+    },
+    "documents": {
+      "preparing": "A preparar…",
+      "empty": "Ainda não há documentos."
+    },
+    "timeline": {
+      "empty": "Sem acontecimentos.",
+      "by": "Por: {{actor}}"
+    }
+  },
+  "notificationTemplates": {
+    "title": "Modelos de notificação",
+    "empty": "Não há modelos com estes filtros.",
+    "locale": {
+      "pt": "Português",
+      "en": "Inglês"
+    },
+    "columns": {
+      "code": "Código",
+      "channel": "Canal",
+      "locale": "Língua",
+      "subject": "Assunto/título",
+      "active": "Activo",
+      "customized": "Personalizado",
+      "updatedAt": "Alterado em",
+      "updatedBy": "Alterado por"
+    },
+    "filters": {
+      "code": "Código",
+      "channel": "Canal",
+      "locale": "Língua",
+      "customizedOnly": "Só personalizados",
+      "all": "Todos"
+    },
+    "customized": "Personalizado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "notFound": "Modelo não encontrado.",
+    "backToList": "Voltar aos modelos",
+    "variants": "Outros canais e línguas",
+    "editor": {
+      "subject": "Assunto",
+      "pushTitle": "Título",
+      "body": "Texto",
+      "whatsappTemplateName": "Nome do modelo WhatsApp",
+      "whatsappParams": "Parâmetros (por ordem)",
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Descer {{name}}",
+      "active": "Activo",
+      "variables": "Variáveis",
+      "variablesNote": "Só pode usar estas variáveis.",
+      "insertVariable": "Inserir {{name}}",
+      "reset": "Repor texto original",
+      "resetConfirmTitle": "Repor o texto original?",
+      "resetConfirm": "O texto volta ao original da plataforma. As suas alterações perdem-se.",
+      "resetDone": "Texto original reposto",
+      "test": "Enviar teste",
+      "saved": "Modelo guardado",
+      "conflict": "Outra pessoa alterou este modelo",
+      "tooLong": "Texto demasiado longo.",
+      "leaveTitle": "Sair sem guardar?",
+      "leaveText": "Tem alterações por gravar. Se sair, perdem-se.",
+      "leave": "Sair",
+      "stay": "Ficar"
+    },
+    "preview": {
+      "title": "Pré-visualização",
+      "subject": "Assunto",
+      "body": "Texto",
+      "smsText": "Texto enviado (sem acentos)",
+      "smsCounter": "Caracteres do SMS",
+      "loading": "A actualizar…"
+    },
+    "testDialog": {
+      "title": "Enviar teste",
+      "msisdn": "Telemóvel",
+      "email": "E-mail",
+      "token": "Token do dispositivo",
+      "tokenNote": "Copie o token a partir da app de desenvolvimento.",
+      "send": "Enviar",
+      "sent": "Enviado",
+      "failed": "Falhou: {{reason}}"
+    }
+  },
+  "policyCommon": {
+    "coverages": {
+      "name": "Cobertura",
+      "capital": "Capital",
+      "deductible": "Franquia",
+      "premium": "Prémio",
+      "percent": "{{value}} %"
+    },
+    "instalments": {
+      "seq": "N.º",
+      "dueDate": "Vencimento",
+      "amount": "Montante",
+      "status": "Estado",
+      "paidAt": "Paga em",
+      "empty": "Sem prestações."
+    },
+    "documents": {
+      "preparing": "A preparar…",
+      "empty": "Ainda não há documentos."
+    }
+  },
+  "customerPolicies": {
+    "title": "As minhas apólices",
+    "tabs": {
+      "active": "Em vigor",
+      "all": "Todas"
+    },
+    "validUntil": "Válida até {{date}}",
+    "number": "Apólice {{number}}",
+    "empty": "Ainda não tem apólices.",
+    "emptyActive": "Não tem apólices em vigor.",
+    "simulate": "Simular seguro",
+    "loadMore": "Carregar mais",
+    "notFound": "Apólice não encontrada",
+    "backToList": "Ver as minhas apólices",
+    "documentsSlow": "Os documentos estão a demorar. Volte a abrir esta página dentro de alguns minutos.",
+    "period": {
+      "title": "Período e prémio",
+      "start": "Início",
+      "end": "Fim",
+      "renewalType": "Tipo de renovação",
+      "paymentPlan": "Plano de pagamento",
+      "totalPremium": "Prémio total"
+    },
+    "coverages": "Coberturas",
+    "instalments": "Prestações",
+    "documents": "Documentos"
+  },
+  "certificate": {
+    "title": "Certificado de seguro",
+    "number": "Certificado n.º {{number}}",
+    "validity": "Válido de {{validFrom}} a {{validTo}}",
+    "showFullscreen": "Mostrar em ecrã inteiro",
+    "download": "Descarregar certificado",
+    "preparing": "A preparar o certificado…",
+    "revoked": "Este certificado foi substituído.",
+    "validUntil": "Válido até {{date}}",
+    "agentHint": "O agente pode ler este código para confirmar o seguro.",
+    "qrLabel": "Código QR para verificar o seguro"
+  },
+  "notifications": {
+    "title": "Notificações",
+    "bell": "Notificações, {{count}} por ler",
+    "markAllRead": "Marcar todas como lidas",
+    "preferences": "Preferências",
+    "tabs": {
+      "all": "Todas",
+      "unread": "Por ler"
+    },
+    "unread": "Por ler",
+    "empty": "Não tem notificações.",
+    "loadMore": "Carregar mais"
+  },
+  "preferences": {
+    "title": "Preferências de notificação",
+    "mandatory": "Obrigatório",
+    "mandatoryHelp": "Estes avisos são obrigatórios: escolha pelo menos SMS, WhatsApp ou e-mail.",
+    "needsMsisdn": "Precisa de um telemóvel verificado.",
+    "needsEmail": "Precisa de um e-mail verificado.",
+    "addInProfile": "Acrescentar no perfil",
+    "needsApp": "Instale a app MoSeguros e active as notificações.",
+    "saved": "Preferências guardadas",
+    "unsaved": {
+      "title": "Sair sem guardar?",
+      "text": "As alterações às preferências ainda não foram guardadas e perdem-se.",
+      "stay": "Continuar a editar",
+      "leave": "Sair sem guardar"
+    },
+    "profileRow": {
+      "title": "Notificações",
+      "link": "Escolher como recebo os avisos"
     }
   }
 }

@@ -150,7 +150,7 @@ public final class SubmissionTestSupport {
         Response request = given().auth().oauth2(c.token()).contentType(ContentType.JSON).body(body)
                 .post(PROPOSALS + "/{id}/sign/request", id);
         request.then().statusCode(202);
-        String code = channels.lastTo(c.account().getMsisdn().e164()).code();
+        String code = channels.lastCodeTo(c.account().getMsisdn().e164()).code();
         Map<String, Object> confirm = new LinkedHashMap<>();
         confirm.put("challengeId", request.path("challengeId"));
         confirm.put("code", code);

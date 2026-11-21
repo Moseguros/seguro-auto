@@ -62,6 +62,12 @@ class AppLocalizationsPt extends AppLocalizations {
       'Erro interno do servidor. Tente mais tarde.';
 
   @override
+  String get errorMethodNotAllowed => 'Operação não suportada.';
+
+  @override
+  String get errorUnsupportedMediaType => 'Formato do pedido não suportado.';
+
+  @override
   String get errorInvalidCurrency => 'Moeda inválida.';
 
   @override
@@ -2078,11 +2084,53 @@ class AppLocalizationsPt extends AppLocalizations {
       'O montante recebido é menor do que o do pagamento a associar.';
 
   @override
+  String get errorPolicyNotFound => 'Apólice não encontrada.';
+
+  @override
+  String get errorNotificationNotFound => 'Notificação não encontrada.';
+
+  @override
+  String get errorTemplateNotFound => 'Modelo não encontrado.';
+
+  @override
+  String get errorDeviceNotFound => 'Dispositivo não encontrado.';
+
+  @override
+  String get errorCaptchaRequired => 'Confirme que não é um robô.';
+
+  @override
+  String get errorCaptchaInvalid =>
+      'A confirmação expirou ou falhou. Tente de novo.';
+
+  @override
+  String get errorCaptchaUnavailable =>
+      'A verificação está temporariamente indisponível. Tente dentro de momentos.';
+
+  @override
+  String get errorRateLimited =>
+      'Demasiados pedidos. Tente de novo dentro de momentos.';
+
+  @override
   String get validationMsisdnNotMpesa =>
       'Use um número Vodacom (começado por 84 ou 85).';
 
   @override
   String get validationInvalidUuid => 'Identificador inválido.';
+
+  @override
+  String get validationTemplateSyntax =>
+      'O texto tem um erro de sintaxe (verifique as chavetas).';
+
+  @override
+  String get validationTemplateUnknownVariable =>
+      'Variável desconhecida. Use só as variáveis indicadas.';
+
+  @override
+  String get validationSmsTooLong => 'O SMS passa dos 160 caracteres.';
+
+  @override
+  String get validationMandatoryCategoryNeedsChannel =>
+      'Estes avisos são obrigatórios: mantenha pelo menos SMS, WhatsApp ou e-mail.';
 
   @override
   String get paymentStatusCreated => 'Criado';
@@ -3114,4 +3162,352 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get paymentsMenu => 'Pagamentos';
+
+  @override
+  String get policiesTitle => 'As minhas apólices';
+
+  @override
+  String get policiesTabActive => 'Em vigor';
+
+  @override
+  String get policiesTabAll => 'Todas';
+
+  @override
+  String get policiesEmpty => 'Ainda não tem apólices.';
+
+  @override
+  String policiesValidUntil(String date) {
+    return 'Válida até $date';
+  }
+
+  @override
+  String policiesNumber(String number) {
+    return 'Apólice n.º $number';
+  }
+
+  @override
+  String policiesOffline(String date) {
+    return 'Sem ligação. Dados de $date.';
+  }
+
+  @override
+  String get policyStatusActive => 'Activa';
+
+  @override
+  String get policyStatusSuspended => 'Suspensa';
+
+  @override
+  String get policyStatusCancelled => 'Anulada';
+
+  @override
+  String get policyStatusExpired => 'Expirada';
+
+  @override
+  String get policyStatusLapsed => 'Caducada';
+
+  @override
+  String get coverStatusCovered => 'Em vigor';
+
+  @override
+  String get coverStatusNotStarted => 'Ainda não começou';
+
+  @override
+  String get coverStatusEnded => 'Terminou';
+
+  @override
+  String get coverStatusSuspended => 'Suspensa';
+
+  @override
+  String get coverStatusCancelled => 'Anulada';
+
+  @override
+  String get coverStatusLapsed => 'Caducada';
+
+  @override
+  String get coverageTypeMtplOnly => 'Responsabilidade civil';
+
+  @override
+  String get coverageTypeComprehensive =>
+      'Responsabilidade civil e danos próprios';
+
+  @override
+  String get coverageTypeTemporary => 'Seguro temporário';
+
+  @override
+  String get coverageTypeBorder => 'Seguro de fronteira';
+
+  @override
+  String get paymentPlanFull => 'Pagamento único';
+
+  @override
+  String get paymentPlanSemiannual => 'Semestral';
+
+  @override
+  String get paymentPlanQuarterly => 'Trimestral';
+
+  @override
+  String get paymentPlanMonthly => 'Mensal';
+
+  @override
+  String get renewalTypeAnnualRenewable => 'Anual renovável';
+
+  @override
+  String get renewalTypeFixedTerm => 'Prazo fixo';
+
+  @override
+  String get instalmentStatusDue => 'Por pagar';
+
+  @override
+  String get instalmentStatusPaid => 'Paga';
+
+  @override
+  String get instalmentStatusOverdue => 'Em atraso';
+
+  @override
+  String get instalmentStatusCancelled => 'Anulada';
+
+  @override
+  String get documentTypeCertificate => 'Certificado de seguro';
+
+  @override
+  String get documentTypeSchedule => 'Condições particulares';
+
+  @override
+  String get documentTypeGeneralConditions => 'Condições gerais';
+
+  @override
+  String get documentTypePreContractInfo => 'Informação pré-contratual';
+
+  @override
+  String get documentTypeProposal => 'Proposta assinada';
+
+  @override
+  String get notificationCategoryPayment => 'Pagamentos';
+
+  @override
+  String get notificationCategoryPolicy => 'Apólices';
+
+  @override
+  String get notificationCategoryLegal => 'Avisos legais';
+
+  @override
+  String get notificationCategoryProposal => 'Propostas';
+
+  @override
+  String get notificationCategoryQuote => 'Simulações';
+
+  @override
+  String get channelPush => 'Notificação na app';
+
+  @override
+  String policyCertificateNumber(String number) {
+    return 'Certificado n.º $number';
+  }
+
+  @override
+  String policyValidFromTo(String validFrom, String validTo) {
+    return 'Válido de $validFrom a $validTo';
+  }
+
+  @override
+  String get policyShowToPolice => 'Mostrar à polícia';
+
+  @override
+  String get policyViewCertificate => 'Ver certificado (PDF)';
+
+  @override
+  String get policyCertificatePending => 'A preparar o certificado…';
+
+  @override
+  String get policyCertificateRevoked => 'Este certificado foi substituído.';
+
+  @override
+  String get policyDocumentsSlow =>
+      'Os documentos estão a demorar. Volte a abrir este ecrã dentro de alguns minutos.';
+
+  @override
+  String get policyPeriodTitle => 'Período e prémio';
+
+  @override
+  String get policyStart => 'Início';
+
+  @override
+  String get policyEnd => 'Fim';
+
+  @override
+  String get policyRenewal => 'Renovação';
+
+  @override
+  String get policyPaymentPlan => 'Plano de pagamento';
+
+  @override
+  String get policyTotalPremium => 'Prémio total';
+
+  @override
+  String get policyCoveragesTitle => 'Coberturas';
+
+  @override
+  String policyCoverageCapital(String value) {
+    return 'Capital: $value';
+  }
+
+  @override
+  String policyCoveragePremium(String value) {
+    return 'Prémio: $value';
+  }
+
+  @override
+  String get policyInstalmentsTitle => 'Prestações';
+
+  @override
+  String policyInstalment(int seq, String date) {
+    return 'Prestação $seq · vence a $date';
+  }
+
+  @override
+  String get policyDocumentsTitle => 'Documentos';
+
+  @override
+  String get policyDocumentPending => 'Em preparação';
+
+  @override
+  String get policyDocumentOpenFailed =>
+      'Não foi possível abrir o documento. Tente de novo com ligação.';
+
+  @override
+  String get policeQrHint =>
+      'O agente pode ler este código para confirmar o seguro.';
+
+  @override
+  String policeStatusAt(String date, String status) {
+    return 'Estado em $date: $status';
+  }
+
+  @override
+  String get policeStale =>
+      'Dados com mais de um dia. O agente confirma o estado actual ao ler o código.';
+
+  @override
+  String get policeNoCertificate =>
+      'O certificado ainda não está disponível neste telemóvel.';
+
+  @override
+  String get homePoliceText => 'Abra o certificado mesmo sem rede.';
+
+  @override
+  String get homePoliceChoose => 'Escolha a apólice';
+
+  @override
+  String get homePoliciesText => 'Apólices, certificados e documentos.';
+
+  @override
+  String notificationsBell(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Notificações, $count por ler',
+      zero: 'Notificações',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pushPromptTitle => 'Receber avisos no telemóvel';
+
+  @override
+  String get pushPromptText =>
+      'Avisamos quando a apólice é emitida e quando há pagamentos por fazer.';
+
+  @override
+  String get pushPromptEnable => 'Activar';
+
+  @override
+  String get pushPromptLater => 'Agora não';
+
+  @override
+  String get pushChannelName => 'Avisos MoSeguros';
+
+  @override
+  String get notificationsTitle => 'Notificações';
+
+  @override
+  String get notificationsTabAll => 'Todas';
+
+  @override
+  String get notificationsTabUnread => 'Por ler';
+
+  @override
+  String get notificationsMarkAll => 'Marcar todas como lidas';
+
+  @override
+  String get notificationsPreferences => 'Preferências';
+
+  @override
+  String get notificationsEmpty => 'Não tem notificações.';
+
+  @override
+  String get notificationsOffline => 'Sem ligação.';
+
+  @override
+  String get timeJustNow => 'agora';
+
+  @override
+  String timeMinutesAgo(int count) {
+    return 'há $count min';
+  }
+
+  @override
+  String timeHoursAgo(int count) {
+    return 'há $count h';
+  }
+
+  @override
+  String timeDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'há $count dias',
+      one: 'há 1 dia',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get preferencesTitle => 'Preferências de notificações';
+
+  @override
+  String get preferencesMandatory => 'Obrigatório';
+
+  @override
+  String get preferencesMandatoryText =>
+      'Estes avisos são obrigatórios: escolha pelo menos SMS, WhatsApp ou e-mail.';
+
+  @override
+  String get preferencesNeedsPhone => 'Precisa de um telemóvel verificado.';
+
+  @override
+  String get preferencesNeedsEmail => 'Precisa de um e-mail verificado.';
+
+  @override
+  String get preferencesAddInProfile => 'Acrescentar no perfil';
+
+  @override
+  String get preferencesPushUnavailable =>
+      'Active as notificações para receber avisos no telemóvel.';
+
+  @override
+  String get preferencesSaved => 'Preferências guardadas';
+
+  @override
+  String get preferencesDiscardTitle => 'Sair sem guardar?';
+
+  @override
+  String get preferencesDiscardText =>
+      'As alterações às preferências perdem-se.';
+
+  @override
+  String get preferencesDiscard => 'Sair';
+
+  @override
+  String get profileNotificationsText => 'Escolher como recebo os avisos';
 }

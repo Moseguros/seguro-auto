@@ -299,7 +299,7 @@ class ProposalSignatureIT {
         UUID id = completeMtpl(c);
         Response request = requestSignature(c.token(), id, true, null, version(c.token(), id));
         request.then().statusCode(202);
-        String code = channels.lastTo(phone(c)).code();
+        String code = channels.lastCodeTo(phone(c)).code();
 
         update(c.token(), id, ProposalTestSupport.START.plusDays(2).toString(), version(c.token(), id))
                 .then().statusCode(200);
@@ -311,7 +311,7 @@ class ProposalSignatureIT {
         nextCodeAllowed();
         Response again = requestSignature(c.token(), id, true, null, version(c.token(), id));
         again.then().statusCode(202);
-        confirm(c.token(), id, again.path("challengeId"), channels.lastTo(phone(c)).code()).then().statusCode(200)
+        confirm(c.token(), id, again.path("challengeId"), channels.lastCodeTo(phone(c)).code()).then().statusCode(200)
                 .body("checklist.signature", equalTo("DONE"));
         // O pedido de novo não alterou a revisão.
         assertThat(support.owner().queryForObject(
@@ -329,7 +329,7 @@ class ProposalSignatureIT {
         Response request = requestSignature(c.token(), id, true, null, version(c.token(), id));
         request.then().statusCode(202);
         String challengeId = request.path("challengeId");
-        String code = channels.lastTo(phone(c)).code();
+        String code = channels.lastCodeTo(phone(c)).code();
 
         confirm(c.token(), id, UUID.randomUUID().toString(), code).then().statusCode(409)
                 .body("code", equalTo("SIGN_REQUEST_NOT_FOUND"));

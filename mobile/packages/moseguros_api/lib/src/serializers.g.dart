@@ -27,10 +27,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(BrokerProposalVehicleRequestProvinceOfCirculationEnum.serializer)
       ..add(BrokerVehicleRequest.serializer)
       ..add(BrokerVehicleRequestProvinceOfCirculationEnum.serializer)
+      ..add(CaptchaProvider.serializer)
       ..add(CatalogInsurerResponse.serializer)
       ..add(CatalogProductResponse.serializer)
       ..add(CatalogProductResponseStatusEnum.serializer)
       ..add(CatalogProductResponseTypeEnum.serializer)
+      ..add(CertificateCheckStatus.serializer)
+      ..add(CertificateStatus.serializer)
       ..add(Charge.serializer)
       ..add(ChargeTypeEnum.serializer)
       ..add(ChargeValue.serializer)
@@ -38,6 +41,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ContactResponse.serializer)
       ..add(ContactResponseTypeEnum.serializer)
       ..add(ContactsResponse.serializer)
+      ..add(CoverStatus.serializer)
       ..add(CoverageRequest.serializer)
       ..add(CoverageRequestCapitalTypeEnum.serializer)
       ..add(CoverageRequestCodeEnum.serializer)
@@ -48,6 +52,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CoverageResponseCodeEnum.serializer)
       ..add(CoverageResponseDeductibleTypeEnum.serializer)
       ..add(CoverageResponseRequiresCodesEnum.serializer)
+      ..add(CoverageType.serializer)
       ..add(CreateBrokerProposalRequest.serializer)
       ..add(CreateBrokerQuoteRequest.serializer)
       ..add(CreateBrokerQuoteRequestProductTypeEnum.serializer)
@@ -74,6 +79,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DeclarationQuestion.serializer)
       ..add(DeliveryReceiptRequest.serializer)
       ..add(DeliveryReceiptRequestStatusEnum.serializer)
+      ..add(DevicePlatform.serializer)
+      ..add(DeviceResponse.serializer)
       ..add(DriverResponse.serializer)
       ..add(FailureCode.serializer)
       ..add(FieldError.serializer)
@@ -84,6 +91,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(InspectionResponse.serializer)
       ..add(InspectionReview.serializer)
       ..add(InspectionStatus.serializer)
+      ..add(InstalmentStatus.serializer)
       ..add(InsurerBrandingResponse.serializer)
       ..add(InsurerInspectionSummaryResponse.serializer)
       ..add(InsurerKycCheckResponse.serializer)
@@ -93,6 +101,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(InsurerPaymentEvent.serializer)
       ..add(InsurerPaymentSummary.serializer)
       ..add(InsurerPaymentSummaryMethodEnum.serializer)
+      ..add(InsurerPolicySummaryResponse.serializer)
       ..add(InsurerProfileRequest.serializer)
       ..add(InsurerProfileResponse.serializer)
       ..add(InsurerProposalDriver.serializer)
@@ -139,6 +148,19 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(Money.serializer)
       ..add(MoneyCurrencyEnum.serializer)
       ..add(MyKycResponse.serializer)
+      ..add(MyNotificationResponse.serializer)
+      ..add(MyPolicySummaryResponse.serializer)
+      ..add(NotificationCategory.serializer)
+      ..add(NotificationCategoryPreferences.serializer)
+      ..add(NotificationCategoryPreferencesChange.serializer)
+      ..add(NotificationChannel.serializer)
+      ..add(NotificationChannelPreference.serializer)
+      ..add(NotificationChannelPreferenceChange.serializer)
+      ..add(NotificationPreferencesResponse.serializer)
+      ..add(NotificationTemplateDetail.serializer)
+      ..add(NotificationTemplatePreview.serializer)
+      ..add(NotificationTemplateSummary.serializer)
+      ..add(NotificationTemplateTestResult.serializer)
       ..add(OrganizationResponse.serializer)
       ..add(OrganizationResponseProvinceEnum.serializer)
       ..add(OrganizationResponseStatusEnum.serializer)
@@ -170,13 +192,18 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PageResponseDriverResponse.serializer)
       ..add(PageResponseInsurerInspectionSummaryResponse.serializer)
       ..add(PageResponseInsurerPaymentSummary.serializer)
+      ..add(PageResponseInsurerPolicySummaryResponse.serializer)
       ..add(PageResponseInsurerProposalSummaryResponse.serializer)
       ..add(PageResponseIntentView.serializer)
       ..add(PageResponseInvitationResponse.serializer)
       ..add(PageResponseKycCheckSummaryResponse.serializer)
+      ..add(PageResponseMyNotificationResponse.serializer)
+      ..add(PageResponseMyPolicySummaryResponse.serializer)
+      ..add(PageResponseNotificationTemplateSummary.serializer)
       ..add(PageResponseOrganizationSummaryResponse.serializer)
       ..add(PageResponsePaymentExceptionSummary.serializer)
       ..add(PageResponsePaymentFileImport.serializer)
+      ..add(PageResponsePoliceCheckResponse.serializer)
       ..add(PageResponseProductSummaryResponse.serializer)
       ..add(PageResponseProposalSummaryResponse.serializer)
       ..add(PageResponseQuoteRequestSummaryResponse.serializer)
@@ -213,6 +240,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PaymentMethodsResponse.serializer)
       ..add(PaymentNextAction.serializer)
       ..add(PaymentNextActionType.serializer)
+      ..add(PaymentPlan.serializer)
       ..add(PaymentPurpose.serializer)
       ..add(PaymentQueueStatus.serializer)
       ..add(PaymentResolution.serializer)
@@ -227,7 +255,27 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PlatformSettingResponse.serializer)
       ..add(PlatformSettingResponseValueTypeEnum.serializer)
       ..add(PlatformSettingsResponse.serializer)
+      ..add(PoliceCheckResponse.serializer)
+      ..add(PoliceVerificationResponse.serializer)
+      ..add(PolicyCertificate.serializer)
+      ..add(PolicyCoverage.serializer)
+      ..add(PolicyCoverageDeductibleTypeEnum.serializer)
+      ..add(PolicyDetailResponse.serializer)
+      ..add(PolicyDocument.serializer)
+      ..add(PolicyDocumentStatus.serializer)
+      ..add(PolicyDocumentType.serializer)
+      ..add(PolicyEventType.serializer)
+      ..add(PolicyInstalment.serializer)
+      ..add(PolicyInsurerRef.serializer)
+      ..add(PolicyProductRef.serializer)
+      ..add(PolicyProductRefTypeEnum.serializer)
+      ..add(PolicyProposalRef.serializer)
+      ..add(PolicyStatus.serializer)
+      ..add(PolicyTimelineEvent.serializer)
+      ..add(PolicyTimelineEventActorTypeEnum.serializer)
+      ..add(PolicyVehicleRef.serializer)
       ..add(PolicyholderSource.serializer)
+      ..add(PreviewNotificationTemplateRequest.serializer)
       ..add(ProblemDetail.serializer)
       ..add(ProductDocumentResponse.serializer)
       ..add(ProductDocumentResponseDocTypeEnum.serializer)
@@ -284,6 +332,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PublicPlatformSettingsResponse.serializer)
       ..add(PublicReferenceValueResponse.serializer)
       ..add(PublicReferenceValuesResponse.serializer)
+      ..add(PublicVerificationResponse.serializer)
       ..add(PublishProductVersionRequest.serializer)
       ..add(QuoteChargeResponse.serializer)
       ..add(QuoteCoverageResponse.serializer)
@@ -323,6 +372,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ReferenceValueResponse.serializer)
       ..add(ReferenceValueResponseDomainEnum.serializer)
       ..add(RefreshTokenRequest.serializer)
+      ..add(RegisterDeviceRequest.serializer)
       ..add(RegistrationDocResponse.serializer)
       ..add(RegistryLookupResponse.serializer)
       ..add(RejectInspectionRequest.serializer)
@@ -330,6 +380,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(RejectProposalRequest.serializer)
       ..add(RejectProposalRequestReasonCodeEnum.serializer)
       ..add(RejectionReasonCode.serializer)
+      ..add(RenewalType.serializer)
       ..add(ReplaceCoveragesRequest.serializer)
       ..add(RequestOnSiteInspectionRequest.serializer)
       ..add(RequestOtpRequest.serializer)
@@ -362,6 +413,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(StartContactVerificationRequest.serializer)
       ..add(StartContactVerificationRequestChannelEnum.serializer)
       ..add(StartContactVerificationRequestTypeEnum.serializer)
+      ..add(SubjectType.serializer)
       ..add(SubmitInspectionRequest.serializer)
       ..add(SubmitProposalRequest.serializer)
       ..add(SuitabilityAnswerRequest.serializer)
@@ -370,6 +422,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(SuitabilityReason.serializer)
       ..add(SuitabilityResult.serializer)
       ..add(SuspendOrganizationRequest.serializer)
+      ..add(TestNotificationTemplateRequest.serializer)
       ..add(TestPlateFormatRequest.serializer)
       ..add(TestPlateFormatResponse.serializer)
       ..add(TokenResponse.serializer)
@@ -381,6 +434,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UnderwritingResult.serializer)
       ..add(UnderwritingResultRulesSourceEnum.serializer)
       ..add(UnderwritingRulesResponse.serializer)
+      ..add(UnreadCountResponse.serializer)
       ..add(UpdateBrokerProposalRequest.serializer)
       ..add(UpdateDriverRequest.serializer)
       ..add(UpdateInsurerRatingSettingsRequest.serializer)
@@ -389,6 +443,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(UpdateMyProfileRequest.serializer)
       ..add(UpdateMyProfileRequestIdDocTypeEnum.serializer)
       ..add(UpdateMyProfileRequestProvinceEnum.serializer)
+      ..add(UpdateNotificationPreferencesRequest.serializer)
+      ..add(UpdateNotificationTemplateRequest.serializer)
       ..add(UpdateOrganizationRequest.serializer)
       ..add(UpdateOrganizationRequestProvinceEnum.serializer)
       ..add(UpdateOtpSettingsRequest.serializer)
@@ -419,6 +475,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(VehicleResponse.serializer)
       ..add(VehicleResponseProvinceOfCirculationEnum.serializer)
       ..add(VehicleUsage.serializer)
+      ..add(VerificationConfigResponse.serializer)
+      ..add(VerificationResult.serializer)
       ..add(VerifyContactRequest.serializer)
       ..add(VerifyKycCheckRequest.serializer)
       ..add(VerifyOtpRequest.serializer)
@@ -517,6 +575,10 @@ Serializers _$serializers = (Serializers().toBuilder()
               BuiltList, const [const FullType(InsurerPaymentSummary)]),
           () => ListBuilder<InsurerPaymentSummary>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(InsurerPolicySummaryResponse)]),
+          () => ListBuilder<InsurerPolicySummaryResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList,
               const [const FullType(InsurerProposalSummaryResponse)]),
           () => ListBuilder<InsurerProposalSummaryResponse>())
@@ -560,6 +622,34 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(MyNotificationResponse)]),
+          () => ListBuilder<MyNotificationResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(MyPolicySummaryResponse)]),
+          () => ListBuilder<MyPolicySummaryResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(NotificationCategoryPreferences)]),
+          () => ListBuilder<NotificationCategoryPreferences>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(NotificationCategoryPreferencesChange)]),
+          () => ListBuilder<NotificationCategoryPreferencesChange>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(NotificationChannelPreference)]),
+          () => ListBuilder<NotificationChannelPreference>())
+      ..addBuilderFactory(
+          const FullType(BuiltList,
+              const [const FullType(NotificationChannelPreferenceChange)]),
+          () => ListBuilder<NotificationChannelPreferenceChange>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(NotificationTemplateSummary)]),
+          () => ListBuilder<NotificationTemplateSummary>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(OrganizationSummaryResponse)]),
@@ -618,6 +708,23 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(PlatformSettingResponse)]),
           () => ListBuilder<PlatformSettingResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PoliceCheckResponse)]),
+          () => ListBuilder<PoliceCheckResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PolicyCoverage)]),
+          () => ListBuilder<PolicyCoverage>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PolicyDocument)]),
+          () => ListBuilder<PolicyDocument>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PolicyTimelineEvent)]),
+          () => ListBuilder<PolicyTimelineEvent>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PolicyInstalment)]),
+          () => ListBuilder<PolicyInstalment>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(ProductSummaryResponse)]),
@@ -763,6 +870,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(SuitabilityAnswerRequest)]),
           () => ListBuilder<SuitabilityAnswerRequest>())
@@ -826,6 +936,20 @@ Serializers _$serializers = (Serializers().toBuilder()
             const FullType(SecretStatusResponse)
           ]),
           () => MapBuilder<String, SecretStatusResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltMap, const [const FullType(String), const FullType(String)]),
+          () => MapBuilder<String, String>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltMap, const [const FullType(String), const FullType(String)]),
+          () => MapBuilder<String, String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltMap, const [
             const FullType(String),

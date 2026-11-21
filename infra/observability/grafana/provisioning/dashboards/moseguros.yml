@@ -1,0 +1,14 @@
+# Painéis versionados (S6-08 §3): JSON em infra/observability/grafana/dashboards, montado em
+# /var/lib/grafana/dashboards. Alterações feitas no Grafana não ficam gravadas: exportar o JSON e versioná-lo.
+apiVersion: 1
+
+providers:
+  - name: moseguros
+    folder: MoSeguros
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    updateIntervalSeconds: 60
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

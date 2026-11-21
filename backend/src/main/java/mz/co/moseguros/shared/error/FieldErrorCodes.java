@@ -211,6 +211,16 @@ public final class FieldErrorCodes {
     /** Valor que não é um UUID (ex.: o cabeçalho {@code Idempotency-Key}; reutilizado no S9-04). */
     public static final String INVALID_UUID = "INVALID_UUID";
 
+    // Notificações (S6-04 §3 e §8)
+    /** Modelo Mustache com um erro de sintaxe (chavetas). */
+    public static final String TEMPLATE_SYNTAX = "TEMPLATE_SYNTAX";
+    /** Modelo com uma variável que não está na lista de variáveis do código. */
+    public static final String TEMPLATE_UNKNOWN_VARIABLE = "TEMPLATE_UNKNOWN_VARIABLE";
+    /** SMS renderizado com os valores de exemplo acima do limite (160 GSM-7 ou 70). */
+    public static final String SMS_TOO_LONG = "SMS_TOO_LONG";
+    /** Categoria obrigatória com SMS, WhatsApp e e-mail todos desligados. */
+    public static final String MANDATORY_CATEGORY_NEEDS_CHANNEL = "MANDATORY_CATEGORY_NEEDS_CHANNEL";
+
     // Bean Validation
     /** {@code @NotBlank}: campo obrigatório vazio. */
     public static final String NOT_BLANK = "NOT_BLANK";

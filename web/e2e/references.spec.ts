@@ -216,6 +216,9 @@ test.describe('tabelas de referência', () => {
     // Modelo TATA_ACE da marca TATA.
     await p.getByRole('tab', { name: 'Modelos' }).click();
     await expect(p).toHaveURL(/separador=modelos$/);
+    // O URL muda antes de o separador desenhar (transições do router): esperar pelo filtro "Marca", que só
+    // os Modelos têm, para o "Novo valor" não abrir ainda o diálogo das Marcas.
+    await expect(p.getByRole('combobox', { name: 'Marca' })).toBeVisible();
     await p.getByRole('button', { name: 'Novo valor' }).click();
     dialog = p.getByRole('dialog', { name: 'Novo valor' });
     await dialog.getByLabel('Código').fill('TATA_ACE');

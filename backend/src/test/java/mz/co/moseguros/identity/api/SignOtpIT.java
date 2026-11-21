@@ -139,7 +139,7 @@ class SignOtpIT {
     void signAndLoginChallengesDoNotMix() {
         UserAccount signer = fixtures.customer("Bruno Separado");
         SignOtpChallenge sign = identityApi.requestSignOtp(request(signer, HASH));
-        String signCode = channels.lastTo(destination(signer)).code();
+        String signCode = channels.lastCodeTo(destination(signer)).code();
 
         // O desafio de assinatura não serve para entrar.
         verifyOtp(sign.challengeId().toString(), signCode).then().statusCode(404)
@@ -150,7 +150,7 @@ class SignOtpIT {
         String national = signer.getMsisdn().value().substring(3);
         Response login = requestOtp(national, "MSISDN");
         login.then().statusCode(202);
-        String loginCode = channels.lastTo(destination(signer)).code();
+        String loginCode = channels.lastCodeTo(destination(signer)).code();
         assertThatThrownBy(() -> identityApi.verifySignOtp(signer.getId(),
                 UUID.fromString(login.path("challengeId")), loginCode, HASH))
                 .isInstanceOfSatisfying(DomainException.class, e -> {
@@ -244,7 +244,7 @@ class SignOtpIT {
     void aNewSignRequestSupersedesThePreviousOne() {
         UserAccount signer = fixtures.customer("Filipe Novo Pedido");
         SignOtpChallenge first = identityApi.requestSignOtp(request(signer, HASH));
-        String firstCode = channels.lastTo(destination(signer)).code();
+        String firstCode = channels.lastCodeTo(destination(signer)).code();
         clock.advance(Duration.ofSeconds(61));
         SignOtpChallenge second = identityApi.requestSignOtp(request(signer, OTHER_HASH));
 
@@ -252,7 +252,7 @@ class SignOtpIT {
                 .isInstanceOfSatisfying(DomainException.class,
                         e -> assertThat(e.getCode()).isEqualTo("OTP_SUPERSEDED"));
         assertThat(identityApi.verifySignOtp(signer.getId(), second.challengeId(),
-                channels.lastTo(destination(signer)).code(), OTHER_HASH)).isNotNull();
+                channels.lastCodeTo(destination(signer)).code(), OTHER_HASH)).isNotNull();
     }
 
     @Test
@@ -261,7 +261,7 @@ class SignOtpIT {
         owner.update("update identity.user_account set msisdn_verified = false where id = ?", signer.getId());
 
         SignOtpChallenge challenge = identityApi.requestSignOtp(request(signer, HASH));
-        identityApi.verifySignOtp(signer.getId(), challenge.challengeId(), channels.lastTo(destination(signer)).code(),
+        identityApi.verifySignOtp(signer.getId(), challenge.challengeId(), channels.lastCodeTo(destination(signer)).code(),
                 HASH);
 
         assertThat(owner.queryForObject("select msisdn_verified from identity.user_account where id = ?",
@@ -293,7 +293,7 @@ class SignOtpIT {
     void wrongCodesAreCountedUntilTheLimit() {
         UserAccount signer = fixtures.customer("Ivo Tentativas");
         SignOtpChallenge challenge = identityApi.requestSignOtp(request(signer, HASH));
-        String code = channels.lastTo(destination(signer)).code();
+        String code = channels.lastCodeTo(destination(signer)).code();
 
         for (int remaining = 2; remaining >= 1; remaining--) {
             int expected = remaining;

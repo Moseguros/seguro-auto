@@ -93,6 +93,13 @@ class ApiClient {
   /// Pagamentos do cliente (tag `Payment`, S5-11).
   PaymentApi get payment => _api.getPaymentApi();
 
+  /// Apólices do cliente (tag `Policy`, S6-01/S6-02).
+  PolicyApi get policy => _api.getPolicyApi();
+
+  /// Notificações, preferências e dispositivos do cliente (tag `Notification`,
+  /// S6-04).
+  NotificationApi get notification => _api.getNotificationApi();
+
   /// `Identity` sem renovação automática: usado pelo `SessionController` para
   /// `refreshToken` e `logoutSession`.
   IdentityApi get sessionIdentity => IdentityApi(bareDio(), apiSerializers);

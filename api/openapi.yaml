@@ -9,6 +9,9 @@ servers:
 security:
 - bearerAuth: []
 tags:
+- description: "Notificações: centro de notificações e preferências do cliente, dispositivos\
+    \ para push, modelos das mensagens e recibos de entrega"
+  name: Notification
 - description: Informação técnica da aplicação
   name: Meta
 - description: "Pagamentos: formas de pagamento das seguradoras (M-Pesa e entidade\
@@ -17,10 +20,15 @@ tags:
   name: Payment
 - description: "Tarifação: tarifa interna das versões de produto, cotações e simulador"
   name: Rating
+- description: "Verificação de seguro pela matrícula ou pelo QR do certificado: pú\
+    blica (com CAPTCHA na matrícula) e para os agentes da polícia; nunca devolve dados\
+    \ pessoais do tomador"
+  name: Verification
 - description: "Ficheiros: download com autorização do módulo dono"
   name: Document
-- description: Envio de mensagens e recibos de entrega
-  name: Notification
+- description: "Apólices: emitidas automaticamente quando o pagamento da proposta\
+    \ é confirmado, com as prestações e o certificado"
+  name: Policy
 - description: "Catálogo: tabelas de referência, parâmetros da plataforma, formatos\
     \ de matrícula, produtos das seguradoras e catálogo público"
   name: Catalog
@@ -116,6 +124,256 @@ paths:
       summary: Lista os convites da plataforma
       tags:
       - Identity
+  /api/v1/admin/notification-templates:
+    get:
+      description: "Permissão notification-template:manage. Filtros code (prefixo),\
+        \ channel, locale, customized; por code, channel e locale."
+      operationId: listNotificationTemplates
+      parameters:
+      - in: query
+        name: code
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: channel
+        required: false
+        schema:
+          $ref: "#/components/schemas/NotificationChannel"
+      - in: query
+        name: locale
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: customized
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseNotificationTemplateSummary"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista os modelos das notificações
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}:
+    get:
+      description: Permissão notification-template:manage. defaultSubject e defaultBody
+        são o texto do ficheiro de mensagens. Inexistente → 404 TEMPLATE_NOT_FOUND.
+      operationId: getNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta um modelo
+      tags:
+      - Notification
+    put:
+      description: "Permissão notification-template:manage. Validação: TEMPLATE_SYNTAX,\
+        \ TEMPLATE_UNKNOWN_VARIABLE, REQUIRED, TOO_LONG, SMS_TOO_LONG (errors[] de\
+        \ 400 VALIDATION_ERROR); version diferente → 409 CONCURRENT_MODIFICATION.\
+        \ Fica customized."
+      operationId: updateNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotificationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera o texto de um modelo
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}/preview:
+    post:
+      description: "Permissão notification-template:manage. Não grava. Sem params\
+        \ usa os valores de exemplo. smsText, length, limit e fits só em SMS. Erros\
+        \ de validação como no PUT."
+      operationId: previewNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreviewNotificationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplatePreview"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Pré-visualiza um texto
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}/reset:
+    post:
+      description: Permissão notification-template:manage. customized passa a false.
+      operationId: resetNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateDetail"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Repõe o texto do ficheiro
+      tags:
+      - Notification
+  /api/v1/admin/notification-templates/{id}/test:
+    post:
+      description: "Permissão notification-template:manage. Envia já, com os valores\
+        \ de exemplo e o texto gravado, sem alternativa: telemóvel para SMS/WHATSAPP\
+        \ (INVALID_MSISDN), e-mail para EMAIL (INVALID_EMAIL), token FCM para PUSH."
+      operationId: testNotificationTemplate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestNotificationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplateTestResult"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Envia uma mensagem de teste
+      tags:
+      - Notification
   /api/v1/admin/otp-settings:
     get:
       description: Permissão otp-settings:read.
@@ -2825,6 +3083,124 @@ paths:
       summary: Consulta um pagamento da seguradora
       tags:
       - Payment
+  /api/v1/insurer/policies:
+    get:
+      description: "Permissão policy:read. Filtros: status repetível; productType;\
+        \ issuedFrom e issuedTo em datas de Africa/Maputo (inclusivas, sobre issuedAt);\
+        \ q = número AP-… exacto, matrícula ou parte do nome do tomador. Ordenaçã\
+        o issuedAt (defeito, desc), startAt ou endAt."
+      operationId: listInsurerPolicies
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyStatus"
+      - in: query
+        name: productType
+        required: false
+        schema:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+      - in: query
+        name: issuedFrom
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: issuedTo
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: q
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "issuedAt, startAt ou endAt, com ,asc ou ,desc"
+        example: "issuedAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseInsurerPolicySummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as apólices da seguradora
+      tags:
+      - Policy
+  /api/v1/insurer/policies/{id}:
+    get:
+      description: Permissão policy:read. O detalhe da apólice com a linha temporal
+        (events) e a proposta de origem. De outra seguradora → 404 POLICY_NOT_FOUND.
+      operationId: getInsurerPolicy
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyDetailResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma apólice da seguradora
+      tags:
+      - Policy
   /api/v1/insurer/product-versions/{id}:
     get:
       description: Permissão product:read. Inclui as coberturas e os documentos.
@@ -4211,6 +4587,70 @@ paths:
       summary: Remove um contacto
       tags:
       - Identity
+  /api/v1/me/devices:
+    post:
+      description: Permissão self:profile. Token já registado para este cliente →
+        actualiza e reactiva; registado para outro cliente → esse fica inactivo e
+        cria-se um novo para este.
+      operationId: registerMyDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDeviceRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Regista o dispositivo para push
+      tags:
+      - Notification
+  /api/v1/me/devices/{id}:
+    delete:
+      description: Permissão self:profile. Remoção lógica (deixa de receber push).
+        De outro cliente → 404 DEVICE_NOT_FOUND.
+      operationId: unregisterMyDevice
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Remove o dispositivo
+      tags:
+      - Notification
   /api/v1/me/drivers:
     get:
       description: "Só os activos. Ordenação por createdAt (defeito, desc)."
@@ -4468,6 +4908,192 @@ paths:
       summary: Envia o documento e a selfie para verificação
       tags:
       - Identity
+  /api/v1/me/notification-preferences:
+    get:
+      description: "Permissão self:profile. Todas as categorias, pela ordem do enum;\
+        \ canais pela ordem de envio (PUSH, WHATSAPP, SMS, EMAIL). available usa só\
+        \ os contactos verificados e os dispositivos activos."
+      operationId: getMyNotificationPreferences
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferencesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta as preferências de notificação
+      tags:
+      - Notification
+    put:
+      description: "Permissão self:profile. Só o que muda. Numa categoria obrigató\
+        ria (PAYMENT, POLICY, LEGAL) não se desligam SMS, WhatsApp e e-mail ao mesmo\
+        \ tempo → 400 VALIDATION_ERROR com errors[0] = { field: categories[i].channels,\
+        \ code: MANDATORY_CATEGORY_NEEDS_CHANNEL } (o push não conta)."
+      operationId: updateMyNotificationPreferences
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNotificationPreferencesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreferencesResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Altera as preferências de notificação
+      tags:
+      - Notification
+  /api/v1/me/notifications:
+    get:
+      description: "Permissão self:profile. Só as do próprio cliente, por createdAt\
+        \ desc; unreadOnly=true mostra só as não lidas."
+      operationId: listMyNotifications
+      parameters:
+      - in: query
+        name: unreadOnly
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseMyNotificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as notificações do cliente
+      tags:
+      - Notification
+  /api/v1/me/notifications/read-all:
+    post:
+      description: Permissão self:profile.
+      operationId: markAllMyNotificationsRead
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Marca todas as notificações como lidas
+      tags:
+      - Notification
+  /api/v1/me/notifications/unread-count:
+    get:
+      description: Permissão self:profile.
+      operationId: countMyUnreadNotifications
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnreadCountResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Conta as notificações por ler
+      tags:
+      - Notification
+  /api/v1/me/notifications/{id}/read:
+    post:
+      description: Permissão self:profile. Idempotente; de outro cliente ou inexistente
+        → 404 NOTIFICATION_NOT_FOUND.
+      operationId: markMyNotificationRead
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Marca uma notificação como lida
+      tags:
+      - Notification
   /api/v1/me/payments:
     get:
       description: "Permissão self:payments. As intenções do próprio cliente, as mais\
@@ -4522,6 +5148,96 @@ paths:
       summary: Lista os pagamentos do cliente
       tags:
       - Payment
+  /api/v1/me/policies:
+    get:
+      description: "Permissão self:policies. As apólices do próprio cliente; status\
+        \ repetível (vazio = todas). Ordenação issuedAt (defeito, desc), startAt ou\
+        \ endAt."
+      operationId: listMyPolicies
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyStatus"
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "issuedAt, startAt ou endAt, com ,asc ou ,desc"
+        example: "issuedAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponseMyPolicySummaryResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as apólices do cliente
+      tags:
+      - Policy
+  /api/v1/me/policies/{id}:
+    get:
+      description: "Permissão self:policies. A apólice com as coberturas, as prestaç\
+        ões e o certificado (o código de verificação só vai dentro de verificationUrl).\
+        \ De outro cliente → 404 POLICY_NOT_FOUND."
+      operationId: getMyPolicy
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyDetailResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Consulta uma apólice do cliente
+      tags:
+      - Policy
   /api/v1/me/profile:
     get:
       description: O documento e o NUIT vêm mascarados; os campos por preencher são
@@ -5687,6 +6403,139 @@ paths:
       summary: Lista os parâmetros da plataforma
       tags:
       - Catalog
+  /api/v1/police/check-history:
+    get:
+      description: "Permissão verification:police. Só as consultas do agente; from\
+        \ e to em datas de Africa/Maputo, inclusivas (por defeito os últimos 30 dias;\
+        \ from depois de to → 400 VALIDATION_ERROR from OUT_OF_RANGE). Ordenação checkedAt\
+        \ (desc)."
+      operationId: listMyPoliceChecks
+      parameters:
+      - in: query
+        name: from
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: to
+        required: false
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - description: "checkedAt, com ,asc ou ,desc"
+        example: "checkedAt,desc"
+        in: query
+        name: sort
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponsePoliceCheckResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Lista as consultas do próprio agente
+      tags:
+      - Verification
+  /api/v1/police/verifications:
+    get:
+      description: "Permissão verification:police; sem CAPTCHA. A resposta pública\
+        \ mais policyNumber, certificateNumber, vehicleMake e vehicleModel; sem dados\
+        \ pessoais do tomador. Matrícula inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE).\
+        \ 300 pedidos por minuto → 429 RATE_LIMITED (Retry-After)."
+      operationId: verifyPlateAsPolice
+      parameters:
+      - description: Matrícula
+        example: ABC-123-MC
+        in: query
+        name: plate
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PoliceVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Verifica o seguro pela matrícula (polícia)
+      tags:
+      - Verification
+  /api/v1/police/verifications/{token}:
+    get:
+      description: "Permissão verification:police. Como verifyCertificateToken, mais\
+        \ policyNumber, certificateNumber, vehicleMake e vehicleModel. 300 pedidos\
+        \ por minuto → 429 RATE_LIMITED."
+      operationId: verifyCertificateTokenAsPolice
+      parameters:
+      - description: Código do QR do certificado (22 caracteres)
+        in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PoliceVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      summary: Verifica o seguro pelo código do QR (polícia)
+      tags:
+      - Verification
   /api/v1/proposals:
     post:
       description: "Permissão self:proposals. Proposta DRAFT numerada (PR-AAAA-NNNNNN)\
@@ -6379,6 +7228,119 @@ paths:
       summary: Confirma os avisos de adequação
       tags:
       - Proposal
+  /api/v1/public/verifications:
+    get:
+      description: "Público, com CAPTCHA: cabeçalho X-Captcha-Token obrigatório quando\
+        \ o fornecedor não é NONE (sem ele → 400 CAPTCHA_REQUIRED; recusado → 400\
+        \ CAPTCHA_INVALID; fornecedor indisponível → 503 CAPTCHA_UNAVAILABLE). Matrí\
+        cula em falta ou inválida → 400 VALIDATION_ERROR (plate, INVALID_PLATE); aceita\
+        \ espaços, hífenes e minúsculas. 60 pedidos por minuto e por IP → 429 RATE_LIMITED\
+        \ (Retry-After)."
+      operationId: verifyPlate
+      parameters:
+      - description: Matrícula
+        example: ABC-123-MC
+        in: query
+        name: plate
+        required: false
+        schema:
+          type: string
+      - description: Token do widget do CAPTCHA
+        in: header
+        name: X-Captcha-Token
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Verifica o seguro pela matrícula
+      tags:
+      - Verification
+  /api/v1/public/verifications/config:
+    get:
+      description: "Público, sem limite de pedidos. captchaProvider TURNSTILE (com\
+        \ captchaSiteKey) ou NONE (sem CAPTCHA; o cabeçalho X-Captcha-Token deixa\
+        \ de ser exigido)."
+      operationId: getVerificationConfig
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationConfigResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: CAPTCHA da verificação por matrícula
+      tags:
+      - Verification
+  /api/v1/public/verifications/{token}:
+    get:
+      description: "Público, sem CAPTCHA. O status é o da apólice agora; certificateStatus\
+        \ diz se o certificado do código ainda é o actual. Código desconhecido ou\
+        \ com formato errado → 200 NOT_FOUND. Nunca devolve dados do tomador nem os\
+        \ números da apólice e do certificado. 60 pedidos por minuto e por IP → 429\
+        \ RATE_LIMITED (Retry-After)."
+      operationId: verifyCertificateToken
+      parameters:
+      - description: Código do QR do certificado (22 caracteres)
+        in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicVerificationResponse"
+          description: OK
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Client error (RFC 7807)
+        "5XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Server error (RFC 7807)
+      security: []
+      summary: Verifica o seguro pelo código do QR
+      tags:
+      - Verification
   /api/v1/quotes:
     post:
       description: "Permissão self:quotes. Uma cotação por produto publicado compatí\
@@ -7177,6 +8139,11 @@ components:
       - seats
       - usage
       - year
+    CaptchaProvider:
+      type: string
+      enum:
+      - TURNSTILE
+      - NONE
     CatalogInsurerResponse:
       type: object
       properties:
@@ -7262,6 +8229,18 @@ components:
       - validFrom
       - vehicleCategories
       - versionNo
+    CertificateCheckStatus:
+      type: string
+      description: "Só nas consultas por código: se o certificado mostrado ainda é\
+        \ o actual"
+      enum:
+      - CURRENT
+      - REVOKED
+    CertificateStatus:
+      type: string
+      enum:
+      - VALID
+      - REVOKED
     Charge:
       type: object
       description: Encargo (imposto ou taxa) que a seguradora acrescenta ao prémio
@@ -7344,6 +8323,15 @@ components:
             $ref: "#/components/schemas/ContactResponse"
       required:
       - contacts
+    CoverStatus:
+      type: string
+      enum:
+      - COVERED
+      - NOT_STARTED
+      - ENDED
+      - SUSPENDED
+      - CANCELLED
+      - LAPSED
     CoverageRequest:
       type: object
       properties:
@@ -7511,6 +8499,13 @@ components:
       - code
       - deductibleType
       - mandatory
+    CoverageType:
+      type: string
+      enum:
+      - MTPL_ONLY
+      - COMPREHENSIVE
+      - TEMPORARY
+      - BORDER
     CreateBrokerProposalRequest:
       type: object
       properties:
@@ -8031,6 +9026,25 @@ components:
       required:
       - providerMessageId
       - status
+    DevicePlatform:
+      type: string
+      enum:
+      - ANDROID
+      - IOS
+    DeviceResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        platform:
+          $ref: "#/components/schemas/DevicePlatform"
+      required:
+      - active
+      - id
+      - platform
     DriverResponse:
       type: object
       properties:
@@ -8249,6 +9263,13 @@ components:
       - SUBMITTED
       - APPROVED
       - REJECTED
+    InstalmentStatus:
+      type: string
+      enum:
+      - DUE
+      - PAID
+      - OVERDUE
+      - CANCELLED
     InsurerBrandingResponse:
       type: object
       properties:
@@ -8475,6 +9496,54 @@ components:
       - reference
       - status
       - targetLabel
+    InsurerPolicySummaryResponse:
+      type: object
+      properties:
+        coverStatus:
+          $ref: "#/components/schemas/CoverStatus"
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        endAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        issuedAt:
+          type: string
+          format: date-time
+        number:
+          type: string
+          example: AP-2027-000123
+        plate:
+          type: string
+          example: ABC-123-MC
+        policyholderName:
+          type: string
+          example: Ana Maria Mussa
+        productName:
+          type: string
+          example: RC Automóvel
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/PolicyStatus"
+        totalPremium:
+          $ref: "#/components/schemas/Money"
+      required:
+      - coverStatus
+      - coverageType
+      - endAt
+      - id
+      - issuedAt
+      - number
+      - plate
+      - policyholderName
+      - productName
+      - startAt
+      - status
+      - totalPremium
     InsurerProfileRequest:
       type: object
       properties:
@@ -9362,6 +10431,282 @@ components:
           $ref: "#/components/schemas/KycState"
       required:
       - state
+    MyNotificationResponse:
+      type: object
+      properties:
+        body:
+          type: string
+          example: A apólice AP-2027-000123 (ABC-123-MC) está activa até 10/02/2028
+            10:31.
+        category:
+          type: string
+          example: POLICY
+        createdAt:
+          type: string
+          format: date-time
+        deepLink:
+          type: string
+          example: moseguros://policy/0194f7a2-3b1c-7d2e-9f00-1234567890ab
+        id:
+          type: string
+          format: uuid
+        readAt:
+          type: string
+          format: date-time
+        templateCode:
+          type: string
+          example: POLICY_ISSUED
+        title:
+          type: string
+          example: Apólice emitida
+        webPath:
+          type: string
+          example: /cliente/apolices/0194f7a2-3b1c-7d2e-9f00-1234567890ab
+      required:
+      - body
+      - category
+      - createdAt
+      - id
+      - templateCode
+      - title
+    MyPolicySummaryResponse:
+      type: object
+      properties:
+        certificateReady:
+          type: boolean
+        coverStatus:
+          $ref: "#/components/schemas/CoverStatus"
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        endAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        insurer:
+          $ref: "#/components/schemas/PolicyInsurerRef"
+        number:
+          type: string
+          example: AP-2027-000123
+        productName:
+          type: string
+          example: RC Automóvel
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/PolicyStatus"
+        vehicle:
+          $ref: "#/components/schemas/PolicyVehicleRef"
+      required:
+      - certificateReady
+      - coverStatus
+      - coverageType
+      - endAt
+      - id
+      - insurer
+      - number
+      - productName
+      - startAt
+      - status
+      - vehicle
+    NotificationCategory:
+      type: string
+      enum:
+      - PAYMENT
+      - POLICY
+      - LEGAL
+      - PROPOSAL
+      - QUOTE
+    NotificationCategoryPreferences:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/NotificationCategory"
+        channels:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationChannelPreference"
+        mandatory:
+          type: boolean
+      required:
+      - category
+      - channels
+      - mandatory
+    NotificationCategoryPreferencesChange:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/NotificationCategory"
+        channels:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationChannelPreferenceChange"
+          maxItems: 4
+          minItems: 0
+      required:
+      - category
+      - channels
+    NotificationChannel:
+      type: string
+      enum:
+      - PUSH
+      - WHATSAPP
+      - SMS
+      - EMAIL
+    NotificationChannelPreference:
+      type: object
+      properties:
+        available:
+          type: boolean
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        enabled:
+          type: boolean
+      required:
+      - available
+      - channel
+      - enabled
+    NotificationChannelPreferenceChange:
+      type: object
+      properties:
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        enabled:
+          type: boolean
+      required:
+      - channel
+      - enabled
+    NotificationPreferencesResponse:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationCategoryPreferences"
+      required:
+      - categories
+    NotificationTemplateDetail:
+      type: object
+      properties:
+        active:
+          type: boolean
+        body:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        code:
+          type: string
+        customized:
+          type: boolean
+        defaultBody:
+          type: string
+        defaultSubject:
+          type: string
+        id:
+          type: string
+          format: uuid
+        locale:
+          type: string
+        sampleParams:
+          type: object
+          additionalProperties:
+            type: string
+        subject:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+        variables:
+          type: array
+          items:
+            type: string
+        version:
+          type: integer
+          format: int64
+        whatsappParams:
+          type: array
+          items:
+            type: string
+        whatsappTemplateName:
+          type: string
+      required:
+      - active
+      - body
+      - channel
+      - code
+      - customized
+      - id
+      - locale
+      - sampleParams
+      - updatedAt
+      - updatedBy
+      - variables
+      - version
+    NotificationTemplatePreview:
+      type: object
+      properties:
+        body:
+          type: string
+        fits:
+          type: boolean
+        length:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        smsText:
+          type: string
+        subject:
+          type: string
+    NotificationTemplateSummary:
+      type: object
+      properties:
+        active:
+          type: boolean
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        code:
+          type: string
+          example: POLICY_ISSUED
+        customized:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        locale:
+          type: string
+          example: pt
+        subject:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: string
+      required:
+      - active
+      - channel
+      - code
+      - customized
+      - id
+      - locale
+      - updatedAt
+      - updatedBy
+    NotificationTemplateTestResult:
+      type: object
+      properties:
+        reason:
+          type: string
+        status:
+          type: string
+          example: SENT
+      required:
+      - status
     Nuit:
       type: string
       description: "NUIT: 9 dígitos"
@@ -9845,6 +11190,29 @@ components:
       - page
       - size
       - totalElements
+    PageResponseInsurerPolicySummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsurerPolicySummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseInsurerProposalSummaryResponse:
       type: object
       properties:
@@ -9937,6 +11305,75 @@ components:
       - page
       - size
       - totalElements
+    PageResponseMyNotificationResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/MyNotificationResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseMyPolicySummaryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/MyPolicySummaryResponse"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponseNotificationTemplateSummary:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationTemplateSummary"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
     PageResponseOrganizationSummaryResponse:
       type: object
       properties:
@@ -9990,6 +11427,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PaymentFileImport"
+        page:
+          type: integer
+          format: int32
+          example: 0
+        size:
+          type: integer
+          format: int32
+          example: 20
+        totalElements:
+          type: integer
+          format: int64
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+    PageResponsePoliceCheckResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/PoliceCheckResponse"
         page:
           type: integer
           format: int32
@@ -10635,6 +12095,13 @@ components:
       - CHECKING_STATUS
       - PAY_BY_REFERENCE
       - NONE
+    PaymentPlan:
+      type: string
+      enum:
+      - FULL
+      - SEMIANNUAL
+      - QUARTERLY
+      - MONTHLY
     PaymentPurpose:
       type: string
       enum:
@@ -10828,6 +12295,360 @@ components:
             $ref: "#/components/schemas/PlatformSettingResponse"
       required:
       - settings
+    PoliceCheckResponse:
+      type: object
+      properties:
+        checkedAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        plateMasked:
+          type: string
+          description: Vazio quando um código não correspondeu a nenhuma apólice
+          example: ABC-***-MC
+        result:
+          $ref: "#/components/schemas/VerificationResult"
+        subjectType:
+          $ref: "#/components/schemas/SubjectType"
+      required:
+      - checkedAt
+      - id
+      - result
+      - subjectType
+    PoliceVerificationResponse:
+      type: object
+      description: Resultado da verificação para um agente da polícia; sem dados pessoais
+        do tomador
+      properties:
+        certificateNumber:
+          type: string
+          description: "Certificado do código ou, por matrícula, o certificado em\
+            \ vigor"
+        certificateStatus:
+          $ref: "#/components/schemas/CertificateCheckStatus"
+        checkedAt:
+          type: string
+          format: date-time
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        insurerName:
+          type: string
+        plateMasked:
+          type: string
+          example: ABC-***-MC
+        policyNumber:
+          type: string
+          example: AP-2027-000123
+        status:
+          $ref: "#/components/schemas/VerificationResult"
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+          description: Fim da cobertura (exclusivo)
+        vehicleMake:
+          type: string
+          example: Toyota
+        vehicleModel:
+          type: string
+          example: Corolla
+      required:
+      - checkedAt
+      - status
+    PolicyCertificate:
+      type: object
+      properties:
+        fileId:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+          example: CT-2027-0001234
+        status:
+          $ref: "#/components/schemas/CertificateStatus"
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+        verificationUrl:
+          type: string
+          example: https://moseguros.co.mz/v/Qm9hIHRhcmRlIHNyLg
+      required:
+      - id
+      - number
+      - status
+      - validFrom
+      - validTo
+      - verificationUrl
+    PolicyCoverage:
+      type: object
+      properties:
+        capital:
+          $ref: "#/components/schemas/Money"
+        code:
+          type: string
+          example: MTPL
+        deductibleAmount:
+          $ref: "#/components/schemas/Money"
+        deductiblePercent:
+          type: number
+          example: 10
+        deductibleType:
+          type: string
+          enum:
+          - NONE
+          - FIXED
+          - PERCENT
+        mandatory:
+          type: boolean
+        premium:
+          $ref: "#/components/schemas/Money"
+      required:
+      - code
+      - deductibleType
+      - mandatory
+      - premium
+    PolicyDetailResponse:
+      type: object
+      properties:
+        certificate:
+          $ref: "#/components/schemas/PolicyCertificate"
+        coverStatus:
+          $ref: "#/components/schemas/CoverStatus"
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        coverages:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyCoverage"
+        documents:
+          type: array
+          description: "Documentos da apólice; descarregam-se por GET /api/v1/files/{fileId}"
+          items:
+            $ref: "#/components/schemas/PolicyDocument"
+        endAt:
+          type: string
+          format: date-time
+        events:
+          type: array
+          description: Só no detalhe da seguradora
+          items:
+            $ref: "#/components/schemas/PolicyTimelineEvent"
+        id:
+          type: string
+          format: uuid
+        instalments:
+          type: array
+          items:
+            $ref: "#/components/schemas/PolicyInstalment"
+        insurer:
+          $ref: "#/components/schemas/PolicyInsurerRef"
+        issuedAt:
+          type: string
+          format: date-time
+        number:
+          type: string
+          example: AP-2027-000123
+        paymentPlan:
+          $ref: "#/components/schemas/PaymentPlan"
+        policyholderName:
+          type: string
+          example: Ana Maria Mussa
+        product:
+          $ref: "#/components/schemas/PolicyProductRef"
+        proposal:
+          $ref: "#/components/schemas/PolicyProposalRef"
+        renewalType:
+          $ref: "#/components/schemas/RenewalType"
+        startAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/PolicyStatus"
+        totalPremium:
+          $ref: "#/components/schemas/Money"
+        vehicle:
+          $ref: "#/components/schemas/PolicyVehicleRef"
+      required:
+      - coverStatus
+      - coverageType
+      - coverages
+      - documents
+      - endAt
+      - id
+      - instalments
+      - insurer
+      - issuedAt
+      - number
+      - paymentPlan
+      - policyholderName
+      - product
+      - renewalType
+      - startAt
+      - status
+      - totalPremium
+      - vehicle
+    PolicyDocument:
+      type: object
+      description: Documento da apólice; PENDING (sem fileId) enquanto não foi gerado
+      properties:
+        fileId:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+          example: CT-2027-0001234.pdf
+        status:
+          $ref: "#/components/schemas/PolicyDocumentStatus"
+        type:
+          $ref: "#/components/schemas/PolicyDocumentType"
+      required:
+      - status
+      - type
+    PolicyDocumentStatus:
+      type: string
+      enum:
+      - READY
+      - PENDING
+    PolicyDocumentType:
+      type: string
+      enum:
+      - CERTIFICATE
+      - SCHEDULE
+      - GENERAL_CONDITIONS
+      - PRE_CONTRACT_INFO
+      - PROPOSAL
+    PolicyEventType:
+      type: string
+      enum:
+      - ISSUED
+      - CERTIFICATE_ISSUED
+      - DOCUMENTS_READY
+    PolicyInstalment:
+      type: object
+      properties:
+        amount:
+          $ref: "#/components/schemas/Money"
+        dueDate:
+          type: string
+          format: date
+        paidAt:
+          type: string
+          format: date-time
+        seq:
+          type: integer
+          format: int32
+          example: 1
+        status:
+          $ref: "#/components/schemas/InstalmentStatus"
+      required:
+      - amount
+      - dueDate
+      - seq
+      - status
+    PolicyInsurerRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Seguradora Demo
+      required:
+      - id
+    PolicyProductRef:
+      type: object
+      properties:
+        name:
+          type: string
+          example: RC Automóvel
+        type:
+          type: string
+          enum:
+          - MTPL_ONLY
+          - COMPREHENSIVE
+          - TEMPORARY
+          - BORDER
+          - FLEET
+          example: MTPL_ONLY
+        versionId:
+          type: string
+          format: uuid
+      required:
+      - name
+      - type
+      - versionId
+    PolicyProposalRef:
+      type: object
+      description: Só no detalhe da seguradora
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+          example: PR-2027-000123
+      required:
+      - id
+    PolicyStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - SUSPENDED
+      - CANCELLED
+      - EXPIRED
+      - LAPSED
+    PolicyTimelineEvent:
+      type: object
+      description: Só no detalhe da seguradora
+      properties:
+        actorType:
+          type: string
+          enum:
+          - CUSTOMER
+          - STAFF
+          - SYSTEM
+        occurredAt:
+          type: string
+          format: date-time
+        type:
+          $ref: "#/components/schemas/PolicyEventType"
+      required:
+      - actorType
+      - occurredAt
+      - type
+    PolicyVehicleRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        make:
+          type: string
+          example: Toyota
+        model:
+          type: string
+          example: Corolla
+        plate:
+          type: string
+          example: ABC-123-MC
+        year:
+          type: integer
+          format: int32
+          example: 2018
+      required:
+      - id
+      - plate
     PolicyholderSource:
       type: string
       description: "PROFILE: tomador copiado do perfil do cliente; BROKER: preenchido\
@@ -10842,6 +12663,21 @@ components:
         \ coverages (capitalAmount, deductible, base, factors, bonusMalusFactor, exactPremium,\
         \ premiumAmount), commercialPremiumAmount, charges, subtotalAmount, roundingAdjustmentAmount\
         \ e totalAmount. Decimais em texto, centavos em inteiro."
+    PreviewNotificationTemplateRequest:
+      type: object
+      properties:
+        body:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+        subject:
+          type: string
+          maxLength: 1000
+          minLength: 0
+      required:
+      - body
     ProblemDetail:
       type: object
       description: Erro RFC 7807 (application/problem+json)
@@ -11843,6 +13679,36 @@ components:
             $ref: "#/components/schemas/PublicReferenceValueResponse"
       required:
       - values
+    PublicVerificationResponse:
+      type: object
+      description: Resultado da verificação pública; sem dados pessoais do tomador
+      properties:
+        certificateStatus:
+          $ref: "#/components/schemas/CertificateCheckStatus"
+        checkedAt:
+          type: string
+          format: date-time
+        coverageType:
+          $ref: "#/components/schemas/CoverageType"
+        insurerName:
+          type: string
+          example: Seguradora Demo
+        plateMasked:
+          type: string
+          description: Matrícula com os dígitos trocados por *
+          example: ABC-***-MC
+        status:
+          $ref: "#/components/schemas/VerificationResult"
+        validFrom:
+          type: string
+          format: date-time
+        validTo:
+          type: string
+          format: date-time
+          description: Fim da cobertura (exclusivo)
+      required:
+      - checkedAt
+      - status
     PublishProductVersionRequest:
       type: object
       properties:
@@ -12458,6 +14324,23 @@ components:
           description: Refresh token recebido no login ou na última renovação
       required:
       - refreshToken
+    RegisterDeviceRequest:
+      type: object
+      properties:
+        appVersion:
+          type: string
+          example: 1.0.0+12
+          maxLength: 30
+          minLength: 0
+        platform:
+          $ref: "#/components/schemas/DevicePlatform"
+        token:
+          type: string
+          maxLength: 512
+          minLength: 0
+      required:
+      - platform
+      - token
     RegistrationDocResponse:
       type: object
       properties:
@@ -12596,6 +14479,11 @@ components:
       - DOCUMENTS_INVALID
       - OTHER
       nullable: true
+    RenewalType:
+      type: string
+      enum:
+      - ANNUAL_RENEWABLE
+      - FIXED_TERM
     ReplaceCoveragesRequest:
       type: object
       properties:
@@ -13095,6 +14983,11 @@ components:
       required:
       - type
       - value
+    SubjectType:
+      type: string
+      enum:
+      - PLATE
+      - TOKEN
     SubmitInspectionRequest:
       type: object
       properties:
@@ -13180,6 +15073,15 @@ components:
           minLength: 0
       required:
       - reason
+    TestNotificationTemplateRequest:
+      type: object
+      properties:
+        destination:
+          type: string
+          maxLength: 512
+          minLength: 0
+      required:
+      - destination
     TestPlateFormatRequest:
       type: object
       properties:
@@ -13367,6 +15269,15 @@ components:
       - isDefault
       - rules
       - version
+    UnreadCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          example: 3
+      required:
+      - count
     UpdateBrokerProposalRequest:
       type: object
       properties:
@@ -13510,6 +15421,44 @@ components:
       - fullName
       - idDocType
       - province
+      - version
+    UpdateNotificationPreferencesRequest:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationCategoryPreferencesChange"
+          maxItems: 20
+          minItems: 0
+      required:
+      - categories
+    UpdateNotificationTemplateRequest:
+      type: object
+      properties:
+        active:
+          type: boolean
+        body:
+          type: string
+        subject:
+          type: string
+          maxLength: 1000
+          minLength: 0
+        version:
+          type: integer
+          format: int64
+        whatsappParams:
+          type: array
+          items:
+            type: string
+          maxItems: 20
+          minItems: 0
+        whatsappTemplateName:
+          type: string
+          maxLength: 100
+          minLength: 0
+      required:
+      - body
       - version
     UpdateOrganizationRequest:
       type: object
@@ -14118,6 +16067,26 @@ components:
       - GOODS
       - TAXI
       - DRIVING_SCHOOL
+    VerificationConfigResponse:
+      type: object
+      properties:
+        captchaProvider:
+          $ref: "#/components/schemas/CaptchaProvider"
+        captchaSiteKey:
+          type: string
+          description: Chave pública do widget; omitida com NONE
+          example: 0x4AAAAAAA
+      required:
+      - captchaProvider
+    VerificationResult:
+      type: string
+      enum:
+      - VALID
+      - NOT_YET_VALID
+      - EXPIRED
+      - SUSPENDED
+      - CANCELLED
+      - NOT_FOUND
     VerifyContactRequest:
       type: object
       properties:

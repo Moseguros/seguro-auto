@@ -6,6 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'policy_tables.dart';
+
+export 'policy_tables.dart';
+
 part 'app_database.g.dart';
 
 /// Fotografias da vistoria por enviar (S4-09 §5). Uma linha por fotografia tirada;
@@ -46,9 +50,20 @@ class InspectionSubmissions extends Table {
 
 /// Base de dados local da app (`<applicationDocumentsDirectory>/moseguros.sqlite`).
 ///
-/// `schemaVersion = 1` (S4-09). O S6-07 acrescenta tabelas com migrações drift
-/// (`schemaVersion` 2+): nunca se altera uma tabela sem migração.
-@DriftDatabase(tables: [InspectionUploads, InspectionSubmissions])
+/// | Versão | Alteração |
+/// | --- | --- |
+/// | 1 | fila da vistoria (S4-09) |
+/// | 2 | apólices e documentos guardados para uso sem rede (S6-07) |
+///
+/// Nunca se altera uma tabela sem migração.
+@DriftDatabase(
+  tables: [
+    InspectionUploads,
+    InspectionSubmissions,
+    CachedPolicies,
+    CachedDocuments,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
@@ -67,16 +82,26 @@ class AppDatabase extends _$AppDatabase {
   );
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
-  MigrationStrategy get migration =>
-      MigrationStrategy(onCreate: (m) => m.createAll());
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        // As tabelas da vistoria não mudam.
+        await m.createTable(cachedPolicies);
+        await m.createTable(cachedDocuments);
+      }
+    },
+  );
 
   /// Apaga os dados de um utilizador (logout): todas as linhas das tabelas.
   Future<void> clearUserData() => transaction(() async {
     await delete(inspectionUploads).go();
     await delete(inspectionSubmissions).go();
+    await delete(cachedDocuments).go();
+    await delete(cachedPolicies).go();
   });
 }
 
@@ -91,8 +116,13 @@ final appFilesDirectoryProvider = FutureProvider<Directory>(
 );
 
 /// Pastas de `<applicationDocumentsDirectory>` com ficheiros de um utilizador,
-/// apagadas no logout (fotografias da vistoria por enviar, S4-09 §5).
-const userDataFolders = ['inspections'];
+/// apagadas no logout: fotografias da vistoria por enviar (S4-09 §5) e
+/// documentos das apólices (S6-07 §2). A primeira é a da vistoria
+/// (`inspection_repository.dart` usa `userDataFolders.first`).
+const userDataFolders = ['inspections', certificatesFolder];
+
+/// Pasta dos documentos das apólices guardados (`{fileId}.pdf`).
+const certificatesFolder = 'certificates';
 
 /// Apaga os dados locais do utilizador (base e ficheiros). Chamado no logout.
 ///
