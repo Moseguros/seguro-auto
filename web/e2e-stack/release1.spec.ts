@@ -1,6 +1,6 @@
 import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { invitationToken, waitForMail } from './helpers/mailpit';
-import { typeSegmentedCode, waitForDebugOtp } from './helpers/otp';
+import { requestDebugOtp, typeSegmentedCode, waitForDebugOtp } from './helpers/otp';
 import { StaffTotp } from './helpers/totp';
 
 /**
@@ -11,8 +11,8 @@ import { StaffTotp } from './helpers/totp';
  *     na Seguradora Demo, cria e assina a proposta (aceite automaticamente);
  *  4. paga por M-Pesa (mpesa-mock, número terminado em 000) → apólice emitida automaticamente (S6-01) com o
  *     certificado pronto, e o e-mail "Pagamento recebido" no Mailpit;
- *  5. abre /v/{código} do QR → "Seguro válido";
- *  6. o agente da polícia entra e verifica a matrícula → "Seguro válido" com o n.º da apólice;
+ *  5. abre /v/{código} do QR → "O seguro ainda não começou" (a apólice começa amanhã, ver `startDate`);
+ *  6. o agente da polícia entra e verifica a matrícula → o mesmo resultado, com o n.º da apólice;
  *  7. repete 3–4 com outro veículo e pagamento por referência (Ponto24, entidade 90002) pago no ponto24-mock,
  *     lido pelo payment-file-worker do SFTP → apólice emitida.
  *
@@ -38,6 +38,12 @@ function startDate(): string {
   });
   return tomorrow > '2026-12-01' ? tomorrow : '2026-12-01';
 }
+
+/**
+ * Resultado da verificação da apólice acabada de emitir: o início é sempre amanhã ou depois (`startDate`), por
+ * isso a verificação dá `NOT_YET_VALID` e não "Seguro válido".
+ */
+const NEW_POLICY_COVER = 'O seguro ainda não começou';
 
 async function newPage(browser: Browser): Promise<{ context: BrowserContext; page: Page }> {
   const context = await browser.newContext();
@@ -131,16 +137,30 @@ async function simulateAndPropose(page: Page, plate: string): Promise<string> {
   return ((await heading.textContent()) ?? '').replace('Proposta ', '').trim();
 }
 
+/**
+ * Passo actual do assistente da proposta: em ecrãs estreitos "Passo n de m · <passo>", nos largos o passo
+ * activo do Stepper (o compose corre em Desktop Chrome, 1280 px).
+ */
+function stepIndicator(page: Page, name: string) {
+  const narrow = page.getByText(new RegExp(`· ${name}$`));
+  const wide = page.locator('.MuiStepLabel-label.Mui-active').filter({ hasText: name });
+  return narrow.or(wide);
+}
+
+async function expectStep(page: Page, name: string) {
+  await expect(stepIndicator(page, name)).toBeVisible();
+}
+
 /** Declarações, adequação, identidade ("Agora não") e assinatura com o código do X-Debug-Otp (S4-04/S4-05). */
 async function completeAndSign(page: Page) {
-  await expect(page.getByText(/· Declarações$/)).toBeVisible();
+  await expectStep(page, 'Declarações');
   for (const group of await page.getByRole('radiogroup').all()) {
     await group.getByRole('radio', { name: 'Não' }).check();
   }
   await page.getByRole('checkbox', { name: /Declaro que as respostas/ }).check();
   await page.getByRole('button', { name: 'Continuar' }).click();
 
-  await expect(page.getByText(/· Adequação$/)).toBeVisible();
+  await expectStep(page, 'Adequação');
   for (const group of await page.getByRole('radiogroup').all()) {
     await group.getByRole('radio').first().check();
   }
@@ -148,28 +168,32 @@ async function completeAndSign(page: Page) {
   const warnings = page.getByRole('button', {
     name: 'Li os avisos e quero continuar com esta proposta',
   });
-  if (await warnings.isVisible().catch(() => false)) {
+  // Os avisos da adequação aparecem depois da gravação: esperar por eles ou pelo passo seguinte.
+  await expect(warnings.or(stepIndicator(page, 'Identidade'))).toBeVisible();
+  if (await warnings.isVisible()) {
     await warnings.click();
   }
 
-  await expect(page.getByText(/· Identidade$/)).toBeVisible();
+  await expectStep(page, 'Identidade');
   const notNow = page.getByRole('button', { name: 'Agora não' });
+  await expect(notNow.or(page.getByRole('button', { name: 'Continuar' })).first()).toBeVisible();
   if (await notNow.isVisible()) {
     await notNow.click();
   } else {
     await page.getByRole('button', { name: 'Continuar' }).click();
   }
 
-  await expect(page.getByText(/· Resumo e assinatura$/)).toBeVisible();
+  await expectStep(page, 'Resumo e assinatura');
   await page
     .getByRole('checkbox', {
       name: 'Recebi e li as Condições Gerais e a Informação Pré-contratual.',
     })
     .check();
-  const code = waitForDebugOtp(page, /\/sign\/request$/);
-  await page.getByRole('button', { name: 'Assinar e enviar à seguradora' }).click();
+  const code = await requestDebugOtp(page, /\/sign\/request$/, () =>
+    page.getByRole('button', { name: 'Assinar e enviar à seguradora' }).click(),
+  );
   const dialog = page.getByRole('dialog');
-  await dialog.locator('input[autocomplete="one-time-code"]').fill(await code);
+  await dialog.locator('input[autocomplete="one-time-code"]').fill(code);
   // Regras por defeito (underwriting-v1-defaults.json): RC até 10 000 MT é aceite logo.
   await expect(page.getByText('Proposta aceite.')).toBeVisible({ timeout: 30_000 });
 }
@@ -293,7 +317,7 @@ test('Release 1: convites, compra de RC por M-Pesa e por referência, verificaç
   // 5. Verificação pública pelo código do QR.
   const visitor = await newPage(browser);
   await visitor.page.goto(mpesaPolicy.verificationPath);
-  await expect(visitor.page.getByRole('heading', { name: 'Seguro válido' })).toBeVisible();
+  await expect(visitor.page.getByRole('heading', { name: NEW_POLICY_COVER })).toBeVisible();
 
   // 6. Agente da polícia: entra e verifica a matrícula.
   await police.page.goto(`/entrar?voltar=${encodeURIComponent('/verificar')}`);
@@ -308,7 +332,7 @@ test('Release 1: convites, compra de RC por M-Pesa e por referência, verificaç
   await police.page.goto('/verificar');
   await police.page.getByLabel('Matrícula').fill('AAA-100-MC');
   await police.page.getByRole('button', { name: 'Verificar' }).click();
-  await expect(police.page.getByRole('heading', { name: 'Seguro válido' })).toBeVisible();
+  await expect(police.page.getByRole('heading', { name: NEW_POLICY_COVER })).toBeVisible();
   await expect(police.page.getByText(mpesaPolicy.number)).toBeVisible();
 
   // 7. Outro veículo, pagamento por entidade e referência (Ponto24) pago no ponto24-mock.
