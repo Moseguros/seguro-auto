@@ -205,7 +205,8 @@ class RunAsSystemUsageTest {
                 .containsExactlyInAnyOrder("ProposalPaidListener.on", "PolicySystemLookups.findActiveByPlate",
                         "PolicySystemLookups.findLatestByPlate", "PolicySystemLookups.findByCertificateToken",
                         "PolicySystemLookups.coverAt", "PolicySystemLookups.vehicleHasPolicyInForce",
-                        "PolicySystemLookups.fileNames", "PolicyDocumentsListener.on", "PolicyDocumentsJob.run");
+                        "PolicySystemLookups.fileNames", "PolicyDocumentsListener.on", "PolicyDocumentsJob.run",
+                        "PolicyDocumentsJob.scheduled");
     }
 
     @Test

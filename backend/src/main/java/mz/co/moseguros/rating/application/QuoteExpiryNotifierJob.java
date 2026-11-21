@@ -76,9 +76,18 @@ public class QuoteExpiryNotifierJob {
         this.clock = clock;
     }
 
-    /** @return o número de pedidos avisados */
+    /**
+     * Entrada do agendador. O ShedLock só bloqueia métodos sem valor de retorno
+     * ({@code LockingNotSupportedException} com {@code int}/{@code long}); os testes chamam {@link #run()}.
+     */
     @Scheduled(cron = "0 0 9 * * *", zone = "Africa/Maputo")
     @SchedulerLock(name = LOCK, lockAtMostFor = "PT15M")
+    @RunAsSystem
+    public void scheduled() {
+        run();
+    }
+
+    /** @return o número de pedidos avisados */
     @RunAsSystem
     public int run() {
         Instant startedAt = clock.instant();

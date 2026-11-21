@@ -55,9 +55,17 @@ public class IncompletePublicationsJob {
         }
     }
 
-    /** @return o número de publicações incompletas contadas antes do reenvio */
+    /**
+     * Entrada do agendador. O ShedLock só bloqueia métodos sem valor de retorno
+     * ({@code LockingNotSupportedException} com {@code int}/{@code long}); os testes chamam {@link #resubmit()}.
+     */
     @Scheduled(cron = "0 */5 * * * *", zone = "Africa/Maputo")
     @SchedulerLock(name = LOCK, lockAtMostFor = "PT4M")
+    public void scheduled() {
+        resubmit();
+    }
+
+    /** @return o número de publicações incompletas contadas antes do reenvio */
     public long resubmit() {
         Instant startedAt = clock.instant();
         log.info("Job started job={}", LOCK);

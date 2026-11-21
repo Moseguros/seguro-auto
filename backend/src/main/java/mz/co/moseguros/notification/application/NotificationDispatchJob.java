@@ -43,9 +43,18 @@ public class NotificationDispatchJob {
         this.clock = clock;
     }
 
-    /** @return o número de linhas tentadas */
+    /**
+     * Entrada do agendador. O ShedLock só bloqueia métodos sem valor de retorno
+     * ({@code LockingNotSupportedException} com {@code int}/{@code long}); os testes chamam {@link #run()}.
+     */
     @Scheduled(cron = "*/15 * * * * *", zone = "Africa/Maputo")
     @SchedulerLock(name = LOCK, lockAtMostFor = "PT1M")
+    @RunAsSystem
+    public void scheduled() {
+        run();
+    }
+
+    /** @return o número de linhas tentadas */
     @RunAsSystem
     public int run() {
         Instant now = clock.instant();
