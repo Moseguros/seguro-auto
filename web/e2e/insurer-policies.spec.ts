@@ -157,7 +157,7 @@ test.describe('apólices da seguradora', () => {
     await p.getByRole('tab', { name: 'Documentos' }).click();
     await expect(p.getByText('A preparar…')).toBeVisible();
     const download = p.waitForEvent('download');
-    await p.getByRole('button', { name: 'Descarregar Certificado de seguro' }).click();
+    await p.getByRole('button', { name: 'Descarregar: Certificado de seguro' }).click();
     expect((await download).suggestedFilename()).toBe('certificado-AP-2027-000001.pdf');
     expect(state.fileAuth).toEqual(['Bearer access']);
   });
