@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -107,8 +108,17 @@ public class SecurityTestConfiguration {
         }
 
         /** Cliente activo com o perfil {@code CUSTOMER} e o nome indicado no perfil. */
+        /** Telemóveis seguidos a partir de um início aleatório: sete dígitos ao acaso repetiam-se entre testes. */
+        private static final AtomicLong NEXT_CUSTOMER =
+                new AtomicLong(ThreadLocalRandom.current()
+                        .nextLong(5_000_000));
+
+        private static String nextCustomerDigits() {
+            return String.format("%07d", NEXT_CUSTOMER.incrementAndGet() % 10_000_000);
+        }
+
         public UserAccount customer(String fullName) {
-            UserAccount account = UserAccount.newCustomer(Msisdn.of("84" + digits(7)));
+            UserAccount account = UserAccount.newCustomer(Msisdn.of("84" + nextCustomerDigits()));
             CustomerProfile profile = CustomerProfile.emptyFor(account);
             profile.update(fullName, null, null, null, null, null, null);
             return inSystem(() -> {

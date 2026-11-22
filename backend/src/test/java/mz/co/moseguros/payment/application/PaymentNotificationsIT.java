@@ -112,7 +112,9 @@ class PaymentNotificationsIT {
         // WhatsApp das duas notificações e o SMS proposal.paid.sms do S5-02 (D36: sem e-mail verificado)
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
             List<FakeOtpDeliveryChannels.Sent> sent = channels.sentTo(msisdn);
+            // a apólice emitida depois do pagamento (S6-01) manda o seu próprio WhatsApp, quando calha antes
             assertThat(sent).filteredOn(s -> s.channel() == Channel.WHATSAPP).extracting(s -> s.params().get("template"))
+                    .filteredOn(t -> !"moseguros_policy_issued".equals(t))
                     .containsExactlyInAnyOrder("moseguros_payment_reference", "moseguros_payment_succeeded");
             assertThat(sent).filteredOn(s -> s.channel() == Channel.SMS).extracting(FakeOtpDeliveryChannels.Sent::text)
                     .anyMatch(t -> t.startsWith("MoSeguros: recebemos o pagamento de 2 999,00 MT"));

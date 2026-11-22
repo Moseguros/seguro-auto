@@ -64,7 +64,7 @@ public final class MpesaMockContainer {
     private static ImageFromDockerfile image() {
         try {
             String dockerfile = Files.readString(DIR.resolve("Dockerfile"), StandardCharsets.UTF_8)
-                    .replace("--mount=type=cache,target=/root/.m2 ", "");
+                    .replaceAll("--mount=type=cache,target=/root/\\.m2(,sharing=locked)? ", "");
             return new ImageFromDockerfile("moseguros/mpesa-mock-it", false)
                     .withFileFromString("Dockerfile", dockerfile)
                     .withFileFromPath("pom.xml", DIR.resolve("pom.xml"))
