@@ -10,7 +10,7 @@ COPY mvnw pom.xml ./
 RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
 
 COPY src/ src/
-RUN --mount=type=cache,target=/root/.m2 \
+RUN --mount=type=cache,target=/root/.m2,sharing=locked \
     ./mvnw -B -DskipTests package \
     && cp target/*.jar app.jar
 

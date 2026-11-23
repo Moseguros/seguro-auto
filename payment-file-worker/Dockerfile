@@ -16,7 +16,7 @@ RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
 COPY payment-contracts/ payment-contracts/
 COPY backend/pom.xml backend/pom.xml
 COPY payment-file-worker/ payment-file-worker/
-RUN --mount=type=cache,target=/root/.m2 \
+RUN --mount=type=cache,target=/root/.m2,sharing=locked \
     ./mvnw -B -pl payment-file-worker -am -DskipTests package \
     && cp payment-file-worker/target/payment-file-worker-*.jar app.jar
 

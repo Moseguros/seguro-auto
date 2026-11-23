@@ -54,9 +54,18 @@ public class PolicyDocumentsJob {
         this.clock = clock;
     }
 
-    /** @return o número de apólices com documentos gerados nesta execução */
+    /**
+     * Entrada do agendador. O ShedLock só bloqueia métodos sem valor de retorno
+     * ({@code LockingNotSupportedException} com {@code int}/{@code long}); os testes chamam {@link #run()}.
+     */
     @Scheduled(cron = "0 * * * * *", zone = "Africa/Maputo")
     @SchedulerLock(name = LOCK, lockAtMostFor = "PT5M")
+    @RunAsSystem
+    public void scheduled() {
+        run();
+    }
+
+    /** @return o número de apólices com documentos gerados nesta execução */
     @RunAsSystem
     public int run() {
         Instant startedAt = clock.instant();
